@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Sixtyfour+Convergence&display=swap');
+
+.sixtyfour-convergence {
+  font-family: "Sixtyfour Convergence", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "BLED" 0,
+    "SCAN" 0,
+    "XELA" 0,
+    "YELA" 0;
+}
+
+.orbitron-custom {
+  font-family: "Orbitron", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400; /* Puedes cambiar el peso según sea necesario */
+  font-style: normal;
+}
+
+.freckle-face-regular {
+  font-family: "Freckle Face", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+.rubik-80s-fade-regular {
+  font-family: "Rubik 80s Fade", system-ui;
+  font-weight: 400; /* Normal */
+}
+
+.montserrat-portfolio {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700; /* O el peso que desees */
+  font-style: normal;
+}
+
+.syne-designer {
+  font-family: "Syne", sans-serif;
+  font-weight: 400; /* Ajusta el peso según sea necesario */
+}
+
+.figtree-designer {
+  font-family: "Figtree", sans-serif;
+  font-weight: 300; /* Ajusta el peso según sea necesario */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Incluye el padding y borde en el tamaño total */
+}
+html, body {
+  height: 100vh; /* Asegúrate de que el html y body ocupen toda la altura */
+  width: 100%; /* Asegúrate de que el html y body ocupen todo el ancho */
+  overflow-x: hidden; /* Evita desplazamiento horizontal */
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: white; /* Color de fondo */
+}
+
