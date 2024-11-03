@@ -5,7 +5,6 @@ import {
   Card,
   CardMedia,
   Divider,
-  Link,
 } from '@mui/material';
 
 import portada from "../../assets/img/amorsacro.jpg";

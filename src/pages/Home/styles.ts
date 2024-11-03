@@ -1,4 +1,3 @@
-import { SxProps } from '@mui/system';
 
 export const styles = {
     homeContainer: {

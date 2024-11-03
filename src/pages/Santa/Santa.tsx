@@ -5,10 +5,8 @@ import {
   Card,
   CardMedia,
   Divider,
-  Link,
 } from '@mui/material';
 
-import portada from "../../assets/peojects/santa/santa (1).jpg";
 import portada2 from "../../assets/peojects/santa/santa (2).jpg";
 import portada3 from "../../assets/peojects/santa/santa (3).jpg";
 import portada4 from "../../assets/peojects/santa/santa (4).jpg";

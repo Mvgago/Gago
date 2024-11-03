@@ -6,7 +6,6 @@ import {
   Card,
   CardMedia,
   Divider,
-  Link,
 } from '@mui/material';
 
 import portada from "../../assets/peojects/needyt/needyt.jpg";

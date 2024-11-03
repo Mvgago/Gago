@@ -6,14 +6,12 @@ import {
   Card,
   CardMedia,
   Divider,
-  Link,
 } from '@mui/material';
 
 import portada from "../../assets/peojects/amvreport/report3.png";
 import portada2 from "../../assets/peojects/amvreport/report2.jpeg";
 import portada3 from "../../assets/peojects/amvreport/report6.png";
 import portada4 from "../../assets/peojects/amvreport/report4.jpg";
-import portada5 from "../../assets/peojects/amvreport/report5.jpg";
 import { NavigationButtons } from '../../components/NavigationArrows/NavigationArros';
 import { useProjectNavigation } from '../../hooks/useProjectNavigation';
 

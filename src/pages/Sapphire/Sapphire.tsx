@@ -5,14 +5,12 @@ import {
   Card,
   CardMedia,
   Divider,
-  Link,
 } from '@mui/material';
 
 import portada from "../../assets/peojects/saphire/saphire (1).jpg";
 import portada2 from "../../assets/peojects/saphire/saphire (2).jpg";
 import portada4 from "../../assets/peojects/saphire/saphire (4).jpg";
 import portada6 from "../../assets/peojects/saphire/saphire (6).jpg";
-import portada7 from "../../assets/peojects/saphire/saphire (7).jpg";
 import portada8 from "../../assets/peojects/saphire/saphire (8).jpg";
 import portada9 from "../../assets/peojects/saphire/saphire (9).jpg";
 import portada10 from "../../assets/peojects/saphire/saphire (10).jpg";

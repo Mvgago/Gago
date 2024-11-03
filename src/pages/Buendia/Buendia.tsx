@@ -1,8 +1,6 @@
 import React from 'react';
-import { Box, Typography, Grid, Card, CardMedia, Divider, Link, IconButton } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Box, Typography, Grid, Card, CardMedia, Divider } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 
 import portada from "../../assets/peojects/buendia/buendia (1).jpg";
 import portada2 from "../../assets/peojects/buendia/buendia (2).jpg";
@@ -19,7 +17,6 @@ const images = [
 ];
 
 export const BuendiaPage: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   
   // Obtener el índice del proyecto actual

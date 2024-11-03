@@ -6,7 +6,6 @@ import {
   Card,
   CardMedia,
   Divider,
-  Link,
 } from '@mui/material';
 
 import portada from "../../assets/peojects/smart/smart (1).png";

@@ -9,7 +9,6 @@ import needyt from "../assets/peojects/needyt/needyt.jpg";
 import activa from "../assets/peojects/activa/activa (1).jpg";
 import santa from "../assets/peojects/santa/santa (1).jpg";
 import alea from "../assets/peojects/alea/alea (3).png";
-import artistica from "../../assets/img/artistica.jpeg";
 import report from "../assets/peojects/amvreport/report.png";
 
 
