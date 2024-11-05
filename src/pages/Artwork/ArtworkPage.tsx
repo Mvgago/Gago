@@ -10,7 +10,6 @@ import portada2 from "../../assets/gallery/lerele1.jpg";
 import portada3 from "../../assets/gallery/Otoño.jpg";
 import portada4 from "../../assets/gallery/CLARO2.png";
 import portada5 from "../../assets/gallery/untitlezdfdsd.png";
-import portada7 from "../../assets/gallery/lilo (1).jpg";
 import portada8 from "../../assets/gallery/summer2003.png";
 import portada9 from "../../assets/gallery/acne2.png";
 
@@ -26,7 +25,7 @@ const images = [
   { id: 4, url: portada4},
   { id: 4, url: portada5},
   { id: 8, url: portada8},
-  { id: 7, url: portada7},
+  // { id: 7, url: portada7},
   { id: 9, url: portada9},
 ];
 
