@@ -1,6 +1,9 @@
-import React from 'react';
-import { Box, Typography, Grid, Card, CardMedia, Divider } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Grid, Card, CardMedia, Divider, Dialog, IconButton } from '@mui/material';
 import { useLocation } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import portada from "../../assets/peojects/buendia/buendia (1).jpg";
 import portada2 from "../../assets/peojects/buendia/buendia (2).jpg";
@@ -18,17 +21,42 @@ const images = [
 
 export const BuendiaPage: React.FC = () => {
   const location = useLocation();
-  
+
+  // Estado para el modal de la imagen
+  const [open, setOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number | null>(null);
+
   // Obtener el índice del proyecto actual
   const currentIndex = projectRoutes.indexOf(location.pathname);
-  
+
   // Determinar los enlaces del proyecto anterior y siguiente
   const previousProject = projectRoutes[currentIndex - 1] || projectRoutes[projectRoutes.length - 1];
   const nextProject = projectRoutes[currentIndex + 1] || projectRoutes[0];
-  
+
   // Función para prevenir el clic derecho
   const handleContextMenu = (event: React.MouseEvent) => {
     event.preventDefault();
+  };
+
+  // Abrir modal y mostrar imagen seleccionada
+  const handleOpenModal = (index: number) => {
+    setCurrentImageIndex(index);
+    setOpen(true);
+  };
+
+  // Cerrar modal
+  const handleCloseModal = () => {
+    setOpen(false);
+    setCurrentImageIndex(null);
+  };
+
+  // Funciones de navegación de imágenes
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex !== null ? (prevIndex + 1) % images.length : 0));
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex !== null ? (prevIndex - 1 + images.length) % images.length : 0));
   };
 
   return (
@@ -82,7 +110,16 @@ export const BuendiaPage: React.FC = () => {
         <Grid container spacing={0}>
           {images.map((image, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card sx={{ boxShadow: 3, borderRadius: 0, overflow: 'hidden', transition: 'transform 0.3s ease, box-shadow 0.3s ease', '&:hover': { transform: 'scale(1.02)', boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)' } }}>
+              <Card 
+                sx={{ 
+                  boxShadow: 3, 
+                  borderRadius: 0, 
+                  overflow: 'hidden', 
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease', 
+                  '&:hover': { transform: 'scale(1.02)', boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)' } 
+                }}
+                onClick={() => handleOpenModal(index)} // Abrir modal al hacer clic
+              >
                 <CardMedia
                   component="img"
                   image={image.src}
@@ -100,6 +137,42 @@ export const BuendiaPage: React.FC = () => {
           ))}
         </Grid>
       </Box>
+
+      {/* Modal para imagen ampliada */}
+      <Dialog open={open} onClose={handleCloseModal} maxWidth="md">
+        <Box position="relative" display="flex" alignItems="center">
+          <IconButton
+            onClick={handleCloseModal}
+            sx={{ position: 'absolute', top: 10, right: 10, color: 'white', zIndex: 1 }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          {/* Botón de navegación izquierda */}
+          <IconButton
+            onClick={handlePrevImage}
+            sx={{ position: 'absolute', left: 10, color: 'white', zIndex: 1 }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+
+          <img
+            src={currentImageIndex !== null ? images[currentImageIndex].src : ''}
+            alt={currentImageIndex !== null ? images[currentImageIndex].alt : ''}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+            onContextMenu={handleContextMenu} // Deshabilitar clic derecho
+            draggable={false} // Deshabilitar arrastre
+          />
+
+          {/* Botón de navegación derecha */}
+          <IconButton
+            onClick={handleNextImage}
+            sx={{ position: 'absolute', right: 10, color: 'white', zIndex: 1 }}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </Box>
+      </Dialog>
 
       <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
     </Box>

@@ -29,74 +29,24 @@ export const NavBar: React.FC = () => {
   ];
 
   return (
-    <AppBar position="static" sx={{backgroundColor: 'white', height: '90px'}}>
-      <Container maxWidth="lg"> {/* Contenedor agregado para mantener el ancho */}
-      <Toolbar 
-          sx={{ 
-            justifyContent: 'space-between', 
-            height: '90px', // Establece la altura mínima del Toolbar
-            display: 'flex', 
-            alignItems: 'center' // Alinea verticalmente el contenido
+    <AppBar position="static" sx={{ backgroundColor: 'white', height: '90px' }}>
+      <Container maxWidth="lg">
+        <Toolbar
+          sx={{
+            justifyContent: 'space-between',
+            height: '90px',
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
           <Link to="/" style={{ textDecoration: 'none', flexGrow: 1 }}>
-            {/* <Typography 
-              variant="h6" 
-              component="div" 
-              sx={{ 
-                color: 'black',  
-                fontFamily: '"Sixtyfour Convergence", sans-serif' 
-              }}
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ color: 'black', fontFamily: '"Michroma", sans-serif', fontWeight: 600 }}
             >
-              GAGO
-            </Typography> */}
-
-            {/* <Typography 
-            variant="h6" 
-            component="div" 
-            sx={{color: 'black', fontFamily: 'Montserrat, sans-serif', fontWeight: 500}}
-            >
-                MANUGAGO
-            </Typography> */}
-
-            {/* <Typography 
-            variant="h6" 
-            component="div" 
-            className="rubik-80s-fade-regular" 
-            sx={{ color: 'black', textTransform: 'none' }} // Solo el color y la transformación
-            >
-            MANUGAGO
-            </Typography> */}
-
-            {/* <Typography 
-                variant="h6" 
-                component="div" 
-                sx={{ color: 'black', fontFamily: 'Syne, sans-serif', fontWeight: 400 }}
-            >
-                MANUGAGO
-            </Typography> */}
-
-            {/* <Typography 
-                variant="h6" 
-                component="div" 
-                sx={{ color: 'black', fontFamily: '"Rock 3D", system-ui', fontWeight: 700 }}
-                >
-                MANUGAGO
-            </Typography> */}
-
-            <Typography variant="h6" component="div" sx={{ color: 'black', fontFamily: '"Michroma", sans-serif', fontWeight: 600 }}>
-                MANUGAGO
+              MANUGAGO
             </Typography>
-
-            {/* <Typography 
-                variant="h6" 
-                component="div" 
-                sx={{ color: 'black', fontFamily: '"Orbitron", sans-serif', fontWeight: 600 }}
-                >
-                MANUGAGO
-            </Typography> */}
-
-     
           </Link>
 
           {/* Botón de menú hamburguesa para dispositivos móviles */}
@@ -107,7 +57,7 @@ export const NavBar: React.FC = () => {
             aria-haspopup="true"
             onClick={handleMenuOpen}
             color="inherit"
-            sx={{ display: { xs: 'block', md: 'none' }, color: '#D4CDC3'}} // Mostrar solo en pantallas pequeñas
+            sx={{ display: { xs: 'block', md: 'none' }, color: '#D4CDC3' }} // Mostrar solo en pantallas pequeñas
           >
             <MenuIcon />
           </IconButton>
@@ -115,13 +65,24 @@ export const NavBar: React.FC = () => {
           {/* Menú de navegación para pantallas grandes */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 6 }}>
             {navLinks.map((link) => (
-                <Button key={link.to} component={Link} to={link.to} sx={{color: 'black', fontFamily: 'Montserrat, sans-serif', fontWeight: 500,  textTransform: 'none',  '&:hover': {
+              <Button
+                key={link.to}
+                component={Link}
+                to={link.to}
+                sx={{
+                  color: 'black',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 500,
+                  textTransform: 'none',
+                  '&:hover': {
                     color: '#A09586', // Cambia a tu color deseado aquí
-                  },}}>
+                  },
+                }}
+              >
                 {link.label}
-                </Button>
+              </Button>
             ))}
-        </Box>
+          </Box>
 
           {/* Menú hamburguesa */}
           <Menu
@@ -139,26 +100,13 @@ export const NavBar: React.FC = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleMenuClose}>
-              <Button component={Link} to="/" sx={{ color: 'black' }}>
-                Home
-              </Button>
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <Button component={Link} to="/projects" sx={{ color: 'black' }}>
-                Projects
-              </Button>
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <Button component={Link} to="/artwork" sx={{ color: 'black' }}>
-                Artwork
-              </Button>
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <Button component={Link} to="/about" sx={{ color: 'black' }}>
-                About
-              </Button>
-            </MenuItem>
+            {navLinks.map((link) => (
+              <MenuItem key={link.to} onClick={handleMenuClose}>
+                <Button component={Link} to={link.to} sx={{ color: 'black' }}>
+                  {link.label}
+                </Button>
+              </MenuItem>
+            ))}
           </Menu>
         </Toolbar>
       </Container>

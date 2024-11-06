@@ -37,8 +37,8 @@ export const ArtworkPage: React.FC = () => {
 
   return (
     <Box sx={{ width: '100%', maxWidth: '1200px', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
-      <Typography variant="h4" gutterBottom sx={{ my: 4 }}>
-        Artwork Gallery
+      <Typography variant="h5" gutterBottom sx={{ my: 4 }}>
+        Artwork gallery
       </Typography>
 
       <Box
@@ -47,7 +47,8 @@ export const ArtworkPage: React.FC = () => {
           overflow: 'hidden',
           borderRadius: '8px',
           boxShadow: 3,
-          height: { xs: '300px', sm: '500px', md: '700px' }, // Altura dinámica en función del tamaño de pantalla
+          height: { xs: '300px', sm: '500px', md: '700px', background: 'white'
+          }, // Altura dinámica en función del tamaño de pantalla
         }}
       >
         <AnimatePresence initial={false}>

@@ -1,6 +1,9 @@
-import React from 'react';
-import { Box, Typography, Grid, Card, CardMedia, Divider } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Grid, Card, CardMedia, Divider, Dialog, IconButton } from '@mui/material';
 import { useProjectNavigation } from '../../hooks/useProjectNavigation';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import portada from "../../assets/peojects/alea/alea (1) - copia.png";
 import portada2 from "../../assets/peojects/alea/alea8.png";
@@ -15,21 +18,45 @@ import { NavigationButtons } from '../../components/NavigationArrows/NavigationA
 const images = [
     { src: portada, alt: 'Image 1' },
     { src: portada3, alt: 'Image 2' },
-    { src: portada5, alt: 'Image 1' },
+    { src: portada5, alt: 'Image 3' },
     { src: portada4, alt: 'Image 4' },
-    { src: portada7, alt: 'Image 4' },
-    { src: portada9, alt: 'Image 2' },
-    { src: portada2, alt: 'Image 2' },
-    { src: portada6, alt: 'Image 2' },
+    { src: portada7, alt: 'Image 5' },
+    { src: portada9, alt: 'Image 6' },
+    { src: portada2, alt: 'Image 7' },
+    { src: portada6, alt: 'Image 8' },
 ];
 
 export const AleaPage: React.FC = () => {
-
   const { previousProject, nextProject } = useProjectNavigation();
 
-  // Función para manejar el clic derecho
+  // Estado para el modal de la imagen y el índice de la imagen actual
+  const [open, setOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number | null>(null);
+
+  // Función para abrir el modal y establecer la imagen seleccionada
+  const handleOpenModal = (index: number) => {
+    setCurrentImageIndex(index);
+    setOpen(true);
+  };
+
+  // Función para cerrar el modal
+  const handleCloseModal = () => {
+    setOpen(false);
+    setCurrentImageIndex(null);
+  };
+
+  // Funciones de navegación para las imágenes en el modal
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex !== null ? (prevIndex + 1) % images.length : 0));
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex !== null ? (prevIndex - 1 + images.length) % images.length : 0));
+  };
+
+  // Función para prevenir el clic derecho
   const handleContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();  // Deshabilita el clic derecho
+    event.preventDefault();
   };
 
   return (
@@ -88,7 +115,6 @@ export const AleaPage: React.FC = () => {
           },
         }}
       >
-
         <Grid container spacing={0}>
           {images.map((image, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
@@ -103,6 +129,7 @@ export const AleaPage: React.FC = () => {
                     boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
                   },
                 }}
+                onClick={() => handleOpenModal(index)} // Abrir modal al hacer clic
               >
                 <CardMedia
                   component="img"
@@ -121,11 +148,45 @@ export const AleaPage: React.FC = () => {
             </Grid>
           ))}
         </Grid>
-
-        {/* Links a las secciones */}
-        <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
-
       </Box>
+
+      {/* Modal para la visualización de la imagen seleccionada */}
+      <Dialog open={open} onClose={handleCloseModal} maxWidth="md">
+        <Box position="relative" display="flex" alignItems="center">
+          <IconButton
+            onClick={handleCloseModal}
+            sx={{ position: 'absolute', top: 10, right: 10, color: 'white', zIndex: 1 }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          {/* Botón de navegación izquierda */}
+          <IconButton
+            onClick={handlePrevImage}
+            sx={{ position: 'absolute', left: 10, color: 'white', zIndex: 1 }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+
+          <img
+            src={currentImageIndex !== null ? images[currentImageIndex].src : ''}
+            alt={currentImageIndex !== null ? images[currentImageIndex].alt : ''}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+            onContextMenu={handleContextMenu} // Deshabilitar clic derecho
+            draggable={false} // Deshabilitar arrastre de imagen
+          />
+
+          {/* Botón de navegación derecha */}
+          <IconButton
+            onClick={handleNextImage}
+            sx={{ position: 'absolute', right: 10, color: 'white', zIndex: 1 }}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </Box>
+      </Dialog>
+
+      <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
     </Box>
   );
 };

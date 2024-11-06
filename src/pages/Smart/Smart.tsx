@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -6,7 +6,12 @@ import {
   Card,
   CardMedia,
   Divider,
+  Dialog,
+  IconButton,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import portada from "../../assets/peojects/smart/smart (1).png";
 import portada2 from "../../assets/peojects/smart/smart.png";
@@ -18,16 +23,41 @@ import { useProjectNavigation } from '../../hooks/useProjectNavigation';
 const images = [
   { src: portada, alt: 'Image 1' },
   { src: portada3, alt: 'Image 2' },
-  { src: portada2, alt: 'Image 2' },
+  { src: portada2, alt: 'Image 3' },
   { src: portada4, alt: 'Image 4' },
 ];
 
 export const SmartPage: React.FC = () => {
   const { previousProject, nextProject } = useProjectNavigation();
 
-  // Función para manejar el clic derecho (context menu)
+  // Estados para controlar el modal y la imagen actual
+  const [open, setOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number | null>(null);
+
+  // Función para abrir el modal y establecer la imagen seleccionada
+  const handleOpenModal = (index: number) => {
+    setCurrentImageIndex(index);
+    setOpen(true);
+  };
+
+  // Función para cerrar el modal
+  const handleCloseModal = () => {
+    setOpen(false);
+    setCurrentImageIndex(null);
+  };
+
+  // Funciones de navegación para las imágenes en el modal
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex !== null ? (prevIndex + 1) % images.length : 0));
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex !== null ? (prevIndex - 1 + images.length) % images.length : 0));
+  };
+
+  // Función para prevenir el clic derecho
   const handleContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();  // Deshabilitar el menú contextual
+    event.preventDefault();
   };
 
   return (
@@ -62,7 +92,7 @@ export const SmartPage: React.FC = () => {
           variant="body1"
           sx={{
             fontFamily: 'Montserrat, sans-serif',
-            textAlign: 'justify', 
+            textAlign: 'justify',
             marginX: 'auto',
             maxWidth: '800px',
             lineHeight: 1.8,
@@ -99,6 +129,7 @@ export const SmartPage: React.FC = () => {
                     boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
                   },
                 }}
+                onClick={() => handleOpenModal(index)} // Abrir modal al hacer clic
               >
                 <CardMedia
                   component="img"
@@ -116,10 +147,47 @@ export const SmartPage: React.FC = () => {
             </Grid>
           ))}
         </Grid>
-
-        {/* Links a las secciones */}
-        <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
       </Box>
+
+      {/* Modal para visualizar la imagen seleccionada */}
+      <Dialog open={open} onClose={handleCloseModal} maxWidth="md">
+        <Box position="relative" display="flex" alignItems="center">
+          {/* Botón para cerrar el modal */}
+          <IconButton
+            onClick={handleCloseModal}
+            sx={{ position: 'absolute', top: 10, right: 10, color: 'white', zIndex: 1 }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          {/* Botón de navegación izquierda */}
+          <IconButton
+            onClick={handlePrevImage}
+            sx={{ position: 'absolute', left: 10, color: 'white', zIndex: 1 }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+
+          <img
+            src={currentImageIndex !== null ? images[currentImageIndex].src : ''}
+            alt={currentImageIndex !== null ? images[currentImageIndex].alt : ''}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+            onContextMenu={handleContextMenu}  // Deshabilitar clic derecho
+            draggable={false}  // Deshabilitar arrastre
+          />
+
+          {/* Botón de navegación derecha */}
+          <IconButton
+            onClick={handleNextImage}
+            sx={{ position: 'absolute', right: 10, color: 'white', zIndex: 1 }}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </Box>
+      </Dialog>
+
+      {/* Links de navegación entre proyectos */}
+      <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
     </Box>
   );
 };
