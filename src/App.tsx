@@ -2,7 +2,7 @@ import React from 'react';
 import { ProjectsPage } from "./pages/Projects/Projects";
 import Footer from "./components/Footer/Footer";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { AboutPage } from './pages/About/AboutPage';
 import { ArtworkPage } from './pages/Artwork/ArtworkPage';
 import { SapphirePage } from './pages/Sapphire/Sapphire';
@@ -22,7 +22,7 @@ import { Home } from './pages/Home/Home';
 export const App: React.FC = () => {
   return (
     <div>
-      <Router>
+      <>
         <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -41,7 +41,7 @@ export const App: React.FC = () => {
           <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
         </Routes>
         <Footer />
-      </Router>
+      </>
     </div>
   );
 };
