@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Box, Container } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
-export const NavBar: React.FC = () => {
+export const NavBar: React.FC = React.memo(() => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -31,20 +24,9 @@ export const NavBar: React.FC = () => {
   return (
     <AppBar position="static" sx={{ backgroundColor: 'white', height: '90px' }}>
       <Container maxWidth="lg">
-        <Toolbar
-          sx={{
-            justifyContent: 'space-between',
-            height: '90px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+        <Toolbar sx={{ justifyContent: 'space-between', height: '90px', display: 'flex', alignItems: 'center' }}>
           <Link to="/" style={{ textDecoration: 'none', flexGrow: 1 }}>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ color: 'black', fontFamily: '"Michroma", sans-serif', fontWeight: 600 }}
-            >
+            <Typography variant="h6" component="div" sx={{ color: 'black', fontFamily: '"Michroma", sans-serif', fontWeight: 600 }}>
               MANUGAGO
             </Typography>
           </Link>
@@ -64,25 +46,24 @@ export const NavBar: React.FC = () => {
 
           {/* Menú de navegación para pantallas grandes */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 6 }}>
-            {navLinks.map((link) => (
-              <Button
-                key={link.to}
-                component={Link}
-                to={link.to}
-                sx={{
-                  color: 'black',
-                  fontFamily: 'Montserrat, sans-serif',
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  '&:hover': {
-                    color: '#A09586', // Cambia a tu color deseado aquí
-                  },
-                }}
-              >
-                {link.label}
-              </Button>
-            ))}
-          </Box>
+              {navLinks.map((link) => (
+                <Link to={link.to} key={link.to} style={{ textDecoration: 'none' }}>
+                  <Button
+                    sx={{
+                      color: 'black',
+                      fontFamily: 'Montserrat, sans-serif',
+                      fontWeight: 500,
+                      textTransform: 'none',
+                      '&:hover': {
+                        color: '#A09586', // Cambia a tu color deseado aquí
+                      },
+                    }}
+                  >
+                    {link.label}
+                  </Button>
+                </Link>
+              ))}
+            </Box>
 
           {/* Menú hamburguesa */}
           <Menu
@@ -112,4 +93,4 @@ export const NavBar: React.FC = () => {
       </Container>
     </AppBar>
   );
-};
+});

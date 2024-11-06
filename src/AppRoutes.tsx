@@ -1,10 +1,9 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import { Home } from "./pages/Home/Home"; // Asegúrate de que esta ruta sea correcta
+import { Routes, Route } from "react-router-dom";  // Importa Routes y Route
+import { Home } from "./pages/Home/Home";
 import { NavBar } from "./components/NavBar/NavBar";
 import { AboutPage } from "./pages/About/AboutPage";
 import { ArtworkPage } from "./pages/Artwork/ArtworkPage";
-import Footer from "./components/Footer/Footer";
 import { ProjectsPage } from "./pages/Projects/Projects";
 import { SapphirePage } from "./pages/Sapphire/Sapphire";
 import { BuendiaPage } from "./pages/Buendia/Buendia";
@@ -16,12 +15,14 @@ import { AmvreportPage } from "./pages/Amvreport/Amvreport";
 import { AnnetPage } from "./pages/Annet/Annet";
 import { AmorsacroPage } from "./pages/Amorsacro/Amorsacro";
 import ProjectDetailPage from "./pages/ProjectDetails/ProjectDetails";
+import Footer from "./components/Footer/Footer";
 
 export const AppRoutes: React.FC = () => {
   return (
     <>
       <NavBar /> {/* Navbar fuera de Routes */}
-      <Routes>
+      
+      <Routes> {/* Asegúrate de envolver las rutas en Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/artwork" element={<ArtworkPage />} />
@@ -36,8 +37,8 @@ export const AppRoutes: React.FC = () => {
         <Route path="/annet" element={<AnnetPage />} />
         <Route path="/amorsacro" element={<AmorsacroPage />} />
         <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
-
       </Routes>
+      
       <Footer />
     </>
   );
