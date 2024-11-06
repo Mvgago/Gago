@@ -11,16 +11,19 @@ import portada from "../../assets/img/amorsacro.jpg";
 import { NavigationButtons } from '../../components/NavigationArrows/NavigationArros';
 import { useProjectNavigation } from '../../hooks/useProjectNavigation';
 
-
-
+// Array de imágenes
 const images = [
   { src: portada, alt: 'Image 1' },
 ];
 
 export const AmorsacroPage: React.FC = () => {
 
-    const { previousProject, nextProject } = useProjectNavigation();
+  const { previousProject, nextProject } = useProjectNavigation();
 
+  // Función para evitar clic derecho
+  const disableRightClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Evita la acción por defecto del clic derecho
+  };
 
   return (
     <Box>
@@ -61,12 +64,11 @@ export const AmorsacroPage: React.FC = () => {
             color: '#333',
           }}
         >
-            "AMORSACRO", is a digital illustration inspired by an old painting that I saw in Strasbourg, France. This design blends nostalgia with an imperial, snow-covered landscape, where classical elements coexist with vibrant, modern, psychedelic patterns. The interplay of textures and colors invites viewers to immerse themselves in a surreal experience, evoking a sense of wonder and depth.          <br />
-                    <br />
-            </Typography>
+          "AMORSACRO", is a digital illustration inspired by an old painting that I saw in Strasbourg, France. This design blends nostalgia with an imperial, snow-covered landscape, where classical elements coexist with vibrant, modern, psychedelic patterns. The interplay of textures and colors invites viewers to immerse themselves in a surreal experience, evoking a sense of wonder and depth.
+        </Typography>
       </Box>
 
-      {/* Sección de galería de imágenes */} 
+      {/* Sección de galería de imágenes */}
       <Box
         sx={{
           padding: '0px',
@@ -87,8 +89,10 @@ export const AmorsacroPage: React.FC = () => {
               overflow: 'hidden',
               marginBottom: '0px',
               display: 'flex',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              position: 'relative', // Para poder agregar overlay
             }}
+            onContextMenu={disableRightClick} // Deshabilita el clic derecho en la imagen
           >
             <CardMedia
               component="img"
@@ -98,12 +102,26 @@ export const AmorsacroPage: React.FC = () => {
                 width: '50%',
                 height: 'auto',
                 display: 'block',
+                userSelect: 'none', // Desactiva la selección de la imagen
+                pointerEvents: 'none', // Desactiva los eventos del ratón sobre la imagen
+              }}
+            />
+            {/* Capa overlay para protección */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(255, 255, 255, 0)', // Capa semi-transparente
+                zIndex: 1,
               }}
             />
           </Card>
         ))}
       </Box>
-      {/* Links a las secciones */}
+      {/* Navegación entre proyectos */}
       <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
     </Box>
   );

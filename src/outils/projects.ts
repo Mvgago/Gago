@@ -27,7 +27,7 @@ export const projectRoutes = [
 
 export const projects = [
     
-    { title: 'The Sapphire', image: portada, description: 'Description of Artwork 1.', link: '/projects/sapphire' },
+    { title: 'The Sapphire', image: portada, description: 'Description of Artwork 1.', link: '/sapphire' },
     { title: 'Buendia Travels', image: portada3, description: 'Buendia description', link: '/buendia' },
     { title: 'Alea Software', image: alea, description: 'Description of Artwork 4.', link: '/alea' },
     { title: 'Needyt', image: needyt, description: 'Description of Artwork 4.', link: '/needyt' },

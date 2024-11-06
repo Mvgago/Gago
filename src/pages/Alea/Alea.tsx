@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Grid,
-  Card,
-  CardMedia,
-  Divider,
-} from '@mui/material';
+import { Box, Typography, Grid, Card, CardMedia, Divider } from '@mui/material';
+import { useProjectNavigation } from '../../hooks/useProjectNavigation';
 
 import portada from "../../assets/peojects/alea/alea (1) - copia.png";
 import portada2 from "../../assets/peojects/alea/alea8.png";
@@ -17,8 +11,6 @@ import portada6 from "../../assets/peojects/alea/alea (2).png";
 import portada7 from "../../assets/peojects/alea/alea7.jpeg";
 import portada9 from "../../assets/peojects/alea/alea9.png";
 import { NavigationButtons } from '../../components/NavigationArrows/NavigationArros';
-import { useProjectNavigation } from '../../hooks/useProjectNavigation';
-
 
 const images = [
     { src: portada, alt: 'Image 1' },
@@ -34,6 +26,11 @@ const images = [
 export const AleaPage: React.FC = () => {
 
   const { previousProject, nextProject } = useProjectNavigation();
+
+  // Función para manejar el clic derecho
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();  // Deshabilita el clic derecho
+  };
 
   return (
     <Box>
@@ -74,8 +71,7 @@ export const AleaPage: React.FC = () => {
             color: '#333',
           }}
         >
-ALEA Casting Software provides a fast, streamlined solution for precise casting charge calculations, ensuring maximum quality at minimal cost. It enables real-time casting optimization, automates production, and supports comprehensive casting planning. Developed by AMV Soluciones, ALEA stands out for enhancing efficiency and accuracy throughout the casting process.          <br />
-          <br />
+          ALEA Casting Software provides a fast, streamlined solution for precise casting charge calculations, ensuring maximum quality at minimal cost. It enables real-time casting optimization, automates production, and supports comprehensive casting planning. Developed by AMV Soluciones, ALEA stands out for enhancing efficiency and accuracy throughout the casting process. <br /><br />
           Led branding, identity design, and front-end development for ALEA. Figma streamlined UI prototyping, Illustrator crafted custom icons, while React and Vite built a responsive, fast interface. TypeScript ensured reliability, resulting in a cohesive, high-quality product.
         </Typography>
       </Box>
@@ -116,7 +112,10 @@ ALEA Casting Software provides a fast, streamlined solution for precise casting 
                     width: '100%',
                     height: '300px',
                     transition: 'transform 0.3s ease',
+                    '&:hover': { transform: 'scale(1.1)' },  // Mantén el hover en la imagen
                   }}
+                  onContextMenu={handleContextMenu} // Deshabilitar clic derecho
+                  draggable={false} // Deshabilitar arrastre de imagen
                 />
               </Card>
             </Grid>

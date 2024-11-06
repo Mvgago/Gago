@@ -26,9 +26,13 @@ export const BuendiaPage: React.FC = () => {
   const previousProject = projectRoutes[currentIndex - 1] || projectRoutes[projectRoutes.length - 1];
   const nextProject = projectRoutes[currentIndex + 1] || projectRoutes[0];
   
+  // Función para prevenir el clic derecho
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+  };
+
   return (
     <Box>
-
       {/* Sección de descripción del proyecto */}
       <Box
         sx={{
@@ -79,7 +83,18 @@ export const BuendiaPage: React.FC = () => {
           {images.map((image, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Card sx={{ boxShadow: 3, borderRadius: 0, overflow: 'hidden', transition: 'transform 0.3s ease, box-shadow 0.3s ease', '&:hover': { transform: 'scale(1.02)', boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)' } }}>
-                <CardMedia component="img" image={image.src} alt={image.alt} sx={{ width: '100%', height: '300px', transition: 'transform 0.3s ease' }} />
+                <CardMedia
+                  component="img"
+                  image={image.src}
+                  alt={image.alt}
+                  sx={{
+                    width: '100%',
+                    height: '300px',
+                    transition: 'transform 0.3s ease',
+                  }}
+                  onContextMenu={handleContextMenu} // Deshabilitar clic derecho
+                  draggable={false} // Deshabilitar arrastre
+                />
               </Card>
             </Grid>
           ))}

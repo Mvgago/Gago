@@ -11,15 +11,19 @@ import portada from "../../assets/img/annet.jpg";
 import { NavigationButtons } from '../../components/NavigationArrows/NavigationArros';
 import { useProjectNavigation } from '../../hooks/useProjectNavigation';
 
-
-
+// Array de imágenes
 const images = [
   { src: portada, alt: 'Image 1' },
 ];
 
 export const AnnetPage: React.FC = () => {
 
-    const { previousProject, nextProject } = useProjectNavigation();
+  const { previousProject, nextProject } = useProjectNavigation();
+
+  // Función para deshabilitar el clic derecho
+  const disableRightClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Evita la acción por defecto del clic derecho
+  };
 
   return (
     <Box>
@@ -60,14 +64,14 @@ export const AnnetPage: React.FC = () => {
             color: '#333',
           }}
         >
-          Annet is a versatile artist, poet, actress, and writer, driven by a deep fascination with the human experience. She views creation as a nourishing substance, where poetry is the essential "bread" that underpins all her work. Her artistic journey blends various mediums, from spoken word to theater and music, reflecting her belief that art, much like food, should be savored. 
+          Annet is a versatile artist, poet, actress, and writer, driven by a deep fascination with the human experience. She views creation as a nourishing substance, where poetry is the essential "bread" that underpins all her work. Her artistic journey blends various mediums, from spoken word to theater and music, reflecting her belief that art, much like food, should be savored.
           <br />
           <br />
           Annet commissioned me to design the cover for her first two singles, including "Piel de Serpiente" (snakeskin), merging photography and 3D design with her poetic vision. The visuals create an engaging experience that connects sound and sight.
-</Typography>
+        </Typography>
       </Box>
 
-      {/* Sección de galería de imágenes */} 
+      {/* Sección de galería de imágenes */}
       <Box
         sx={{
           padding: '0px',
@@ -88,8 +92,10 @@ export const AnnetPage: React.FC = () => {
               overflow: 'hidden',
               marginBottom: '0px',
               display: 'flex',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              position: 'relative', // Necesario para superponer la capa de protección
             }}
+            onContextMenu={disableRightClick} // Deshabilitar clic derecho
           >
             <CardMedia
               component="img"
@@ -99,14 +105,28 @@ export const AnnetPage: React.FC = () => {
                 width: '50%',
                 height: 'auto',
                 display: 'block',
+                userSelect: 'none', // Deshabilitar selección de la imagen
+                pointerEvents: 'none', // Deshabilitar eventos del ratón sobre la imagen
+              }}
+            />
+            {/* Capa de overlay para protección */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(255, 255, 255, 0)', // Capa semi-transparente
+                zIndex: 1,
               }}
             />
           </Card>
         ))}
       </Box>
-      {/* Links a las secciones */}
-      <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
 
+      {/* Navegación entre proyectos */}
+      <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
     </Box>
   );
 };

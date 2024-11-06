@@ -1,9 +1,14 @@
 import React from 'react';
 import { Grid, Box, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';  // Importa Link
+import { Link } from 'react-router-dom';
 import { projects } from '../../outils/projects';
 
 export const ProjectsPage: React.FC = () => {
+  // Función para prevenir el clic derecho
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+  };
+
   return (
     <Box>
       <Grid container spacing={0} sx={{ margin: 0 }}>
@@ -25,6 +30,8 @@ export const ProjectsPage: React.FC = () => {
                   src={artwork.image}
                   alt={artwork.title}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }}
+                  onContextMenu={handleContextMenu} // Deshabilita clic derecho
+                  draggable={false} // Deshabilita arrastre
                 />
                 <Box
                   className="overlay"

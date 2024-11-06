@@ -15,11 +15,7 @@ import portada4 from "../../assets/peojects/amvreport/report4.jpg";
 import { NavigationButtons } from '../../components/NavigationArrows/NavigationArros';
 import { useProjectNavigation } from '../../hooks/useProjectNavigation';
 
-
-
-
 const images = [
-    // { src: portada4, alt: 'Image 1' },
     { src: portada4, alt: 'Image 2' },
     { src: portada3, alt: 'Image 1' },
     { src: portada, alt: 'Image 1' },
@@ -29,6 +25,11 @@ const images = [
 export const AmvreportPage: React.FC = () => {
 
   const { previousProject, nextProject } = useProjectNavigation();
+
+  // Función para manejar el clic derecho (context menu)
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();  // Deshabilitar el menú contextual
+  };
 
   return (
     <Box>
@@ -69,9 +70,10 @@ export const AmvreportPage: React.FC = () => {
             color: '#333',
           }}
         >
-AMV Report Software is a specialized tool designed to provide foundry managers with real-time insights into plant performance across key operational parameters. With this software, managers can monitor production efficiency, identify bottlenecks, and optimize workflows, ensuring a streamlined process and data-driven decision-making to boost productivity and quality.          <br />
-          <br />
-          Responsible for prototyping and front-end development of AMV Report Software, an intuitive interface was created using Figma for design and React with TypeScript for development.         </Typography>
+          AMV Report Software is a specialized tool designed to provide foundry managers with real-time insights into plant performance across key operational parameters. With this software, managers can monitor production efficiency, identify bottlenecks, and optimize workflows, ensuring a streamlined process and data-driven decision-making to boost productivity and quality.          
+          <br /><br />
+          Responsible for prototyping and front-end development of AMV Report Software, an intuitive interface was created using Figma for design and React with TypeScript for development.
+        </Typography>
       </Box>
 
       {/* Sección de galería de imágenes */}
@@ -111,6 +113,8 @@ AMV Report Software is a specialized tool designed to provide foundry managers w
                     height: '300px',
                     transition: 'transform 0.3s ease',
                   }}
+                  onContextMenu={handleContextMenu}  // Deshabilitar clic derecho
+                  draggable={false}  // Deshabilitar arrastre
                 />
               </Card>
             </Grid>
@@ -119,7 +123,6 @@ AMV Report Software is a specialized tool designed to provide foundry managers w
 
         {/* Links a las secciones */}
         <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
-
       </Box>
     </Box>
   );

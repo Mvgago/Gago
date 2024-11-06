@@ -108,6 +108,7 @@ export const SapphirePage: React.FC = () => {
               borderRadius: 0,
               overflow: 'hidden',
               marginBottom: '0px',
+              position: 'relative', // Añadir posición relativa para superponer el overlay
             }}
           >
             <CardMedia
@@ -118,6 +119,8 @@ export const SapphirePage: React.FC = () => {
                 width: '100%',
                 height: 'auto',
                 display: 'block',
+                userSelect: 'none', // Desactivar selección
+                pointerEvents: 'none', // Desactivar clics
               }}
             />
           </Card>
@@ -125,7 +128,6 @@ export const SapphirePage: React.FC = () => {
       </Box>
       {/* Links a las secciones */}
       <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
-
     </Box>
   );
 };

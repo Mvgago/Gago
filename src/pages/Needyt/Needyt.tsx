@@ -16,15 +16,19 @@ import { NavigationButtons } from '../../components/NavigationArrows/NavigationA
 import { useProjectNavigation } from '../../hooks/useProjectNavigation';
 
 const images = [
-    { src: portada2, alt: 'Image 2' },
-    { src: portada, alt: 'Image 1' },
-    { src: portada3, alt: 'Image 2' },
+  { src: portada2, alt: 'Image 2' },
+  { src: portada, alt: 'Image 1' },
+  { src: portada3, alt: 'Image 2' },
   { src: portada4, alt: 'Image 4' },
 ];
 
 export const NeedytPage: React.FC = () => {
+  const { previousProject, nextProject } = useProjectNavigation();
 
-    const { previousProject, nextProject } = useProjectNavigation();
+  // Función para manejar el clic derecho (context menu)
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();  // Deshabilitar el menú contextual
+  };
 
   return (
     <Box>
@@ -58,7 +62,7 @@ export const NeedytPage: React.FC = () => {
           variant="body1"
           sx={{
             fontFamily: 'Montserrat, sans-serif',
-            textAlign: 'justify', 
+            textAlign: 'justify',
             marginX: 'auto',
             maxWidth: '800px',
             lineHeight: 1.8,
@@ -68,7 +72,8 @@ export const NeedytPage: React.FC = () => {
           Needyt is a collaborative trading platform that tries to avoid the exaggerated consumption of our time. To do this, it allows its users the possibility of renting products that can be useful for other people. In this way, the products can have a second life in other hands, generating a profit for their owners and preventing existing products from being produced again, spending unnecessary resources.
           <br />
           <br />
-          Together with the Needyt team, we determined the company's values ​​that should be projected in its image. From several conversations, we generated several sketches that we evaluated in different colors, sizes and formats. Once the logo is chosen, we design several images to present the project and publicize the project's value proposition on different platforms.        </Typography>
+          Together with the Needyt team, we determined the company's values ​​that should be projected in its image. From several conversations, we generated several sketches that we evaluated in different colors, sizes and formats. Once the logo is chosen, we design several images to present the project and publicize the project's value proposition on different platforms.
+        </Typography>
       </Box>
 
       {/* Sección de galería de imágenes */}
@@ -83,7 +88,6 @@ export const NeedytPage: React.FC = () => {
           },
         }}
       >
-
         <Grid container spacing={0}>
           {images.map((image, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
@@ -108,6 +112,8 @@ export const NeedytPage: React.FC = () => {
                     height: '300px',
                     transition: 'transform 0.3s ease',
                   }}
+                  onContextMenu={handleContextMenu}  // Deshabilitar clic derecho
+                  draggable={false}  // Deshabilitar arrastre
                 />
               </Card>
             </Grid>
@@ -115,9 +121,7 @@ export const NeedytPage: React.FC = () => {
         </Grid>
 
         {/* Links a las secciones */}
-        
         <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
-
       </Box>
     </Box>
   );

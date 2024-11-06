@@ -36,7 +36,7 @@ export const ArtworkPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: '80%', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
+    <Box sx={{ width: '100%', maxWidth: '1200px', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
       <Typography variant="h4" gutterBottom sx={{ my: 4 }}>
         Artwork Gallery
       </Typography>
@@ -47,7 +47,7 @@ export const ArtworkPage: React.FC = () => {
           overflow: 'hidden',
           borderRadius: '8px',
           boxShadow: 3,
-          height: '700px', // Altura fija para el contenedor del carrusel
+          height: { xs: '300px', sm: '500px', md: '700px' }, // Altura dinámica en función del tamaño de pantalla
         }}
       >
         <AnimatePresence initial={false}>
@@ -61,9 +61,9 @@ export const ArtworkPage: React.FC = () => {
               width: '100%',
               height: '100%',
               backgroundImage: `url(${images[currentIndex].url})`,
-              backgroundSize: 'contain',        // Cambia a 'cover' si deseas que la imagen cubra completamente el contenedor
-              backgroundPosition: 'center',      // Centra la imagen
-              backgroundRepeat: 'no-repeat',     // Evita que la imagen se repita
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
             }}
           />
         </AnimatePresence>
@@ -79,6 +79,8 @@ export const ArtworkPage: React.FC = () => {
             color: '#ffffff',
             backgroundColor: 'rgba(0,0,0,0.3)',
             '&:hover': { backgroundColor: 'rgba(0,0,0,0.5)' },
+            padding: '10px',  // Aumentar el área clickeable en dispositivos móviles
+            fontSize: { xs: '18px', sm: '24px' }, // Ajustar el tamaño del ícono en pantallas pequeñas
           }}
         >
           <ArrowBackIosIcon />
@@ -94,11 +96,14 @@ export const ArtworkPage: React.FC = () => {
             color: '#ffffff',
             backgroundColor: 'rgba(0,0,0,0.3)',
             '&:hover': { backgroundColor: 'rgba(0,0,0,0.5)' },
+            padding: '10px',  // Aumentar el área clickeable en dispositivos móviles
+            fontSize: { xs: '18px', sm: '24px' }, // Ajustar el tamaño del ícono en pantallas pequeñas
           }}
         >
           <ArrowForwardIosIcon />
         </IconButton>
       </Box>
+
       <Typography variant="h6" sx={{ mt: 2 }}>
         {/* {images[currentIndex].title} */}
       </Typography>

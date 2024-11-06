@@ -15,7 +15,6 @@ import portada4 from "../../assets/peojects/smart/smart.jpg";
 import { NavigationButtons } from '../../components/NavigationArrows/NavigationArros';
 import { useProjectNavigation } from '../../hooks/useProjectNavigation';
 
-
 const images = [
   { src: portada, alt: 'Image 1' },
   { src: portada3, alt: 'Image 2' },
@@ -24,8 +23,12 @@ const images = [
 ];
 
 export const SmartPage: React.FC = () => {
-
   const { previousProject, nextProject } = useProjectNavigation();
+
+  // Función para manejar el clic derecho (context menu)
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();  // Deshabilitar el menú contextual
+  };
 
   return (
     <Box>
@@ -82,7 +85,6 @@ export const SmartPage: React.FC = () => {
           },
         }}
       >
-
         <Grid container spacing={0}>
           {images.map((image, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
@@ -107,6 +109,8 @@ export const SmartPage: React.FC = () => {
                     height: '300px',
                     transition: 'transform 0.3s ease',
                   }}
+                  onContextMenu={handleContextMenu}  // Deshabilitar clic derecho
+                  draggable={false}  // Deshabilitar arrastre
                 />
               </Card>
             </Grid>
@@ -115,7 +119,6 @@ export const SmartPage: React.FC = () => {
 
         {/* Links a las secciones */}
         <NavigationButtons previousProject={previousProject} nextProject={nextProject} />
-
       </Box>
     </Box>
   );
