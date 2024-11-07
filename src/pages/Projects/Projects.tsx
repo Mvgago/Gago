@@ -41,7 +41,7 @@ export const ProjectsPage: React.FC = () => {
             zIndex: 1000, // Asegura que el loader esté por encima de todo
           }}
         >
-          <CircularProgress />
+          <CircularProgress sx={{color: 'gray'}}/>
         </Box>
       )}
 
