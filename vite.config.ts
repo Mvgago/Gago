@@ -1,9 +1,10 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// Configuración para Vite
 export default defineConfig({
-  base: '/', // Esto es correcto para desplegar en la raíz del dominio
+  plugins: [react()],
   build: {
     outDir: 'dist',
   },
+  base: '/', // Define aquí la base de tu aplicación si es necesaria en producción
 });
