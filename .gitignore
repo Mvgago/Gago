@@ -26,3 +26,4 @@ dist-ssr
 
 # Ignore _vercel.json
 _vercel.json
+.vercel
