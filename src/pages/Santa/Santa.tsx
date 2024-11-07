@@ -74,8 +74,9 @@ export const SantaPage: React.FC = () => {
             color: '#333',
           }}
         >
-          SANTA ENGRACIA is a distinctive building in Chamberí, Madrid, renowned for its arched chamfer, naturalistic façade ornamentation, and striking dome. The brand identity for Santa Engracia captures the essence of the building, emphasizing minimalist and elegant lines. The concept transforms the ornate aesthetics of this classic Madrid structure into a modern, refined image that aligns with contemporary design trends, promoting a lifestyle centered on simplicity and sophistication.
-        </Typography>
+SANTA ENGRACIA is a distinctive building in Chamberí, Madrid, recognized for its arched chamfer, ornate façade, and impressive dome. The brand identity draws inspiration from these architectural elements, translating them into a minimalist and elegant design that blends the building's classic features with a modern, sophisticated aesthetic. I was responsible for the entire visual identity, including the website, logo, and branding, ensuring a seamless integration of the building's timeless character with contemporary design trends.
+
+</Typography>
       </Box>
 
       {/* Sección de galería de imágenes */}

@@ -71,20 +71,7 @@ export const SapphirePage: React.FC = () => {
             color: '#333',
           }}
         >
-          THE SAPPHIRE project by Darya Homes is a highly exclusive housing
-          development on the beachfront, located on the Costa del Sol (Andalusie
-          - Spain), in which 12 high-luxury homes are sold. The project is aimed
-          at clients with a high purchasing power with a sophisticated lifestyle,
-          in which light, nature, comfort and an avant-garde and refined
-          environment go hand in hand.
-          <br />
-          <br />
-          The Sapphire brand identity was crafted alongside its commercial
-          strategy through a comprehensive analysis of the project and its
-          design. Key concepts like luminosity, brilliance, reflection, and
-          exclusivity emerged, guiding the creative process to embody luxury and
-          elegance. The result is a refined brand image inspired by the allure of
-          a blue sapphire, symbolizing rarity and sophistication.
+        The Sapphire project by Darya Homes is an exclusive beachfront development on the Costa del Sol, featuring 12 luxury homes for high-net-worth clients. I led the branding, website design, and collaborated on 3D imagery. The brand identity focuses on concepts like light, clarity, and exclusivity, capturing the essence of the project’s high-end and modern design. Drawing inspiration from the blue sapphire, the branding reflects rarity and a timeless refined character.
         </Typography>
       </Box>
 

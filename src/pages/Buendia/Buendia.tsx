@@ -98,10 +98,7 @@ export const BuendiaPage: React.FC = () => {
             color: '#333',
           }}
         >
-          Buendia's mission was to streamline travel planning by offering unique activities, diverse guided tours, and creative excursions.
-          <br />
-          <br />
-          Following a comprehensive analysis of Buendia’s target audience to understand their profiles, needs, and preferences, we created a new design line that modernized the brand identity with a visually compelling approach. We also updated the website to enhance user experience and implemented a digital communication strategy focused on engaging content and value-driven interactions. This revitalization strengthened client connections through impactful campaigns and memorable experiences.
+         Buendia's mission is to simplify travel planning by offering unique activities, guided tours, and creative excursions. After analyzing the target audience's needs and preferences, we modernized the brand identity with a fresh design and enhanced the website for a better user experience. A digital strategy focused on engaging content and value-driven interactions was also implemented, strengthening client connections through impactful campaigns and memorable experiences.
         </Typography>
       </Box>
 

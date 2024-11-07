@@ -98,8 +98,9 @@ export const AleaPage: React.FC = () => {
             color: '#333',
           }}
         >
-          ALEA Casting Software provides a fast, streamlined solution for precise casting charge calculations, ensuring maximum quality at minimal cost. It enables real-time casting optimization, automates production, and supports comprehensive casting planning. Developed by AMV Soluciones, ALEA stands out for enhancing efficiency and accuracy throughout the casting process. <br /><br />
-          Led branding, identity design, and front-end development for ALEA. Figma streamlined UI prototyping, Illustrator crafted custom icons, while React and Vite built a responsive, fast interface. TypeScript ensured reliability, resulting in a cohesive, high-quality product.
+         ALEA Casting Software provides a fast and efficient solution for precise casting charge calculations, optimizing quality at minimal cost. Developed by AMV Soluciones, it automates production and supports comprehensive planning, enhancing efficiency and accuracy.
+
+The branding, identity design, and front-end development for ALEA were created using Figma for UI prototyping, Illustrator for custom icons, and React with Vite for a fast, responsive interface. TypeScript ensured reliability, resulting in a cohesive, high-quality product.
         </Typography>
       </Box>
 
