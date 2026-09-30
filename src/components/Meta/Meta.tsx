@@ -1,25 +1,5 @@
 import React from "react";
-import { isStudioOpen, timeIn, useNow } from "./useNow";
-
-export const COORDINATES = "40°25′00″N  3°42′13″W";
-
-export const Clocks: React.FC<{ className?: string; seconds?: boolean; emphasis?: string }> = ({
-  className = "",
-  seconds = true,
-  emphasis = "text-ink",
-}) => {
-  const now = useNow();
-  return (
-    <div className={`meta flex gap-6 tabular-nums ${className}`}>
-      <span>
-        mad <span className={emphasis}>{timeIn(now, "Europe/Madrid", seconds)}</span>
-      </span>
-      <span>
-        tyo <span className={emphasis}>{timeIn(now, "Asia/Tokyo", seconds)}</span>
-      </span>
-    </div>
-  );
-};
+import { isStudioOpen, useNow } from "./useNow";
 
 /** Status dot and label; both take the surrounding text colour. */
 export const StudioStatus: React.FC<{ className?: string }> = ({ className = "" }) => {

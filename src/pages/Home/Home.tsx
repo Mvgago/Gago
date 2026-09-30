@@ -10,7 +10,7 @@ import { ContactMenu } from "../../components/Contact/ContactMenu";
  * low on the left, like a caption on a gallery wall.
  */
 export const Home: React.FC = () => (
-  <main className="relative flex h-[100svh] min-h-[600px] w-full select-none flex-col overflow-hidden text-silver [text-shadow:0_1px_14px_rgba(45,35,30,0.18)]">
+  <main className="relative flex h-[100svh] min-h-[600px] w-full select-none flex-col overflow-hidden text-silver">
     {/* The centre: intentionally empty. Only light. */}
     <div className="flex-1" aria-hidden />
 
@@ -36,7 +36,7 @@ export const Home: React.FC = () => (
           initial="hidden"
           animate="shown"
           custom={8}
-          className="mt-3 text-base font-light tracking-[0.02em] text-clay-soft sm:text-lg"
+          className="mt-3 text-base font-normal tracking-[0.02em] text-silver/90 sm:text-lg"
         >
           Brand identity, web &amp; 3D imagery.
         </motion.p>

@@ -32,7 +32,22 @@ const GLYPHS = [
   { d: "M1290 772H1555A35 35 0 0 1 1590 807V965H1335A35 35 0 0 1 1300 930V885A35 35 0 0 1 1335 850H1590", dx: GAP },
 ];
 
+/**
+ * Two finishes for the same metal: warm reflects the studio sweep of the
+ * landing; steel matches the cold titanium of the index.
+ */
+const TONES = {
+  warm: { face: ["#b8aca6", "#b1a59e", "#ab9e95", "#a59890", "#a09287"], rim: ["#ddd3cc", "#cfc4ba"], sheen: ["#fffcf8", "#fff6ee"] },
+  steel: { face: ["#fafbfc", "#eceff2", "#f6f7f9", "#e3e7eb", "#f0f2f4"], rim: ["#dfe3e7", "#d3d8dd"], sheen: ["#ffffff", "#ffffff"] },
+} as const;
+export type MonolithTone = keyof typeof TONES;
+
+// Stop colours are CSS properties, so the finish can cross-fade.
+const stop = (color: string) => ({ stopColor: color, transition: "stop-color 900ms cubic-bezier(0.22, 1, 0.36, 1)" });
+
 type Props = {
+  /** Metal finish. */
+  tone?: MonolithTone;
   /** Perspective tilt toward the cursor (only reads well at large sizes). */
   tilt?: boolean;
   /** Draw the letterforms in on mount. */
@@ -40,7 +55,8 @@ type Props = {
   className?: string;
 };
 
-export const Monolith: React.FC<Props> = ({ tilt = true, reveal = true, className }) => {
+export const Monolith: React.FC<Props> = ({ tone = "warm", tilt = true, reveal = true, className }) => {
+  const t = TONES[tone];
   const uid = useId().replace(/:/g, "");
   const id = (name: string) => `${name}-${uid}`;
 
@@ -105,7 +121,7 @@ export const Monolith: React.FC<Props> = ({ tilt = true, reveal = true, classNam
           aria-label="Fuga Haus"
         >
           <defs>
-            {/* Satin metal in the studio's own tones: an even mauve-taupe to clay drift,
+            {/* Satin metal in the current finish: an even tonal drift,
                 with no light bands of its own so the only highlight is the one below */}
             <linearGradient
               id={id("matte")}
@@ -115,9 +131,9 @@ export const Monolith: React.FC<Props> = ({ tilt = true, reveal = true, classNam
               x2={VIEWBOX.x + VIEWBOX.w}
               y2={VIEWBOX.y + VIEWBOX.h}
             >
-              <stop offset="0" stopColor="#b8aca6" />
-              <stop offset="0.5" stopColor="#ab9e95" />
-              <stop offset="1" stopColor="#a09287" />
+              {t.face.map((color, i) => (
+                <stop key={i} offset={i / (t.face.length - 1)} style={stop(color)} />
+              ))}
             </linearGradient>
 
             {/* Polished edge: a step lighter than the face, evenly lit */}
@@ -129,8 +145,8 @@ export const Monolith: React.FC<Props> = ({ tilt = true, reveal = true, classNam
               x2={VIEWBOX.x + VIEWBOX.w}
               y2={VIEWBOX.y + VIEWBOX.h}
             >
-              <stop offset="0" stopColor="#ddd3cc" />
-              <stop offset="1" stopColor="#cfc4ba" />
+              <stop offset="0" style={stop(t.rim[0])} />
+              <stop offset="1" style={stop(t.rim[1])} />
             </linearGradient>
 
             {/* The one reflection, resting on the "u" and "haus" */}
@@ -141,9 +157,9 @@ export const Monolith: React.FC<Props> = ({ tilt = true, reveal = true, classNam
               cy={HIGHLIGHT.cy}
               r={HIGHLIGHT.r}
             >
-              <stop offset="0" stopColor="#fffcf8" stopOpacity="0.85" />
-              <stop offset="0.4" stopColor="#fff6ee" stopOpacity="0.38" />
-              <stop offset="1" stopColor="#fff6ee" stopOpacity="0" />
+              <stop offset="0" stopOpacity="0.85" style={stop(t.sheen[0])} />
+              <stop offset="0.4" stopOpacity="0.38" style={stop(t.sheen[1])} />
+              <stop offset="1" stopOpacity="0" style={stop(t.sheen[1])} />
             </radialGradient>
           </defs>
 

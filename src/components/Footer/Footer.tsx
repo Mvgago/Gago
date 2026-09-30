@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Clocks, COORDINATES } from "../Meta/Meta";
 
 const Footer: React.FC = () => (
   <footer className="relative z-10 mt-32 px-4 pb-10 sm:px-6 md:px-8">
@@ -19,11 +18,8 @@ const Footer: React.FC = () => (
           <Link to="/artwork" className="hover:text-ink">artwork</Link>
           <Link to="/about" className="hover:text-ink">studio</Link>
         </nav>
-        <span className="meta sm:text-center">{COORDINATES}</span>
-        <div className="flex flex-col gap-1 sm:items-end">
-          <Clocks seconds={false} />
-          <span className="meta">fugahaus © {new Date().getFullYear()}</span>
-        </div>
+        <span className="meta sm:text-center">available for projects — {new Date().getFullYear()}</span>
+        <span className="meta sm:text-right">fugahaus © {new Date().getFullYear()}</span>
       </div>
     </div>
   </footer>

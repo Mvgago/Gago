@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { rise } from "../../lib/motion";
-import { COORDINATES, StudioStatus } from "../../components/Meta/Meta";
+import { StudioStatus } from "../../components/Meta/Meta";
 
 const STUDIO_EMAIL = "mvgago26@gmail.com";
 
@@ -48,7 +48,6 @@ export const AboutPage: React.FC = () => {
           </motion.p>
           <motion.div variants={rise} initial="hidden" animate="shown" custom={1} className="mt-6 flex flex-col gap-1 text-graphite">
             <StudioStatus />
-            <span className="meta">{COORDINATES}</span>
           </motion.div>
         </div>
 

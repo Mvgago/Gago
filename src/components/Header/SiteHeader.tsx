@@ -1,10 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Monolith } from "../Monolith/Monolith";
 import { StudioStatus } from "../Meta/Meta";
 import { SpatialIndex } from "../SpatialIndex/SpatialIndex";
 import { EASE_HAUS } from "../../lib/motion";
+
+// The corner logo is the same 3D model as the index sculpture; the 2D mark stands in while it loads.
+const Logo3D = lazy(() => import("../Monolith/Logo3D"));
 
 export const SiteHeader: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -14,7 +17,7 @@ export const SiteHeader: React.FC = () => {
   // Any navigation closes the index.
   useEffect(close, [pathname, close]);
 
-  // The top-right corner sits in the key light, so it always takes ink.
+  // Ink over both the lit landing and the white nave of the index.
   const tone = "text-ink";
   const line = "bg-ink";
   const border = "border-ink/25 hover:border-ink/60";
@@ -27,13 +30,17 @@ export const SiteHeader: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.4, ease: EASE_HAUS, delay: 0.4 }}
       >
-        {/* Corner brand: contained, satin, catching the light as it passes */}
+        {/* Corner brand: the 3D wordmark, small, in the brand's satin pearl */}
         <Link
           to="/"
           aria-label="Fuga Haus — home"
-          className="block w-24 transition-opacity duration-700 hover:opacity-80 sm:w-28 md:w-32"
+          className={`block w-24 transition-opacity duration-700 hover:opacity-100 hover:duration-200 sm:w-28 md:w-32 ${
+            open ? "pointer-events-none opacity-0" : "opacity-[0.82]"
+          }`}
         >
-          <Monolith tilt={false} />
+          <Suspense fallback={<Monolith tilt={false} tone="warm" reveal={false} />}>
+            <Logo3D className="w-full" />
+          </Suspense>
         </Link>
 
         <div className="flex items-center gap-8">
