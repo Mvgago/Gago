@@ -84,7 +84,7 @@ export const ContactMenu: React.FC = () => {
   // Rows: graphite at rest. On hover a hairline marker grows in, the label steps right
   // and catches the same travelling glint as the address, and an arrow slides in.
   const item =
-    "group/item flex w-full items-center justify-between gap-8 px-3.5 py-1.5 text-left text-graphite outline-none";
+    "group/item flex w-full items-center justify-between gap-8 px-4 py-2 text-left text-ink/85 outline-none";
   const on = "group-hover/item:opacity-100 group-focus-visible/item:opacity-100";
   const arrow = `-translate-x-1 opacity-0 transition-[opacity,transform] duration-500 ease-haus group-hover/item:translate-x-0 group-focus-visible/item:translate-x-0 ${on}`;
 
@@ -127,11 +127,11 @@ export const ContactMenu: React.FC = () => {
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.45, ease: EASE_HAUS }}
             // pb-4 is an invisible bridge so the cursor can travel up without leaving the hover area
-            className="absolute bottom-full right-0 z-20 pb-4"
+            className="absolute bottom-full left-0 z-20 pb-3 sm:left-auto sm:right-0"
           >
             {/* Light, translucent sheet with a hairline edge — no heavy card */}
-            <div className="w-max min-w-[11rem] rounded-md border border-ink/10 bg-platinum/45 py-2 backdrop-blur-md">
-              <p className="px-3.5 pb-1 text-[10px] text-graphite/60">write to me via</p>
+            <div className="w-max min-w-[12.5rem] rounded-lg border border-ink/15 bg-[#f8f6f4]/[0.97] py-2.5 text-[12px] shadow-[0_24px_60px_-18px_rgba(40,32,36,0.4)] backdrop-blur-md">
+              <p className="px-4 pb-1.5 text-[10px] tracking-[0.18em] text-graphite/70">write to me via</p>
               {OPTIONS.map((o) => (
                 <a
                   key={o.label}
@@ -148,7 +148,7 @@ export const ContactMenu: React.FC = () => {
                   </span>
                 </a>
               ))}
-              <div className="mx-3.5 my-1.5 h-px bg-ink/10" />
+              <div className="mx-4 my-1.5 h-px bg-ink/12" />
               <button type="button" role="menuitem" onClick={copy} className={item}>
                 {copied ? <span className="text-ink">✓ copied</span> : <Label>copy address</Label>}
                 {!copied && (

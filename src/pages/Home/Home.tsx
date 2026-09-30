@@ -14,7 +14,7 @@ export const Home: React.FC = () => (
     {/* The centre: intentionally empty. Only light. */}
     <div className="flex-1" aria-hidden />
 
-    <section className="flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 md:flex-row md:items-end md:justify-between md:px-8 md:pb-12">
+    <section className="flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:pb-12">
       {/* Manifesto */}
       <div className="max-w-xl font-geo">
         <motion.p variants={rise} initial="hidden" animate="shown" custom={6} className="meta text-clay-soft">
@@ -54,13 +54,13 @@ export const Home: React.FC = () => (
 
       {/* Availability and contact: one quiet line, bottom right */}
       <motion.p
-        className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] font-light lowercase tracking-[0.12em] text-graphite [text-shadow:none]"
+        className="flex flex-col items-start gap-1 font-mono text-[11px] font-light lowercase tracking-[0.12em] text-graphite [text-shadow:none] sm:flex-row sm:items-center sm:gap-3"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2.4, delay: 1.8 }}
       >
         <span>available for projects — {new Date().getFullYear()}</span>
-        <span aria-hidden>·</span>
+        <span aria-hidden className="hidden sm:inline">·</span>
         <ContactMenu />
       </motion.p>
     </section>

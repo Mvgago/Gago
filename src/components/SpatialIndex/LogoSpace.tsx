@@ -90,6 +90,7 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     group.add(mark.group);
     const glyphs = mark.glyphs;
     // ── Sizing ────────────────────────────────────────────────────────
+    let lookY = 0;
     const resize = () => {
       const w = el.clientWidth;
       const h = el.clientHeight;
@@ -99,6 +100,8 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       camera.aspect = w / h;
       // Portrait screens: widen the lens so the whole word fits
       camera.fov = w / h < 1 ? 50 : 28;
+      // Portrait: aim below the piece so it rides in the upper third, clear of the stacked labels
+      lookY = w / h < 1 ? -1.1 : 0;
       camera.updateProjectionMatrix();
     };
     resize();
@@ -149,7 +152,7 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       const through = gapPoint.clone().setZ(-3);
       camPos.lerpVectors(camRest, through, dive * dive);
       camera.position.copy(camPos);
-      look.lerpVectors(new THREE.Vector3(0, 0, 0), gapPoint.clone().setZ(-10), dive);
+      look.lerpVectors(new THREE.Vector3(0, lookY, 0), gapPoint.clone().setZ(-10), dive);
       shadow.rotation.z = -group.rotation.y * 0.6;
       camera.lookAt(look);
 

@@ -82,7 +82,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
           {/* Gallery labels: flat, sharp, far apart */}
           <nav
-            className="pointer-events-none absolute inset-0"
+            className="pointer-events-none absolute inset-x-0 top-[50%] flex flex-col items-center gap-7 sm:gap-9 lg:inset-0 lg:top-0 lg:block"
             onMouseLeave={() => setActive(null)}
             aria-label="Sections"
           >
@@ -108,15 +108,15 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
           {/* Footer */}
           <motion.footer
-            className="absolute inset-x-4 bottom-8 flex flex-wrap items-center justify-between gap-4 pt-5 font-mono text-[11px] font-light lowercase tracking-[0.12em] sm:inset-x-6 md:inset-x-8 md:bottom-10"
+            className="absolute inset-x-4 bottom-6 flex flex-col items-start gap-2 pt-4 font-mono text-[11px] font-light lowercase tracking-[0.12em] sm:inset-x-6 sm:bottom-8 lg:inset-x-8 lg:bottom-10 lg:flex-row lg:items-center lg:justify-between lg:pt-5"
             style={{ color: NAVE.label, borderTop: `1px solid ${NAVE.hair}` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 1, duration: walking ? 0.4 : 1 } }}
           >
-            <span>fuga haus — index</span>
-            <span className="flex items-center gap-3">
+            <span className="hidden lg:inline">fuga haus — index</span>
+            <span className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
               <span>available for projects — {new Date().getFullYear()}</span>
-              <span aria-hidden>·</span>
+              <span aria-hidden className="hidden sm:inline">·</span>
               <ContactMenu />
             </span>
           </motion.footer>
@@ -128,11 +128,12 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
 /* ────────────────────────────────────────────────────────────────── */
 
-// Where each label hangs: left wall, right wall, and low in the centre — around the piece.
+// Wide screens: the labels hang around the piece — left wall, right wall, low centre.
+// Phones and tablets: they stack in one centred column under it (see the nav).
 const SPOTS = [
-  "left-4 top-1/2 -translate-y-1/2 sm:left-6 md:left-8",
-  "right-4 top-1/2 -translate-y-1/2 text-right sm:right-6 md:right-8",
-  "left-1/2 bottom-[18%] -translate-x-1/2 text-center",
+  "lg:absolute lg:left-8 lg:top-1/2 lg:-translate-y-1/2 lg:text-left",
+  "lg:absolute lg:right-8 lg:top-1/2 lg:-translate-y-1/2 lg:text-right",
+  "lg:absolute lg:left-1/2 lg:bottom-[18%] lg:-translate-x-1/2 lg:text-center",
 ] as const;
 
 type LabelProps = {
@@ -155,7 +156,7 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     onMouseEnter={onHover}
     onFocus={onHover}
     aria-current={current ? "page" : undefined}
-    className={`pointer-events-auto absolute block outline-none ${SPOTS[index]}`}
+    className={`pointer-events-auto relative block text-center outline-none ${SPOTS[index]}`}
     initial={{ opacity: 0 }}
     animate={{ opacity: dimmed ? 0.35 : 1, transition: { duration: 0.8, delay: dimmed ? 0 : 0.9 + index * 0.15 } }}
   >
@@ -164,13 +165,13 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
       {current && " · you are here"}
     </span>
     <span
-      className="mt-2 block font-geo text-2xl font-light lowercase tracking-[0.18em] transition-colors duration-700 md:text-[1.9vw]"
+      className="mt-1.5 block font-geo text-[1.85rem] font-light lowercase leading-none tracking-[0.16em] transition-colors duration-700 sm:text-4xl lg:mt-2 lg:text-[1.9vw] lg:tracking-[0.18em]"
       style={{ color: on ? NAVE.labelOn : NAVE.label }}
     >
       {section.label}
     </span>
     <span
-      className="mt-2 block font-mono text-[10px] font-extralight lowercase tracking-[0.2em] transition-opacity duration-700"
+      className="mt-2 hidden font-mono text-[10px] font-extralight lowercase tracking-[0.2em] transition-opacity duration-700 lg:block"
       style={{ color: NAVE.label, opacity: on ? 1 : 0 }}
     >
       {section.caption}
