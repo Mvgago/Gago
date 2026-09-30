@@ -15,10 +15,10 @@ export const Home: React.FC = () => (
     <div className="flex-1" aria-hidden />
 
     <section className="flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 md:flex-row md:items-end md:justify-between md:px-8 md:pb-12">
-      {/* Profile */}
+      {/* Manifesto */}
       <div className="max-w-xl font-geo">
         <motion.p variants={rise} initial="hidden" animate="shown" custom={6} className="meta text-clay-soft">
-          00 — profile
+          00 — manifesto design
         </motion.p>
 
         <motion.h1

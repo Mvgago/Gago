@@ -55,7 +55,7 @@ const Logo3D: React.FC<{ className?: string }> = ({ className }) => {
     const scene = new THREE.Scene();
     const env = brandEnvironment(renderer);
     scene.environment = env;
-    scene.environmentIntensity = 1.1;
+    scene.environmentIntensity = 0.9;
     scene.add(new THREE.HemisphereLight("#fbf8f6", "#8f8579", 0.35));
     const key = new THREE.DirectionalLight("#ffffff", 1.1);
     key.position.set(1.2, 5, 4);
@@ -99,6 +99,7 @@ const Logo3D: React.FC<{ className?: string }> = ({ className }) => {
       cancelAnimationFrame(raf);
       ro.disconnect();
       mark.dispose();
+      material.map?.dispose();
       material.dispose();
       env.dispose();
       renderer.dispose();

@@ -99,15 +99,21 @@ function strokeOutline(line: THREE.Vector2[], width: number): THREE.Shape {
   return new THREE.Shape([...left, ...right.reverse()]);
 }
 
-/** One stroke as an extruded slab centred on z = 0, with a hairline bevel. */
+/**
+ * One stroke as an extruded slab centred on z = 0, with a rounded, polished
+ * bevel on every edge — the bright line that outlines each bar in the
+ * reference render. The outline is inset by the bevel so the bar keeps the
+ * logo's exact weight.
+ */
 function strokeSlab(pts: Pt[], weight: number, depth: number): THREE.ExtrudeGeometry {
-  const bevel = Math.min(0.006, (weight / UNIT) * 0.18);
-  const geo = new THREE.ExtrudeGeometry(strokeOutline(centreLine(pts), weight / UNIT), {
+  const w = weight / UNIT;
+  const bevel = Math.min(0.013, w * 0.22);
+  const geo = new THREE.ExtrudeGeometry(strokeOutline(centreLine(pts), w - bevel * 2), {
     depth,
     bevelEnabled: true,
     bevelSize: bevel,
-    bevelThickness: bevel * 1.3,
-    bevelSegments: 3,
+    bevelThickness: bevel,
+    bevelSegments: 5,
     curveSegments: 12,
   });
   geo.translate(0, 0, -depth / 2);
@@ -161,18 +167,63 @@ export function buildWordmark(material: THREE.Material): Wordmark {
 }
 
 /**
- * The brand finish: brushed satin metal in the logo's warm pearl, with the
- * long anisotropic highlight of a machined plate. Same on every logo.
+ * The brand finish, as in the original logo render: mirror-polished metal
+ * whose colour is entirely the studio it reflects. Same on every logo.
  */
 export function brandMetal(): THREE.MeshPhysicalMaterial {
   return new THREE.MeshPhysicalMaterial({
-    color: "#cfc5bd",
-    metalness: 1,
-    roughness: 0.3,
-    anisotropy: 0.75,
-    clearcoat: 0.35,
-    clearcoatRoughness: 0.25,
+    map: faceTexture(),
+    color: "#ffffff",
+    metalness: 0.35,
+    roughness: 0.2,
+    clearcoat: 1,
+    clearcoatRoughness: 0.08,
   });
+}
+
+/**
+ * The colour of the letters' faces, as in the reference render: the studio
+ * behind the logo, a step lighter — mauve on the left, pearl through the
+ * middle, light flooding the right, sage low on the left, a warm glint by
+ * the "a". Mapped in logo space, so each letter carries the part of the room
+ * it sits in. Extruded caps take their UVs from the shape's own x/y, so the
+ * texture is simply stretched over the logo's bounds.
+ */
+function faceTexture(): THREE.CanvasTexture {
+  const W = 1024;
+  const H = 300;
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+  const g = c.getContext("2d")!;
+  const base = g.createLinearGradient(0, 0, W, H * 0.6);
+  base.addColorStop(0, "#8c7f86");
+  base.addColorStop(0.3, "#a59a96");
+  base.addColorStop(0.55, "#c9c0ba");
+  base.addColorStop(0.8, "#e4ddd8");
+  base.addColorStop(1, "#d8cfc9");
+  g.fillStyle = base;
+  g.fillRect(0, 0, W, H);
+  const pool = (x: number, y: number, r: number, color: string) => {
+    const rg = g.createRadialGradient(x, y, 0, x, y, r);
+    rg.addColorStop(0, color);
+    rg.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = rg;
+    g.fillRect(0, 0, W, H);
+  };
+  pool(60, H, 260, "rgba(150,142,108,0.7)"); // sage, low left
+  pool(80, 0, 220, "rgba(104,88,100,0.55)"); // mauve, high left
+  pool(860, 190, 190, "rgba(255,252,248,0.85)"); // light flooding the right
+  pool(930, 40, 60, "rgba(200,140,112,0.6)"); // warm glint by the "a"
+  pool(150, 150, 36, "rgba(255,255,255,0.55)"); // small hot spot on the F bar
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+  // Logo bounds in world units: x −2.36…2.36, y −0.62…0.76
+  tex.repeat.set(1 / 4.72, 1 / 1.38);
+  tex.offset.set(0.5, 0.62 / 1.38);
+  return tex;
 }
 
 /**
@@ -201,11 +252,17 @@ export function brandEnvironment(renderer: THREE.WebGLRenderer): THREE.Texture {
   };
   pool(120, 470, 320, "rgba(170,166,130,0.85)");
   pool(160, 60, 300, "rgba(98,80,100,0.7)");
-  g.fillStyle = "rgba(255,255,255,0.95)";
-  g.fillRect(560, 70, 260, 60);
-  g.fillStyle = "rgba(255,255,255,0.6)";
-  g.fillRect(250, 150, 140, 30);
-
+  // Soft glints, as in the reference: a broad white studio light and a small warm one
+  const glint = (x: number, y: number, r: number, color: string) => {
+    const rg = g.createRadialGradient(x, y, 0, x, y, r);
+    rg.addColorStop(0, color);
+    rg.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = rg;
+    g.fillRect(x - r, y - r, r * 2, r * 2);
+  };
+  glint(700, 210, 170, "rgba(255,255,255,0.95)");
+  glint(300, 170, 70, "rgba(255,255,255,0.8)");
+  glint(860, 150, 45, "rgba(214,150,120,0.75)");
   const tex = new THREE.CanvasTexture(c);
   tex.mapping = THREE.EquirectangularReflectionMapping;
   tex.colorSpace = THREE.SRGBColorSpace;

@@ -66,7 +66,7 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     // Same finish and reflections as the corner logo: one model, one material.
     const envTex = brandEnvironment(renderer);
     scene.environment = envTex;
-    scene.environmentIntensity = 1.1;
+    scene.environmentIntensity = 0.9;
 
     const camera = new THREE.PerspectiveCamera(28, 1, 0.05, 80);
 
@@ -138,9 +138,9 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       });
 
       // The sculpture turns with the cursor, and sways slowly at rest.
-      const sway = reduced || isDiving ? 0 : Math.sin(t * 0.35) * 0.14;
-      const turnY = isDiving ? 0 : nx.get() * 0.7 + sway;
-      const turnX = isDiving ? 0 : ny.get() * 0.35;
+      const sway = reduced || isDiving ? 0 : Math.sin(t * 0.35) * 0.07;
+      const turnY = isDiving ? 0 : nx.get() * 0.32 + sway;
+      const turnX = isDiving ? 0 : ny.get() * 0.16;
       group.rotation.y += (turnY - group.rotation.y) * k(3);
       group.rotation.x += (turnX - group.rotation.x) * k(3);
 
@@ -162,6 +162,7 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       cancelAnimationFrame(raf);
       ro.disconnect();
       mark.dispose();
+      mat.map?.dispose();
       mat.dispose();
       shadow.geometry.dispose();
       const sm = shadow.material as THREE.MeshBasicMaterial;
