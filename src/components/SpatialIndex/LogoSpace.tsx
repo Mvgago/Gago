@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { usePointerLight } from "../Light/PointerLight";
-import { brandEnvironment, brandMetal, buildWordmark, contactShadow } from "../Monolith/wordmark3d";
+import { brandEnvironment, brandMetal, buildWordmark } from "../Monolith/wordmark3d";
 
 /**
  * The FUGA wordmark as a sculpture, in real-time 3D.
@@ -58,6 +58,8 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.VSMShadowMap; // soft, blurred penumbra
     renderer.domElement.style.display = "block";
     el.appendChild(renderer.domElement);
 
@@ -72,12 +74,26 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
 
     scene.add(new THREE.HemisphereLight("#fbf8f6", "#8f8579", 0.35));
     const key = new THREE.DirectionalLight("#ffffff", 1.1);
-    key.position.set(1.5, 8, 3);
+    key.position.set(0.8, 4.6, 4.6); // a studio key at ~45°: the letters' shapes fall softly onto the floor behind them
+    // A real cast shadow: each letter projected onto the floor, very soft,
+    // so it follows the letters as they recompose.
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    key.shadow.radius = 22;
+    key.shadow.blurSamples = 24;
+    key.shadow.bias = -0.0008;
+    // Frustum much wider than the floor, so its edge never shows
+    Object.assign(key.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 25 });
     scene.add(key);
 
-    // Soft contact shadow under the word, turning with it
-    const shadow = contactShadow(4.2, 1.1, 0.32);
-    shadow.position.set(0, -0.62, 0);
+    // Floor that only shows the cast shadow
+    const shadow = new THREE.Mesh(
+      new THREE.PlaneGeometry(9, 5),
+      new THREE.ShadowMaterial({ color: "#4a4048", opacity: 0.22 }),
+    );
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.set(0, -0.55, -1.2);
+    shadow.receiveShadow = true;
     scene.add(shadow);
     // ── The wordmark ──────────────────────────────────────────────────
     const mat = brandMetal();
@@ -153,7 +169,6 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       camPos.lerpVectors(camRest, through, dive * dive);
       camera.position.copy(camPos);
       look.lerpVectors(new THREE.Vector3(0, lookY, 0), gapPoint.clone().setZ(-10), dive);
-      shadow.rotation.z = -group.rotation.y * 0.6;
       camera.lookAt(look);
 
       renderer.render(scene, camera);
@@ -168,9 +183,7 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       mat.map?.dispose();
       mat.dispose();
       shadow.geometry.dispose();
-      const sm = shadow.material as THREE.MeshBasicMaterial;
-      sm.map?.dispose();
-      sm.dispose();
+      (shadow.material as THREE.Material).dispose();
       envTex.dispose();
       renderer.dispose();
       renderer.domElement.remove();

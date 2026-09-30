@@ -5,6 +5,8 @@ import { Monolith } from "../Monolith/Monolith";
 import { StudioStatus } from "../Meta/Meta";
 import { SpatialIndex } from "../SpatialIndex/SpatialIndex";
 import { EASE_HAUS } from "../../lib/motion";
+import { useI18n } from "../../i18n/I18n";
+import { LanguageSwitch } from "../../i18n/LanguageSwitch";
 
 // The corner logo is the same 3D model as the index sculpture; the 2D mark stands in while it loads.
 const Logo3D = lazy(() => import("../Monolith/Logo3D"));
@@ -13,6 +15,7 @@ export const SiteHeader: React.FC = () => {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const close = useCallback(() => setOpen(false), []);
+  const { t } = useI18n();
 
   // Any navigation closes the index.
   useEffect(close, [pathname, close]);
@@ -43,17 +46,18 @@ export const SiteHeader: React.FC = () => {
           </Suspense>
         </Link>
 
-        <div className="flex items-center gap-8">
-          <StudioStatus className="hidden text-ink/80 lg:flex" />
+        <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
+          <StudioStatus className="hidden text-ink lg:flex" />
+          <LanguageSwitch />
 
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            aria-label={open ? "Close index" : "Open index"}
+            aria-label={open ? t("index.aria.close") : t("index.aria.open")}
             className="group flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 shadow-[0_10px_30px_-12px_rgba(40,34,38,0.55)] backdrop-blur-md transition-colors duration-500 hover:bg-ink focus-visible:outline-offset-2"
           >
-            <span className={`meta w-10 text-left transition-colors duration-700 ${tone}`}>{open ? "close" : "index"}</span>
+            <span className={`meta min-w-10 text-left transition-colors duration-700 ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
             <span className="relative block h-2 w-4">
               <span
                 className={`absolute right-0 top-0 h-px ${line} transition-all duration-700 ease-haus ${

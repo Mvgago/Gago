@@ -1,23 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { EASE_HAUS } from "../../lib/motion";
+import { useI18n } from "../../i18n/I18n";
 
 export const EMAIL = "mvgago26@gmail.com";
-const SUBJECT = "Project enquiry — Fuga Haus";
 
 const enc = encodeURIComponent;
-const OPTIONS = [
+// The subject line follows the visitor's language.
+const options = (subject: string, mailApp: string) => [
   {
     label: "gmail",
-    href: `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL}&su=${enc(SUBJECT)}`,
+    href: `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL}&su=${enc(subject)}`,
     external: true,
   },
   {
     label: "outlook",
-    href: `https://outlook.live.com/mail/0/deeplink/compose?to=${EMAIL}&subject=${enc(SUBJECT)}`,
+    href: `https://outlook.live.com/mail/0/deeplink/compose?to=${EMAIL}&subject=${enc(subject)}`,
     external: true,
   },
-  { label: "mail app", href: `mailto:${EMAIL}?subject=${enc(SUBJECT)}`, external: false },
+  { label: mailApp, href: `mailto:${EMAIL}?subject=${enc(subject)}`, external: false },
 ];
 
 /** Menu label: a hairline marker grows in on hover and the text catches the glint. */
@@ -38,6 +39,7 @@ export const ContactMenu: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
   const timer = useRef<number>();
+  const { t } = useI18n();
 
   // Hover intent: open after a short pause, close with enough grace to reach the menu.
   // Mouse only — touch and keyboard use the click toggle.
@@ -131,8 +133,8 @@ export const ContactMenu: React.FC = () => {
           >
             {/* Light, translucent sheet with a hairline edge — no heavy card */}
             <div className="w-max min-w-[12.5rem] rounded-lg border border-ink/15 bg-[#f8f6f4]/[0.97] py-2.5 text-[12px] shadow-[0_24px_60px_-18px_rgba(40,32,36,0.4)] backdrop-blur-md">
-              <p className="px-4 pb-1.5 text-[10px] tracking-[0.18em] text-graphite/70">write to me via</p>
-              {OPTIONS.map((o) => (
+              <p className="px-4 pb-1.5 text-[10px] tracking-[0.18em] text-graphite/70">{t("contact.via")}</p>
+              {options(t("contact.subject"), t("contact.mailApp")).map((o) => (
                 <a
                   key={o.label}
                   role="menuitem"
@@ -150,7 +152,7 @@ export const ContactMenu: React.FC = () => {
               ))}
               <div className="mx-4 my-1.5 h-px bg-ink/12" />
               <button type="button" role="menuitem" onClick={copy} className={item}>
-                {copied ? <span className="text-ink">✓ copied</span> : <Label>copy address</Label>}
+                {copied ? <span className="text-ink">✓ {t("contact.copied")}</span> : <Label>{t("contact.copy")}</Label>}
                 {!copied && (
                   <span aria-hidden className={arrow}>
                     →

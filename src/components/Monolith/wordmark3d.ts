@@ -36,9 +36,9 @@ const FUGA: Pt[][][] = [
   [[[1290 + GAP, 772, 0], [1590 + GAP, 772, 35], [1590 + GAP, 965, 0], [1300 + GAP, 965, 35], [1300 + GAP, 850, 35], [1590 + GAP, 850, 0]]],
 ];
 
-// "haus" beneath the u, in the same geometric bar language as the wordmark:
-// x-height 1010 → baseline 1071, the h's ascender rising to 988.
-const HAUS: Pt[][] = [
+// "haus" beneath the u, in the same geometric bar language as the wordmark,
+// drawn at x-height 1010 → baseline 1071 and then fitted (see below).
+const HAUS_DRAWN: Pt[][] = [
   // h
   [[602, 988, 0], [602, 1071, 0]],
   [[602, 1010, 0], [660, 1010, 12], [660, 1071, 0]],
@@ -49,6 +49,29 @@ const HAUS: Pt[][] = [
   // s
   [[898, 1010, 0], [838, 1010, 12], [838, 1040, 12], [898, 1040, 12], [898, 1071, 12], [836, 1071, 0]],
 ];
+
+/**
+ * "haus" fitted to the Fuga strokes, measured on the outer edges of the bars:
+ * exactly as wide as the u (outer left of its first stem to outer right of
+ * its second) and standing on the same line as the bottom of the g.
+ * Scaled uniformly, so the letters keep their proportions.
+ */
+const HAUS: Pt[][] = (() => {
+  const fOut = FUGA_WEIGHT / 2;
+  const hOut = HAUS_WEIGHT / 2;
+  const uLeft = 612 - fOut;
+  const uRight = 895 + fOut;
+  const gBottom = 1060 + fOut;
+  // Fit the centre-lines, so the fixed bar weight lands on the edges exactly.
+  const xs = HAUS_DRAWN.flat().map(([x]) => x);
+  const ys = HAUS_DRAWN.flat().map(([, y]) => y);
+  const left = Math.min(...xs);
+  const bottom = Math.max(...ys);
+  const k = (uRight - uLeft - 2 * hOut) / (Math.max(...xs) - left);
+  return HAUS_DRAWN.map((stroke) =>
+    stroke.map(([x, y, r]): Pt => [uLeft + hOut + (x - left) * k, gBottom - hOut + (y - bottom) * k, r * k]),
+  );
+})();
 
 const toV2 = (x: number, y: number) => new THREE.Vector2((x - 945) / UNIT, -(y - 900) / UNIT);
 
@@ -137,6 +160,7 @@ export function buildWordmark(material: THREE.Material): Wordmark {
     const geo = strokeSlab(pts, weight, depth);
     geos.push(geo);
     const mesh = new THREE.Mesh(geo, material);
+    mesh.castShadow = true;
     parent.add(mesh);
     return mesh;
   };

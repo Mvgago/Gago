@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 import { PointerLightProvider } from "./components/Light/PointerLight";
+import { I18nProvider } from "./i18n/I18n";
 import { StudioAtmosphere } from "./components/Light/StudioAtmosphere";
 import { SiteHeader } from "./components/Header/SiteHeader";
 import { PageTransition } from "./components/PageTransition/PageTransition";
@@ -37,6 +38,7 @@ export const App: React.FC = () => {
   const location = useLocation();
 
   return (
+    <I18nProvider>
     <PointerLightProvider>
       <StudioAtmosphere />
       <SiteHeader />
@@ -60,5 +62,6 @@ export const App: React.FC = () => {
         </Routes>
       </AnimatePresence>
     </PointerLightProvider>
+    </I18nProvider>
   );
 };

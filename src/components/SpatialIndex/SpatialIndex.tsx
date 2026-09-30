@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { SECTIONS, type Section } from "./sections";
 import { ContactMenu } from "../Contact/ContactMenu";
 import { EASE_VEIL } from "../../lib/motion";
+import { useI18n } from "../../i18n/I18n";
+import type { Key } from "../../i18n/strings";
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -28,6 +30,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
   const [walking, setWalking] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!open) return;
@@ -58,7 +61,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
           key="spatial-index"
           role="dialog"
           aria-modal="true"
-          aria-label="Site index"
+          aria-label={t("index.footer")}
           className="fixed inset-0 z-40 overflow-hidden bg-[#f3f2f5]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 1.2, ease: EASE_VEIL } }}
@@ -113,9 +116,9 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 1, duration: walking ? 0.4 : 1 } }}
           >
-            <span className="hidden lg:inline">fuga haus — index</span>
+            <span className="hidden lg:inline">{t("index.footer")}</span>
             <span className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span>available for projects — {new Date().getFullYear()}</span>
+              <span>{t("availability")} — {new Date().getFullYear()}</span>
               <span aria-hidden className="hidden sm:inline">·</span>
               <ContactMenu />
             </span>
@@ -146,7 +149,10 @@ type LabelProps = {
   onGo: () => void;
 };
 
-const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHover, onGo }) => (
+const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHover, onGo }) => {
+  const { t } = useI18n();
+  const key = `section.${section.label}` as Key;
+  return (
   <motion.a
     href={section.path}
     onClick={(e) => {
@@ -162,19 +168,20 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
   >
     <span className="block font-mono text-[10px] font-extralight tracking-[0.25em]" style={{ color: NAVE.label }}>
       {section.num}
-      {current && " · you are here"}
+      {current && ` · ${t("index.here")}`}
     </span>
     <span
       className="mt-1.5 block font-geo text-[1.85rem] font-light lowercase leading-none tracking-[0.16em] transition-colors duration-700 sm:text-4xl lg:mt-2 lg:text-[1.9vw] lg:tracking-[0.18em]"
       style={{ color: on ? NAVE.labelOn : NAVE.label }}
     >
-      {section.label}
+      {t(key)}
     </span>
     <span
       className="mt-2 hidden font-mono text-[10px] font-extralight lowercase tracking-[0.2em] transition-opacity duration-700 lg:block"
       style={{ color: NAVE.label, opacity: on ? 1 : 0 }}
     >
-      {section.caption}
+      {t(`${key}.caption` as Key)}
     </span>
   </motion.a>
-);
+  );
+};
