@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- FUGA HAUS favicon: the wordmark's "g", on the landing's studio sweep -->
+  <defs>
+    <!-- Landing sweep: mauve top-left into taupe -->
+    <linearGradient id="sweep" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5f5259"/>
+      <stop offset="0.5" stop-color="#766c70"/>
+      <stop offset="1" stop-color="#948c86"/>
+    </linearGradient>
+    <!-- Sage-olive pooling bottom-left -->
+    <radialGradient id="olive" cx="0" cy="512" r="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#aaa682" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#aaa682" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Pale key light top-right -->
+    <radialGradient id="bloom" cx="512" cy="0" r="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f2eeec" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#f2eeec" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Satin silver letters -->
+    <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.55" stop-color="#f3eee9"/>
+      <stop offset="1" stop-color="#e2dad2"/>
+    </linearGradient>
+    <clipPath id="round">
+      <rect width="512" height="512" rx="112"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#round)">
+    <rect width="512" height="512" fill="url(#sweep)"/>
+    <rect width="512" height="512" fill="url(#olive)"/>
+    <rect width="512" height="512" fill="url(#bloom)"/>
+  </g>
+
+  <!-- The g of the wordmark (same path as the logo), centred -->
+  <g fill="none" stroke="url(#silver)" stroke-width="46" stroke-linejoin="miter" transform="translate(256 256) scale(1.1) translate(-1087.5 -916)">
+    <path d="M1225 960H985A35 35 0 0 1 950 925V807A35 35 0 0 1 985 772H1225V1025A35 35 0 0 1 1190 1060H935"/>
+  </g>
+</svg>

@@ -1,68 +1,125 @@
-@import url('https://fonts.googleapis.com/css2?family=Sixtyfour+Convergence&display=swap');
+@import "tailwindcss";
 
-.sixtyfour-convergence {
-  font-family: "Sixtyfour Convergence", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings:
-    "BLED" 0,
-    "SCAN" 0,
-    "XELA" 0,
-    "YELA" 0;
+/* ─────────────────────────────────────────────────────────────
+   FUGA HAUS — design tokens
+   Platinum, pearl grey and neutral clay, lit like a photo studio.
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  --color-platinum: #f4f1ed;
+  --color-pearl: #d6d0c8;
+  --color-clay: #a1978b;
+  --color-umber: #74605e;
+  --color-graphite: #4a433c;
+  --color-ink: #1d1a17;
+
+  --font-display: "Michroma", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-geo: "Jura", ui-sans-serif, sans-serif;
+
+  /* Landing type: soft silver and pale clay over the studio sweep */
+  --color-silver: #f2eee9;
+  --color-clay-soft: #ddd2c7;
+  --font-serif: "Cormorant Garamond", ui-serif, serif;
+  --font-sans: "Montserrat", ui-sans-serif, sans-serif;
+
+  --ease-haus: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.orbitron-custom {
-  font-family: "Orbitron", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400; /* Puedes cambiar el peso según sea necesario */
-  font-style: normal;
+@layer base {
+  html,
+  body {
+    min-height: 100%;
+    background: #a8a0a2;
+    color: var(--color-ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-platinum);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-ink);
+    outline-offset: 4px;
+  }
 }
 
-.freckle-face-regular {
-  font-family: "Freckle Face", system-ui;
-  font-weight: 400;
-  font-style: normal;
+@layer utilities {
+  /* Hairline monospaced metadata */
+  .meta {
+    font-family: var(--font-mono);
+    font-weight: 200;
+    font-size: 10px;
+    line-height: 1.6;
+    letter-spacing: 0.28em;
+    text-transform: lowercase;
+  }
+
+  /* Satin-chrome fill for live text */
+  .text-satin {
+    background: linear-gradient(
+      172deg,
+      #fbf9f6 0%,
+      #c9c1b8 34%,
+      #8d8277 52%,
+      #d8d1c9 70%,
+      #6f655c 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* A band of light that keeps travelling through dark text while active.
+     At rest the text is plain graphite; activate with .is-lit or a hovered .group. */
+  .glint {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-graphite) 0%,
+      var(--color-graphite) 40%,
+      #6e665f 45%,
+      #c2b9b1 50%,
+      #6e665f 55%,
+      var(--color-graphite) 60%,
+      var(--color-graphite) 100%
+    );
+    background-size: 280% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .group:hover .glint,
+  .group\/item:hover .glint,
+  .group\/item:focus-visible .glint,
+  .glint.is-lit {
+    color: transparent;
+    animation: glint-travel 2.8s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  }
+
+  /* Hollow display type for large floating letterforms */
+  .text-hollow {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(29, 26, 23, 0.22);
+  }
 }
 
-
-.rubik-80s-fade-regular {
-  font-family: "Rubik 80s Fade", system-ui;
-  font-weight: 400; /* Normal */
+@keyframes glint-travel {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
 }
 
-.montserrat-portfolio {
-  font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700; /* O el peso que desees */
-  font-style: normal;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
-
-.syne-designer {
-  font-family: "Syne", sans-serif;
-  font-weight: 400; /* Ajusta el peso según sea necesario */
-}
-
-.figtree-designer {
-  font-family: "Figtree", sans-serif;
-  font-weight: 300; /* Ajusta el peso según sea necesario */
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box; /* Incluye el padding y borde en el tamaño total */
-}
-html, body {
-  height: 100vh; /* Asegúrate de que el html y body ocupen toda la altura */
-  width: 100%; /* Asegúrate de que el html y body ocupen todo el ancho */
-  overflow-x: hidden; /* Evita desplazamiento horizontal */
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  background-color: white; /* Color de fondo */
-}
-

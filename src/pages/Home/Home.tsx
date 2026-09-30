@@ -1,58 +1,68 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
-import Carousel from "react-bootstrap/Carousel";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { rise } from "../../lib/motion";
+import { ContactMenu } from "../../components/Contact/ContactMenu";
 
-// Importa las imágenes para el carrusel
-import portada from "../../assets/img/portada.png";
-import portada2 from "../../assets/img/portada2.png";
-import portada3 from "../../assets/img/portada3.png";
-import portada4 from "../../assets/img/portada4.jpg";
-import portada5 from "../../assets/img/portada5.png";
+/**
+ * Hero as an empty, lit room. The brand lives in the header corner,
+ * the centre belongs to the studio light, and a short profile sits
+ * low on the left, like a caption on a gallery wall.
+ */
+export const Home: React.FC = () => (
+  <main className="relative flex h-[100svh] min-h-[600px] w-full select-none flex-col overflow-hidden text-silver [text-shadow:0_1px_14px_rgba(45,35,30,0.18)]">
+    {/* The centre: intentionally empty. Only light. */}
+    <div className="flex-1" aria-hidden />
 
-// Home Component
-export const Home: React.FC = () => {
-  const images = [portada3, portada4, portada5, portada2, portada];
+    <section className="flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 md:flex-row md:items-end md:justify-between md:px-8 md:pb-12">
+      {/* Profile */}
+      <div className="max-w-xl font-geo">
+        <motion.p variants={rise} initial="hidden" animate="shown" custom={6} className="meta text-clay-soft">
+          00 — profile
+        </motion.p>
 
-  return (
-    <Box sx={{ position: "relative", width: "100%", height: "90vh", overflow: "hidden", userSelect: "none" }}>
-      <Carousel interval={5000} controls={false}>
-        {images.map((image, index) => (
-          <Carousel.Item key={index}>
-            <Box
-              sx={{
-                height: "100vh",
-                backgroundImage: `url(${image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                userSelect: "none",
-                pointerEvents: "none", // Deshabilita interacciones en el fondo
-              }}
-            />
-          </Carousel.Item>
-        ))}
-      </Carousel>
+        <motion.h1
+          variants={rise}
+          initial="hidden"
+          animate="shown"
+          custom={7}
+          className="mt-5 text-[1.9rem] font-light leading-[1.1] tracking-[0.01em] sm:text-4xl lg:text-[2.75rem]"
+        >
+          Designer of atmospheres.
+        </motion.h1>
 
-      {/* Texto fijo sobre el carrusel */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          textAlign: "center",
-          color: "white",
-          zIndex: 3, // Coloca el texto sobre la capa y el carrusel
-        }}
+        <motion.p
+          variants={rise}
+          initial="hidden"
+          animate="shown"
+          custom={8}
+          className="mt-3 text-base font-light tracking-[0.02em] text-clay-soft sm:text-lg"
+        >
+          Brand identity, web &amp; 3D imagery.
+        </motion.p>
+
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-9">
+          <Link to="/projects" className="meta group inline-flex items-center gap-3">
+            <span className="relative">
+              enter the archive
+              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-silver transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+            </span>
+            <span className="transition-transform duration-700 ease-haus group-hover:translate-x-1.5">→</span>
+          </Link>
+        </motion.div>
+      </div>
+
+      {/* Availability and contact: one quiet line, bottom right */}
+      <motion.p
+        className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] font-light lowercase tracking-[0.12em] text-graphite [text-shadow:none]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2.4, delay: 1.8 }}
       >
-        <Typography variant="h2" sx={{ fontFamily: 'Syne, sans-serif', fontWeight: 400 }}>
-          Digital Designer
-        </Typography>
-
-        <Typography sx={{ fontFamily: 'Montserrat, sans-serif' }}>
-          UI/UX 3D Designer, architect of atmospheres and visual concepts
-        </Typography>
-      </Box>
-    </Box>
-  );
-};
+        <span>available for projects — {new Date().getFullYear()}</span>
+        <span aria-hidden>·</span>
+        <ContactMenu />
+      </motion.p>
+    </section>
+  </main>
+);

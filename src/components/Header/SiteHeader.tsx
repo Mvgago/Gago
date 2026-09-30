@@ -1,0 +1,69 @@
+import React, { useCallback, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Monolith } from "../Monolith/Monolith";
+import { StudioStatus } from "../Meta/Meta";
+import { SpatialIndex } from "../SpatialIndex/SpatialIndex";
+import { EASE_HAUS } from "../../lib/motion";
+
+export const SiteHeader: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+  const close = useCallback(() => setOpen(false), []);
+
+  // Any navigation closes the index.
+  useEffect(close, [pathname, close]);
+
+  // The top-right corner sits in the key light, so it always takes ink.
+  const tone = "text-ink";
+  const line = "bg-ink";
+  const border = "border-ink/25 hover:border-ink/60";
+
+  return (
+    <>
+      <motion.header
+        className="fixed inset-x-0 top-0 z-50 flex items-start justify-between px-4 pt-4 sm:px-6 sm:pt-5 md:px-8"
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.4, ease: EASE_HAUS, delay: 0.4 }}
+      >
+        {/* Corner brand: contained, satin, catching the light as it passes */}
+        <Link
+          to="/"
+          aria-label="Fuga Haus — home"
+          className="block w-24 transition-opacity duration-700 hover:opacity-80 sm:w-28 md:w-32"
+        >
+          <Monolith tilt={false} />
+        </Link>
+
+        <div className="flex items-center gap-8">
+          <StudioStatus className="hidden text-ink/80 lg:flex" />
+
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label={open ? "Close index" : "Open index"}
+            className={`group flex items-center gap-3 rounded-full border bg-platinum/15 px-4 py-2 backdrop-blur-md transition-colors duration-500 ${border}`}
+          >
+            <span className={`meta w-10 text-left transition-colors duration-700 ${tone}`}>{open ? "close" : "index"}</span>
+            <span className="relative block h-2 w-4">
+              <span
+                className={`absolute right-0 top-0 h-px ${line} transition-all duration-700 ease-haus ${
+                  open ? "top-1 w-4 rotate-45" : "w-4"
+                }`}
+              />
+              <span
+                className={`absolute bottom-0 right-0 h-px ${line} transition-all duration-700 ease-haus ${
+                  open ? "bottom-1 w-4 -rotate-45" : "w-2.5 group-hover:w-4"
+                }`}
+              />
+            </span>
+          </button>
+        </div>
+      </motion.header>
+
+      <SpatialIndex open={open} onClose={close} />
+    </>
+  );
+};

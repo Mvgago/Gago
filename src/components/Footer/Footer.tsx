@@ -1,75 +1,32 @@
-// Footer.tsx
-import React from 'react';
-import {
-  Container,
-  Grid,
-  Typography,
-  Link,
-  Box,
-} from '@mui/material';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Clocks, COORDINATES } from "../Meta/Meta";
 
-const Footer: React.FC = () => {
-  return (
-    <Box
-      component="footer"
-      sx={{
-        backgroundColor: '#242424', // Fondo oscuro
-        color: '#ffffff',
-        padding: '40px 20px',
-        marginTop: 'auto', // Asegura que el footer esté al final
-      }}
-    >
-        <Container maxWidth="lg">
-      <Grid container spacing={4} sx={{ display: 'flex', justifyContent: 'center'}}>
-        
-        {/* Primer Grid Item */}
-        <Grid item xs={12} md={4}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            <Typography variant="h6" component="div" sx={{ color: 'white', fontFamily: '"Michroma", sans-serif', fontWeight: 600, textAlign: 'center' }}>
-              MANUGAGO
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom sx={{ fontFamily: 'Montserrat, sans-serif', textAlign: 'center' }}>
-              UI/UX 3D Designer
-            </Typography>
-            <Box sx={{ marginTop: 2, textAlign: 'center' }}>
-              <Typography variant="body2">
-                <Link href="/projects" color="inherit" underline="hover" sx={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  Projects
-                </Link>
-                <br />
-                <Link href="/artwork" color="inherit" underline="hover" sx={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  Artwork
-                </Link>
-                <br />
-                <Link href="/about" color="inherit" underline="hover" sx={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  About
-                </Link>
-              </Typography>
-            </Box>
-          </Box>
-        </Grid>
+const Footer: React.FC = () => (
+  <footer className="relative z-10 mt-32 px-4 pb-10 sm:px-6 md:px-8">
+    <div className="border-t border-ink/15 pt-10">
+      <p className="meta text-graphite">let's work together</p>
+      <a
+        href="mailto:mvgago26@gmail.com"
+        className="text-satin mt-4 block break-all font-display text-[7vw] leading-none tracking-[-0.02em] transition-opacity duration-700 hover:opacity-70 md:text-[4.2vw]"
+      >
+        mvgago26@gmail.com
+      </a>
 
-        {/* Segundo Grid Item */}
-        <Grid item xs={12} md={4}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant="h6" gutterBottom sx={{ fontFamily: 'Montserrat, sans-serif', textAlign: 'center' }}>
-              Let's work together
-            </Typography>
-            <Typography variant="body1" paragraph sx={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', textAlign: 'center' }}>
-              Always welcome to discuss new projects and opportunities. Let’s connect!
-            </Typography>
-            <Typography variant="body1" sx={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', textAlign: 'center' }}>
-              <Link href="mailto:mvgago26@gmail.com" color="inherit">
-                mvgago26@gmail.com
-              </Link>
-            </Typography>
-          </Box>
-        </Grid>
-
-      </Grid>
-    </Container>
-    </Box>
-  );
-};
+      <div className="mt-16 grid gap-6 text-graphite sm:grid-cols-3 sm:items-end">
+        <nav className="meta flex gap-6">
+          <Link to="/projects" className="hover:text-ink">projects</Link>
+          <Link to="/artwork" className="hover:text-ink">artwork</Link>
+          <Link to="/about" className="hover:text-ink">studio</Link>
+        </nav>
+        <span className="meta sm:text-center">{COORDINATES}</span>
+        <div className="flex flex-col gap-1 sm:items-end">
+          <Clocks seconds={false} />
+          <span className="meta">fugahaus © {new Date().getFullYear()}</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+);
 
 export default Footer;

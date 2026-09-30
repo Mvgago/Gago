@@ -1,106 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, Box, Typography, CircularProgress } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { projects } from '../../outils/projects';
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { projects } from "../../outils/projects";
+import { EASE_HAUS, rise } from "../../lib/motion";
 
-export const ProjectsPage: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [loadedImages, setLoadedImages] = useState(0);
+// Rhythm of plate widths across the 12-column archive grid.
+const SPANS = [
+  "md:col-span-7",
+  "md:col-span-5 md:mt-40",
+  "md:col-span-5",
+  "md:col-span-6 md:col-start-7 md:-mt-24",
+  "md:col-span-4 md:col-start-2",
+  "md:col-span-6 md:col-start-7 md:mt-24",
+];
 
-  const handleContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();
-  };
+type Project = (typeof projects)[number];
 
-  // Manejar el evento `onLoad` de cada imagen
-  const handleImageLoad = () => {
-    setLoadedImages((prev) => prev + 1);
-  };
+const Plate: React.FC<{ project: Project; index: number }> = ({ project, index }) => {
+  const num = String(index + 1).padStart(2, "0");
+  const available = project.link !== "#";
 
-  // Verificar si todas las imágenes han terminado de cargarse
-  useEffect(() => {
-    if (loadedImages === projects.length) {
-      setLoading(false);
-    }
-  }, [loadedImages]);
+  const body = (
+    <>
+      <div className="relative aspect-[4/3] overflow-hidden bg-pearl/60 shadow-[0_40px_80px_-40px_rgba(40,30,22,0.45)]">
+        <img
+          src={project.image}
+          alt={project.title}
+          loading="lazy"
+          draggable={false}
+          onContextMenu={(e) => e.preventDefault()}
+          className="h-full w-full object-cover grayscale-[0.35] transition-[transform,filter] duration-[1400ms] ease-haus group-hover:scale-[1.035] group-hover:grayscale-0"
+        />
+        {/* Satin glaze that lifts on hover */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-ink/15 opacity-100 transition-opacity duration-1000 group-hover:opacity-0" />
+      </div>
+      <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-ink/15 pt-3">
+        <div className="flex items-baseline gap-4">
+          <span className="meta text-graphite">{num}</span>
+          <span className="font-display text-sm tracking-[0.02em] text-ink sm:text-base">{project.title}</span>
+        </div>
+        <span className="meta shrink-0 text-graphite">{available ? "view →" : "in archive"}</span>
+      </div>
+    </>
+  );
 
   return (
-    <Box position="relative" minHeight="100vh">
-      {/* Loading Spinner */}
-      {loading && (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            zIndex: 1000, // Asegura que el loader esté por encima de todo
-          }}
-        >
-          <CircularProgress sx={{color: '#A09586'}}/>
-        </Box>
+    <motion.li
+      className={`col-span-12 ${SPANS[index % SPANS.length]}`}
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      transition={{ duration: 1.4, ease: EASE_HAUS }}
+    >
+      {available ? (
+        <Link to={project.link} className="group block">
+          {body}
+        </Link>
+      ) : (
+        <div className="group">{body}</div>
       )}
-
-      {/* Contenido de la página */}
-      <Grid container spacing={0} sx={{ margin: 0 }}>
-        {projects.map((artwork, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index} sx={{ padding: 0 }}>
-            <Link to={artwork.link} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <Box
-                sx={{
-                  position: 'relative',
-                  cursor: 'pointer',
-                  overflow: 'hidden',
-                  width: '100%',
-                  height: { xs: '200px', sm: '300px', md: '300px' },
-                  willChange: 'transform',
-                  '&:hover img': { transform: 'scale(1.03)' },
-                  '&:hover .overlay': { opacity: 1 },
-                }}
-              >
-                <img
-                  src={artwork.image}
-                  alt={artwork.title}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    transition: 'transform 0.2s ease',
-                    willChange: 'transform',
-                  }}
-                  onLoad={handleImageLoad} // Detecta la carga de cada imagen
-                  onContextMenu={handleContextMenu}
-                  draggable={false}
-                />
-                <Box
-                  className="overlay"
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    opacity: 0,
-                    willChange: 'opacity',
-                    transition: 'opacity 0.2s ease',
-                  }}
-                >
-                  <Typography variant="h6">{artwork.title}</Typography>
-                </Box>
-              </Box>
-            </Link>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+    </motion.li>
   );
 };
+
+export const ProjectsPage: React.FC = () => (
+  <main className="px-4 pt-24 sm:px-6 md:px-8 md:pt-28">
+    <header className="mb-20 grid grid-cols-12 gap-6 md:mb-32">
+      <motion.p variants={rise} initial="hidden" animate="shown" className="meta col-span-12 text-graphite md:col-span-3">
+        01 — selected works
+      </motion.p>
+      <motion.h1
+        variants={rise}
+        initial="hidden"
+        animate="shown"
+        custom={1}
+        className="text-satin col-span-12 font-display text-[13vw] leading-[0.95] tracking-[-0.03em] md:col-span-9 md:text-[8vw]"
+      >
+        projects
+      </motion.h1>
+      <motion.p
+        variants={rise}
+        initial="hidden"
+        animate="shown"
+        custom={2}
+        className="col-span-12 max-w-md font-serif text-xl font-light italic text-graphite md:col-span-6 md:col-start-4"
+      >
+        Brand identities, digital spaces and rendered atmospheres — built slowly, lit carefully.
+      </motion.p>
+    </header>
+
+    <ul className="grid grid-cols-12 gap-x-6 gap-y-20 md:gap-x-10 md:gap-y-28">
+      {projects.map((p, i) => (
+        <Plate key={p.title} project={p} index={i} />
+      ))}
+    </ul>
+  </main>
+);

@@ -1,113 +1,112 @@
-import React, { useState } from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import React, { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { artwork } from "../../outils/artwork";
+import { EASE_HAUS, EASE_VEIL, rise } from "../../lib/motion";
 
-import portada from "../../assets/gallery/single3.png";
-import portada6 from "../../assets/gallery/single4.png";
-import portada2 from "../../assets/gallery/lerele1.jpg";
-import portada3 from "../../assets/gallery/Otoño.jpg";
-import portada4 from "../../assets/gallery/portada.png";
-import portada5 from "../../assets/gallery/untitlezdfdsd.png";
-import portada8 from "../../assets/gallery/summer2003.png";
-import portada9 from "../../assets/gallery/acne2.png";
-
-const images = [
-  { id: 6, url: portada6 },
-  { id: 1, url: portada },
-  { id: 2, url: portada2 },
-  { id: 3, url: portada3 },
-  { id: 4, url: portada4 },
-  { id: 5, url: portada5 },
-  { id: 8, url: portada8 },
-  { id: 9, url: portada9 },
-];
+const pad = (n: number) => String(n).padStart(2, "0");
 
 export const ArtworkPage: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [[index, direction], setState] = useState<[number, number]>([0, 0]);
+  const total = artwork.length;
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
+  const go = useCallback(
+    (step: number) => setState(([i]) => [(i + step + total) % total, step]),
+    [total],
+  );
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-  };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "ArrowLeft") go(-1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [go]);
+
+  const current = artwork[index];
 
   return (
-    <Box sx={{ width: '100%', maxWidth: '1200px', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
-      <Typography variant="h5" gutterBottom sx={{ my: 4 }}>
-        Artwork gallery
-      </Typography>
+    <main className="px-4 pt-24 sm:px-6 md:px-8 md:pt-28">
+      <header className="mb-12 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between">
+        <div>
+          <motion.p variants={rise} initial="hidden" animate="shown" className="meta text-graphite">
+            02 — experiments &amp; 3d
+          </motion.p>
+          <motion.h1
+            variants={rise}
+            initial="hidden"
+            animate="shown"
+            custom={1}
+            className="text-satin mt-3 font-display text-[13vw] leading-[0.95] tracking-[-0.03em] md:text-[8vw]"
+          >
+            artwork
+          </motion.h1>
+        </div>
+        <motion.p variants={rise} initial="hidden" animate="shown" custom={2} className="meta text-graphite">
+          use ← → to move through the plates
+        </motion.p>
+      </header>
 
-      <Box
-        sx={{
-          position: 'relative',
-          overflow: 'hidden',
-          borderRadius: '8px',
-          boxShadow: 3,
-          height: { xs: '300px', sm: '500px', md: '700px', background: 'white'
-          }, // Altura dinámica en función del tamaño de pantalla
-        }}
-      >
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={images[currentIndex].id}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.5 }}
-            style={{
-              width: '100%',
-              height: '100%',
-              backgroundImage: `url(${images[currentIndex].url})`,
-              backgroundSize: 'contain',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-            }}
+      {/* Viewing room */}
+      <section className="relative">
+        <div className="relative mx-auto aspect-[4/5] w-full max-w-[680px] sm:aspect-square md:aspect-[16/10] md:max-w-none">
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.img
+              key={current.id}
+              src={current.url}
+              alt={`Artwork plate ${pad(index + 1)}`}
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
+              className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_40px_50px_rgba(40,30,22,0.35)]"
+              custom={direction}
+              variants={{
+                enter: (d: number) => ({ opacity: 0, x: d * 60, scale: 0.98 }),
+                center: { opacity: 1, x: 0, scale: 1, transition: { duration: 1.4, ease: EASE_HAUS } },
+                exit: (d: number) => ({ opacity: 0, x: d * -40, transition: { duration: 0.8, ease: EASE_VEIL } }),
+              }}
+              initial="enter"
+              animate="center"
+              exit="exit"
+            />
+          </AnimatePresence>
+
+          {/* Invisible halves double as navigation on touch and desktop */}
+          <button
+            type="button"
+            aria-label="Previous plate"
+            onClick={() => go(-1)}
+            className="absolute inset-y-0 left-0 w-1/2 cursor-w-resize"
           />
-        </AnimatePresence>
+          <button
+            type="button"
+            aria-label="Next plate"
+            onClick={() => go(1)}
+            className="absolute inset-y-0 right-0 w-1/2 cursor-e-resize"
+          />
+        </div>
 
-        {/* Botones de navegación */}
-        <IconButton
-          onClick={handlePrev}
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '10px',
-            transform: 'translateY(-50%)',
-            color: '#ffffff',
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            '&:hover': { backgroundColor: 'rgba(0,0,0,0.5)' },
-            padding: '10px',  // Aumentar el área clickeable en dispositivos móviles
-            fontSize: { xs: '18px', sm: '24px' }, // Ajustar el tamaño del ícono en pantallas pequeñas
-          }}
-        >
-          <ArrowBackIosIcon />
-        </IconButton>
+        <div className="mt-10 flex items-center justify-between border-t border-ink/15 pt-4 text-graphite">
+          <button type="button" onClick={() => go(-1)} className="meta transition-colors hover:text-ink">
+            ← prev
+          </button>
 
-        <IconButton
-          onClick={handleNext}
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            right: '10px',
-            transform: 'translateY(-50%)',
-            color: '#ffffff',
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            '&:hover': { backgroundColor: 'rgba(0,0,0,0.5)' },
-            padding: '10px',  // Aumentar el área clickeable en dispositivos móviles
-            fontSize: { xs: '18px', sm: '24px' }, // Ajustar el tamaño del ícono en pantallas pequeñas
-          }}
-        >
-          <ArrowForwardIosIcon />
-        </IconButton>
-      </Box>
+          <div className="flex items-center gap-4">
+            <span className="meta tabular-nums text-ink">{pad(index + 1)}</span>
+            <span className="relative h-px w-24 bg-ink/15 sm:w-40">
+              <motion.span
+                className="absolute inset-y-0 left-0 bg-ink"
+                animate={{ width: `${((index + 1) / total) * 100}%` }}
+                transition={{ duration: 1.2, ease: EASE_HAUS }}
+              />
+            </span>
+            <span className="meta tabular-nums">{pad(total)}</span>
+          </div>
 
-      <Typography variant="h6" sx={{ mt: 2 }}>
-        {/* {images[currentIndex].title} */}
-      </Typography>
-    </Box>
+          <button type="button" onClick={() => go(1)} className="meta transition-colors hover:text-ink">
+            next →
+          </button>
+        </div>
+      </section>
+    </main>
   );
 };
