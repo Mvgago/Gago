@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Monolith } from "../Monolith/Monolith";
@@ -20,6 +20,14 @@ export const SiteHeader: React.FC = () => {
   // Any navigation closes the index.
   useEffect(close, [pathname, close]);
 
+  // When the index closes, keyboard focus returns to the button that opened it.
+  const toggle = useRef<HTMLButtonElement>(null);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (wasOpen.current && !open) toggle.current?.focus({ preventScroll: true });
+    wasOpen.current = open;
+  }, [open]);
+
   // The index control is the one solid form on the page: a graphite pill with
   // platinum type, so the way in is found at a glance without shouting.
   const tone = "text-platinum";
@@ -37,12 +45,13 @@ export const SiteHeader: React.FC = () => {
         <Link
           to="/"
           aria-label="Fuga Haus — home"
+          tabIndex={open ? -1 : undefined}
           className={`block w-24 transition-opacity duration-700 hover:opacity-100 hover:duration-200 sm:w-28 md:w-32 ${
             open ? "pointer-events-none opacity-0" : "opacity-[0.82]"
           }`}
         >
           <Suspense fallback={<Monolith tilt={false} tone="warm" reveal={false} />}>
-            <Logo3D className="w-full" />
+            <Logo3D className="w-full" paused={open} />
           </Suspense>
         </Link>
 
@@ -51,6 +60,7 @@ export const SiteHeader: React.FC = () => {
           <LanguageSwitch />
 
           <button
+            ref={toggle}
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}

@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { SECTIONS } from "../../components/SpatialIndex/sections";
 import { motion } from "framer-motion";
 import { rise } from "../../lib/motion";
 import { ContactMenu } from "../../components/Contact/ContactMenu";
+import { SocialLinks } from "../../components/Contact/SocialLinks";
 import { useI18n } from "../../i18n/I18n";
+
+const PROJECTS_TINT = SECTIONS[0].tint;
 
 /**
  * Hero as an empty, lit room. The brand lives in the header corner,
@@ -12,8 +16,21 @@ import { useI18n } from "../../i18n/I18n";
  */
 export const Home: React.FC = () => {
   const { t } = useI18n();
+  const [hint, setHint] = useState(false);
   return (
   <main className="relative flex h-[100svh] min-h-[600px] w-full select-none flex-col overflow-hidden text-silver">
+    {/* A hint of the work: while the way into the archive is hovered, the room
+        takes on the light of the projects, rising from where the link sits. */}
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 transition-opacity duration-[1400ms] ease-haus"
+      style={{
+        opacity: hint ? 1 : 0,
+        background: `radial-gradient(90% 75% at 12% 100%, ${PROJECTS_TINT}59 0%, ${PROJECTS_TINT}1f 45%, transparent 80%)`,
+        mixBlendMode: "soft-light",
+      }}
+    />
+
     {/* The centre: intentionally empty. Only light. */}
     <div className="flex-1" aria-hidden />
 
@@ -41,7 +58,14 @@ export const Home: React.FC = () => {
         </motion.p>
 
         <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12">
-          <Link to="/projects" className="meta group inline-flex items-center gap-3">
+          <Link
+            to="/projects"
+            className="meta group inline-flex items-center gap-3"
+            onPointerEnter={(e) => e.pointerType === "mouse" && setHint(true)}
+            onPointerLeave={() => setHint(false)}
+            onFocus={() => setHint(true)}
+            onBlur={() => setHint(false)}
+          >
             <span className="relative">
               {t("hero.cta")}
               <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-silver transition-transform duration-700 ease-haus group-hover:scale-x-100" />
@@ -61,6 +85,8 @@ export const Home: React.FC = () => {
         <span>{t("availability")} — {new Date().getFullYear()}</span>
         <span aria-hidden className="hidden sm:inline">·</span>
         <ContactMenu />
+        <span aria-hidden className="hidden sm:inline">·</span>
+        <SocialLinks className="hover:text-ink" />
       </motion.p>
     </section>
   </main>

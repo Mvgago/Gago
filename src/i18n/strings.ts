@@ -40,13 +40,14 @@ const en = {
   "footer.together": "let's work together",
   "lang.label": "Language",
   "privacy": "privacy",
+  "meta.description": "Fuga Haus is a design studio for brand identity, web and 3D imagery, creating quiet, atmospheric work.",
 };
 
 export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Identidad de marca, web e imagen 3D.",
+  "hero.sub": "Identidad de marca, web y visualización 3D.",
   "hero.cta": "entrar al archivo",
 
   "status": "estudio abierto",
@@ -75,11 +76,12 @@ const es: Record<Key, string> = {
   "footer.together": "trabajemos juntos",
   "lang.label": "Idioma",
   "privacy": "privacidad",
+  "meta.description": "Fuga Haus es un estudio de diseño de identidad de marca, web y visualización 3D, con un trabajo sereno y atmosférico.",
 };
 
 const fr: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Identité de marque, web & images 3D.",
+  "hero.sub": "Identité de marque, web & visualisation 3D.",
   "hero.cta": "entrer dans les archives",
 
   "status": "studio ouvert",
@@ -108,11 +110,12 @@ const fr: Record<Key, string> = {
   "footer.together": "travaillons ensemble",
   "lang.label": "Langue",
   "privacy": "confidentialité",
+  "meta.description": "Fuga Haus est un studio de design : identité de marque, web et visualisation 3D, pour un travail calme et atmosphérique.",
 };
 
 const de: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Markenidentität, Web & 3D-Bildwelten.",
+  "hero.sub": "Markenidentität, Web & 3D-Visualisierung.",
   "hero.cta": "zum archiv",
 
   "status": "studio geöffnet",
@@ -141,6 +144,7 @@ const de: Record<Key, string> = {
   "footer.together": "lass uns zusammenarbeiten",
   "lang.label": "Sprache",
   "privacy": "datenschutz",
+  "meta.description": "Fuga Haus ist ein Designstudio für Markenidentität, Web und 3D-Visualisierung – ruhig und atmosphärisch.",
 };
 
 export const STRINGS: Record<Lang, Record<Key, string>> = { en, es, fr, de };

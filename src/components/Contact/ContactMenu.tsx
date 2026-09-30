@@ -4,6 +4,7 @@ import { EASE_HAUS } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 
 export const EMAIL = "hola@fugahaus.com";
+export const INSTAGRAM = "https://www.instagram.com/fugahaus/";
 
 const enc = encodeURIComponent;
 // The subject line follows the visitor's language.
@@ -106,13 +107,14 @@ export const ContactMenu: React.FC = () => {
         }}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="group relative inline-flex items-center gap-1.5 lowercase text-graphite"
+        className="group relative inline-flex items-center lowercase text-graphite"
       >
         {/* A band of light keeps travelling through the letters while hovered or open */}
         <span className={`glint ${open ? "is-lit" : ""}`}>{EMAIL}</span>
         <span
           aria-hidden
-          className={`transition-[opacity,transform] duration-700 ease-haus group-hover:translate-x-0 group-hover:opacity-100 ${
+          // Floats past the address, so it takes no room in the line at rest
+          className={`absolute left-full ml-1.5 transition-[opacity,transform] duration-700 ease-haus group-hover:translate-x-0 group-hover:opacity-100 ${
             open ? "translate-x-0 opacity-100" : "-translate-x-1 opacity-0"
           }`}
         >
@@ -159,6 +161,20 @@ export const ContactMenu: React.FC = () => {
                   </span>
                 )}
               </button>
+              <div className="mx-4 my-1.5 h-px bg-ink/12" />
+              <a
+                role="menuitem"
+                href={INSTAGRAM}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className={item}
+              >
+                <Label>instagram</Label>
+                <span aria-hidden className={arrow}>
+                  ↗
+                </span>
+              </a>
             </div>
           </motion.div>
         )}

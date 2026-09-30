@@ -55,7 +55,9 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     } catch {
       return;
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Touch screens are dense and small: 1.5× is indistinguishable and halves the pixels.
+    const touch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, touch ? 1.5 : 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.shadowMap.enabled = true;
@@ -107,6 +109,8 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     const glyphs = mark.glyphs;
     // ── Sizing ────────────────────────────────────────────────────────
     let lookY = 0;
+    // Set whenever the frame must be drawn even if nothing is moving (first frame, resize).
+    let dirty = true;
     const resize = () => {
       const w = el.clientWidth;
       const h = el.clientHeight;
@@ -119,6 +123,7 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       // Portrait: aim below the piece so it rides in the upper third, clear of the stacked labels
       lookY = w / h < 1 ? -1.1 : 0;
       camera.updateProjectionMatrix();
+      dirty = true;
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -143,35 +148,48 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       const k = (rate: number) => (reduced ? 1 : 1 - Math.exp(-dt * rate));
       const a = activeRef.current;
       const isDiving = divingRef.current;
+      // How far everything moved this frame; once it all settles, drawing stops.
+      let motion = 0;
+      const ease = (from: number, to: number, rate: number) => {
+        const step = (to - from) * k(rate);
+        motion += Math.abs(step);
+        return from + step;
+      };
 
       // Letters recompose for the hovered section; on click they realign.
       const L = LAYOUTS[isDiving || a === null ? 0 : a + 1];
       glyphs.forEach((h, i) => {
         const [dx, dy, dz, ry, rx] = L[i];
         const home = h.userData.home as THREE.Vector3;
-        h.position.x += (home.x + dx - h.position.x) * k(2.4);
-        h.position.y += (home.y + dy - h.position.y) * k(2.4);
-        h.position.z += (home.z + dz - h.position.z) * k(2.4);
-        h.rotation.y += (ry - h.rotation.y) * k(2.4);
-        h.rotation.x += (rx - h.rotation.x) * k(2.4);
+        h.position.x = ease(h.position.x, home.x + dx, 2.4);
+        h.position.y = ease(h.position.y, home.y + dy, 2.4);
+        h.position.z = ease(h.position.z, home.z + dz, 2.4);
+        h.rotation.y = ease(h.rotation.y, ry, 2.4);
+        h.rotation.x = ease(h.rotation.x, rx, 2.4);
       });
 
       // The sculpture turns with the cursor, and sways slowly at rest.
-      const sway = reduced || isDiving ? 0 : Math.sin(t * 0.35) * 0.07;
+      // No sway on touch screens: there it rests completely still, and so does the GPU.
+      const sway = reduced || isDiving || touch ? 0 : Math.sin(t * 0.35) * 0.07;
       const turnY = isDiving ? 0 : nx.get() * 0.32 + sway;
       const turnX = isDiving ? 0 : ny.get() * 0.16;
-      group.rotation.y += (turnY - group.rotation.y) * k(3);
-      group.rotation.x += (turnX - group.rotation.x) * k(3);
+      group.rotation.y = ease(group.rotation.y, turnY, 3);
+      group.rotation.x = ease(group.rotation.x, turnX, 3);
 
       // Camera: at rest in front; on click it flies through the u–g gap.
-      dive += ((isDiving ? 1 : 0) - dive) * (isDiving ? k(1.3) : 1);
+      const nextDive = dive + ((isDiving ? 1 : 0) - dive) * (isDiving ? k(1.3) : 1);
+      motion += Math.abs(nextDive - dive);
+      dive = nextDive;
       const through = gapPoint.clone().setZ(-3);
       camPos.lerpVectors(camRest, through, dive * dive);
       camera.position.copy(camPos);
       look.lerpVectors(new THREE.Vector3(0, lookY, 0), gapPoint.clone().setZ(-10), dive);
       camera.lookAt(look);
 
-      renderer.render(scene, camera);
+      if (!document.hidden && (dirty || motion > 1e-5)) {
+        renderer.render(scene, camera);
+        dirty = false;
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);

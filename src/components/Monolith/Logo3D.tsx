@@ -17,10 +17,18 @@ const BOUNDS = { w: 4.9, h: 1.55, cy: 0.07 };
 /** The canvas overhangs the logo's box by this factor, so the turning letters never clip. */
 const BLEED = 1.4;
 
-const Logo3D: React.FC<{ className?: string }> = ({ className }) => {
+type Props = {
+  className?: string;
+  /** Stop drawing while hidden (e.g. behind the open index). */
+  paused?: boolean;
+};
+
+const Logo3D: React.FC<Props> = ({ className, paused = false }) => {
   const host = useRef<HTMLDivElement>(null);
   const [noWebGL, setNoWebGL] = useState(false);
   const { nx, ny } = usePointerLight();
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   useEffect(() => {
     const el = host.current;
@@ -77,7 +85,11 @@ const Logo3D: React.FC<{ className?: string }> = ({ className }) => {
       const half = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
       camera.position.set(0, 0, (BOUNDS.h * BLEED) / 2 / half);
       camera.updateProjectionMatrix();
-    };    fit();
+      dirty = true;
+    };
+    // Set whenever the frame must be drawn even if the logo is still (first frame, resize).
+    let dirty = true;
+    fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
 
@@ -88,9 +100,16 @@ const Logo3D: React.FC<{ className?: string }> = ({ className }) => {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       const k = reduced ? 1 : 1 - Math.exp(-dt * 2.5);
-      mark.group.rotation.y += (nx.get() * 0.26 - mark.group.rotation.y) * k;
-      mark.group.rotation.x += (ny.get() * 0.18 - mark.group.rotation.x) * k;
-      if (!document.hidden) renderer.render(scene, camera);
+      const stepY = (nx.get() * 0.26 - mark.group.rotation.y) * k;
+      const stepX = (ny.get() * 0.18 - mark.group.rotation.x) * k;
+      mark.group.rotation.y += stepY;
+      mark.group.rotation.x += stepX;
+      // Draw only while it turns (on touch screens it is nearly always still).
+      const moving = Math.abs(stepY) + Math.abs(stepX) > 1e-5;
+      if (!document.hidden && !pausedRef.current && (dirty || moving)) {
+        renderer.render(scene, camera);
+        dirty = false;
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);

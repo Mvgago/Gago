@@ -39,8 +39,11 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  // The page's language, and its description for search engines, follow the visitor.
+  // The title is the brand line, the same in every language.
   useEffect(() => {
     document.documentElement.lang = lang;
+    document.querySelector('meta[name="description"]')?.setAttribute("content", STRINGS[lang]["meta.description"]);
   }, [lang]);
 
   const value = useMemo<I18n>(() => ({ lang, setLang, t: (key) => STRINGS[lang][key] }), [lang, setLang]);

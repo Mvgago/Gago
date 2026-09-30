@@ -1,8 +1,9 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { SECTIONS, type Section } from "./sections";
 import { ContactMenu } from "../Contact/ContactMenu";
+import { SocialLinks } from "../Contact/SocialLinks";
 import { EASE_VEIL } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import type { Key } from "../../i18n/strings";
@@ -31,14 +32,32 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { t } = useI18n();
+  const dialog = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    // Keyboard: focus moves into the index, and Tab cycles through the index and
+    // the header (language, close) only, never the page hidden behind.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") return onClose();
+      if (e.key !== "Tab") return;
+      const items = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "header a[href], header button, [role=dialog] a[href], [role=dialog] button",
+        ),
+      ).filter((n) => n.tabIndex >= 0 && n.offsetParent !== null);
+      if (!items.length) return;
+      const i = items.indexOf(document.activeElement as HTMLElement);
+      const next = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : i === items.length - 1 ? 0 : i + 1;
+      e.preventDefault();
+      items[next].focus();
+    };
+    const focusIn = requestAnimationFrame(() => dialog.current?.focus({ preventScroll: true }));
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
     return () => {
+      cancelAnimationFrame(focusIn);
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
     };
@@ -59,10 +78,12 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
       {open && (
         <motion.div
           key="spatial-index"
+          ref={dialog}
+          tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-label={t("index.footer")}
-          className="fixed inset-0 z-40 overflow-hidden bg-[#f3f2f5]"
+          className="fixed inset-0 z-40 overflow-hidden bg-[#f3f2f5] outline-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 1.2, ease: EASE_VEIL } }}
           exit={{ opacity: 0, transition: { duration: 0.7, ease: EASE_VEIL } }}
@@ -85,7 +106,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
           {/* Gallery labels: flat, sharp, far apart */}
           <nav
-            className="pointer-events-none absolute inset-x-0 top-[50%] flex flex-col items-center gap-7 sm:gap-9 lg:inset-0 lg:top-0 lg:block"
+            className="pointer-events-none absolute inset-x-0 top-[47%] flex flex-col items-center gap-5 px-4 sm:top-[50%] sm:gap-9 lg:inset-0 lg:top-0 lg:block lg:px-0"
             onMouseLeave={() => setActive(null)}
             aria-label="Sections"
           >
@@ -122,17 +143,22 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
               <span aria-hidden className="hidden sm:inline">·</span>
               <ContactMenu />
               <span aria-hidden className="hidden sm:inline">·</span>
-              <a
-                href="/privacy"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/privacy");
-                  onClose();
-                }}
-                className="transition-colors duration-500 hover:text-[#3b3842]"
-              >
-                {t("privacy")}
-              </a>
+              {/* One line even on phones, so the stacked footer stays short */}
+              <span className="flex items-center gap-3">
+                <SocialLinks className="hover:text-[#3b3842]" />
+                <span aria-hidden>·</span>
+                <a
+                  href="/privacy"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/privacy");
+                    onClose();
+                  }}
+                  className="transition-colors duration-500 hover:text-[#3b3842]"
+                >
+                  {t("privacy")}
+                </a>
+              </span>
             </span>
           </motion.footer>
         </motion.div>
@@ -188,9 +214,12 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     >
       {t(key)}
     </span>
+    {/* Touch screens have no hover: there the caption is always shown, faintly */}
     <span
-      className="mt-2 hidden font-mono text-[10px] font-extralight lowercase tracking-[0.2em] transition-opacity duration-700 lg:block"
-      style={{ color: NAVE.label, opacity: on ? 1 : 0 }}
+      className={`mt-2 block font-mono text-[10px] font-extralight lowercase tracking-[0.1em] opacity-60 sm:tracking-[0.2em] transition-opacity duration-700 ${
+        on ? "lg:opacity-100" : "lg:opacity-0"
+      }`}
+      style={{ color: NAVE.label }}
     >
       {t(`${key}.caption` as Key)}
     </span>
