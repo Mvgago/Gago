@@ -48,7 +48,13 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // ── Renderer & studio ─────────────────────────────────────────────
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    // No WebGL: the index still works, just without the sculpture.
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    } catch {
+      return;
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.outputColorSpace = THREE.SRGBColorSpace;

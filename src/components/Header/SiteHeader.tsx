@@ -17,10 +17,10 @@ export const SiteHeader: React.FC = () => {
   // Any navigation closes the index.
   useEffect(close, [pathname, close]);
 
-  // Ink over both the lit landing and the white nave of the index.
-  const tone = "text-ink";
-  const line = "bg-ink";
-  const border = "border-ink/25 hover:border-ink/60";
+  // The index control is the one solid form on the page: a graphite pill with
+  // platinum type, so the way in is found at a glance without shouting.
+  const tone = "text-platinum";
+  const line = "bg-platinum";
 
   return (
     <>
@@ -51,7 +51,7 @@ export const SiteHeader: React.FC = () => {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-label={open ? "Close index" : "Open index"}
-            className={`group flex items-center gap-3 rounded-full border bg-platinum/15 px-4 py-2 backdrop-blur-md transition-colors duration-500 ${border}`}
+            className="group flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 shadow-[0_10px_30px_-12px_rgba(40,34,38,0.55)] backdrop-blur-md transition-colors duration-500 hover:bg-ink focus-visible:outline-offset-2"
           >
             <span className={`meta w-10 text-left transition-colors duration-700 ${tone}`}>{open ? "close" : "index"}</span>
             <span className="relative block h-2 w-4">
