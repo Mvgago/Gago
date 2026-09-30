@@ -39,6 +39,7 @@ const en = {
 
   "footer.together": "let's work together",
   "lang.label": "Language",
+  "privacy": "privacy",
 };
 
 export type Key = keyof typeof en;
@@ -73,6 +74,7 @@ const es: Record<Key, string> = {
 
   "footer.together": "trabajemos juntos",
   "lang.label": "Idioma",
+  "privacy": "privacidad",
 };
 
 const fr: Record<Key, string> = {
@@ -105,6 +107,7 @@ const fr: Record<Key, string> = {
 
   "footer.together": "travaillons ensemble",
   "lang.label": "Langue",
+  "privacy": "confidentialité",
 };
 
 const de: Record<Key, string> = {
@@ -137,6 +140,7 @@ const de: Record<Key, string> = {
 
   "footer.together": "lass uns zusammenarbeiten",
   "lang.label": "Sprache",
+  "privacy": "datenschutz",
 };
 
 export const STRINGS: Record<Lang, Record<Key, string>> = { en, es, fr, de };

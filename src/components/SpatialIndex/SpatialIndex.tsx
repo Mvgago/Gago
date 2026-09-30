@@ -121,6 +121,18 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
               <span>{t("availability")} — {new Date().getFullYear()}</span>
               <span aria-hidden className="hidden sm:inline">·</span>
               <ContactMenu />
+              <span aria-hidden className="hidden sm:inline">·</span>
+              <a
+                href="/privacy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/privacy");
+                  onClose();
+                }}
+                className="transition-colors duration-500 hover:text-[#3b3842]"
+              >
+                {t("privacy")}
+              </a>
             </span>
           </motion.footer>
         </motion.div>

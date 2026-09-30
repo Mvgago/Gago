@@ -23,6 +23,7 @@ import { AmvreportPage } from "./pages/Amvreport/Amvreport";
 import { AnnetPage } from "./pages/Annet/Annet";
 import { AmorsacroPage } from "./pages/Amorsacro/Amorsacro";
 import ProjectDetailPage from "./pages/ProjectDetails/ProjectDetails";
+import { PrivacyPage } from "./pages/Privacy/PrivacyPage";
 
 const page = (element: React.ReactNode, withFooter = true) => (
   <PageTransition className="relative z-10 flex min-h-screen flex-col">
@@ -49,6 +50,7 @@ export const App: React.FC = () => {
           <Route path="/about" element={page(<AboutPage />)} />
           <Route path="/artwork" element={page(<ArtworkPage />)} />
           <Route path="/projects" element={page(<ProjectsPage />)} />
+          <Route path="/privacy" element={page(<PrivacyPage />)} />
           <Route path="/sapphire" element={caseStudy(<SapphirePage />)} />
           <Route path="/smarthc" element={caseStudy(<SmartPage />)} />
           <Route path="/buendia" element={caseStudy(<BuendiaPage />)} />

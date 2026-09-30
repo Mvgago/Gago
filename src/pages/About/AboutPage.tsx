@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { rise } from "../../lib/motion";
 import { StudioStatus } from "../../components/Meta/Meta";
 
-const STUDIO_EMAIL = "mvgago26@gmail.com";
+const STUDIO_EMAIL = "hola@fugahaus.com";
 
 const Field: React.FC<{
   label: string;

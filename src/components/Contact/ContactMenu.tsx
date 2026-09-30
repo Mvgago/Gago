@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { EASE_HAUS } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 
-export const EMAIL = "mvgago26@gmail.com";
+export const EMAIL = "hola@fugahaus.com";
 
 const enc = encodeURIComponent;
 // The subject line follows the visitor's language.
