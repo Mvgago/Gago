@@ -13,12 +13,19 @@ type Props = { open: boolean; onClose: () => void };
 // three.js only loads when the index is first opened.
 const LogoSpace = lazy(() => import("./LogoSpace"));
 
-// Palette: white on white, with the faintest violet in the shadows.
+// Palette: brushed steel, with the faintest violet in the shadows.
 const NAVE = {
-  label: "#6e6a76",
-  labelOn: "#3b3842",
-  hair: "rgba(59, 56, 66, 0.12)",
+  label: "#5c5864",
+  labelOn: "#34313a",
+  hair: "rgba(52, 49, 58, 0.16)",
 };
+
+// Backdrop: a soft pool of light over cool steel, a faint diagonal sheen like
+// brushed metal, and the edges falling slightly darker.
+const STEEL = [
+  "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.22) 48%, transparent 66%)",
+  "radial-gradient(120% 90% at 50% 42%, #e4e3e7 0%, #d5d4d9 50%, #c3c2c8 100%)",
+].join(", ");
 
 /**
  * The index as the FUGA wordmark in sculpture, in an infinite white studio
@@ -83,7 +90,8 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
           role="dialog"
           aria-modal="true"
           aria-label={t("index.footer")}
-          className="fixed inset-0 z-40 overflow-hidden bg-[#f3f2f5] outline-none"
+          className="fixed inset-0 z-40 overflow-hidden bg-[#d5d4d9] outline-none"
+          style={{ backgroundImage: STEEL }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 1.2, ease: EASE_VEIL } }}
           exit={{ opacity: 0, transition: { duration: 0.7, ease: EASE_VEIL } }}

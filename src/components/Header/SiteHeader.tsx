@@ -41,19 +41,46 @@ export const SiteHeader: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.4, ease: EASE_HAUS, delay: 0.4 }}
       >
+        <div className="relative">
+        {/* While the index is open the sculpture is the brand, so the corner becomes a
+            second way out: home, balancing the close control on the right. */}
+        <Link
+          to="/"
+          onClick={close}
+          tabIndex={open ? undefined : -1}
+          aria-hidden={!open}
+          aria-label={t("index.home")}
+          // The two never share the corner: each one leaves quickly before the other arrives.
+          className={`absolute left-0 top-0 flex h-[2.35rem] w-10 items-center text-ink transition-opacity ${
+            open
+              ? "opacity-75 delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-300"
+              : "pointer-events-none opacity-0 duration-150"
+          }`}
+        >
+          {/* Hairline house, drawn like the social icons */}
+          <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth={1.1} strokeLinejoin="round" aria-hidden>
+            <path d="M3.5 11 12 4l8.5 7" />
+            <path d="M5.5 9.5V20h13V9.5" />
+            <path d="M10 20v-5.5h4V20" />
+          </svg>
+        </Link>
+
         {/* Corner brand: the 3D wordmark, small, in the brand's satin pearl */}
         <Link
           to="/"
           aria-label="Fuga Haus — home"
           tabIndex={open ? -1 : undefined}
-          className={`block w-24 transition-opacity duration-700 hover:opacity-100 hover:duration-200 sm:w-28 md:w-32 ${
-            open ? "pointer-events-none opacity-0" : "opacity-[0.82]"
+          className={`block w-24 transition-opacity sm:w-28 md:w-32 ${
+            open
+              ? "pointer-events-none opacity-0 duration-200"
+              : "opacity-[0.82] delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-200"
           }`}
         >
           <Suspense fallback={<Monolith tilt={false} tone="warm" reveal={false} />}>
             <Logo3D className="w-full" paused={open} />
           </Suspense>
         </Link>
+        </div>
 
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
           <StudioStatus className="hidden text-ink lg:flex" />

@@ -21,6 +21,7 @@ const en = {
   "index.aria.close": "Close index",
   "index.footer": "fuga haus — index",
   "index.here": "you are here",
+  "index.home": "home",
 
   "section.projects": "projects",
   "section.artwork": "artwork",
@@ -57,6 +58,7 @@ const es: Record<Key, string> = {
   "index.aria.close": "Cerrar índice",
   "index.footer": "fuga haus — índice",
   "index.here": "estás aquí",
+  "index.home": "inicio",
 
   "section.projects": "proyectos",
   "section.artwork": "obra",
@@ -91,6 +93,7 @@ const fr: Record<Key, string> = {
   "index.aria.close": "Fermer l'index",
   "index.footer": "fuga haus — index",
   "index.here": "vous êtes ici",
+  "index.home": "accueil",
 
   "section.projects": "projets",
   "section.artwork": "œuvres",
@@ -125,6 +128,7 @@ const de: Record<Key, string> = {
   "index.aria.close": "Index schliessen",
   "index.footer": "fuga haus — index",
   "index.here": "sie sind hier",
+  "index.home": "startseite",
 
   "section.projects": "projekte",
   "section.artwork": "arbeiten",

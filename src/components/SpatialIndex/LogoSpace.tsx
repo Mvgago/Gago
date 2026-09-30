@@ -19,8 +19,6 @@ type Props = {
   diving: boolean;
 };
 
-const BG = new THREE.Color("#f3f2f5");
-
 const toV = (x: number, y: number) => new THREE.Vector3((x - 945) / 300, -(y - 900) / 300, 0);
 
 // Per-section compositions, one row per glyph: [dx, dy, dz, rotY, rotX].
@@ -51,7 +49,8 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     // No WebGL: the index still works, just without the sculpture.
     let renderer: THREE.WebGLRenderer;
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+      // Transparent: the brushed-steel backdrop is a CSS gradient on the index behind it.
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     } catch {
       return;
     }
@@ -66,7 +65,6 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     el.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.background = BG;
     // Same finish and reflections as the corner logo: one model, one material.
     const envTex = brandEnvironment(renderer);
     scene.environment = envTex;
