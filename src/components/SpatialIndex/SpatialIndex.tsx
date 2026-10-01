@@ -143,12 +143,11 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
           {/* Footer */}
           <motion.footer
-            className="absolute inset-x-4 bottom-6 flex flex-col items-start gap-2 pt-4 font-mono text-[11px] font-light lowercase tracking-[0.12em] sm:inset-x-6 sm:bottom-8 lg:inset-x-8 lg:bottom-10 lg:flex-row lg:items-center lg:justify-between lg:pt-5"
+            className="absolute inset-x-4 bottom-6 flex flex-col items-start gap-2 pt-4 font-mono text-[11px] font-light lowercase tracking-[0.12em] sm:inset-x-6 sm:bottom-8 lg:inset-x-8 lg:bottom-10 lg:flex-row lg:items-center lg:justify-end lg:pt-5"
             style={{ color: NAVE.label, borderTop: `1px solid ${NAVE.hair}` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 1, duration: walking ? 0.4 : 1 } }}
           >
-            <span className="hidden lg:inline">{t("index.footer")}</span>
             <span className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
               <span>{t("availability")} — {new Date().getFullYear()}</span>
               <span aria-hidden className="hidden sm:inline">·</span>

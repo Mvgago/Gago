@@ -60,15 +60,15 @@ export const SiteHeader: React.FC = () => {
           // The two never share the corner: each one leaves quickly before the other arrives.
           className={`absolute left-0 top-0 flex h-[2.35rem] w-10 items-center text-ink transition-opacity ${
             open
-              ? "opacity-75 delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-300"
+              ? "opacity-100 delay-300 duration-700 hover:opacity-70 hover:delay-0 hover:duration-300"
               : "pointer-events-none opacity-0 duration-150"
           }`}
         >
-          {/* Hairline house, drawn like the social icons */}
-          <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth={1.1} strokeLinejoin="round" aria-hidden>
-            <path d="M3.5 11 12 4l8.5 7" />
-            <path d="M5.5 9.5V20h13V9.5" />
-            <path d="M10 20v-5.5h4V20" />
+          {/* "Fg", the wordmark's own F and g in hairline: the brand's sign for home.
+              (A lone g, this small, read as a screen icon rather than a letter.) */}
+          <svg viewBox="250 678 652 400" className="h-[22px] w-9" fill="none" stroke="currentColor" strokeWidth={28} aria-hidden>
+            <path d="M570 695H300A33 33 0 0 0 267 728V976M267 826H570" />
+            <path d="M1225 960H985A35 35 0 0 1 950 925V807A35 35 0 0 1 985 772H1225V1025A35 35 0 0 1 1190 1060H935" transform="translate(-340 0)" />
           </svg>
         </Link>
 

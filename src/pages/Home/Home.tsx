@@ -53,7 +53,7 @@ export const Home: React.FC = () => {
           initial="hidden"
           animate="shown"
           custom={7}
-          className="text-[1.9rem] font-light leading-[1.1] tracking-[0.01em] sm:text-4xl lg:text-[2.75rem]"
+          className="text-[2.05rem] font-light leading-[1.1] tracking-[0.01em] sm:text-[2.5rem] lg:text-[3.1rem]"
         >
           {t("hero.title")}
         </motion.h1>
@@ -63,7 +63,7 @@ export const Home: React.FC = () => {
           initial="hidden"
           animate="shown"
           custom={8}
-          className="mt-3 text-base font-light tracking-[0.02em] text-silver/85 [text-wrap:balance] sm:text-lg"
+          className="mt-3 text-[1.0625rem] font-light tracking-[0.02em] text-silver/85 [text-wrap:balance] sm:text-[1.2rem] lg:text-[1.3rem]"
         >
           {t("hero.sub")}
         </motion.p>
@@ -73,7 +73,7 @@ export const Home: React.FC = () => {
             to="/projects"
             // The one way into the work: a step firmer than the other small type,
             // with a hairline always under it that lights up on hover.
-            className="meta group inline-flex items-center gap-3 !text-[11px] !font-normal text-silver"
+            className="meta group inline-flex items-center gap-3 !text-[12px] !font-normal text-silver lg:!text-[13px]"
             onPointerEnter={(e) => e.pointerType === "mouse" && setHint(true)}
             onPointerLeave={() => setHint(false)}
             onFocus={() => setHint(true)}

@@ -12,7 +12,7 @@ export type Lang = (typeof LANGS)[number];
 const en = {
   "hero.title": "Designing atmospheres.",
   "hero.sub": "Brand identity, web & 3D imagery.",
-  "hero.cta": "enter the archive",
+  "hero.cta": "see projects",
 
   "status": "studio open",
   "index.open": "index",
@@ -22,6 +22,10 @@ const en = {
   "index.footer": "fuga haus — index",
   "index.here": "you are here",
   "index.home": "home",
+  "artwork.listen": "listen on spotify",
+  "artwork.pieces": "pieces",
+  "artwork.prev": "previous",
+  "artwork.next": "next",
 
   "section.projects": "projects",
   "section.artwork": "artwork",
@@ -49,7 +53,7 @@ export type Key = keyof typeof en;
 const es: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
   "hero.sub": "Identidad de marca, web y visualización 3D.",
-  "hero.cta": "entrar al archivo",
+  "hero.cta": "ver proyectos",
 
   "status": "estudio abierto",
   "index.open": "índice",
@@ -59,6 +63,10 @@ const es: Record<Key, string> = {
   "index.footer": "fuga haus — índice",
   "index.here": "estás aquí",
   "index.home": "inicio",
+  "artwork.listen": "escuchar en spotify",
+  "artwork.pieces": "piezas",
+  "artwork.prev": "anterior",
+  "artwork.next": "siguiente",
 
   "section.projects": "proyectos",
   "section.artwork": "obra",
@@ -84,7 +92,7 @@ const es: Record<Key, string> = {
 const fr: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
   "hero.sub": "Identité de marque, web & visualisation 3D.",
-  "hero.cta": "entrer dans les archives",
+  "hero.cta": "voir les projets",
 
   "status": "studio ouvert",
   "index.open": "index",
@@ -94,6 +102,10 @@ const fr: Record<Key, string> = {
   "index.footer": "fuga haus — index",
   "index.here": "vous êtes ici",
   "index.home": "accueil",
+  "artwork.listen": "écouter sur spotify",
+  "artwork.pieces": "pièces",
+  "artwork.prev": "précédente",
+  "artwork.next": "suivante",
 
   "section.projects": "projets",
   "section.artwork": "œuvres",
@@ -119,7 +131,7 @@ const fr: Record<Key, string> = {
 const de: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
   "hero.sub": "Markenidentität, Web & 3D-Visualisierung.",
-  "hero.cta": "zum archiv",
+  "hero.cta": "projekte ansehen",
 
   "status": "studio geöffnet",
   "index.open": "index",
@@ -129,6 +141,10 @@ const de: Record<Key, string> = {
   "index.footer": "fuga haus — index",
   "index.here": "sie sind hier",
   "index.home": "startseite",
+  "artwork.listen": "auf spotify hören",
+  "artwork.pieces": "werke",
+  "artwork.prev": "zurück",
+  "artwork.next": "weiter",
 
   "section.projects": "projekte",
   "section.artwork": "arbeiten",

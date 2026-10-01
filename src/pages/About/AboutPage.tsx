@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { rise } from "../../lib/motion";
 import { StudioStatus } from "../../components/Meta/Meta";
+import { FUGA_SEI_EP } from "../../outils/artwork";
 
 const STUDIO_EMAIL = "hola@fugahaus.com";
 
@@ -78,6 +79,19 @@ export const AboutPage: React.FC = () => {
             <p>
               I also collaborate with artists to bring their visions to life, crafting visual environments that enhance
               their identity and connect with audiences. If you made it this far, we're meant to work together.
+            </p>
+            {/* The studio's own sound */}
+            <p className="sm:col-span-2">
+              The studio also has a voice of its own:{" "}
+              <a
+                href={FUGA_SEI_EP}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink underline decoration-ink/30 underline-offset-4 transition-colors duration-500 hover:decoration-ink"
+              >
+                Fuga Sei
+              </a>
+              , minimal, spatial electronic music. Its first EP, <em>Grimaldi Lines</em>, is out now.
             </p>
           </motion.div>
 
