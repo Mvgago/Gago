@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Monolith } from "../Monolith/Monolith";
 import { StudioStatus } from "../Meta/Meta";
-import { SpatialIndex } from "../SpatialIndex/SpatialIndex";
+import { SpatialIndex, preloadLogoSpace } from "../SpatialIndex/SpatialIndex";
 import { EASE_HAUS } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { LanguageSwitch } from "../../i18n/LanguageSwitch";
@@ -19,6 +19,14 @@ export const SiteHeader: React.FC = () => {
 
   // Any navigation closes the index.
   useEffect(close, [pathname, close]);
+
+  // Fetch the index sculpture in the background once the landing has settled.
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 2500));
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
+    const id = idle(() => void preloadLogoSpace(), { timeout: 4000 });
+    return () => cancel(id);
+  }, []);
 
   // When the index closes, keyboard focus returns to the button that opened it.
   const toggle = useRef<HTMLButtonElement>(null);
@@ -70,10 +78,12 @@ export const SiteHeader: React.FC = () => {
           to="/"
           aria-label="Fuga Haus — home"
           tabIndex={open ? -1 : undefined}
-          className={`block w-24 transition-opacity sm:w-28 md:w-32 ${
+          className={`block w-28 transition-opacity md:w-32 ${
             open
               ? "pointer-events-none opacity-0 duration-200"
-              : "opacity-[0.82] delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-200"
+              : // Phones: the mark is small and its hairline bars fade into the mauve,
+                // so it shows at full strength, a touch brighter, with a soft lift.
+                "opacity-[0.82] delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-200 max-sm:opacity-100 max-sm:[filter:brightness(1.18)_drop-shadow(0_1px_5px_rgba(40,32,38,0.35))]"
           }`}
         >
           <Suspense fallback={<Monolith tilt={false} tone="warm" reveal={false} />}>
@@ -90,6 +100,8 @@ export const SiteHeader: React.FC = () => {
             ref={toggle}
             type="button"
             onClick={() => setOpen((v) => !v)}
+            onPointerEnter={() => void preloadLogoSpace()}
+            onFocus={() => void preloadLogoSpace()}
             aria-expanded={open}
             aria-label={open ? t("index.aria.close") : t("index.aria.open")}
             className="group flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 shadow-[0_10px_30px_-12px_rgba(40,34,38,0.55)] backdrop-blur-md transition-colors duration-500 hover:bg-ink focus-visible:outline-offset-2"

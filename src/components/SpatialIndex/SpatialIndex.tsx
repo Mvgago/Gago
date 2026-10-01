@@ -10,8 +10,11 @@ import type { Key } from "../../i18n/strings";
 
 type Props = { open: boolean; onClose: () => void };
 
-// three.js only loads when the index is first opened.
-const LogoSpace = lazy(() => import("./LogoSpace"));
+// three.js stays out of the first load; the header fetches it quietly once the
+// page is idle (or the moment the index button is approached), so the
+// sculpture is already there on the first open.
+export const preloadLogoSpace = () => import("./LogoSpace");
+const LogoSpace = lazy(preloadLogoSpace);
 
 // Palette: brushed steel, with the faintest violet in the shadows.
 const NAVE = {
