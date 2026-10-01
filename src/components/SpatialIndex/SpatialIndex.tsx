@@ -201,6 +201,9 @@ type LabelProps = {
 const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHover, onGo }) => {
   const { t } = useI18n();
   const key = `section.${section.label}` as Key;
+  // The staggered delay is for the labels' entrance only; after that, dimming
+  // and relighting between sections must follow the cursor at once.
+  const [entered, setEntered] = useState(false);
   return (
   <motion.a
     href={section.path}
@@ -213,7 +216,11 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     aria-current={current ? "page" : undefined}
     className={`pointer-events-auto relative block text-center outline-none ${SPOTS[index]}`}
     initial={{ opacity: 0 }}
-    animate={{ opacity: dimmed ? 0.35 : 1, transition: { duration: 0.8, delay: dimmed ? 0 : 0.9 + index * 0.15 } }}
+    animate={{
+      opacity: dimmed ? 0.35 : 1,
+      transition: entered ? { duration: 0.3 } : { duration: 0.8, delay: dimmed ? 0 : 0.9 + index * 0.15 },
+    }}
+    onAnimationComplete={() => setEntered(true)}
   >
     <span className="block font-mono text-[10px] font-extralight tracking-[0.25em]" style={{ color: NAVE.label }}>
       {section.num}
@@ -227,8 +234,9 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     </span>
     {/* Caption on hover, wide screens only: phones get just the names */}
     <span
-      className={`mt-2 hidden font-mono text-[10px] font-extralight lowercase tracking-[0.2em] transition-opacity duration-700 lg:block ${
-        on ? "opacity-100" : "opacity-0"
+      // Appears promptly with its title; leaves a little more slowly
+      className={`mt-2 hidden font-mono text-[10px] font-extralight lowercase tracking-[0.2em] transition-opacity lg:block ${
+        on ? "opacity-100 duration-200" : "opacity-0 duration-500"
       }`}
       style={{ color: NAVE.label }}
     >
