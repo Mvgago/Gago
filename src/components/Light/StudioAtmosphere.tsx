@@ -49,11 +49,11 @@ export const StudioAtmosphere: React.FC = () => {
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(60% 55% at 0% 100%, rgba(170, 166, 130, 0.9) 0%, rgba(160, 152, 124, 0.45) 45%, transparent 75%),
-            radial-gradient(45% 45% at 100% 100%, rgba(238, 229, 225, 0.85) 0%, transparent 80%),
-            radial-gradient(55% 50% at 100% 0%, rgba(206, 204, 210, 0.9) 0%, transparent 80%),
-            radial-gradient(40% 40% at 50% 100%, rgba(168, 158, 140, 0.55) 0%, transparent 80%),
-            linear-gradient(118deg, #6d5f66 0%, #867d81 22%, #a6a09c 44%, #c9c4c1 64%, #efebea 100%)
+            radial-gradient(60% 55% at 0% 100%, rgba(162, 162, 138, 0.9) 0%, rgba(154, 152, 132, 0.45) 45%, transparent 75%),
+            radial-gradient(45% 45% at 100% 100%, rgba(233, 231, 234, 0.85) 0%, transparent 80%),
+            radial-gradient(55% 50% at 100% 0%, rgba(204, 204, 212, 0.9) 0%, transparent 80%),
+            radial-gradient(40% 40% at 50% 100%, rgba(160, 157, 152, 0.55) 0%, transparent 80%),
+            linear-gradient(118deg, #6b5f68 0%, #847d83 22%, #a2a0a3 44%, #c6c5c9 64%, #edecef 100%)
           `,
         }}
       />
@@ -69,7 +69,7 @@ export const StudioAtmosphere: React.FC = () => {
         className="absolute left-[80vw] top-[48vh] h-[90vmax] w-[90vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(255, 253, 252, 0.7) 0%, rgba(250, 246, 245, 0.32) 30%, rgba(236, 230, 230, 0.08) 62%, transparent 100%)",
+            "radial-gradient(closest-side, rgba(253, 253, 255, 0.7) 0%, rgba(246, 246, 249, 0.32) 30%, rgba(231, 230, 235, 0.08) 62%, transparent 100%)",
           mixBlendMode: "screen",
         }}
       />

@@ -29,6 +29,26 @@ const LAYOUTS: number[][][] = [
   [[-0.55, 0, 0.2, 0.7, 0], [-0.18, 0, -0.1, 0.28, 0], [0.18, 0, -0.1, -0.28, 0], [0.55, 0, 0.2, -0.7, 0]],
 ];
 
+/** A flat oval of light or shade lying on the floor, fading out to nothing at its rim. */
+function floorGlow(inner: string, outer: string) {
+  const c = document.createElement("canvas");
+  c.width = c.height = 128;
+  const g = c.getContext("2d")!;
+  const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, inner);
+  grad.addColorStop(1, outer);
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false }),
+  );
+  mesh.rotation.x = -Math.PI / 2;
+  return mesh;
+}
+
 // Touch screens, at rest: logo → projects → logo → work → logo → studio…
 const IDLE_CYCLE = [0, 1, 0, 2, 0, 3];
 
@@ -75,27 +95,36 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
 
     scene.add(new THREE.HemisphereLight("#fbf8f6", "#8f8579", 0.35));
     const key = new THREE.DirectionalLight("#ffffff", 1.1);
-    key.position.set(0.8, 4.6, 4.6); // a studio key at ~45°: the letters' shapes fall softly onto the floor behind them
-    // A real cast shadow: each letter projected onto the floor, very soft,
-    // so it follows the letters as they recompose.
+    // A high studio key, slightly in front: the letters' shadow falls almost straight
+    // down, opening into the floor instead of stretching into a thin band.
+    key.position.set(0.7, 6.5, 2.4);
+    // The only shadow: each letter projected onto the floor, soft but still carrying
+    // the shapes, so it follows the letters as they turn and recompose.
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
-    key.shadow.radius = 22;
+    key.shadow.radius = 15;
     key.shadow.blurSamples = 24;
     key.shadow.bias = -0.0008;
-    // Frustum much wider than the floor, so its edge never shows
-    Object.assign(key.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 25 });
+    // Tight frustum around the piece (more shadow detail), still wider than the floor
+    Object.assign(key.shadow.camera, { left: -4.5, right: 4.5, top: 4.5, bottom: -4.5, near: 1, far: 14 });
     scene.add(key);
 
-    // Floor that only shows the cast shadow
+    // The floor: invisible, it only shows what falls on it. The piece hovers just above it.
+    const FLOOR_Y = -0.78;
     const shadow = new THREE.Mesh(
       new THREE.PlaneGeometry(9, 5),
-      new THREE.ShadowMaterial({ color: "#4a4048", opacity: 0.22 }),
+      new THREE.ShadowMaterial({ color: "#3e3640", opacity: 0.13 }),
     );
     shadow.rotation.x = -Math.PI / 2;
-    shadow.position.set(0, -0.55, -1.2);
+    shadow.position.set(0, FLOOR_Y, -0.6);
     shadow.receiveShadow = true;
     scene.add(shadow);
+    // Light pooling on the floor around the piece, so the shadow has a surface to land on
+    const pool = floorGlow("rgba(255,255,255,0.55)", "rgba(255,255,255,0)");
+    pool.position.set(0, FLOOR_Y - 0.002, -0.2);
+    scene.add(pool);
+    pool.renderOrder = 1;
+    shadow.renderOrder = 2;
     // ── The wordmark ──────────────────────────────────────────────────
     const mat = brandMetal();
     const group = new THREE.Group();
@@ -121,6 +150,9 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       camera.fov = w / h < 1 ? 50 : 28;
       // Portrait: aim below the piece so it rides in the upper third, clear of the stacked labels
       lookY = w / h < 1 ? -1.1 : 0;
+      // Portrait: a narrower pool of light, so it fades out before the screen edges
+      if (w / h < 1) pool.scale.set(3.1, 1.3, 1);
+      else pool.scale.set(7.5, 3.2, 1);
       camera.updateProjectionMatrix();
       dirty = true;
     };
@@ -129,7 +161,8 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     ro.observe(el);
 
     // ── Loop ──────────────────────────────────────────────────────────
-    const camRest = new THREE.Vector3(0, 0.3, 9.5);
+    // Slightly above the piece, so the floor (and what falls on it) opens up a little
+    const camRest = new THREE.Vector3(0, 1.0, 9.5);
     // On click the camera eases back and up, as if stepping away from the piece.
     const camAway = new THREE.Vector3(0, 0.7, 3.2);
     const look = new THREE.Vector3();
@@ -200,6 +233,9 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       mat.dispose();
       shadow.geometry.dispose();
       (shadow.material as THREE.Material).dispose();
+      pool.geometry.dispose();
+      pool.material.map?.dispose();
+      pool.material.dispose();
       envTex.dispose();
       renderer.dispose();
       renderer.domElement.remove();

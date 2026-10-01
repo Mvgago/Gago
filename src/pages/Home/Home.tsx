@@ -71,7 +71,9 @@ export const Home: React.FC = () => {
         <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12">
           <Link
             to="/projects"
-            className="meta group inline-flex items-center gap-3"
+            // The one way into the work: a step firmer than the other small type,
+            // with a hairline always under it that lights up on hover.
+            className="meta group inline-flex items-center gap-3 !text-[11px] !font-normal text-silver"
             onPointerEnter={(e) => e.pointerType === "mouse" && setHint(true)}
             onPointerLeave={() => setHint(false)}
             onFocus={() => setHint(true)}
@@ -79,7 +81,8 @@ export const Home: React.FC = () => {
           >
             <span className="relative">
               {t("hero.cta")}
-              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-silver transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+              <span className="absolute -bottom-1.5 left-0 h-px w-full bg-silver/40" />
+              <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-silver transition-transform duration-700 ease-haus group-hover:scale-x-100 group-focus-visible:scale-x-100" />
             </span>
             <span className="transition-transform duration-700 ease-haus group-hover:translate-x-1.5">→</span>
           </Link>

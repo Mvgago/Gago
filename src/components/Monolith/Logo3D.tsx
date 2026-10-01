@@ -68,6 +68,11 @@ const Logo3D: React.FC<Props> = ({ className, paused = false }) => {
     const key = new THREE.DirectionalLight("#ffffff", 1.1);
     key.position.set(1.2, 5, 4);
     scene.add(key);
+    // A soft fill from the front left: the F is the darkest letter and sits on the
+    // page's deepest mauve, so this lifts it alone and fades out before the "a".
+    const fill = new THREE.PointLight("#fffaf6", 3.2, 0, 2);
+    fill.position.set(-1.9, 0.6, 1.8);
+    scene.add(fill);
 
     const material = brandMetal();
     const mark = buildWordmark(material);

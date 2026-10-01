@@ -27,7 +27,7 @@ const NAVE = {
 // brushed metal, and the edges falling slightly darker.
 const STEEL = [
   "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.22) 48%, transparent 66%)",
-  "radial-gradient(120% 90% at 50% 42%, #e4e3e7 0%, #d5d4d9 50%, #c3c2c8 100%)",
+  "radial-gradient(120% 90% at 50% 42%, #e2e3e8 0%, #d2d4da 50%, #bfc1c8 100%)",
 ].join(", ");
 
 /**
@@ -93,7 +93,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
           role="dialog"
           aria-modal="true"
           aria-label={t("index.footer")}
-          className="fixed inset-0 z-40 overflow-hidden bg-[#d5d4d9] outline-none"
+          className="fixed inset-0 z-40 overflow-hidden bg-[#d2d4da] outline-none"
           style={{ backgroundImage: STEEL }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 1.2, ease: EASE_VEIL } }}

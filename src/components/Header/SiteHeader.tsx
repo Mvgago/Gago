@@ -2,7 +2,6 @@ import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from 
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Monolith } from "../Monolith/Monolith";
-import { StudioStatus } from "../Meta/Meta";
 import { SpatialIndex, preloadLogoSpace } from "../SpatialIndex/SpatialIndex";
 import { EASE_HAUS } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
@@ -93,7 +92,6 @@ export const SiteHeader: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
-          <StudioStatus className="hidden text-ink lg:flex" />
           <LanguageSwitch />
 
           <button
