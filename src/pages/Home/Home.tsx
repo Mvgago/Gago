@@ -31,10 +31,21 @@ export const Home: React.FC = () => {
       }}
     />
 
+    {/* Portrait screens: the light bloom falls right behind the manifesto, so a soft
+        shade gathers under the type to keep the silver legible. */}
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 lg:hidden"
+      style={{
+        background:
+          "radial-gradient(130% 55% at 0% 72%, rgba(78, 66, 76, 0.55) 0%, rgba(92, 82, 90, 0.3) 45%, transparent 80%)",
+      }}
+    />
+
     {/* The centre: intentionally empty. Only light. */}
     <div className="flex-1" aria-hidden />
 
-    <section className="flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:pb-12">
+    <section className="relative flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:pb-12">
       {/* Manifesto */}
       <div className="max-w-xl font-geo">
         <motion.h1
@@ -52,7 +63,7 @@ export const Home: React.FC = () => {
           initial="hidden"
           animate="shown"
           custom={8}
-          className="mt-3 text-base font-light tracking-[0.02em] text-silver/85 sm:text-lg"
+          className="mt-3 text-base font-light tracking-[0.02em] text-silver/85 [text-wrap:balance] sm:text-lg"
         >
           {t("hero.sub")}
         </motion.p>

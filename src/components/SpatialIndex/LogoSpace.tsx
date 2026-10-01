@@ -6,20 +6,18 @@ import { brandEnvironment, brandMetal, buildWordmark } from "../Monolith/wordmar
 /**
  * The FUGA wordmark as a sculpture, in real-time 3D.
  *
- * The bars of "Fuga" — the logo's exact flat-bar outline, extruded — are drawn as satin white metal in an infinite white studio with a
- * soft shadow. Each section recomposes the letters like the voices of a
+ * The bars of "Fuga" — the logo's exact flat-bar outline, extruded — are drawn as satin metal over a
+ * brushed-steel backdrop with a soft shadow. Each section recomposes the letters like the voices of a
  * fugue: apart in depth, turning on themselves, fanning open. Clicking
- * realigns them and the camera passes through the gap between "u" and "g".
+ * holds the chosen composition while the camera steps slowly back.
  */
 
 type Props = {
   /** Index into SECTIONS of the hovered section, or null at rest. */
   active: number | null;
-  /** True once a section is clicked: the camera passes through the letters. */
+  /** True once a section is clicked: the camera steps back as the light rises. */
   diving: boolean;
 };
-
-const toV = (x: number, y: number) => new THREE.Vector3((x - 945) / 300, -(y - 900) / 300, 0);
 
 // Per-section compositions, one row per glyph: [dx, dy, dz, rotY, rotX].
 // Index 0 is rest (the logo as drawn); 1–3 follow SECTIONS.
@@ -30,6 +28,9 @@ const LAYOUTS: number[][][] = [
   // studio: unfolding outward, like a folding screen opening
   [[-0.55, 0, 0.2, 0.7, 0], [-0.18, 0, -0.1, 0.28, 0], [0.18, 0, -0.1, -0.28, 0], [0.55, 0, 0.2, -0.7, 0]],
 ];
+
+// Touch screens, at rest: logo → projects → logo → work → logo → studio…
+const IDLE_CYCLE = [0, 1, 0, 2, 0, 3];
 
 const LogoSpace: React.FC<Props> = ({ active, diving }) => {
   const host = useRef<HTMLDivElement>(null);
@@ -128,10 +129,9 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     ro.observe(el);
 
     // ── Loop ──────────────────────────────────────────────────────────
-    // The gap between "u" and "g", in world space, for the pass-through.
-    const gapPoint = toV(922, 870).multiplyScalar(0.62).add(new THREE.Vector3(0, 0.2, 0));
     const camRest = new THREE.Vector3(0, 0.3, 9.5);
-    const camPos = camRest.clone();
+    // On click the camera eases back and up, as if stepping away from the piece.
+    const camAway = new THREE.Vector3(0, 0.7, 3.2);
     const look = new THREE.Vector3();
     let dive = 0;
     let last = performance.now();
@@ -154,8 +154,11 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
         return from + step;
       };
 
-      // Letters recompose for the hovered section; on click they realign.
-      const L = LAYOUTS[isDiving || a === null ? 0 : a + 1];
+      // Letters recompose for the hovered (or chosen) section and hold it.
+      // Touch screens have no hover, so there the piece runs through the
+      // compositions by itself, returning to the logo between each.
+      const idle = touch && !reduced ? IDLE_CYCLE[Math.floor(t / 3.2) % IDLE_CYCLE.length] : 0;
+      const L = LAYOUTS[a === null ? (isDiving ? 0 : idle) : a + 1];
       glyphs.forEach((h, i) => {
         const [dx, dy, dz, ry, rx] = L[i];
         const home = h.userData.home as THREE.Vector3;
@@ -167,21 +170,18 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       });
 
       // The sculpture turns with the cursor, and sways slowly at rest.
-      // No sway on touch screens: there it rests completely still, and so does the GPU.
-      const sway = reduced || isDiving || touch ? 0 : Math.sin(t * 0.35) * 0.07;
+      const sway = reduced || isDiving ? 0 : Math.sin(t * 0.35) * (touch ? 0.12 : 0.07);
       const turnY = isDiving ? 0 : nx.get() * 0.32 + sway;
       const turnX = isDiving ? 0 : ny.get() * 0.16;
       group.rotation.y = ease(group.rotation.y, turnY, 3);
       group.rotation.x = ease(group.rotation.x, turnX, 3);
 
-      // Camera: at rest in front; on click it flies through the u–g gap.
-      const nextDive = dive + ((isDiving ? 1 : 0) - dive) * (isDiving ? k(1.3) : 1);
+      // Camera: at rest in front; on click it steps slowly back while the light rises.
+      const nextDive = dive + ((isDiving ? 1 : 0) - dive) * (isDiving ? k(1.1) : 1);
       motion += Math.abs(nextDive - dive);
       dive = nextDive;
-      const through = gapPoint.clone().setZ(-3);
-      camPos.lerpVectors(camRest, through, dive * dive);
-      camera.position.copy(camPos);
-      look.lerpVectors(new THREE.Vector3(0, lookY, 0), gapPoint.clone().setZ(-10), dive);
+      camera.position.copy(camRest).addScaledVector(camAway, dive);
+      look.set(0, lookY, 0);
       camera.lookAt(look);
 
       if (!document.hidden && (dirty || motion > 1e-5)) {

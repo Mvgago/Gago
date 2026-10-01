@@ -30,7 +30,7 @@ const STEEL = [
 /**
  * The index as the FUGA wordmark in sculpture, in an infinite white studio
  * (real-time 3D, see LogoSpace). Hovering a section recomposes the letters;
- * clicking passes through them into the section. The labels stay flat and
+ * clicking steps back from them into the section. The labels stay flat and
  * razor sharp above the scene.
  */
 export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
@@ -99,7 +99,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
           <Suspense fallback={null}>
             <LogoSpace active={active ? SECTIONS.indexOf(active) : null} diving={walking} />
           </Suspense>
-          {/* Arrival: inside the flower, light floods everything */}
+          {/* Arrival: as the camera steps back, light floods everything */}
           <motion.div
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-[#f7f6f8]"
@@ -114,7 +114,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
           {/* Gallery labels: flat, sharp, far apart */}
           <nav
-            className="pointer-events-none absolute inset-x-0 top-[47%] flex flex-col items-center gap-5 px-4 sm:top-[50%] sm:gap-9 lg:inset-0 lg:top-0 lg:block lg:px-0"
+            className="pointer-events-none absolute inset-x-0 top-[47%] flex flex-col items-center gap-7 px-4 sm:top-[50%] sm:gap-9 lg:inset-0 lg:top-0 lg:block lg:px-0"
             onMouseLeave={() => setActive(null)}
             aria-label="Sections"
           >
@@ -222,10 +222,10 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     >
       {t(key)}
     </span>
-    {/* Touch screens have no hover: there the caption is always shown, faintly */}
+    {/* Caption on hover, wide screens only: phones get just the names */}
     <span
-      className={`mt-2 block font-mono text-[10px] font-extralight lowercase tracking-[0.1em] opacity-60 sm:tracking-[0.2em] transition-opacity duration-700 ${
-        on ? "lg:opacity-100" : "lg:opacity-0"
+      className={`mt-2 hidden font-mono text-[10px] font-extralight lowercase tracking-[0.2em] transition-opacity duration-700 lg:block ${
+        on ? "opacity-100" : "opacity-0"
       }`}
       style={{ color: NAVE.label }}
     >
