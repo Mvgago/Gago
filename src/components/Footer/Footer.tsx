@@ -1,33 +1,36 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useI18n } from "../../i18n/I18n";
-import { EMAIL } from "../Contact/ContactMenu";
+import { ContactMenu } from "../Contact/ContactMenu";
+import { SMALL } from "../Light/LightWall";
 
+/**
+ * The inner pages' footer: one quiet line under a hairline — the rooms, the
+ * studio's availability and address, and the small print. No large call to
+ * action: each page already ends on its own.
+ */
 const Footer: React.FC = () => {
   const { t } = useI18n();
+  const year = new Date().getFullYear();
   return (
-    <footer className="relative z-10 mt-32 px-4 pb-10 sm:px-6 md:px-8">
-      <div className="border-t border-ink/15 pt-10">
-        <p className="meta text-graphite">{t("footer.together")}</p>
-        <a
-          href={`mailto:${EMAIL}`}
-          className="text-satin mt-4 block break-all font-display text-[7vw] leading-none tracking-[-0.02em] transition-opacity duration-700 hover:opacity-70 md:text-[4.2vw]"
-        >
-          {EMAIL}
-        </a>
-
-        <div className="mt-16 grid gap-6 text-graphite sm:grid-cols-3 sm:items-end">
-          <nav className="meta flex gap-6">
-            <Link to="/projects" className="hover:text-ink">{t("section.projects")}</Link>
-            <Link to="/artwork" className="hover:text-ink">{t("section.artwork")}</Link>
-            <Link to="/about" className="hover:text-ink">{t("section.studio")}</Link>
-          </nav>
-          <span className="meta sm:text-center">{t("availability")} — {new Date().getFullYear()}</span>
-          <span className="meta sm:text-right">
-            fugahaus © {new Date().getFullYear()} ·{" "}
-            <Link to="/privacy" className="hover:text-ink">{t("privacy")}</Link>
-          </span>
-        </div>
+    <footer className="relative z-10 mt-24 px-4 pb-10 sm:px-6 md:px-8">
+      <div
+        className={`${SMALL} grid gap-5 border-t border-ink/10 pt-6 text-graphite sm:grid-cols-3 sm:items-center`}
+      >
+        <nav className="flex gap-6">
+          <Link to="/projects" className="transition-colors duration-500 hover:text-ink">{t("section.projects")}</Link>
+          <Link to="/artwork" className="transition-colors duration-500 hover:text-ink">{t("section.artwork")}</Link>
+          <Link to="/about" className="transition-colors duration-500 hover:text-ink">{t("section.studio")}</Link>
+        </nav>
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-center">
+          {t("availability")}
+          <span aria-hidden>·</span>
+          <ContactMenu />
+        </span>
+        <span className="sm:text-right">
+          fuga haus © {year} ·{" "}
+          <Link to="/privacy" className="transition-colors duration-500 hover:text-ink">{t("privacy")}</Link>
+        </span>
       </div>
     </footer>
   );

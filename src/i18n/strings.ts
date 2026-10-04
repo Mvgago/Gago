@@ -22,6 +22,7 @@ const en = {
   "index.footer": "fuga haus — index",
   "index.here": "you are here",
   "index.home": "home",
+  "top": "back to top",
   "artwork.listen": "listen on spotify",
   "artwork.pieces": "pieces",
   "artwork.prev": "previous",
@@ -29,14 +30,14 @@ const en = {
 
   "section.projects": "projects",
   "section.artwork": "artwork",
-  "section.studio": "studio",
+  "section.studio": "info",
   "section.projects.caption": "selected works — identity, web, 3d",
   "section.artwork.caption": "experiments, covers & rendered matter",
-  "section.studio.caption": "identity, vision & contact",
+  "section.studio.caption": "studio, process & contact",
 
   "availability": "available for projects",
 
-  "contact.via": "write to me via",
+  "contact.via": "write via",
   "contact.mailApp": "mail app",
   "contact.copy": "copy address",
   "contact.copied": "copied",
@@ -63,6 +64,7 @@ const es: Record<Key, string> = {
   "index.footer": "fuga haus — índice",
   "index.here": "estás aquí",
   "index.home": "inicio",
+  "top": "volver arriba",
   "artwork.listen": "escuchar en spotify",
   "artwork.pieces": "piezas",
   "artwork.prev": "anterior",
@@ -70,14 +72,14 @@ const es: Record<Key, string> = {
 
   "section.projects": "proyectos",
   "section.artwork": "obra",
-  "section.studio": "estudio",
+  "section.studio": "info",
   "section.projects.caption": "trabajos seleccionados — identidad, web, 3d",
   "section.artwork.caption": "experimentos, portadas y materia renderizada",
-  "section.studio.caption": "identidad, visión y contacto",
+  "section.studio.caption": "estudio, proceso y contacto",
 
   "availability": "disponible para proyectos",
 
-  "contact.via": "escríbeme por",
+  "contact.via": "escribir por",
   "contact.mailApp": "app de correo",
   "contact.copy": "copiar dirección",
   "contact.copied": "copiada",
@@ -102,6 +104,7 @@ const fr: Record<Key, string> = {
   "index.footer": "fuga haus — index",
   "index.here": "vous êtes ici",
   "index.home": "accueil",
+  "top": "retour en haut",
   "artwork.listen": "écouter sur spotify",
   "artwork.pieces": "pièces",
   "artwork.prev": "précédente",
@@ -109,14 +112,14 @@ const fr: Record<Key, string> = {
 
   "section.projects": "projets",
   "section.artwork": "œuvres",
-  "section.studio": "studio",
+  "section.studio": "info",
   "section.projects.caption": "travaux choisis — identité, web, 3d",
   "section.artwork.caption": "expériences, pochettes & matière rendue",
-  "section.studio.caption": "identité, vision & contact",
+  "section.studio.caption": "studio, processus & contact",
 
   "availability": "ouvert aux projets",
 
-  "contact.via": "m'écrire via",
+  "contact.via": "écrire via",
   "contact.mailApp": "app mail",
   "contact.copy": "copier l'adresse",
   "contact.copied": "copiée",
@@ -141,6 +144,7 @@ const de: Record<Key, string> = {
   "index.footer": "fuga haus — index",
   "index.here": "sie sind hier",
   "index.home": "startseite",
+  "top": "nach oben",
   "artwork.listen": "auf spotify hören",
   "artwork.pieces": "werke",
   "artwork.prev": "zurück",
@@ -148,14 +152,14 @@ const de: Record<Key, string> = {
 
   "section.projects": "projekte",
   "section.artwork": "arbeiten",
-  "section.studio": "studio",
+  "section.studio": "info",
   "section.projects.caption": "ausgewählte arbeiten — identität, web, 3d",
   "section.artwork.caption": "experimente, cover & gerenderte materie",
-  "section.studio.caption": "identität, vision & kontakt",
+  "section.studio.caption": "studio, prozess & kontakt",
 
   "availability": "offen für neue projekte",
 
-  "contact.via": "schreib mir über",
+  "contact.via": "schreiben über",
   "contact.mailApp": "mail-app",
   "contact.copy": "adresse kopieren",
   "contact.copied": "kopiert",

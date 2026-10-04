@@ -6,6 +6,7 @@ import { SpatialIndex, preloadLogoSpace } from "../SpatialIndex/SpatialIndex";
 import { EASE_HAUS } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { LanguageSwitch } from "../../i18n/LanguageSwitch";
+import { WALL } from "../Light/LightWall";
 
 // The corner logo is the same 3D model as the index sculpture; the 2D mark stands in while it loads.
 const Logo3D = lazy(() => import("../Monolith/Logo3D"));
@@ -18,6 +19,17 @@ export const SiteHeader: React.FC = () => {
 
   // Any navigation closes the index.
   useEffect(close, [pathname, close]);
+
+  // On the light inner rooms, once the page scrolls, the header takes the wall's
+  // colour behind it, so content never shows through under the logo.
+  const onLight = pathname === "/artwork" || pathname === "/about";
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pathname]);
 
   // Fetch the index sculpture in the background once the landing has settled.
   useEffect(() => {
@@ -43,11 +55,18 @@ export const SiteHeader: React.FC = () => {
   return (
     <>
       <motion.header
-        className="fixed inset-x-0 top-0 z-50 flex items-start justify-between px-4 pt-4 sm:px-6 sm:pt-5 md:px-8"
+        className="fixed inset-x-0 top-0 z-50 flex items-start justify-between px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5 md:px-8"
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.4, ease: EASE_HAUS, delay: 0.4 }}
       >
+        <div
+          aria-hidden
+          className={`pointer-events-none absolute inset-0 -z-10 border-b border-ink/[0.06] transition-opacity duration-500 ${
+            onLight && scrolled && !open ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ background: WALL }}
+        />
         <div className="relative">
         {/* While the index is open the sculpture is the brand, so the corner becomes a
             second way out: home, balancing the close control on the right. */}

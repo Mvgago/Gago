@@ -8,6 +8,7 @@ import { StudioAtmosphere } from "./components/Light/StudioAtmosphere";
 import { SiteHeader } from "./components/Header/SiteHeader";
 import { PageTransition } from "./components/PageTransition/PageTransition";
 import Footer from "./components/Footer/Footer";
+import { BackToTop } from "./components/BackToTop/BackToTop";
 
 import { Home } from "./pages/Home/Home";
 import { ProjectsPage } from "./pages/Projects/Projects";
@@ -43,6 +44,7 @@ export const App: React.FC = () => {
     <PointerLightProvider>
       <StudioAtmosphere />
       <SiteHeader />
+      <BackToTop />
 
       <AnimatePresence mode="wait" initial={false} onExitComplete={() => window.scrollTo(0, 0)}>
         <Routes location={location} key={location.pathname}>
