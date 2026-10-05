@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
@@ -6,7 +6,18 @@ import { STUDIO } from "../../i18n/studio";
 import { LightWall, SMALL } from "../../components/Light/LightWall";
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import { FUGA_SEI_EP } from "../../outils/artwork";
+import Footer from "../../components/Footer/Footer";
 import grimaldi from "../../assets/gallery/grimaldi-lines.jpg";
+
+// three.js loads only on this page, after the text
+const WhiteRoom = lazy(() => import("../../components/Light/WhiteRoom"));
+
+// The room fades into the page's wall at the top (under the header) and the bottom, so it has no edge
+const ROOM_FADE = "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.9) 16%, rgba(0,0,0,0.9) 55%, transparent 100%)";
+
+// Fine film grain, as on the landing
+const GRAIN =
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -21,12 +32,12 @@ const BODY = "font-geo text-[15px] font-normal leading-relaxed tracking-[0.02em]
  * A chapter of the page: a hairline across, the label in the left column,
  * the content in the right, like the index of a well-set book.
  */
-const Chapter: React.FC<{ index: number; label: string; id?: string; children: React.ReactNode }> = ({
-  index,
-  label,
-  id,
-  children,
-}) => (
+const Chapter: React.FC<{
+  index: number;
+  label: string;
+  id?: string;
+  children: React.ReactNode;
+}> = ({ index, label, id, children }) => (
   <motion.section
     id={id}
     // scroll-mt: clears the fixed header when reached through a link
@@ -64,18 +75,25 @@ const Entry: React.FC<{ index: number; title: string; text: string; large?: bool
 );
 
 /** A text link that darkens and draws its hairline on hover */
-const PlainLink: React.FC<{ href: string; external?: boolean; children: React.ReactNode }> = ({
+const PlainLink: React.FC<{ href: string; external?: boolean; dark?: boolean; children: React.ReactNode }> = ({
   href,
   external,
+  dark,
   children,
 }) => (
   <a
     href={href}
     {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-    className="group relative text-graphite transition-colors duration-500 hover:text-ink"
+    className={`group relative transition-colors duration-500 ${
+      dark ? "text-platinum/75 hover:text-platinum" : "text-graphite hover:text-ink"
+    }`}
   >
     {children}
-    <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+    <span
+      className={`absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-700 ease-haus group-hover:scale-x-100 ${
+        dark ? "bg-platinum" : "bg-ink"
+      }`}
+    />
   </a>
 );
 
@@ -87,12 +105,16 @@ const Field: React.FC<{
   multiline?: boolean;
   value: string;
   onChange: (v: string) => void;
-}> = ({ label, name, type = "text", multiline, value, onChange }) => {
-  const shared =
-    "w-full border-0 border-b border-ink/20 bg-transparent pb-3 pt-2 font-geo text-base font-normal tracking-[0.02em] text-ink outline-none transition-colors duration-500 focus:border-ink";
+  dark?: boolean;
+}> = ({ label, name, type = "text", multiline, value, onChange, dark }) => {
+  const shared = `w-full border-0 border-b bg-transparent pb-3 pt-2 font-geo text-base font-normal tracking-[0.02em] outline-none transition-colors duration-500 ${
+    dark
+      ? "border-platinum/25 text-platinum caret-platinum focus:border-platinum"
+      : "border-ink/20 text-ink focus:border-ink"
+  }`;
   return (
     <label className="block">
-      <span className={`${SMALL} text-graphite`}>{label}</span>
+      <span className={`${SMALL} ${dark ? "text-platinum/60" : "text-graphite"}`}>{label}</span>
       {multiline ? (
         <textarea name={name} rows={4} required value={value} onChange={(e) => onChange(e.target.value)} className={`${shared} resize-none`} />
       ) : (
@@ -121,8 +143,20 @@ export const AboutPage: React.FC = () => {
   const [beforeEp, afterEp] = afterName.split("{ep}");
 
   return (
-    <main className="px-4 pb-16 pt-28 sm:px-6 md:px-8 md:pt-32">
+    // No bottom padding: the dark contact block closes the page, the footer follows it
+    <main className="relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
       <LightWall />
+
+      {/* The opening: a white room, curved, with lines of light set into its wall */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-[1] h-[100svh] max-h-[960px] min-h-[640px]"
+        style={{ maskImage: ROOM_FADE, WebkitMaskImage: ROOM_FADE }}
+      >
+        <Suspense fallback={null}>
+          <WhiteRoom className="h-full w-full" />
+        </Suspense>
+      </div>
 
       {/* Header, as in the other rooms */}
       <header className="grid gap-6 md:grid-cols-12 md:items-end">
@@ -155,13 +189,16 @@ export const AboutPage: React.FC = () => {
         </motion.div>
       </header>
 
+      {/* Statement and way in */}
+      <div className="mb-32 mt-24 grid items-center gap-14 md:mb-44 md:mt-36 lg:grid-cols-12 lg:gap-8">
+      <div className="lg:col-span-7">
       {/* The statement: the one thing to read first */}
       <motion.p
         variants={rise}
         initial="hidden"
         animate="shown"
         custom={3}
-        className="mt-20 max-w-[34ch] font-geo text-[1.9rem] font-light leading-[1.25] tracking-[0.01em] text-ink md:mt-28 md:text-[2.5rem]"
+        className="max-w-[34ch] font-geo text-[1.9rem] font-light leading-[1.25] tracking-[0.01em] text-ink md:text-[2.5rem]"
       >
         {s.statement}
       </motion.p>
@@ -173,7 +210,7 @@ export const AboutPage: React.FC = () => {
         animate="shown"
         custom={4}
         // One line, one voice: the shortcut and the address in the same small type
-        className="mb-24 mt-12 flex flex-wrap items-center gap-x-4 gap-y-3 font-mono text-[13px] font-normal lowercase tracking-[0.04em] text-ink md:mb-32"
+        className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-3 font-mono text-[13px] font-normal lowercase tracking-[0.04em] text-ink"
       >
         <a
           href="#contact"
@@ -198,6 +235,9 @@ export const AboutPage: React.FC = () => {
         </span>
         <PlainLink href={`mailto:${EMAIL}`}>{EMAIL}</PlainLink>
       </motion.div>
+      </div>
+
+      </div>
 
       <Chapter index={1} label={s.disciplinesLabel}>
         {/* Same four-column grid as the process below, so the columns line up chapter to chapter */}
@@ -263,40 +303,86 @@ export const AboutPage: React.FC = () => {
         </div>
       </Chapter>
 
-      <Chapter index={4} label={s.contactLabel} id="contact">
-        <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
-          <div>
-            <p className="max-w-[22ch] font-geo text-[1.6rem] font-light leading-snug tracking-[0.01em] text-ink">
+      {/* Contact: the page closes in a dark room lit like the landing — its mauve,
+          olive and pale bloom turned low — and the footer lives inside it */}
+      <motion.section
+        id="contact"
+        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden bg-[#2f2b2a] px-4 pb-10 pt-24 text-platinum sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 md:pt-32"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-10% 0px" }}
+        transition={{ duration: 1.4, ease: EASE_HAUS }}
+      >
+        {/* The landing's light, at dusk */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(55% 60% at 0% 100%, rgba(150, 146, 110, 0.32) 0%, transparent 75%),
+              radial-gradient(50% 55% at 8% 0%, rgba(120, 98, 116, 0.38) 0%, transparent 80%),
+              radial-gradient(45% 60% at 92% 30%, rgba(236, 226, 222, 0.14) 0%, transparent 75%)
+            `,
+          }}
+        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
+
+        <div className="relative grid grid-cols-12 gap-x-8 gap-y-16">
+          <div className="col-span-12 lg:col-span-6">
+            <h2 className={`${SMALL} text-platinum/55`}>
+              {pad(4)} — {s.contactLabel}
+            </h2>
+            <p className="mt-8 max-w-[18ch] font-geo text-[2.1rem] font-light leading-[1.18] tracking-[0.01em] text-platinum md:text-[2.6rem]">
               {s.contactLead}
             </p>
-            {/* Plain links here: the form beside already does the composing */}
-            <div className="mt-10 flex flex-col items-start gap-3 font-mono text-[13px] font-normal lowercase tracking-[0.04em]">
-              <PlainLink href={`mailto:${EMAIL}`}>{EMAIL}</PlainLink>
-              <PlainLink href={INSTAGRAM} external>
+            {/* Availability, then the direct ways in */}
+            <div className="mt-12 flex flex-col items-start gap-4 font-mono text-[13px] font-normal lowercase tracking-[0.04em]">
+              <span className="flex items-center gap-2.5 text-platinum/70">
+                <span aria-hidden className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-current opacity-40 [animation-duration:2.8s]" />
+                  <span className="relative h-1.5 w-1.5 rounded-full bg-current" />
+                </span>
+                {t("availability")}
+              </span>
+              <PlainLink href={`mailto:${EMAIL}`} dark>
+                {EMAIL}
+              </PlainLink>
+              <PlainLink href={INSTAGRAM} external dark>
                 instagram ↗
               </PlainLink>
             </div>
           </div>
 
-          <form onSubmit={onSubmit} className="grid gap-9 sm:grid-cols-2">
-            <Field label={s.form.name} name="name" value={form.name} onChange={set("name")} />
-            <Field label={s.form.email} name="email" type="email" value={form.email} onChange={set("email")} />
+          {/* The form, on a pane of smoked glass */}
+          <form
+            onSubmit={onSubmit}
+            className="col-span-12 grid gap-9 self-start rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10 lg:col-span-6"
+          >
+            <Field label={s.form.name} name="name" value={form.name} onChange={set("name")} dark />
+            <Field label={s.form.email} name="email" type="email" value={form.email} onChange={set("email")} dark />
             <div className="sm:col-span-2">
-              <Field label={s.form.message} name="message" multiline value={form.message} onChange={set("message")} />
+              <Field label={s.form.message} name="message" multiline value={form.message} onChange={set("message")} dark />
             </div>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 sm:col-span-2">
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 sm:col-span-2">
+              <span className={`${SMALL} text-platinum/50`}>{s.form.note}</span>
               <button
                 type="submit"
-                // Outlined, so the solid index control stays unique on the page
-                className={`${SMALL} rounded-full border border-ink/30 px-7 py-3 text-ink transition-colors duration-500 hover:border-ink hover:bg-ink hover:text-platinum`}
+                // The way out of the page: solid light, the one filled form in this room
+                className={`${SMALL} group inline-flex items-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-ink transition-colors duration-500 hover:bg-white`}
               >
-                {s.form.send} →
+                {s.form.send}
+                <span aria-hidden className="transition-transform duration-500 ease-haus group-hover:translate-x-1">
+                  →
+                </span>
               </button>
-              <span className={`${SMALL} text-graphite`}>{s.form.note}</span>
             </div>
           </form>
         </div>
-      </Chapter>
-    </main>
+
+        {/* The footer, inside the room */}
+        <div className="relative mt-28">
+          <Footer dark />
+        </div>
+      </motion.section>    </main>
   );
 };

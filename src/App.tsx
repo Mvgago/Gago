@@ -49,7 +49,8 @@ export const App: React.FC = () => {
       <AnimatePresence mode="wait" initial={false} onExitComplete={() => window.scrollTo(0, 0)}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={page(<Home />, false)} />
-          <Route path="/about" element={page(<AboutPage />)} />
+          {/* Info closes in its own dark room, with the footer inside it */}
+          <Route path="/about" element={page(<AboutPage />, false)} />
           <Route path="/artwork" element={page(<ArtworkPage />)} />
           <Route path="/projects" element={page(<ProjectsPage />)} />
           <Route path="/privacy" element={page(<PrivacyPage />)} />

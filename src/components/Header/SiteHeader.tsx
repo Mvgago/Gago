@@ -62,10 +62,11 @@ export const SiteHeader: React.FC = () => {
       >
         <div
           aria-hidden
-          className={`pointer-events-none absolute inset-0 -z-10 border-b border-ink/[0.06] transition-opacity duration-500 ${
+          className={`pointer-events-none absolute inset-0 -z-10 border-b border-ink/[0.06] backdrop-blur-md transition-opacity duration-500 ${
             onLight && scrolled && !open ? "opacity-100" : "opacity-0"
           }`}
-          style={{ background: WALL }}
+          // Translucent, so light falling on the page behind (as on "info") carries on under it
+          style={{ background: `${WALL}cc` }}
         />
         <div className="relative">
         {/* While the index is open the sculpture is the brand, so the corner becomes a

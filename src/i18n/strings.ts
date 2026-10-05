@@ -35,7 +35,7 @@ const en = {
   "section.artwork.caption": "experiments, covers & rendered matter",
   "section.studio.caption": "studio, process & contact",
 
-  "availability": "available for projects",
+  "availability": "open to new projects",
 
   "contact.via": "write via",
   "contact.mailApp": "mail app",
@@ -77,7 +77,7 @@ const es: Record<Key, string> = {
   "section.artwork.caption": "experimentos, portadas y materia renderizada",
   "section.studio.caption": "estudio, proceso y contacto",
 
-  "availability": "disponible para proyectos",
+  "availability": "abierto a nuevos proyectos",
 
   "contact.via": "escribir por",
   "contact.mailApp": "app de correo",
@@ -117,7 +117,7 @@ const fr: Record<Key, string> = {
   "section.artwork.caption": "expériences, pochettes & matière rendue",
   "section.studio.caption": "studio, processus & contact",
 
-  "availability": "ouvert aux projets",
+  "availability": "ouvert aux nouveaux projets",
 
   "contact.via": "écrire via",
   "contact.mailApp": "app mail",

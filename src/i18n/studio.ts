@@ -55,7 +55,7 @@ export const STUDIO: Record<Lang, Studio> = {
       "The studio also has a sound of its own: {name}, minimal, spatial, instrumental electronic music. Its first EP, {ep}, is out now.",
     contactLabel: "contact",
     cta: "start a project",
-    contactLead: "Have a project in mind? Tell us what you want to build.",
+    contactLead: "Have a project in mind? Let's talk.",
     form: {
       name: "name",
       email: "email",
@@ -95,7 +95,7 @@ export const STUDIO: Record<Lang, Studio> = {
       "El estudio también tiene su propio sonido: {name}, música electrónica minimal, espacial e instrumental. Su primer EP, {ep}, ya está publicado.",
     contactLabel: "contacto",
     cta: "empezar un proyecto",
-    contactLead: "¿Tienes un proyecto en mente? Cuéntanos qué quieres construir.",
+    contactLead: "¿Tienes un proyecto en mente? Hablemos.",
     form: {
       name: "nombre",
       email: "email",
@@ -135,7 +135,7 @@ export const STUDIO: Record<Lang, Studio> = {
       "Le studio a aussi son propre son : {name}, musique électronique minimale, spatiale et instrumentale. Son premier EP, {ep}, est disponible.",
     contactLabel: "contact",
     cta: "démarrer un projet",
-    contactLead: "Un projet en tête ? Dites-nous ce que vous voulez construire.",
+    contactLead: "Un projet en tête ? Parlons-en.",
     form: {
       name: "nom",
       email: "email",
@@ -175,7 +175,7 @@ export const STUDIO: Record<Lang, Studio> = {
       "Das Studio hat auch einen eigenen Klang: {name}, minimale, räumliche, instrumentale elektronische Musik. Die erste EP, {ep}, ist erschienen.",
     contactLabel: "kontakt",
     cta: "projekt starten",
-    contactLead: "Ein Projekt im Kopf? Erzählen Sie uns, was Sie bauen möchten.",
+    contactLead: "Ein Projekt im Kopf? Sprechen wir darüber.",
     form: {
       name: "name",
       email: "e-mail",
