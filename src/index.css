@@ -126,3 +126,12 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Project index: each cover strip is wiped in from the right on arrival */
+@keyframes strip-in {
+  from { clip-path: inset(0 0 0 100%); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  @keyframes strip-in { from, to { clip-path: none; } }
+}

@@ -6,7 +6,7 @@ import { SpatialIndex, preloadLogoSpace } from "../SpatialIndex/SpatialIndex";
 import { EASE_HAUS } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { LanguageSwitch } from "../../i18n/LanguageSwitch";
-import { WALL } from "../Light/LightWall";
+import { WALL, isLightRoom } from "../Light/LightWall";
 
 // The corner logo is the same 3D model as the index sculpture; the 2D mark stands in while it loads.
 const Logo3D = lazy(() => import("../Monolith/Logo3D"));
@@ -22,7 +22,7 @@ export const SiteHeader: React.FC = () => {
 
   // On the light inner rooms, once the page scrolls, the header takes the wall's
   // colour behind it, so content never shows through under the logo.
-  const onLight = pathname === "/artwork" || pathname === "/about";
+  const onLight = isLightRoom(pathname);
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);

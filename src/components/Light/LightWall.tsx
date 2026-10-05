@@ -2,6 +2,10 @@ import React from "react";
 
 /** The inner rooms' wall: plain and light, unlike the studio colours of the landing. */
 export const WALL = "#efeef0";
+/** The pages on this light wall, rather than the studio colours of the landing. */
+export const isLightRoom = (pathname: string) =>
+  pathname === "/about" || pathname === "/artwork" || pathname === "/projects" || pathname.startsWith("/projects/");
+
 /** A paler surface on the wall: mounts, bands, panels. */
 export const MOUNT = "#f8f8f9";
 

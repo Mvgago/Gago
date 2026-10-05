@@ -11,11 +11,12 @@ export const veil: Transition = { duration: 1.1, ease: EASE_VEIL };
 /** Critically damped spring: follows without bouncing. */
 export const SPRING_LIGHT = { stiffness: 42, damping: 20, mass: 1 };
 
+/** Text rising into place, staggered: quick enough that a page reads at once. */
 export const rise: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 16 },
   shown: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { ...slow, delay: 0.15 + i * 0.09 },
+    transition: { duration: 0.8, ease: EASE_HAUS, delay: 0.05 + i * 0.05 },
   }),
 };
