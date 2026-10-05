@@ -230,7 +230,8 @@ export const AboutPage: React.FC = () => {
             ↓
           </span>
         </a>
-        <span aria-hidden className="text-graphite">
+        {/* Phones: the address wraps under the link, so the separator would dangle */}
+        <span aria-hidden className="hidden text-graphite sm:inline">
           ·
         </span>
         <PlainLink href={`mailto:${EMAIL}`}>{EMAIL}</PlainLink>

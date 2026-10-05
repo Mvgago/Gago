@@ -96,7 +96,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
           className="fixed inset-0 z-40 overflow-hidden bg-[#d2d4da] outline-none"
           style={{ backgroundImage: STEEL }}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 1.2, ease: EASE_VEIL } }}
+          animate={{ opacity: 1, transition: { duration: 0.6, ease: EASE_VEIL } }}
           exit={{ opacity: 0, transition: { duration: 0.7, ease: EASE_VEIL } }}
         >
           <Suspense fallback={null}>
@@ -146,7 +146,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
             className="absolute inset-x-4 bottom-6 flex flex-col items-start gap-2 pt-4 font-mono text-[11px] font-light lowercase tracking-[0.12em] sm:inset-x-6 sm:bottom-8 lg:inset-x-8 lg:bottom-10 lg:flex-row lg:items-center lg:justify-end lg:pt-5"
             style={{ color: NAVE.label, borderTop: `1px solid ${NAVE.hair}` }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 1, duration: walking ? 0.4 : 1 } }}
+            animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 0.4, duration: walking ? 0.4 : 0.6 } }}
           >
             <span className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
               <span>{t("availability")} — {new Date().getFullYear()}</span>
@@ -217,7 +217,7 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     initial={{ opacity: 0 }}
     animate={{
       opacity: dimmed ? 0.35 : 1,
-      transition: entered ? { duration: 0.3 } : { duration: 0.8, delay: dimmed ? 0 : 0.9 + index * 0.15 },
+      transition: entered ? { duration: 0.3 } : { duration: 0.6, delay: dimmed ? 0 : 0.25 + index * 0.08 },
     }}
     onAnimationComplete={() => setEntered(true)}
   >
