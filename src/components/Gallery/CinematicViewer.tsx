@@ -152,6 +152,7 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
   const invalidateRef = useRef<() => void>(() => {});
   const videoRef = useRef<HTMLVideoElement>(null);
   const [filmReady, setFilmReady] = React.useState(false);
+  const [frameReady, setFrameReady] = React.useState(false);
 
   // The camera's motion, passed on to the HUD and mirrored on the film as a transform
   const handleMotion = React.useCallback(
@@ -217,7 +218,6 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
           ref={videoRef}
           key={video}
           src={video}
-          poster={image}
           muted
           loop
           playsInline
@@ -235,15 +235,24 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
           // A fixed grade, not animated: a touch darker and firmer, so the file's own
           // softness reads as atmosphere rather than as low resolution
           style={{ filter: "brightness(0.8) contrast(1.08) saturate(0.9)" }}
-          // Visible from the start: until the film runs, its poster (the project's picture)
-          // shows under the cloud, so the page never opens on an empty screen
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          // Shown from its own first frame (no poster: a still framed differently made the
+          // picture jump when the film took over), so it is in place from the first instant
+          onLoadedData={() => setFrameReady(true)}
+          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            frameReady ? "opacity-100" : "opacity-0"
+          }`}
         />
       )}
       {/* A pale cloud over the first frame, dissipating once the film has started:
           the haze lifts and its soft patches drift apart and fade (opacity and scale only, on the compositor) */}
       {video && (
-        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        // The cloud comes with the first frame, never over the empty graphite (that read as a grey flash)
+        <div
+          aria-hidden
+          className={`pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-500 ${
+            frameReady ? "opacity-100" : "opacity-0"
+          }`}
+        >
           {/* The haze: frosted, pale, thinning */}
           <div
             className="absolute inset-0"

@@ -23,8 +23,8 @@ import { AmorsacroPage } from "./pages/Amorsacro/Amorsacro";
 import { CaseStudyPage } from "./pages/Projects/CaseStudy";
 import { PrivacyPage } from "./pages/Privacy/PrivacyPage";
 
-const page = (element: React.ReactNode, withFooter = true) => (
-  <PageTransition className="relative z-10 flex min-h-screen flex-col">
+const page = (element: React.ReactNode, withFooter = true, still = false) => (
+  <PageTransition still={still} className="relative z-10 flex min-h-screen flex-col">
     {element}
     {withFooter && <Footer />}
   </PageTransition>
@@ -85,7 +85,9 @@ const Pages: React.FC<{ location: ReturnType<typeof useLocation> }> = ({ locatio
           <Route path="/about" element={page(<AboutPage />, false)} />
           <Route path="/artwork" element={page(<ArtworkPage />)} />
           {/* Trial: the new technical index. The previous one is ProjectsPage in pages/Projects/Projects.tsx */}
-          <Route path="/projects" element={page(<ProjectsSection />)} />
+          {/* Exactly one screen: no footer under it (it made the page scroll, and the scrollbar
+              narrowed the film), and a fade only, so the frame never moves on arrival */}
+          <Route path="/projects" element={page(<ProjectsSection />, false, true)} />
           <Route path="/privacy" element={page(<PrivacyPage />)} />
           {/* The selected cases now live under /projects/<slug> */}
           <Route path="/sapphire" element={<Navigate to="/projects/sapphire" replace />} />
