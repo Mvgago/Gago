@@ -101,8 +101,8 @@ export const SiteHeader: React.FC = () => {
             open
               ? "pointer-events-none opacity-0 duration-200"
               : // Phones: the mark is small and its hairline bars fade into the mauve,
-                // so it shows at full strength, a touch brighter, with a soft lift.
-                "opacity-[0.82] delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-200 max-sm:opacity-100 max-sm:[filter:brightness(1.18)_drop-shadow(0_1px_5px_rgba(40,32,38,0.35))]"
+                // so it shows at full strength and a touch brighter (no shadow: it muddied the mark).
+                "opacity-[0.82] delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-200 max-sm:opacity-100 max-sm:[filter:brightness(1.18)]"
           }`}
         >
           <Suspense fallback={<Monolith tilt={false} tone="warm" reveal={false} />}>
@@ -122,9 +122,10 @@ export const SiteHeader: React.FC = () => {
             onFocus={() => void preloadLogoSpace()}
             aria-expanded={open}
             aria-label={open ? t("index.aria.close") : t("index.aria.open")}
-            className="group flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 shadow-[0_10px_30px_-12px_rgba(40,34,38,0.55)] backdrop-blur-md transition-colors duration-500 hover:bg-ink focus-visible:outline-offset-2"
+            // Hover, quietly: the graphite lifts a shade lighter, the letters open a touch, the short line grows. No shadow.
+            className="group relative flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 backdrop-blur-md transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2"
           >
-            <span className={`meta min-w-10 text-left transition-colors duration-700 ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
+            <span className={`meta min-w-10 text-left transition-[color,letter-spacing] duration-500 group-hover:tracking-[0.31em] ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
             <span className="relative block h-2 w-4">
               <span
                 className={`absolute right-0 top-0 h-px ${line} transition-all duration-700 ease-haus ${

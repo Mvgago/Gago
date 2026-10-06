@@ -13,9 +13,10 @@ export const PageTransition: React.FC<{ children: React.ReactNode; className?: s
 }) => (
   <motion.div
     className={className}
-    initial={{ opacity: 0, y: 14 }}
-    animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_HAUS } }}
-    exit={{ opacity: 0, y: -8, transition: { duration: 0.3, ease: EASE_VEIL } }}
+    // The same long, soft deceleration as the smooth scroll: quick to start, slow to settle
+    initial={{ opacity: 0, y: 24 }}
+    animate={{ opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE_HAUS } }}
+    exit={{ opacity: 0, y: -12, transition: { duration: 0.4, ease: EASE_VEIL } }}
   >
     {children}
   </motion.div>

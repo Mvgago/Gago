@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
+import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { LightWall, SMALL } from "../../components/Light/LightWall";
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import { FUGA_SEI_EP } from "../../outils/artwork";
@@ -127,6 +128,7 @@ const Field: React.FC<{
 export const AboutPage: React.FC = () => {
   const { t, lang } = useI18n();
   const s = STUDIO[lang];
+  const lenis = useLenis();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const set = (key: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [key]: v }));
 
@@ -216,7 +218,8 @@ export const AboutPage: React.FC = () => {
           href="#contact"
           onClick={(e) => {
             e.preventDefault();
-            document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            const target = document.getElementById("contact");
+            if (target) scrollToTarget(lenis, target, { offset: -96 });
           }}
           // A link, not a button: the index control stays the page's one solid form
           className="group inline-flex items-center gap-2.5"

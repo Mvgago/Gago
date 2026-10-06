@@ -72,6 +72,8 @@ export const ArtworkPage: React.FC = () => {
           (Pieces that are not square are cropped here; the viewer shows them whole.) */}
       <ul
         ref={strip}
+        // Sideways strip: it handles its own wheel, not the page's smooth scroll
+        data-lenis-prevent
         onPointerDown={drag.down}
         onPointerMove={drag.move}
         onPointerUp={drag.up}

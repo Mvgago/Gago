@@ -97,10 +97,10 @@ export const cases: Case[] = [
     client: { en: "Santa Engracia — residential", es: "Santa Engracia — residencial", fr: "Santa Engracia — résidentiel", de: "Santa Engracia — wohnbau" },
     disciplines: ["identity", "web"],
     lead: {
-      en: "A classic building — an arched chamfer, an ornate façade, a dome — translated into a calm, contemporary identity.",
-      es: "Un edificio clásico — un chaflán en arco, una fachada ornamentada, una cúpula — traducido a una identidad serena y contemporánea.",
-      fr: "Un immeuble classique — un pan coupé en arc, une façade ornée, une coupole — traduit en une identité calme et contemporaine.",
-      de: "Ein klassisches Gebäude — eine gewölbte Ecke, eine reich verzierte Fassade, eine Kuppel — übersetzt in eine ruhige, zeitgemäße Identität.",
+      en: "Heritage residential building.",
+      es: "Edificio residencial histórico.",
+      fr: "Immeuble résidentiel historique.",
+      de: "Historisches Wohngebäude.",
     },
     body: {
       en: "The complete visual identity, logo and website, drawn from the building's own architecture: minimal and elegant, keeping its timeless character.",
@@ -117,10 +117,10 @@ export const cases: Case[] = [
     client: { en: "Buendía Travels — tourism", es: "Buendía Travels — turismo", fr: "Buendía Travels — tourisme", de: "Buendía Travels — tourismus" },
     disciplines: ["identity", "web", "campaign"],
     lead: {
-      en: "A travel brand renewed so that planning the trip already feels like part of it.",
-      es: "Una marca de viajes renovada para que planear el viaje ya se sienta parte de él.",
-      fr: "Une marque de voyage renouvelée pour que préparer le voyage en fasse déjà partie.",
-      de: "Eine erneuerte Reisemarke, bei der schon die Planung Teil der Reise ist.",
+      en: "Travel agency.",
+      es: "Agencia de viajes.",
+      fr: "Agence de voyages.",
+      de: "Reiseunternehmen.",
     },
     body: {
       en: "A modernised identity, a redesigned website for booking activities and excursions, and the catalogues and campaigns that carry the brand.",
@@ -138,10 +138,10 @@ export const cases: Case[] = [
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
     disciplines: ["identity", "web", "3d"],
     lead: {
-      en: "Twelve beachfront homes on the Costa del Sol, and an identity drawn from the light and rarity of a blue sapphire.",
-      es: "Doce viviendas frente al mar en la Costa del Sol, y una identidad que nace de la luz y la rareza de un zafiro azul.",
-      fr: "Douze maisons en bord de mer sur la Costa del Sol, et une identité née de la lumière et de la rareté d'un saphir bleu.",
-      de: "Zwölf Häuser am Meer an der Costa del Sol und eine Identität aus dem Licht und der Seltenheit eines blauen Saphirs.",
+      en: "Luxury residential development.",
+      es: "Promoción residencial de lujo.",
+      fr: "Programme résidentiel de luxe.",
+      de: "Luxus-Wohnprojekt.",
     },
     body: {
       en: "Brand identity, website and art direction of the 3D imagery for an exclusive development: light, clarity and a timeless, refined character.",
@@ -168,10 +168,10 @@ export const cases: Case[] = [
     client: { en: "SmartHC — security consultancy", es: "SmartHC — consultoría de seguridad", fr: "SmartHC — conseil en sécurité", de: "SmartHC — sicherheitsberatung" },
     disciplines: ["identity", "3d", "campaign"],
     lead: {
-      en: "A renewed identity and a 3D character that makes cybersecurity something people can grasp.",
-      es: "Una identidad renovada y un personaje 3D que hace la ciberseguridad comprensible.",
-      fr: "Une identité renouvelée et un personnage 3D qui rend la cybersécurité accessible.",
-      de: "Eine erneuerte Identität und eine 3D-Figur, die Cybersicherheit greifbar macht.",
+      en: "Cybersecurity consultancy.",
+      es: "Consultora de ciberseguridad.",
+      fr: "Cabinet de cybersécurité.",
+      de: "Cybersicherheitsberatung.",
     },
     body: {
       en: "For a consultancy in security and new technology: the visual identity, a 3D guardian carried across devices, print and events, and the campaigns around it.",
@@ -190,10 +190,10 @@ export const cases: Case[] = [
     client: { en: "AMV Soluciones — industrial software", es: "AMV Soluciones — software industrial", fr: "AMV Soluciones — logiciel industriel", de: "AMV Soluciones — industriesoftware" },
     disciplines: ["identity", "web", "campaign"],
     lead: {
-      en: "Software for smart foundries, with an identity and interface that make precise casting calculations feel clear and fast.",
-      es: "Software para fundiciones inteligentes, con una identidad y una interfaz que hacen claros y rápidos los cálculos de carga más precisos.",
-      fr: "Un logiciel pour fonderies intelligentes, avec une identité et une interface qui rendent clairs et rapides les calculs de charge les plus précis.",
-      de: "Software für smarte Gießereien, mit einer Identität und Oberfläche, die präzise Gattierungsberechnungen klar und schnell machen.",
+      en: "Industrial software.",
+      es: "Software industrial.",
+      fr: "Logiciel industriel.",
+      de: "Industriesoftware.",
     },
     body: {
       en: "Brand identity for the product, the design of its interface, and the launch materials around it: posters, campaigns and a trade-show stand.",

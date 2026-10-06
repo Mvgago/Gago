@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useI18n } from "../../i18n/I18n";
+import { scrollToTarget, useLenis } from "../SmoothScroll/SmoothScroll";
 
 /**
  * A quiet way back up: a small outlined circle in the bottom-right corner,
@@ -10,6 +11,7 @@ import { useI18n } from "../../i18n/I18n";
 export const BackToTop: React.FC = () => {
   const { pathname } = useLocation();
   const { t } = useI18n();
+  const lenis = useLenis();
   const [shown, setShown] = useState(false);
   // Distance from the bottom of the screen: the usual margin, or more once the
   // footer scrolls into view, so the circle rests above it and never covers it.
@@ -38,7 +40,7 @@ export const BackToTop: React.FC = () => {
       type="button"
       aria-label={t("top")}
       tabIndex={shown ? 0 : -1}
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={() => scrollToTarget(lenis, 0)}
       style={lift ? { bottom: lift + 16 } : undefined}
       className={`group fixed bottom-6 right-4 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 bg-[#efeef0]/80 text-ink backdrop-blur-md transition-[opacity,transform,border-color] duration-500 ease-haus hover:border-ink sm:right-6 md:bottom-8 md:right-8 ${
         shown ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"

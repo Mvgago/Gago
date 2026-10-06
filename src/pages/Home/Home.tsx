@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { SECTIONS } from "../../components/SpatialIndex/sections";
 import { motion } from "framer-motion";
 import { rise } from "../../lib/motion";
 import { ContactMenu } from "../../components/Contact/ContactMenu";
 import { SocialLinks } from "../../components/Contact/SocialLinks";
 import { useI18n } from "../../i18n/I18n";
-
-const PROJECTS_TINT = SECTIONS[0].tint;
 
 /**
  * Hero as an empty, lit room. The brand lives in the header corner,
@@ -16,21 +13,8 @@ const PROJECTS_TINT = SECTIONS[0].tint;
  */
 export const Home: React.FC = () => {
   const { t } = useI18n();
-  const [hint, setHint] = useState(false);
   return (
   <main className="relative flex h-[100svh] min-h-[600px] w-full select-none flex-col overflow-hidden text-silver">
-    {/* A hint of the work: while the way into the archive is hovered, the room
-        takes on the light of the projects, rising from where the link sits. */}
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 transition-opacity duration-[1400ms] ease-haus"
-      style={{
-        opacity: hint ? 1 : 0,
-        background: `radial-gradient(90% 75% at 12% 100%, ${PROJECTS_TINT}59 0%, ${PROJECTS_TINT}1f 45%, transparent 80%)`,
-        mixBlendMode: "soft-light",
-      }}
-    />
-
     {/* Portrait screens: the light bloom falls right behind the manifesto, so a soft
         shade gathers under the type to keep the silver legible. */}
     <div
@@ -47,13 +31,13 @@ export const Home: React.FC = () => {
 
     <section className="relative flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:pb-12">
       {/* Manifesto */}
-      <div className="max-w-xl font-geo">
+      <div className="max-w-xl font-geo lg:max-w-3xl">
         <motion.h1
           variants={rise}
           initial="hidden"
           animate="shown"
           custom={7}
-          className="text-[2.05rem] font-light leading-[1.1] tracking-[0.01em] sm:text-[2.5rem] lg:text-[3.1rem]"
+          className="text-[2.05rem] font-light leading-[1.1] tracking-[0.01em] sm:text-[2.5rem] lg:text-[4.4rem] lg:leading-[1.02]"
         >
           {t("hero.title")}
         </motion.h1>
@@ -63,28 +47,35 @@ export const Home: React.FC = () => {
           initial="hidden"
           animate="shown"
           custom={8}
-          className="mt-3 text-[1.0625rem] font-light tracking-[0.02em] text-silver/85 [text-wrap:balance] sm:text-[1.2rem] lg:text-[1.3rem]"
+          className="mt-3 text-[1.0625rem] font-light tracking-[0.02em] text-silver/85 [text-wrap:balance] sm:text-[1.2rem] lg:mt-5 lg:text-[1.65rem]"
         >
           {t("hero.sub")}
         </motion.p>
 
-        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12">
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12 lg:mt-16">
           <Link
             to="/projects"
             // The one way into the work: a step firmer than the other small type,
             // with a hairline always under it that lights up on hover.
-            className="meta group inline-flex items-center gap-3 !text-[12px] !font-normal text-silver lg:!text-[13px]"
-            onPointerEnter={(e) => e.pointerType === "mouse" && setHint(true)}
-            onPointerLeave={() => setHint(false)}
-            onFocus={() => setHint(true)}
-            onBlur={() => setHint(false)}
+            className="meta group inline-flex items-center gap-3 !text-[14px] !font-normal !tracking-[0.22em] text-silver sm:!text-[15px] lg:!text-[18px]"
           >
             <span className="relative">
               {t("hero.cta")}
-              <span className="absolute -bottom-1.5 left-0 h-px w-full bg-silver/40" />
               <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-silver transition-transform duration-700 ease-haus group-hover:scale-x-100 group-focus-visible:scale-x-100" />
             </span>
-            <span className="transition-transform duration-700 ease-haus group-hover:translate-x-1.5">→</span>
+            {/* A long hairline arrow, drawn: it stretches towards the work on hover */}
+            <svg
+              aria-hidden
+              viewBox="0 0 48 12"
+              className="ml-1 h-3 w-10 overflow-visible transition-transform duration-700 ease-haus group-hover:translate-x-2 lg:w-12"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.1}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M0 6h47M41 1l6 5-6 5" />
+            </svg>
           </Link>
         </motion.div>
       </div>

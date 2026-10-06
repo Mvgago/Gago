@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -10,9 +10,10 @@ import { SiteHeader } from "./components/Header/SiteHeader";
 import { PageTransition } from "./components/PageTransition/PageTransition";
 import Footer from "./components/Footer/Footer";
 import { BackToTop } from "./components/BackToTop/BackToTop";
+import { SmoothScroll, scrollToTarget, useLenis } from "./components/SmoothScroll/SmoothScroll";
 
 import { Home } from "./pages/Home/Home";
-import { ProjectsPage } from "./pages/Projects/Projects";
+import { ProjectsSection } from "./pages/Projects/ProjectsSection";
 import { AboutPage } from "./pages/About/AboutPage";
 import { ArtworkPage } from "./pages/Artwork/ArtworkPage";
 import { NeedytPage } from "./pages/Needyt/Needyt";
@@ -40,6 +41,8 @@ export const App: React.FC = () => {
 
   return (
     <I18nProvider>
+    {/* Smooth, inertial scroll for the whole site */}
+    <SmoothScroll>
     <PointerLightProvider>
       <StudioAtmosphere />
       <AnimatePresence initial={false}>
@@ -58,13 +61,30 @@ export const App: React.FC = () => {
       <SiteHeader />
       <BackToTop />
 
-      <AnimatePresence mode="wait" initial={false} onExitComplete={() => window.scrollTo(0, 0)}>
+      <Pages location={location} />
+    </PointerLightProvider>
+    </SmoothScroll>
+    </I18nProvider>
+  );
+};
+
+/** The routed pages. Each new page starts at the top, set instantly (no glide) once the old one has left. */
+const Pages: React.FC<{ location: ReturnType<typeof useLocation> }> = ({ location }) => {
+  const lenis = useLenis();
+  // While the old page fades out, the view glides back to the top with the smooth scroll,
+  // so leaving a page part-way down never jumps
+  useEffect(() => {
+    if (lenis && window.scrollY > 0) lenis.scrollTo(0, { duration: 0.45 });
+  }, [location.pathname, lenis]);
+  return (
+      <AnimatePresence mode="wait" initial={false} onExitComplete={() => scrollToTarget(lenis, 0, { immediate: true })}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={page(<Home />, false)} />
           {/* Info closes in its own dark room, with the footer inside it */}
           <Route path="/about" element={page(<AboutPage />, false)} />
           <Route path="/artwork" element={page(<ArtworkPage />)} />
-          <Route path="/projects" element={page(<ProjectsPage />)} />
+          {/* Trial: the new technical index. The previous one is ProjectsPage in pages/Projects/Projects.tsx */}
+          <Route path="/projects" element={page(<ProjectsSection />)} />
           <Route path="/privacy" element={page(<PrivacyPage />)} />
           {/* The selected cases now live under /projects/<slug> */}
           <Route path="/sapphire" element={<Navigate to="/projects/sapphire" replace />} />
@@ -79,7 +99,5 @@ export const App: React.FC = () => {
           <Route path="/projects/:slug" element={page(<CaseStudyPage />)} />
         </Routes>
       </AnimatePresence>
-    </PointerLightProvider>
-    </I18nProvider>
   );
 };

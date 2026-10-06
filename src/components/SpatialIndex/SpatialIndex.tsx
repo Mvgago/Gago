@@ -99,9 +99,16 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
           animate={{ opacity: 1, transition: { duration: 0.6, ease: EASE_VEIL } }}
           exit={{ opacity: 0, transition: { duration: 0.7, ease: EASE_VEIL } }}
         >
-          <Suspense fallback={null}>
-            <LogoSpace active={active ? SECTIONS.indexOf(active) : null} diving={walking} />
-          </Suspense>
+          {/* The sculpture arrives first; the sections and footer follow once it is there */}
+          <motion.div
+            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1, transition: { duration: 0.9, ease: EASE_VEIL } }}
+          >
+            <Suspense fallback={null}>
+              <LogoSpace active={active ? SECTIONS.indexOf(active) : null} diving={walking} />
+            </Suspense>
+          </motion.div>
           {/* Arrival: as the camera steps back, light floods everything */}
           <motion.div
             aria-hidden
@@ -146,7 +153,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
             className="absolute inset-x-4 bottom-6 flex flex-col items-start gap-2 pt-4 font-mono text-[11px] font-light lowercase tracking-[0.12em] sm:inset-x-6 sm:bottom-8 lg:inset-x-8 lg:bottom-10 lg:flex-row lg:items-center lg:justify-end lg:pt-5"
             style={{ color: NAVE.label, borderTop: `1px solid ${NAVE.hair}` }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 0.4, duration: walking ? 0.4 : 0.6 } }}
+            animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 1.05, duration: walking ? 0.4 : 0.6 } }}
           >
             <span className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
               <span>{t("availability")} — {new Date().getFullYear()}</span>
@@ -217,7 +224,7 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     initial={{ opacity: 0 }}
     animate={{
       opacity: dimmed ? 0.35 : 1,
-      transition: entered ? { duration: 0.3 } : { duration: 0.6, delay: dimmed ? 0 : 0.25 + index * 0.08 },
+      transition: entered ? { duration: 0.3 } : { duration: 0.6, delay: dimmed ? 0 : 0.75 + index * 0.1 },
     }}
     onAnimationComplete={() => setEntered(true)}
   >

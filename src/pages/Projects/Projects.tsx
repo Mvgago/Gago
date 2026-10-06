@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cases, CASE_UI, DISCIPLINE } from "../../outils/cases";
@@ -15,19 +15,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
  */
 export const ProjectsPage: React.FC = () => {
   const { t, lang } = useI18n();
-  // The project pointed at or focused, if any
-  const [pointed, setActive] = useState<number | null>(null);
-  // At rest the index is not still: it walks through the projects on its own, one
-  // every few seconds, like a slow exhibition. The cursor takes over at once.
-  const [walk, setWalk] = useState(0);
-  const [touched, setTouched] = useState(false);
-  useEffect(() => {
-    if (pointed !== null || touched) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = window.setInterval(() => setWalk((w) => (w + 1) % cases.length), 3200);
-    return () => window.clearInterval(id);
-  }, [pointed, touched]);
-  const active = pointed ?? (touched ? null : walk);
+  // The project pointed at or focused, if any: nothing moves until the visitor does
+  const [active, setActive] = useState<number | null>(null);
 
   return (
     <main className="px-4 pb-24 pt-28 sm:px-6 md:px-8 md:pt-32">
@@ -77,27 +66,24 @@ export const ProjectsPage: React.FC = () => {
             >
               <Link
                 to={`/projects/${c.slug}`}
-                onPointerEnter={() => {
-                  setActive(i);
-                  setTouched(true);
-                }}
+                onPointerEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
                 onBlur={() => setActive(null)}
-                className={`group relative isolate grid grid-cols-12 items-baseline gap-x-6 gap-y-3 py-7 transition-[opacity,padding] duration-500 ease-haus md:py-9 lg:min-h-[200px] lg:content-center lg:pr-[64%] ${active === i ? "lg:pl-6" : "lg:pl-0"} ${
-                  active !== null && active !== i ? "lg:opacity-45" : ""
+                className={`group relative isolate grid grid-cols-12 items-baseline gap-x-6 gap-y-2 py-8 transition-[opacity,padding] duration-[900ms] ease-haus md:py-9 lg:min-h-[230px] lg:content-center lg:pr-[64%] ${active === i ? "lg:pl-14" : "lg:pl-11"} ${
+                  active !== null && active !== i ? "lg:opacity-70" : ""
                 }`}
               >
                 {/* Wide screens, the row in focus: a paler panel behind its text, and a hairline
                     drawn down its left edge — clear, but in the page's own quiet language */}
                 <span
                   aria-hidden
-                  className={`absolute inset-y-0 left-0 right-[62%] -z-10 hidden bg-[#f8f8f9] transition-opacity duration-500 lg:block ${
-                    active === i ? "opacity-100" : "opacity-0"
+                  className={`absolute inset-y-0 left-0 right-[62%] -z-10 hidden bg-[#f8f8f9] transition-opacity duration-[900ms] lg:block ${
+                    active === i ? "opacity-70" : "opacity-0"
                   }`}
                 />
                 <span
                   aria-hidden
-                  className={`absolute inset-y-0 left-0 hidden w-[2px] origin-top bg-ink transition-transform duration-700 ease-haus lg:block ${
+                  className={`absolute inset-y-0 left-0 hidden w-px origin-top bg-[#8a7484] transition-transform duration-[1100ms] ease-haus lg:block ${
                     active === i ? "scale-y-100" : "scale-y-0"
                   }`}
                 />
@@ -113,10 +99,17 @@ export const ProjectsPage: React.FC = () => {
                     alt=""
                     loading="lazy"
                     draggable={false}
-                    className={`h-full w-full transition-[transform,filter,opacity] duration-700 ease-haus ${
+                    className={`h-full w-full transition-[transform,filter,opacity] duration-[1200ms] ease-haus ${
                       "object-cover"
-                    } ${active === i ? "scale-100 opacity-100 saturate-100" : "scale-[1.03] opacity-80 saturate-[.45]"}`}
+                    } ${active === i ? "scale-100 opacity-100 saturate-100" : "scale-[1.015] opacity-85 saturate-[.6]"}`}
                     style={{ objectPosition: c.coverFocus }}
+                  />
+                  {/* A sheen of light that sweeps across the strip once, as the cursor arrives */}
+                  <span
+                    aria-hidden
+                    className={`pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/20 to-transparent mix-blend-soft-light ${
+                      active === i ? "translate-x-[420%] transition-transform duration-[2200ms] ease-haus" : "translate-x-0"
+                    }`}
                   />
                 </span>
 
@@ -131,13 +124,16 @@ export const ProjectsPage: React.FC = () => {
                   />
                 </span>
 
-                <span className={`${SMALL} col-span-2 tabular-nums text-graphite md:col-span-1`}>{pad(i + 1)}</span>
-                <span className="col-span-10 font-geo text-[1.6rem] font-light leading-tight tracking-[0.02em] text-ink transition-transform duration-700 ease-haus group-hover:translate-x-2 md:col-span-11 md:text-[2.1rem]">
+                <span className="col-span-12 font-geo text-[1.6rem] font-light leading-tight tracking-[0.02em] text-ink transition-transform duration-700 ease-haus group-hover:translate-x-1 md:text-[2.1rem]">
                   {c.title}
                 </span>
-                <span className={`${SMALL} col-span-10 col-start-3 text-graphite md:col-span-11 md:col-start-2`}>
+                <span className={`${SMALL} col-span-12 text-graphite`}>
                   {c.disciplines.map((d) => DISCIPLINE[d][lang]).join(" · ")}
                   {c.year && <span className="tabular-nums"> — {c.year}</span>}
+                </span>
+                {/* The project in a sentence: the same line that opens its case */}
+                <span className="col-span-12 mt-1 max-w-[46ch] font-geo text-[14px] font-normal leading-relaxed tracking-[0.01em] text-graphite/80">
+                  {c.lead[lang]}
                 </span>
               </Link>
             </motion.li>
