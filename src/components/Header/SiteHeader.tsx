@@ -97,7 +97,7 @@ export const SiteHeader: React.FC = () => {
           to="/"
           aria-label="Fuga Haus — home"
           tabIndex={open ? -1 : undefined}
-          className={`block w-28 transition-opacity md:w-32 ${
+          className={`block w-32 transition-opacity md:w-40 ${
             open
               ? "pointer-events-none opacity-0 duration-200"
               : // Phones: the mark is small and its hairline bars fade into the mauve,

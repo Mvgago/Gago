@@ -150,7 +150,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
           {/* Footer */}
           <motion.footer
-            className="absolute inset-x-4 bottom-6 flex flex-col items-start gap-2 pt-4 font-mono text-[11px] font-light lowercase tracking-[0.12em] sm:inset-x-6 sm:bottom-8 lg:inset-x-8 lg:bottom-10 lg:flex-row lg:items-center lg:justify-end lg:pt-5"
+            className="absolute inset-x-4 bottom-6 flex flex-col items-start gap-2 pt-4 font-mono text-[14px] font-normal lowercase tracking-[0.12em] sm:inset-x-6 sm:bottom-8 lg:inset-x-8 lg:bottom-10 lg:flex-row lg:items-center lg:justify-end lg:pt-5"
             style={{ color: NAVE.label, borderTop: `1px solid ${NAVE.hair}` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 1.05, duration: walking ? 0.4 : 0.6 } }}
@@ -228,9 +228,9 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     }}
     onAnimationComplete={() => setEntered(true)}
   >
-    <span className="block font-mono text-[10px] font-extralight tracking-[0.25em]" style={{ color: NAVE.label }}>
-      {section.num}
-      {current && ` · ${t("index.here")}`}
+    {/* No numbers: only "here", on the page you are on (the line keeps its height either way) */}
+    <span className="block font-mono text-[14px] font-normal lowercase tracking-[0.2em]" style={{ color: NAVE.label }}>
+      {current ? t("index.here") : " "}
     </span>
     <span
       className="mt-1.5 block font-geo text-[1.85rem] font-light lowercase leading-none tracking-[0.16em] transition-colors duration-700 sm:text-4xl lg:mt-2 lg:text-[1.9vw] lg:tracking-[0.18em]"
@@ -241,7 +241,7 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     {/* Caption on hover, wide screens only: phones get just the names */}
     <span
       // Appears promptly with its title; leaves a little more slowly
-      className={`mt-2 hidden font-mono text-[10px] font-extralight lowercase tracking-[0.2em] transition-opacity lg:block ${
+      className={`mt-2 hidden font-mono text-[14px] font-normal lowercase tracking-[0.2em] transition-opacity lg:block ${
         on ? "opacity-100 duration-200" : "opacity-0 duration-500"
       }`}
       style={{ color: NAVE.label }}

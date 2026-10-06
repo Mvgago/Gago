@@ -4,7 +4,8 @@ import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
-import { LightWall, SMALL } from "../../components/Light/LightWall";
+import { LightWall } from "../../components/Light/LightWall";
+import { ACTION, BODY as BODY_TYPE, CAPTION, HEADING, LEAD, SMALL, TITLE } from "../../lib/type";
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import { FUGA_SEI_EP } from "../../outils/artwork";
 import Footer from "../../components/Footer/Footer";
@@ -19,8 +20,7 @@ const GRAIN =
 const GRID = "grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8";
 
 /** Body copy of the inner rooms */
-// Regular weight: light strokes at this size fade on the pale wall
-const BODY = "font-geo text-[15px] font-normal leading-relaxed tracking-[0.02em] text-graphite";
+const BODY = `${BODY_TYPE} text-graphite`;
 
 /**
  * A chapter of the page: a hairline across, the label in the left column,
@@ -48,15 +48,9 @@ const Chapter: React.FC<{
 );
 
 /** Title and text, used for the disciplines and the steps of the process */
-const Entry: React.FC<{ title: string; text: string; large?: boolean }> = ({ title, text, large }) => (
+const Entry: React.FC<{ title: string; text: string }> = ({ title, text }) => (
   <div>
-    <h3
-      className={`font-geo font-light tracking-[0.02em] text-ink ${
-        large ? "text-[1.35rem] leading-snug" : "text-[1.05rem] leading-snug"
-      }`}
-    >
-      {title}
-    </h3>
+    <h3 className={`${HEADING} text-ink`}>{title}</h3>
     <p className={`mt-3 ${BODY}`}>{text}</p>
   </div>
 );
@@ -138,15 +132,12 @@ export const AboutPage: React.FC = () => {
       {/* Header, as in the other rooms */}
       <header className="grid gap-6 md:grid-cols-12 md:items-end">
         <div className="md:col-span-6">
-          <motion.p variants={rise} initial="hidden" animate="shown" className={`${SMALL} text-graphite`}>
-            03
-          </motion.p>
           <motion.h1
             variants={rise}
             initial="hidden"
             animate="shown"
             custom={1}
-            className="mt-3 font-geo text-[2.4rem] font-light lowercase leading-none tracking-[0.04em] text-ink sm:text-5xl"
+            className={`${TITLE} lowercase text-ink`}
           >
             {t("section.studio")}
           </motion.h1>
@@ -158,7 +149,7 @@ export const AboutPage: React.FC = () => {
           custom={2}
           className="flex flex-col gap-2 md:col-span-5 md:col-start-8 md:items-end md:text-right"
         >
-          <p className="font-geo text-base font-normal tracking-[0.04em] text-graphite">{t("section.studio.caption")}</p>
+          <p className={`${CAPTION} text-graphite`}>{t("section.studio.caption")}</p>
           <p className={`${SMALL} flex items-center gap-2 text-graphite`}>
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
             {t("availability")}
@@ -175,7 +166,7 @@ export const AboutPage: React.FC = () => {
         initial="hidden"
         animate="shown"
         custom={3}
-        className="max-w-[34ch] font-geo text-[1.9rem] font-light leading-[1.25] tracking-[0.01em] text-ink md:text-[2.5rem]"
+        className={`${LEAD} max-w-[34ch] text-ink`}
       >
         {s.statement}
       </motion.p>
@@ -187,7 +178,7 @@ export const AboutPage: React.FC = () => {
         animate="shown"
         custom={4}
         // One line, one voice: the shortcut and the address in the same small type
-        className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-3 font-mono text-[13px] font-normal lowercase tracking-[0.04em] text-ink"
+        className={`${ACTION} mt-12 flex flex-wrap items-center gap-x-4 gap-y-3 text-ink`}
       >
         <a
           href="#contact"
@@ -222,7 +213,7 @@ export const AboutPage: React.FC = () => {
         {/* Same four-column grid as the process below, so the columns line up chapter to chapter */}
         <div className={GRID}>
           {s.disciplines.map((d) => (
-            <Entry key={d.title} title={d.title} text={d.text} large />
+            <Entry key={d.title} title={d.title} text={d.text} />
           ))}
         </div>
       </Chapter>
@@ -252,7 +243,7 @@ export const AboutPage: React.FC = () => {
             />
           </a>
           <div className="max-w-xl">
-            <p className="font-geo text-[1.15rem] font-normal leading-relaxed tracking-[0.02em] text-ink">
+            <p className={`${HEADING} text-ink`}>
               {beforeName}
               <a
                 href={FUGA_SEI_EP}
@@ -270,7 +261,7 @@ export const AboutPage: React.FC = () => {
               href={FUGA_SEI_EP}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${SMALL} group mt-5 inline-flex items-center gap-1.5 text-graphite transition-colors duration-500 hover:text-ink`}
+              className={`${ACTION} group mt-5 inline-flex items-center gap-1.5 text-graphite transition-colors duration-500 hover:text-ink`}
             >
               <span className="relative">
                 {t("artwork.listen")}
@@ -311,11 +302,11 @@ export const AboutPage: React.FC = () => {
             <h2 className={`${SMALL} text-platinum/55`}>
               {s.contactLabel}
             </h2>
-            <p className="mt-8 max-w-[18ch] font-geo text-[2.1rem] font-light leading-[1.18] tracking-[0.01em] text-platinum md:text-[2.6rem]">
+            <p className={`${LEAD} mt-8 max-w-[18ch] text-platinum`}>
               {s.contactLead}
             </p>
             {/* Availability, then the direct ways in */}
-            <div className="mt-12 flex flex-col items-start gap-4 font-mono text-[13px] font-normal lowercase tracking-[0.04em]">
+            <div className={`${ACTION} mt-12 flex flex-col items-start gap-4`}>
               <span className="flex items-center gap-2.5 text-platinum/70">
                 <span aria-hidden className="relative flex h-1.5 w-1.5">
                   <span className="absolute inset-0 animate-ping rounded-full bg-current opacity-40 [animation-duration:2.8s]" />
@@ -347,7 +338,7 @@ export const AboutPage: React.FC = () => {
               <button
                 type="submit"
                 // The way out of the page: solid light, the one filled form in this room
-                className={`${SMALL} group inline-flex items-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-ink transition-colors duration-500 hover:bg-white`}
+                className={`${ACTION} group inline-flex items-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-ink transition-colors duration-500 hover:bg-white`}
               >
                 {s.form.send}
                 <span aria-hidden className="transition-transform duration-500 ease-haus group-hover:translate-x-1">

@@ -4,9 +4,8 @@ import { motion } from "framer-motion";
 import { cases, CASE_UI, DISCIPLINE, type CaseImage } from "../../outils/cases";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
-import { LightWall, MOUNT, SMALL } from "../../components/Light/LightWall";
-
-const pad = (n: number) => String(n).padStart(2, "0");
+import { LightWall, MOUNT } from "../../components/Light/LightWall";
+import { ACTION, BODY, SMALL, SUBTITLE, TITLE } from "../../lib/type";
 
 /** Work is looked at, not taken: no dragging or saving from the context menu. */
 const protect = {
@@ -83,15 +82,12 @@ export const CaseStudyPage: React.FC = () => {
         variants={rise}
         initial="hidden"
         animate="shown"
-        className="mb-12 grid grid-cols-[1fr_auto_1fr] items-center gap-6 font-mono text-[13px] lowercase tracking-[0.04em] text-ink md:mb-16"
+        className={`${ACTION} mb-12 flex items-center justify-between gap-6 text-ink md:mb-16`}
       >
         <Link to="/projects" className="group inline-flex items-center gap-3 justify-self-start opacity-80 transition-opacity duration-500 hover:opacity-100">
           <Arrow back />
           {CASE_UI.all[lang]}
         </Link>
-        <span className="tabular-nums text-graphite">
-          {pad(index + 1)} / {pad(cases.length)}
-        </span>
         <Link to={`/projects/${next.slug}`} className="group inline-flex items-center gap-3 justify-self-end opacity-80 transition-opacity duration-500 hover:opacity-100">
           <span className="hidden sm:inline">{next.title.toLowerCase()}</span>
           <span className="sm:hidden">{CASE_UI.next[lang]}</span>
@@ -106,7 +102,7 @@ export const CaseStudyPage: React.FC = () => {
             initial="hidden"
             animate="shown"
             custom={1}
-            className="mt-3 font-geo text-[2.4rem] font-light leading-none tracking-[0.02em] text-ink sm:text-5xl"
+            className={`${TITLE} text-ink`}
           >
             {c.title}
           </motion.h1>
@@ -115,7 +111,7 @@ export const CaseStudyPage: React.FC = () => {
             initial="hidden"
             animate="shown"
             custom={2}
-            className="mt-8 max-w-[36ch] font-geo text-[1.3rem] font-light leading-snug tracking-[0.01em] text-ink md:text-[1.5rem]"
+            className={`${SUBTITLE} mt-8 max-w-[36ch] text-ink`}
           >
             {c.lead[lang]}
           </motion.p>
@@ -182,7 +178,7 @@ export const CaseStudyPage: React.FC = () => {
 
       {/* What was done */}
       <section className="grid py-16 md:grid-cols-12 md:gap-x-8 md:py-24">
-        <p className="font-geo text-[15px] font-normal leading-relaxed tracking-[0.02em] text-graphite md:col-span-6 md:col-start-7 md:text-base">
+        <p className={`${BODY} text-graphite md:col-span-6 md:col-start-7`}>
           {c.body[lang]}
         </p>
       </section>
@@ -210,10 +206,10 @@ export const CaseStudyPage: React.FC = () => {
       >
         <span className={`${SMALL} text-graphite`}>{CASE_UI.next[lang]}</span>
         <span className="mt-4 flex items-baseline justify-between gap-6">
-          <span className="font-geo text-[2rem] font-light leading-tight tracking-[0.02em] text-ink transition-transform duration-700 ease-haus group-hover:translate-x-2 md:text-[2.8rem]">
+          <span className={`${TITLE} text-ink transition-transform duration-700 ease-haus group-hover:translate-x-2`}>
             {next.title}
           </span>
-          <span aria-hidden className="font-geo text-[2rem] text-ink transition-transform duration-700 ease-haus group-hover:translate-x-2">
+          <span aria-hidden className={`${TITLE} text-ink transition-transform duration-700 ease-haus group-hover:translate-x-2`}>
             →
           </span>
         </span>

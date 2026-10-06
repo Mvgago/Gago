@@ -5,6 +5,7 @@ import { artwork } from "../../outils/artwork";
 import { EASE_HAUS, EASE_VEIL, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { LightWall, MOUNT, WALL } from "../../components/Light/LightWall";
+import { ACTION, CAPTION, HEADING, SMALL, TITLE } from "../../lib/type";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -40,15 +41,12 @@ export const ArtworkPage: React.FC = () => {
       {/* Header: small, quiet, the work does the talking */}
       <header className="mb-12 grid gap-6 md:mb-16 md:grid-cols-12 md:items-end">
         <div className="md:col-span-6">
-          <motion.p variants={rise} initial="hidden" animate="shown" className="font-mono text-[11px] font-normal lowercase tracking-[0.04em] text-graphite">
-            02
-          </motion.p>
           <motion.h1
             variants={rise}
             initial="hidden"
             animate="shown"
             custom={1}
-            className="mt-3 font-geo text-[2.4rem] font-light lowercase leading-none tracking-[0.04em] text-ink sm:text-5xl"
+            className={`${TITLE} lowercase text-ink`}
           >
             {t("section.artwork")}
           </motion.h1>
@@ -60,8 +58,8 @@ export const ArtworkPage: React.FC = () => {
           custom={2}
           className="flex flex-col gap-2 md:col-span-5 md:col-start-8 md:items-end md:text-right"
         >
-          <p className="font-geo text-base font-normal tracking-[0.04em] text-graphite">{t("section.artwork.caption")}</p>
-          <p className="font-mono text-[11px] font-normal lowercase tracking-[0.04em] tabular-nums text-graphite">
+          <p className={`${CAPTION} text-graphite`}>{t("section.artwork.caption")}</p>
+          <p className={`${SMALL} tabular-nums text-graphite`}>
             {pad(artwork.length)} {t("artwork.pieces")}
           </p>
         </motion.div>
@@ -129,7 +127,7 @@ export const ArtworkPage: React.FC = () => {
           type="button"
           onClick={() => step(-1)}
           disabled={progress.start}
-          className="font-mono text-[11px] font-normal lowercase tracking-[0.04em] transition-[color,opacity] duration-500 hover:text-ink disabled:opacity-30"
+          className={`${ACTION} transition-[color,opacity] duration-500 hover:text-ink disabled:opacity-30`}
         >
           ← <span className="hidden sm:inline">{t("artwork.prev")}</span>
         </button>
@@ -143,7 +141,7 @@ export const ArtworkPage: React.FC = () => {
           type="button"
           onClick={() => step(1)}
           disabled={progress.end}
-          className="font-mono text-[11px] font-normal lowercase tracking-[0.04em] transition-[color,opacity] duration-500 hover:text-ink disabled:opacity-30"
+          className={`${ACTION} transition-[color,opacity] duration-500 hover:text-ink disabled:opacity-30`}
         >
           <span className="hidden sm:inline">{t("artwork.next")}</span> →
         </button>
@@ -271,7 +269,7 @@ const Caption: React.FC<{
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group/l font-mono text-[11px] font-normal lowercase tracking-[0.04em] inline-flex items-center gap-1.5 text-graphite transition-colors duration-500 hover:text-ink"
+      className={`${ACTION} group/l inline-flex items-center gap-1.5 text-graphite transition-colors duration-500 hover:text-ink`}
     >
       <span className="relative">
         {t("artwork.listen")}
@@ -280,14 +278,14 @@ const Caption: React.FC<{
       <span aria-hidden>↗</span>
     </a>
   );
-  const number = <span className="font-mono text-[11px] font-normal lowercase tracking-[0.04em] tabular-nums text-graphite">{pad(index + 1)}</span>;
+  const number = <span className={`${SMALL} tabular-nums text-graphite`}>{pad(index + 1)}</span>;
   // Untitled plates keep an empty title line, so every number sits on the same baseline
   const name = (
-    <span className="font-geo text-[1.05rem] font-light leading-snug tracking-[0.04em] text-ink">
+    <span className={`${HEADING} text-ink`}>
       {title ?? " "}
     </span>
   );
-  const more = detail && <span className="font-mono text-[11px] font-normal lowercase tracking-[0.04em] text-graphite">{detail}</span>;
+  const more = detail && <span className={`${SMALL} text-graphite`}>{detail}</span>;
 
   if (inline) {
     return (
@@ -427,13 +425,13 @@ const Viewer: React.FC<{
 
           {/* Label and steps */}
           <div className="flex items-center justify-between gap-4 px-4 pb-6 sm:px-6 md:px-8 md:pb-8">
-            <button type="button" onClick={() => go(-1)} className="font-mono text-[11px] font-normal lowercase tracking-[0.04em] text-graphite transition-colors hover:text-ink">
+            <button type="button" onClick={() => go(-1)} className={`${ACTION} text-graphite transition-colors hover:text-ink`}>
               ← <span className="hidden sm:inline">{t("artwork.prev")}</span>
             </button>
             <div className="min-w-0">
               <Caption index={index} title={plate.title} detail={plate.detail} href={plate.href} centred inline />
             </div>
-            <button type="button" onClick={() => go(1)} className="font-mono text-[11px] font-normal lowercase tracking-[0.04em] text-graphite transition-colors hover:text-ink">
+            <button type="button" onClick={() => go(1)} className={`${ACTION} text-graphite transition-colors hover:text-ink`}>
               <span className="hidden sm:inline">{t("artwork.next")}</span> →
             </button>
           </div>

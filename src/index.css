@@ -48,13 +48,13 @@
 }
 
 @layer utilities {
-  /* Hairline monospaced metadata */
+  /* The controls' type (index, close): the same 14px as all small type, spaced wider */
   .meta {
     font-family: var(--font-mono);
-    font-weight: 200;
-    font-size: 10px;
+    font-weight: 400;
+    font-size: 14px;
     line-height: 1.6;
-    letter-spacing: 0.28em;
+    letter-spacing: 0.2em;
     text-transform: lowercase;
   }
 

@@ -6,6 +6,7 @@ import { cases, DISCIPLINE } from "../../outils/cases";
 import { useI18n } from "../../i18n/I18n";
 import type { Lang } from "../../i18n/strings";
 import type { CameraMotion } from "../../components/Gallery/CinematicViewer";
+import { CAPTION, DISPLAY } from "../../lib/type";
 
 // three.js / React Three Fiber only load on this page
 const CinematicViewer = lazy(() => import("../../components/Gallery/CinematicViewer"));
@@ -108,12 +109,12 @@ export const ProjectsSection: React.FC = () => {
           >
             {/* The title moves most */}
             <Layer mx={mx} my={my} depth={130}>
-              <p className="font-geo text-[15px] font-normal lowercase tracking-[0.04em] text-platinum/70">
+              <p className={`${CAPTION} lowercase text-platinum/70`}>
                 {scopeOf(active.slug, lang)}
               </p>
               <Link
                 to={`/projects/${active.slug}`}
-                className="pointer-events-auto mt-3 inline-block font-geo text-[2.6rem] font-light leading-none tracking-[0.01em] text-[#f7f4f0] transition-opacity duration-500 hover:opacity-80 md:text-7xl"
+                className={`${DISPLAY} pointer-events-auto mt-3 inline-block text-[#f7f4f0] transition-opacity duration-500 hover:opacity-80`}
               >
                 {active.title}
               </Link>
@@ -125,7 +126,7 @@ export const ProjectsSection: React.FC = () => {
         <Layer mx={mx} my={my} depth={50}>
           <nav
             aria-label={t("section.projects")}
-            className="pointer-events-auto flex flex-wrap gap-x-8 gap-y-2 border-t border-platinum/15 pt-4 font-geo text-[15px] font-normal tracking-[0.02em]"
+            className={`${CAPTION} pointer-events-auto flex flex-wrap gap-x-8 gap-y-2 border-t border-platinum/15 pt-4`}
           >
             {WORKS.map((w, i) => (
               <Link
