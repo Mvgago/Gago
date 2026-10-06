@@ -24,7 +24,8 @@ type Props = {
   className?: string;
 };
 
-const BG = "#0a0b0c";
+// The projects page's graphite, so nothing else ever shows before the picture
+const BG = "#2f2b2a";
 const CAMERA_Z = 5;
 const FOV = 30;
 // The plane is a little larger than the view, so the camera's drift never reveals an edge
@@ -234,9 +235,9 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
           // A fixed grade, not animated: a touch darker and firmer, so the file's own
           // softness reads as atmosphere rather than as low resolution
           style={{ filter: "brightness(0.8) contrast(1.08) saturate(0.9)" }}
-          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
-            filmReady ? "opacity-100" : "opacity-0"
-          }`}
+          // Visible from the start: until the film runs, its poster (the project's picture)
+          // shows under the cloud, so the page never opens on an empty screen
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         />
       )}
       {/* A pale cloud over the first frame, dissipating once the film has started:

@@ -6,6 +6,9 @@ export const WALL = "#efeef0";
 export const isLightRoom = (pathname: string) =>
   pathname === "/about" || pathname === "/artwork" || pathname === "/projects" || pathname.startsWith("/projects/");
 
+/** The one dark room's wall (projects, and the contact block on info): warm graphite. */
+export const DARK_WALL = "#2f2b2a";
+
 /** A paler surface on the wall: mounts, bands, panels. */
 export const MOUNT = "#f8f8f9";
 

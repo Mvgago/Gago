@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { PointerLightProvider } from "./components/Light/PointerLight";
 import { I18nProvider } from "./i18n/I18n";
 import { StudioAtmosphere } from "./components/Light/StudioAtmosphere";
-import { WALL, isLightRoom } from "./components/Light/LightWall";
+import { DARK_WALL, WALL, isLightRoom } from "./components/Light/LightWall";
 import { SiteHeader } from "./components/Header/SiteHeader";
 import { PageTransition } from "./components/PageTransition/PageTransition";
 import Footer from "./components/Footer/Footer";
@@ -37,7 +37,8 @@ export const App: React.FC = () => {
   const location = useLocation();
   // The light rooms' wall changes as soon as the route does, under the page
   // transition, so the landing's colours never show through while a page fades in.
-  const lightRoom = isLightRoom(location.pathname);
+  // The projects page is the one dark room: its own graphite comes in instead of the light wall.
+  const wall = location.pathname === "/projects" ? DARK_WALL : isLightRoom(location.pathname) ? WALL : null;
 
   return (
     <I18nProvider>
@@ -46,12 +47,12 @@ export const App: React.FC = () => {
     <PointerLightProvider>
       <StudioAtmosphere />
       <AnimatePresence initial={false}>
-        {lightRoom && (
+        {wall && (
           <motion.div
-            key="light-wall"
+            key={wall}
             aria-hidden
             className="pointer-events-none fixed inset-0 z-0"
-            style={{ background: WALL }}
+            style={{ background: wall }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.45 } }}
             exit={{ opacity: 0, transition: { duration: 0.45, delay: 0.3 } }}
