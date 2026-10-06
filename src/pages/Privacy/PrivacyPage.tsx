@@ -39,7 +39,7 @@ export const PrivacyPage: React.FC = () => {
           className="col-span-12 max-w-2xl md:col-span-8 md:col-start-5"
         >
           <h1 className="font-geo text-4xl font-light leading-[1.1] tracking-[0.01em] text-ink sm:text-5xl">{p.title}</h1>
-          <p className="mt-6 font-sans text-base font-light leading-relaxed text-ink/85 sm:text-lg">{p.intro}</p>
+          <p className="mt-6 font-geo text-base font-light leading-relaxed text-ink/85 sm:text-lg">{p.intro}</p>
 
           <div className="mt-14 flex flex-col gap-10">
             {p.sections.map((s, i) => (
@@ -48,7 +48,7 @@ export const PrivacyPage: React.FC = () => {
                   {String(i + 1).padStart(2, "0")} — {s.title}
                 </h2>
                 {s.body.map((para, j) => (
-                  <p key={j} className="mt-4 font-sans text-[15px] font-light leading-relaxed text-ink/85">
+                  <p key={j} className="mt-4 font-geo text-[15px] font-light leading-relaxed text-ink/85">
                     {withEmail(para)}
                   </p>
                 ))}

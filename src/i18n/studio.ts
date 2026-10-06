@@ -27,7 +27,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "Fuga Haus is an independent design studio. We design identities, websites and 3D imagery on one principle: less noise, more intent.",
+      "Fuga Haus is an independent design studio. We design identities, websites and video on one principle: less noise, more intent.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -39,14 +39,14 @@ export const STUDIO: Record<Lang, Studio> = {
         text: "Bespoke sites, fast and finished to the last detail, from design to launch. Made to tell, not to fill.",
       },
       {
-        title: "3D imagery",
-        text: "Images and pieces in 3D for products, covers and campaigns: matter, light and composition with intent.",
+        title: "Video",
+        text: "Pieces for campaigns, projects and social media: script, editing and motion, made from the material each project already has or is shot for it.",
       },
     ],
     processLabel: "process",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
-      { title: "Set the atmosphere", text: "References, tone and visual direction before anything is designed." },
+      { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
       { title: "Build", text: "Design and development, with clear reviews at every stage." },
       { title: "Refine", text: "The details that make everything feel finished." },
     ],
@@ -67,7 +67,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Fuga Haus es un estudio de diseño independiente. Diseñamos identidades, webs e imágenes 3D con un mismo principio: menos ruido, más intención.",
+      "Fuga Haus es un estudio de diseño independiente. Diseñamos identidades, webs y vídeo con un mismo principio: menos ruido, más intención.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
@@ -79,14 +79,14 @@ export const STUDIO: Record<Lang, Studio> = {
         text: "Sitios a medida, rápidos y cuidados hasta el último detalle, del diseño a la publicación. Hechos para contar, no para rellenar.",
       },
       {
-        title: "Visualización 3D",
-        text: "Imágenes y piezas en 3D para producto, portadas y campañas: materia, luz y composición con intención.",
+        title: "Vídeo",
+        text: "Piezas para campañas, proyectos y redes: guion, montaje y motion, a partir del material que ya tiene cada proyecto o que se graba para él.",
       },
     ],
     processLabel: "proceso",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
-      { title: "Definir la atmósfera", text: "Referencias, tono y dirección visual antes de diseñar nada." },
+      { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
       { title: "Construir", text: "Diseño y desarrollo, con revisiones claras en cada etapa." },
       { title: "Afinar", text: "Los detalles que hacen que todo se sienta terminado." },
     ],
@@ -107,7 +107,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Fuga Haus est un studio de design indépendant. Nous concevons identités, sites web et images 3D selon un même principe : moins de bruit, plus d'intention.",
+      "Fuga Haus est un studio de design indépendant. Nous concevons identités, sites web et vidéos selon un même principe : moins de bruit, plus d'intention.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -119,14 +119,14 @@ export const STUDIO: Record<Lang, Studio> = {
         text: "Des sites sur mesure, rapides et soignés jusqu'au moindre détail, de la conception à la mise en ligne. Faits pour raconter, pas pour remplir.",
       },
       {
-        title: "Visualisation 3D",
-        text: "Images et pièces en 3D pour produits, pochettes et campagnes : matière, lumière et composition avec intention.",
+        title: "Vidéo",
+        text: "Des pièces pour campagnes, projets et réseaux : scénario, montage et motion, à partir de la matière de chaque projet ou tournée pour lui.",
       },
     ],
     processLabel: "processus",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
-      { title: "Définir l'atmosphère", text: "Références, ton et direction visuelle avant de dessiner quoi que ce soit." },
+      { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
       { title: "Construire", text: "Design et développement, avec des validations claires à chaque étape." },
       { title: "Affiner", text: "Les détails qui donnent le sentiment d'un travail abouti." },
     ],
@@ -147,7 +147,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Fuga Haus ist ein unabhängiges Designstudio. Wir gestalten Identitäten, Websites und 3D-Bilder nach einem Prinzip: weniger Rauschen, mehr Absicht.",
+      "Fuga Haus ist ein unabhängiges Designstudio. Wir gestalten Identitäten, Websites und Videos nach einem Prinzip: weniger Rauschen, mehr Absicht.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
@@ -159,14 +159,14 @@ export const STUDIO: Record<Lang, Studio> = {
         text: "Maßgeschneiderte Websites, schnell und bis ins Detail ausgearbeitet, vom Entwurf bis zum Launch. Gemacht, um zu erzählen, nicht um zu füllen.",
       },
       {
-        title: "3D-Visualisierung",
-        text: "3D-Bilder und -Objekte für Produkte, Cover und Kampagnen: Material, Licht und Komposition mit Absicht.",
+        title: "Video",
+        text: "Stücke für Kampagnen, Projekte und Social Media: Drehbuch, Schnitt und Motion, aus dem vorhandenen Material eines Projekts oder eigens dafür gedreht.",
       },
     ],
     processLabel: "prozess",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
-      { title: "Atmosphäre festlegen", text: "Referenzen, Ton und visuelle Richtung, bevor etwas gestaltet wird." },
+      { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
       { title: "Bauen", text: "Design und Entwicklung, mit klaren Abstimmungen in jeder Phase." },
       { title: "Verfeinern", text: "Die Details, durch die alles vollendet wirkt." },
     ],

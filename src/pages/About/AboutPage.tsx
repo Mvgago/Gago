@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
@@ -10,17 +10,10 @@ import { FUGA_SEI_EP } from "../../outils/artwork";
 import Footer from "../../components/Footer/Footer";
 import grimaldi from "../../assets/gallery/grimaldi-lines.jpg";
 
-// three.js loads only on this page, after the text
-const WhiteRoom = lazy(() => import("../../components/Light/WhiteRoom"));
-
-// The room fades into the page's wall at the top (under the header) and the bottom, so it has no edge
-const ROOM_FADE = "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.9) 16%, rgba(0,0,0,0.9) 55%, transparent 100%)";
-
 // Fine film grain, as on the landing
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
-const pad = (n: number) => String(n).padStart(2, "0");
 
 /** One grid for every chapter with entries: equal columns, equal gaps */
 const GRID = "grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8";
@@ -34,11 +27,10 @@ const BODY = "font-geo text-[15px] font-normal leading-relaxed tracking-[0.02em]
  * the content in the right, like the index of a well-set book.
  */
 const Chapter: React.FC<{
-  index: number;
   label: string;
   id?: string;
   children: React.ReactNode;
-}> = ({ index, label, id, children }) => (
+}> = ({ label, id, children }) => (
   <motion.section
     id={id}
     // scroll-mt: clears the fixed header when reached through a link
@@ -49,23 +41,17 @@ const Chapter: React.FC<{
     transition={{ duration: 1.2, ease: EASE_HAUS }}
   >
     <h2 className={`${SMALL} col-span-12 mb-10 text-graphite md:col-span-3 md:mb-0`}>
-      {pad(index)} — {label}
+      {label}
     </h2>
     <div className="col-span-12 md:col-span-9">{children}</div>
   </motion.section>
 );
 
 /** Title and text, used for the disciplines and the steps of the process */
-const Entry: React.FC<{ index: number; title: string; text: string; large?: boolean }> = ({
-  index,
-  title,
-  text,
-  large,
-}) => (
+const Entry: React.FC<{ title: string; text: string; large?: boolean }> = ({ title, text, large }) => (
   <div>
-    <span className={`${SMALL} tabular-nums text-graphite`}>{pad(index)}</span>
     <h3
-      className={`mt-3 font-geo font-light tracking-[0.02em] text-ink ${
+      className={`font-geo font-light tracking-[0.02em] text-ink ${
         large ? "text-[1.35rem] leading-snug" : "text-[1.05rem] leading-snug"
       }`}
     >
@@ -148,17 +134,6 @@ export const AboutPage: React.FC = () => {
     // No bottom padding: the dark contact block closes the page, the footer follows it
     <main className="relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
       <LightWall />
-
-      {/* The opening: a white room, curved, with lines of light set into its wall */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-[1] h-[100svh] max-h-[960px] min-h-[640px]"
-        style={{ maskImage: ROOM_FADE, WebkitMaskImage: ROOM_FADE }}
-      >
-        <Suspense fallback={null}>
-          <WhiteRoom className="h-full w-full" />
-        </Suspense>
-      </div>
 
       {/* Header, as in the other rooms */}
       <header className="grid gap-6 md:grid-cols-12 md:items-end">
@@ -243,24 +218,24 @@ export const AboutPage: React.FC = () => {
 
       </div>
 
-      <Chapter index={1} label={s.disciplinesLabel}>
+      <Chapter label={s.disciplinesLabel}>
         {/* Same four-column grid as the process below, so the columns line up chapter to chapter */}
         <div className={GRID}>
-          {s.disciplines.map((d, i) => (
-            <Entry key={d.title} index={i + 1} title={d.title} text={d.text} large />
+          {s.disciplines.map((d) => (
+            <Entry key={d.title} title={d.title} text={d.text} large />
           ))}
         </div>
       </Chapter>
 
-      <Chapter index={2} label={s.processLabel}>
+      <Chapter label={s.processLabel}>
         <div className={GRID}>
-          {s.process.map((p, i) => (
-            <Entry key={p.title} index={i + 1} title={p.title} text={p.text} />
+          {s.process.map((p) => (
+            <Entry key={p.title} title={p.title} text={p.text} />
           ))}
         </div>
       </Chapter>
 
-      <Chapter index={3} label={s.voiceLabel}>
+      <Chapter label={s.voiceLabel}>
         <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-10">
           <a
             href={FUGA_SEI_EP}
@@ -334,7 +309,7 @@ export const AboutPage: React.FC = () => {
         <div className="relative grid grid-cols-12 gap-x-8 gap-y-16">
           <div className="col-span-12 lg:col-span-6">
             <h2 className={`${SMALL} text-platinum/55`}>
-              {pad(4)} — {s.contactLabel}
+              {s.contactLabel}
             </h2>
             <p className="mt-8 max-w-[18ch] font-geo text-[2.1rem] font-light leading-[1.18] tracking-[0.01em] text-platinum md:text-[2.6rem]">
               {s.contactLead}

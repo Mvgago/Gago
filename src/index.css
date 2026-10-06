@@ -19,8 +19,8 @@
   /* Landing type: soft silver and pale clay over the studio sweep */
   --color-silver: #f2eee9;
   --color-clay-soft: #ddd2c7;
-  --font-serif: "Cormorant Garamond", ui-serif, serif;
-  --font-sans: "Montserrat", ui-sans-serif, sans-serif;
+  --font-serif: ui-serif, serif;
+  --font-sans: "Jura", ui-sans-serif, sans-serif;
 
   --ease-haus: cubic-bezier(0.22, 1, 0.36, 1);
 }

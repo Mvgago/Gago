@@ -112,7 +112,7 @@ export const SiteHeader: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
-          <LanguageSwitch />
+          <LanguageSwitch dark={pathname === "/projects" && !open} />
 
           <button
             ref={toggle}

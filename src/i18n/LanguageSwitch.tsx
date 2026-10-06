@@ -9,7 +9,9 @@ import { EASE_HAUS } from "../lib/motion";
  * Wide screens: hovering or clicking unfolds the other three to its left,
  * inline. Phones: they drop down in a small list, so the header never crowds.
  */
-export const LanguageSwitch: React.FC<{ className?: string }> = ({ className = "" }) => {
+export const LanguageSwitch: React.FC<{ className?: string; dark?: boolean }> = ({ className = "", dark = false }) => {
+  // On a dark page (the projects stage) the visible codes turn pale; the dropdown keeps its light sheet
+  const ink = dark ? "text-platinum" : "text-ink";
   const { lang, setLang, t } = useI18n();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
@@ -72,11 +74,11 @@ export const LanguageSwitch: React.FC<{ className?: string }> = ({ className = "
                     type="button"
                     lang={l}
                     onClick={() => choose(l)}
-                    className={`${code} text-ink/75 hover:text-ink`}
+                    className={`${code} ${dark ? "text-platinum/70 hover:text-platinum" : "text-ink/75 hover:text-ink"}`}
                   >
                     {l}
                   </button>
-                  <span aria-hidden className="text-ink/55">
+                  <span aria-hidden className={dark ? "text-platinum/45" : "text-ink/55"}>
                     ·
                   </span>
                 </React.Fragment>
@@ -96,12 +98,12 @@ export const LanguageSwitch: React.FC<{ className?: string }> = ({ className = "
         }}
         aria-expanded={open}
         aria-haspopup="true"
-        className={`${code} flex h-9 items-center px-2 text-ink sm:px-0`}
+        className={`${code} flex h-9 items-center px-2 ${ink} sm:px-0`}
       >
         {lang}
         <span
           aria-hidden
-          className={`ml-1 inline-block text-ink/75 transition-transform duration-500 ease-haus sm:ml-1.5 ${
+          className={`ml-1 inline-block ${dark ? "text-platinum/70" : "text-ink/75"} transition-transform duration-500 ease-haus sm:ml-1.5 ${
             open ? "sm:rotate-90" : ""
           } ${open ? "rotate-180" : ""}`}
         >

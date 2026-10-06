@@ -10,6 +10,11 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist'
-  }
+  },
+  // The 3D stage loads lazily; pre-bundle its libraries up front so the dev server
+  // does not have to re-optimise (and reload) the first time /projects is opened
+  optimizeDeps: {
+    include: ['@react-three/fiber', 'three'],
+  },
 })
 

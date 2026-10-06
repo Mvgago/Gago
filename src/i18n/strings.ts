@@ -11,7 +11,7 @@ export type Lang = (typeof LANGS)[number];
 
 const en = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Brand identity, web & 3D imagery.",
+  "hero.sub": "Identity, web and video.",
   "hero.cta": "see projects",
 
   "status": "studio open",
@@ -31,7 +31,7 @@ const en = {
   "section.projects": "projects",
   "section.artwork": "artwork",
   "section.studio": "info",
-  "section.projects.caption": "selected works — identity, web, 3d",
+  "section.projects.caption": "selected works — identity, web, video",
   "section.artwork.caption": "experiments, covers & rendered matter",
   "section.studio.caption": "studio, process & contact",
 
@@ -46,14 +46,14 @@ const en = {
   "footer.together": "let's work together",
   "lang.label": "Language",
   "privacy": "privacy",
-  "meta.description": "Fuga Haus is a design studio for brand identity, web and 3D imagery, creating quiet, atmospheric work.",
+  "meta.description": "Fuga Haus is a design studio for brand identity, web and video.",
 };
 
 export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Identidad de marca, web y visualización 3D.",
+  "hero.sub": "Identidad, web y vídeo.",
   "hero.cta": "ver proyectos",
 
   "status": "estudio abierto",
@@ -73,7 +73,7 @@ const es: Record<Key, string> = {
   "section.projects": "proyectos",
   "section.artwork": "obra",
   "section.studio": "info",
-  "section.projects.caption": "trabajos seleccionados — identidad, web, 3d",
+  "section.projects.caption": "trabajos seleccionados — identidad, web, vídeo",
   "section.artwork.caption": "experimentos, portadas y materia renderizada",
   "section.studio.caption": "estudio, proceso y contacto",
 
@@ -88,12 +88,12 @@ const es: Record<Key, string> = {
   "footer.together": "trabajemos juntos",
   "lang.label": "Idioma",
   "privacy": "privacidad",
-  "meta.description": "Fuga Haus es un estudio de diseño de identidad de marca, web y visualización 3D, con un trabajo sereno y atmosférico.",
+  "meta.description": "Fuga Haus es un estudio de diseño de identidad de marca, web y vídeo.",
 };
 
 const fr: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Identité de marque, web & visualisation 3D.",
+  "hero.sub": "Identité, web et vidéo.",
   "hero.cta": "voir les projets",
 
   "status": "studio ouvert",
@@ -113,7 +113,7 @@ const fr: Record<Key, string> = {
   "section.projects": "projets",
   "section.artwork": "œuvres",
   "section.studio": "info",
-  "section.projects.caption": "travaux choisis — identité, web, 3d",
+  "section.projects.caption": "travaux choisis — identité, web, vidéo",
   "section.artwork.caption": "expériences, pochettes & matière rendue",
   "section.studio.caption": "studio, processus & contact",
 
@@ -128,12 +128,12 @@ const fr: Record<Key, string> = {
   "footer.together": "travaillons ensemble",
   "lang.label": "Langue",
   "privacy": "confidentialité",
-  "meta.description": "Fuga Haus est un studio de design : identité de marque, web et visualisation 3D, pour un travail calme et atmosphérique.",
+  "meta.description": "Fuga Haus est un studio de design : identité de marque, web et vidéo.",
 };
 
 const de: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Markenidentität, Web & 3D-Visualisierung.",
+  "hero.sub": "Identität, Web und Video.",
   "hero.cta": "projekte ansehen",
 
   "status": "studio geöffnet",
@@ -153,7 +153,7 @@ const de: Record<Key, string> = {
   "section.projects": "projekte",
   "section.artwork": "arbeiten",
   "section.studio": "info",
-  "section.projects.caption": "ausgewählte arbeiten — identität, web, 3d",
+  "section.projects.caption": "ausgewählte arbeiten — identität, web, video",
   "section.artwork.caption": "experimente, cover & gerenderte materie",
   "section.studio.caption": "studio, prozess & kontakt",
 
@@ -168,7 +168,7 @@ const de: Record<Key, string> = {
   "footer.together": "lass uns zusammenarbeiten",
   "lang.label": "Sprache",
   "privacy": "datenschutz",
-  "meta.description": "Fuga Haus ist ein Designstudio für Markenidentität, Web und 3D-Visualisierung – ruhig und atmosphärisch.",
+  "meta.description": "Fuga Haus ist ein Designstudio für Markenidentität, Web und Video.",
 };
 
 export const STRINGS: Record<Lang, Record<Key, string>> = { en, es, fr, de };

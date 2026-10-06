@@ -10,7 +10,7 @@ import { SMALL } from "../Light/LightWall";
  * action: each page already ends on its own.
  *
  * `dark`: drawn inside a dark closing block (the info page), with no outer
- * margin; its middle carries the studio's line instead of the contact,
+ * margin; its middle carries the studio's signature instead of the contact,
  * which the block above already holds.
  */
 const Footer: React.FC<{ dark?: boolean }> = ({ dark }) => {
@@ -31,7 +31,7 @@ const Footer: React.FC<{ dark?: boolean }> = ({ dark }) => {
         </nav>
         <span className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-center">
           {dark ? (
-            t("hero.title").toLowerCase()
+            "designing atmospheres."
           ) : (
             <>
               {t("availability")}

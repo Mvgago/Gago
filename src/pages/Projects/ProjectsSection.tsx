@@ -1,159 +1,148 @@
 import React, { Suspense, lazy, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { AnimatePresence, motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { EASE_HAUS } from "../../lib/motion";
-import { cases } from "../../outils/cases";
+import { cases, DISCIPLINE } from "../../outils/cases";
+import { useI18n } from "../../i18n/I18n";
+import type { Lang } from "../../i18n/strings";
+import type { CameraMotion } from "../../components/Gallery/CinematicViewer";
 
-// three.js only loads on this page
-const SpatialGallery = lazy(() => import("../../components/Gallery/SpatialGallery"));
-
-/**
- * Selected works as a spatial WebGL gallery: the projects float as textured
- * planes in 3D space (see SpatialGallery); over the canvas, a quiet technical
- * HUD — the count, the filters, and the title of the plane under the cursor,
- * synchronised with the 3D raycaster. Click a plane to open its case.
- */
-
-type Category = "INTERACTIVE & WEB3D" | "CGI & SCENOGRAPHY" | "BRAND & DIGITAL SYSTEMS";
-
-type Work = { slug: string; title: string; categories: Category[]; tags: string; year: string };
-
-// Real scope of each project. Year: fill in when known.
-const WORKS: Work[] = [
-  { slug: "sapphire", title: "The Sapphire", categories: ["BRAND & DIGITAL SYSTEMS", "CGI & SCENOGRAPHY"], tags: "Brand identity / Website / 3D imagery", year: "—" },
-  { slug: "smarthc", title: "Smart Human Capital", categories: ["BRAND & DIGITAL SYSTEMS", "CGI & SCENOGRAPHY"], tags: "Brand identity / 3D character / Campaigns", year: "—" },
-  { slug: "santa-engracia", title: "Santa Engracia", categories: ["BRAND & DIGITAL SYSTEMS"], tags: "Brand identity / Website", year: "—" },
-  { slug: "alea", title: "Alea Software", categories: ["BRAND & DIGITAL SYSTEMS", "INTERACTIVE & WEB3D"], tags: "Product identity / Interface / Launch", year: "—" },
-];
-
-const FILTERS = ["ALL", "INTERACTIVE & WEB3D", "CGI & SCENOGRAPHY", "BRAND & DIGITAL SYSTEMS"] as const;
-type Filter = (typeof FILTERS)[number];
-
-const pad = (n: number) => String(n).padStart(2, "0");
-const HUD = "font-mono text-[11px] uppercase tracking-[0.14em]";
+// three.js / React Three Fiber only load on this page
+const CinematicViewer = lazy(() => import("../../components/Gallery/CinematicViewer"));
 
 const GRAIN =
-  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
+
+/**
+ * Selected works, one at a time, full-bleed: the project's film or photograph
+ * untouched (see CinematicViewer). The site's one dark room, in the same warm
+ * graphite as the rest of the house. All the words sit together in one place,
+ * bottom left: the project's scope, its title, and the other projects. The type
+ * drifts with the camera at slightly different depths, so depth comes from the
+ * type, never the picture.
+ */
+
+type Work = { slug: string; title: string };
+
+const WORKS: Work[] = [
+  { slug: "sapphire", title: "The Sapphire" },
+  { slug: "smarthc", title: "Smart Human Capital" },
+  { slug: "santa-engracia", title: "Santa Engracia" },
+  { slug: "alea", title: "Alea Software" },
+];
+
+const scopeOf = (slug: string, lang: Lang) =>
+  (cases.find((c) => c.slug === slug)?.disciplines ?? []).map((d) => DISCIPLINE[d][lang]).join(" · ");
+const imageOf = (slug: string) => cases.find((c) => c.slug === slug)?.cover ?? "";
+
+// Projects shown as film instead of a still (files in public/video)
+const VIDEO: Record<string, string | undefined> = { sapphire: "/video/the-sapphire.mp4" };
+
+/** A layer at a given depth: it follows the camera by `depth` px per unit of drift */
+const Layer: React.FC<{
+  mx: MotionValue<number>;
+  my: MotionValue<number>;
+  depth: number;
+  className?: string;
+  children: React.ReactNode;
+}> = ({ mx, my, depth, className = "", children }) => {
+  // Whole pixels only: a fractional offset would blur the type
+  const x = useTransform(mx, (v) => Math.round(v * depth));
+  const y = useTransform(my, (v) => Math.round(-v * depth));
+  return (
+    <motion.div className={className} style={{ x, y }}>
+      {children}
+    </motion.div>
+  );
+};
 
 export const ProjectsSection: React.FC = () => {
-  const navigate = useNavigate();
-  const [filter, setFilter] = useState<Filter>("ALL");
-  const [hovered, setHovered] = useState<number | null>(null);
-  const [noWebGL, setNoWebGL] = useState(false);
+  const { lang, t } = useI18n();
+  const [index, setIndex] = useState(0);
+  const active = WORKS[index];
 
-  // Built once: the gallery keeps its scene; filtering only changes visibility
-  const items = useMemo(
-    () => WORKS.map((w) => ({ slug: w.slug, image: cases.find((c) => c.slug === w.slug)?.cover ?? "" })),
-    [],
+  // The camera's damped drift, written by the viewer each frame it moves; read by the type layers
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const onMotion = useMemo(
+    () => (m: CameraMotion) => {
+      mx.set(m.x);
+      my.set(m.y);
+    },
+    [mx, my],
   );
-  const visible = useMemo(() => WORKS.map((w) => filter === "ALL" || w.categories.includes(filter)), [filter]);
-  const shownCount = visible.filter(Boolean).length;
-  const active = hovered !== null ? WORKS[hovered] : null;
 
   return (
-    <main className="relative h-[100svh] min-h-[620px] w-full overflow-hidden">
-      {/* The stage */}
-      {!noWebGL && (
-        <Suspense fallback={null}>
-          <SpatialGallery
-            items={items}
-            visible={visible}
-            onHover={setHovered}
-            onOpen={(i) => navigate(`/projects/${WORKS[i].slug}`)}
-            onUnsupported={() => setNoWebGL(true)}
-            className="absolute inset-0"
-          />
-        </Suspense>
-      )}
+    // The one dark room of the site: the same warm graphite as the contact block on
+    // "info", so it reads as part of the house, not another website
+    <main className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#2f2b2a] text-platinum">
+      <h1 className="sr-only">{t("section.projects")}</h1>
 
-      {/* Light post-processing in CSS: a soft vignette and fine grain */}
+      {/* The work, full-bleed */}
+      <Suspense fallback={null}>
+        <CinematicViewer image={imageOf(active.slug)} video={VIDEO[active.slug]} onMotion={onMotion} className="absolute inset-0" />
+      </Suspense>
+
+      {/* A fine grain over the film: it gives the eye texture to rest on, so compression
+          softness reads as atmosphere */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
+
+      {/* A light shade behind the header, and a deeper one under the words, in the same graphite */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
-        style={{ background: "radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(40,38,36,0.18) 100%)" }}
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(47,43,42,0.5) 0%, rgba(47,43,42,0) 16%, rgba(47,43,42,0) 50%, rgba(47,43,42,0.5) 72%, rgba(47,43,42,0.9) 100%)",
+        }}
       />
-      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
 
-      {/* HUD */}
-      <div className="pointer-events-none absolute inset-0 flex flex-col justify-between px-4 pb-8 pt-28 sm:px-6 md:px-8 md:pb-10 md:pt-32">
-        <div className="flex items-start justify-between gap-6">
-          <div>
-            <p className={`${HUD} text-[#2a2826]/50`}>Index — Selected works</p>
-            <nav aria-label="Filter" className={`${HUD} pointer-events-auto mt-5 flex flex-wrap gap-x-6 gap-y-2`}>
-              {FILTERS.map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => setFilter(f)}
-                  aria-pressed={filter === f}
-                  className={`transition-colors duration-500 ${
-                    filter === f ? "text-[#1f1e1d]" : "text-[#2a2826]/40 hover:text-[#2a2826]/75"
-                  }`}
-                >
-                  [ {f} ]
-                </button>
-              ))}
-            </nav>
-          </div>
-          <p className={`${HUD} shrink-0 tabular-nums text-[#2a2826]/55`}>
-            {hovered !== null ? pad(hovered + 1) : "—"} / {pad(shownCount)}
-          </p>
-        </div>
-
-        {/* The plane under the cursor, named */}
-        <div className="flex items-end justify-between gap-6">
-          <div className="min-h-[5.5rem]">
-            <AnimatePresence mode="wait">
-              {active ? (
-                <motion.div
-                  key={active.slug}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_HAUS } }}
-                  exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
-                >
-                  <p className={`${HUD} text-[#2a2826]/55`}>{active.tags}</p>
-                  <h1 className="mt-2 font-geo text-[2.4rem] font-light leading-none tracking-[-0.01em] text-[#1f1e1d] md:text-6xl">
-                    {active.title}
-                  </h1>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="rest"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, transition: { duration: 0.45 } }}
-                  exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                >
-                  <h1 className="font-geo text-[2.4rem] font-light leading-none tracking-[-0.01em] text-[#1f1e1d] md:text-6xl">
-                    Projects
-                  </h1>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          <p className={`${HUD} hidden text-right text-[#2a2826]/45 md:block`}>
-            Hover to explore
-            <br />
-            Click to open
-          </p>
-        </div>
-      </div>
-
-      {/* For keyboards, screen readers and browsers without WebGL: the same projects as plain links */}
-      <nav
-        aria-label="Projects"
-        className={noWebGL ? "absolute inset-x-4 top-1/2 -translate-y-1/2 sm:inset-x-6 md:inset-x-8" : "sr-only"}
-      >
-        {WORKS.map((w, i) => (
-          <Link
-            key={w.slug}
-            to={`/projects/${w.slug}`}
-            className={`block border-b border-[#1f1e1d]/15 py-4 font-geo text-2xl font-light text-[#1f1e1d] ${noWebGL ? "" : "focus:not-sr-only"}`}
+      {/* Everything that is read, in one place */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-7 px-4 pb-8 sm:px-6 md:px-8 md:pb-10">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active.slug}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_HAUS } }}
+            exit={{ opacity: 0, y: -6, transition: { duration: 0.25 } }}
           >
-            <span className={`${HUD} mr-4 text-[#2a2826]/50`}>{pad(i + 1)}</span>
-            {w.title}
-          </Link>
-        ))}
-      </nav>
+            {/* The title moves most */}
+            <Layer mx={mx} my={my} depth={130}>
+              <p className="font-geo text-[15px] font-normal lowercase tracking-[0.04em] text-platinum/70">
+                {scopeOf(active.slug, lang)}
+              </p>
+              <Link
+                to={`/projects/${active.slug}`}
+                className="pointer-events-auto mt-3 inline-block font-geo text-[2.6rem] font-light leading-none tracking-[0.01em] text-[#f7f4f0] transition-opacity duration-500 hover:opacity-80 md:text-7xl"
+              >
+                {active.title}
+              </Link>
+            </Layer>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* The projects: point at one to bring it on screen, click to open */}
+        <Layer mx={mx} my={my} depth={50}>
+          <nav
+            aria-label={t("section.projects")}
+            className="pointer-events-auto flex flex-wrap gap-x-8 gap-y-2 border-t border-platinum/15 pt-4 font-geo text-[15px] font-normal tracking-[0.02em]"
+          >
+            {WORKS.map((w, i) => (
+              <Link
+                key={w.slug}
+                to={`/projects/${w.slug}`}
+                onPointerEnter={() => setIndex(i)}
+                onFocus={() => setIndex(i)}
+                className={`transition-colors duration-500 ${
+                  i === index ? "text-[#f7f4f0]" : "text-platinum/50 hover:text-platinum/85"
+                }`}
+              >
+                {w.title}
+              </Link>
+            ))}
+          </nav>
+        </Layer>
+      </div>
     </main>
   );
 };

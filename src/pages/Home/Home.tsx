@@ -47,7 +47,7 @@ export const Home: React.FC = () => {
           initial="hidden"
           animate="shown"
           custom={8}
-          className="mt-3 text-[1.0625rem] font-light tracking-[0.02em] text-silver/85 [text-wrap:balance] sm:text-[1.2rem] lg:mt-5 lg:text-[1.65rem]"
+          className="mt-3 text-[1.25rem] font-light tracking-[0.02em] text-silver/85 [text-wrap:balance] sm:text-[1.5rem] lg:mt-5 lg:text-[2.1rem]"
         >
           {t("hero.sub")}
         </motion.p>
