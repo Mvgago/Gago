@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { LightWall } from "../../components/Light/LightWall";
-import { ACTION, BODY as BODY_TYPE, CAPTION, HEADING, LEAD, SMALL, TITLE } from "../../lib/type";
+import { ACTION, BODY as BODY_TYPE, HEADING, LEAD, SMALL } from "../../lib/type";
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import { FUGA_SEI_EP } from "../../outils/artwork";
 import Footer from "../../components/Footer/Footer";
 import grimaldi from "../../assets/gallery/grimaldi-lines.jpg";
+
+// three.js loads only on this page, after the text
+const WhiteRoom = lazy(() => import("../../components/Light/WhiteRoom"));
+
+// The room fades into the page's wall at the top (under the header) and the bottom, so it has no edge,
+// and away to the left, so the words there sit on the plain wall
+const ROOM_FADE = [
+  "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.9) 16%, rgba(0,0,0,0.9) 55%, transparent 100%)",
+  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.55) 55%, #000 85%)",
+].join(", ");
 
 // Fine film grain, as on the landing
 const GRAIN =
@@ -129,36 +139,38 @@ export const AboutPage: React.FC = () => {
     <main className="relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
       <LightWall />
 
-      {/* Header, as in the other rooms */}
-      <header className="grid gap-6 md:grid-cols-12 md:items-end">
-        <div className="md:col-span-6">
-          <motion.h1
-            variants={rise}
-            initial="hidden"
-            animate="shown"
-            custom={1}
-            className={`${TITLE} lowercase text-ink`}
-          >
-            {t("section.studio")}
-          </motion.h1>
-        </div>
-        <motion.div
-          variants={rise}
-          initial="hidden"
-          animate="shown"
-          custom={2}
-          className="flex flex-col gap-2 md:col-span-5 md:col-start-8 md:items-end md:text-right"
-        >
-          <p className={`${CAPTION} text-graphite`}>{t("section.studio.caption")}</p>
-          <p className={`${SMALL} flex items-center gap-2 text-graphite`}>
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
-            {t("availability")}
-          </p>
-        </motion.div>
-      </header>
+      {/* The opening: a white room, curved, with lines of light set into its wall */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-[1] h-[100svh] max-h-[960px] min-h-[640px]"
+        // Both fades apply at once: each point keeps the lesser of the two
+        style={{ maskImage: ROOM_FADE, WebkitMaskImage: ROOM_FADE, maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
+      >
+        <Suspense fallback={null}>
+          <WhiteRoom className="h-full w-full" />
+        </Suspense>
+      </div>
+
+      {/* Header, as in the other rooms: one quiet line. The logo heads the page,
+          and the statement below is the one large thing to read */}
+      <motion.header
+        variants={rise}
+        initial="hidden"
+        animate="shown"
+        custom={1}
+        className={`${SMALL} flex flex-col gap-2 text-graphite sm:flex-row sm:items-baseline sm:justify-between`}
+      >
+        <h1>
+          <span className="text-ink">{t("section.studio")}</span> — {t("section.studio.caption")}
+        </h1>
+        <p className="flex items-center gap-2">
+          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
+          {t("availability")}
+        </p>
+      </motion.header>
 
       {/* Statement and way in */}
-      <div className="mb-32 mt-24 grid items-center gap-14 md:mb-44 md:mt-36 lg:grid-cols-12 lg:gap-8">
+      <div className="mb-32 mt-20 grid items-center gap-14 md:mb-44 md:mt-28 lg:grid-cols-12 lg:gap-8">
       <div className="lg:col-span-7">
       {/* The statement: the one thing to read first */}
       <motion.p

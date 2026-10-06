@@ -5,7 +5,7 @@ import { artwork } from "../../outils/artwork";
 import { EASE_HAUS, EASE_VEIL, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { LightWall, MOUNT, WALL } from "../../components/Light/LightWall";
-import { ACTION, CAPTION, HEADING, SMALL, TITLE } from "../../lib/type";
+import { ACTION, HEADING, SMALL } from "../../lib/type";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -39,31 +39,20 @@ export const ArtworkPage: React.FC = () => {
       <LightWall />
 
       {/* Header: small, quiet, the work does the talking */}
-      <header className="mb-12 grid gap-6 md:mb-16 md:grid-cols-12 md:items-end">
-        <div className="md:col-span-6">
-          <motion.h1
-            variants={rise}
-            initial="hidden"
-            animate="shown"
-            custom={1}
-            className={`${TITLE} lowercase text-ink`}
-          >
-            {t("section.artwork")}
-          </motion.h1>
-        </div>
-        <motion.div
-          variants={rise}
-          initial="hidden"
-          animate="shown"
-          custom={2}
-          className="flex flex-col gap-2 md:col-span-5 md:col-start-8 md:items-end md:text-right"
-        >
-          <p className={`${CAPTION} text-graphite`}>{t("section.artwork.caption")}</p>
-          <p className={`${SMALL} tabular-nums text-graphite`}>
-            {pad(artwork.length)} {t("artwork.pieces")}
-          </p>
-        </motion.div>
-      </header>
+      <motion.header
+        variants={rise}
+        initial="hidden"
+        animate="shown"
+        custom={1}
+        className={`${SMALL} mb-10 flex flex-col gap-2 text-graphite sm:flex-row sm:items-baseline sm:justify-between md:mb-12`}
+      >
+        <h1>
+          <span className="text-ink">{t("section.artwork")}</span> — {t("section.artwork.caption")}
+        </h1>
+        <p className="tabular-nums">
+          {artwork.length} {t("artwork.pieces")}
+        </p>
+      </motion.header>
 
       {/* The strip: identical square frames edge to edge on a white band, like a contact
           sheet, each with its number in the white beneath. It slides sideways.

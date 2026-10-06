@@ -11,7 +11,8 @@ export const DISPLAY =
 export const TITLE = "font-geo text-[2.4rem] font-light leading-none tracking-[0.02em] sm:text-5xl";
 
 /** A statement to read first: the studio's, the contact's */
-export const LEAD = "font-geo text-[1.9rem] font-light leading-[1.22] tracking-[0.01em] md:text-[2.5rem]";
+// Regular weight: a light stroke this size fades into the bright room behind it
+export const LEAD = "font-geo text-[1.9rem] font-normal leading-[1.22] tracking-[0.01em] md:text-[2.5rem]";
 
 /** The line under a title: the landing's subtitle, a project's lead */
 export const SUBTITLE =
