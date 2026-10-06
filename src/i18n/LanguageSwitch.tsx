@@ -45,7 +45,7 @@ export const LanguageSwitch: React.FC<{ className?: string; dark?: boolean }> = 
     setOpen(false);
   };
 
-  const code = "font-mono text-[14px] font-normal lowercase tracking-[0.18em] transition-colors duration-500";
+  const code = "font-mono text-[13px] font-normal lowercase tracking-[0.1em] transition-colors duration-500";
 
   return (
     <div

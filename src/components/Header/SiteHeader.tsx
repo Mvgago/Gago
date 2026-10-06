@@ -97,7 +97,7 @@ export const SiteHeader: React.FC = () => {
           to="/"
           aria-label="Fuga Haus — home"
           tabIndex={open ? -1 : undefined}
-          className={`block w-32 transition-opacity md:w-40 ${
+          className={`block w-28 transition-opacity md:w-36 ${
             open
               ? "pointer-events-none opacity-0 duration-200"
               : // Phones: the mark is small and its hairline bars fade into the mauve,
@@ -125,7 +125,7 @@ export const SiteHeader: React.FC = () => {
             // Hover, quietly: the graphite lifts a shade lighter, the letters open a touch, the short line grows. No shadow.
             className="group relative flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 backdrop-blur-md transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2"
           >
-            <span className={`meta min-w-10 text-left transition-[color,letter-spacing] duration-500 group-hover:tracking-[0.31em] ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
+            <span className={`meta min-w-10 text-left transition-[color,letter-spacing] duration-500 group-hover:tracking-[0.18em] ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
             <span className="relative block h-2 w-4">
               <span
                 className={`absolute right-0 top-0 h-px ${line} transition-all duration-700 ease-haus ${

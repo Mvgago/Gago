@@ -134,8 +134,8 @@ export const ContactMenu: React.FC = () => {
             className="absolute bottom-full left-0 z-20 pb-3 sm:left-auto sm:right-0"
           >
             {/* Light, translucent sheet with a hairline edge — no heavy card */}
-            <div className="w-max min-w-[12.5rem] rounded-lg border border-ink/15 bg-[#f8f6f4]/[0.97] py-2.5 text-[14px] shadow-[0_24px_60px_-18px_rgba(40,32,36,0.4)] backdrop-blur-md">
-              <p className="px-4 pb-1.5 text-[14px] tracking-[0.18em] text-graphite/70">{t("contact.via")}</p>
+            <div className="w-max min-w-[12.5rem] rounded-lg border border-ink/15 bg-[#f8f6f4]/[0.97] py-2.5 text-[13px] shadow-[0_24px_60px_-18px_rgba(40,32,36,0.4)] backdrop-blur-md">
+              <p className="px-4 pb-1.5 text-[12px] tracking-[0.18em] text-graphite/70">{t("contact.via")}</p>
               {options(t("contact.subject"), t("contact.mailApp")).map((o) => (
                 <a
                   key={o.label}

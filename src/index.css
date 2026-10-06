@@ -48,13 +48,13 @@
 }
 
 @layer utilities {
-  /* The controls' type (index, close): the same 14px as all small type, spaced wider */
+  /* The controls' type (index, close): the same 13px as all small type, spaced wider */
   .meta {
     font-family: var(--font-mono);
     font-weight: 400;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.6;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.12em;
     text-transform: lowercase;
   }
 
