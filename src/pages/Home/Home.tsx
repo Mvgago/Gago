@@ -40,7 +40,16 @@ export const Home: React.FC = () => {
           custom={7}
           className={DISPLAY}
         >
-          {t("hero.title")}
+          {/* Always two lines, on every screen: the lema reads as one block with the subtitle */}
+          {(() => {
+            const [first, ...rest] = t("hero.title").split(" ");
+            return (
+              <>
+                <span className="block">{first}</span>
+                <span className="block">{rest.join(" ")}</span>
+              </>
+            );
+          })()}
         </motion.h1>
 
         <motion.p
