@@ -137,7 +137,8 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
             <li key={s.d}>
               <span className="block text-ink sm:inline">{DISCIPLINE[s.d][lang]}</span>
               <span className="hidden text-graphite/80 sm:inline"> — </span>
-              <span className="mt-0.5 block text-graphite/75 sm:mt-0 sm:inline sm:text-graphite/80">{s.detail[lang]}</span>
+              {/* As written: the details are lowercase already, and "3D" keeps its capitals */}
+              <span className="mt-0.5 block normal-case text-graphite/75 sm:mt-0 sm:inline sm:text-graphite/80">{s.detail[lang]}</span>
             </li>
           ))}
         </ul>

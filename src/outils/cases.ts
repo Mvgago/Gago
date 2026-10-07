@@ -139,7 +139,7 @@ export const DISCIPLINE: Record<Discipline, Text> = {
   presentation: { en: "sales presentation", es: "presentación comercial", fr: "présentation commerciale", de: "verkaufspräsentation" },
   comms: { en: "communications", es: "comunicación", fr: "communication", de: "kommunikation" },
   events: { en: "events", es: "eventos", fr: "événements", de: "events" },
-  social: { en: "content strategy", es: "estrategia de contenidos", fr: "stratégie de contenu", de: "content-strategie" },
+  social: { en: "strategy", es: "estrategia", fr: "stratégie", de: "strategie" },
   "3d": { en: "3d imagery", es: "visualización 3d", fr: "visualisation 3d", de: "3d-visualisierung" },
   cover: { en: "cover art", es: "portada", fr: "pochette", de: "cover" },
   campaign: { en: "campaigns", es: "campañas", fr: "campagnes", de: "kampagnen" },
@@ -277,7 +277,7 @@ export const cases: Case[] = [
     slug: "smarthc",
     title: "Smart Human Capital",
     client: { en: "SmartHC — security consultancy", es: "SmartHC — consultoría de seguridad", fr: "SmartHC — conseil en sécurité", de: "SmartHC — sicherheitsberatung" },
-    disciplines: ["identity", "direction", "comms", "events", "social"],
+    disciplines: ["identity", "comms", "events", "social"],
     sector: { en: "tech consultancy", es: "consultoría tecnológica", fr: "conseil technologique", de: "technologieberatung" },
     lead: {
       en: "Cybersecurity consultancy.",
@@ -289,19 +289,10 @@ export const cases: Case[] = [
       {
         d: "identity",
         detail: {
-          en: "logo, visual system and character",
-          es: "logotipo, sistema visual y personaje",
-          fr: "logo, système visuel et personnage",
-          de: "logo, visuelles system und figur",
-        },
-      },
-      {
-        d: "direction",
-        detail: {
-          en: "the brand in digital, print and events",
-          es: "la marca en digital, impresos y eventos",
-          fr: "la marque en numérique, print et événements",
-          de: "die marke digital, in print und auf events",
+          en: "visual system and 3D character",
+          es: "sistema visual y personaje 3D",
+          fr: "système visuel et personnage 3D",
+          de: "visuelles system und 3D-figur",
         },
       },
       {
@@ -325,10 +316,10 @@ export const cases: Case[] = [
       {
         d: "social",
         detail: {
-          en: "editorial planning for social media",
-          es: "planificación editorial en redes",
-          fr: "planification éditoriale sur les réseaux",
-          de: "redaktionsplanung für social media",
+          en: "digital content and positioning",
+          es: "contenidos digitales y posicionamiento",
+          fr: "contenus numériques et positionnement",
+          de: "digitale inhalte und positionierung",
         },
       },
     ],
