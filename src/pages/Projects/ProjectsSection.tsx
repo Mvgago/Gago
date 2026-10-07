@@ -32,7 +32,6 @@ const WORKS: Work[] = [
   { slug: "sapphire", title: "The Sapphire" },
   { slug: "smarthc", title: "Smart Human Capital" },
   { slug: "santa-engracia", title: "Santa Engracia" },
-  { slug: "alea", title: "Alea Software" },
 ];
 
 const scopeOf = (slug: string, lang: Lang) =>

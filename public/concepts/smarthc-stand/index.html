@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stand smart hc — recreación 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@300;400&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* The site's calm type and graphite, so the stand opens as part of Fuga Haus */
+:root { --ground: #1a1d1f; --ink: #f2efeb; --muted: rgba(242, 239, 235, 0.55); }
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+body { background: var(--ground); color: var(--ink); overflow: hidden; }
+#stage { position: fixed; inset: 0; }
+#stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.label { position: fixed; left: 24px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); pointer-events: none; }
+.label small { display: block; font: 400 13px "JetBrains Mono", monospace; letter-spacing: 0.03em; color: var(--muted); }
+.label h1 { margin: 6px 0 0; font: 300 clamp(26px, 3.2vw, 40px) Jura, sans-serif; letter-spacing: 0.01em; }
+.views { position: fixed; right: 24px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 22px; max-width: 60vw; }
+.views button { font: 400 13px "JetBrains Mono", monospace; letter-spacing: 0.03em; color: var(--muted); background: none; border: 0; padding: 6px 0; cursor: pointer; position: relative; }
+.views button:hover, .views button[aria-pressed="true"] { color: var(--ink); }
+.views button[aria-pressed="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; }
+.views button:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
+@media (max-width: 640px) { .label { left: 16px; bottom: 64px; } .views { left: 16px; right: 16px; max-width: none; justify-content: flex-start; } }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div class="label">
+  <small>recreación 3d · 6 × 4 m</small>
+  <h1>Stand smart hc</h1>
+</div>
+<nav class="views" aria-label="Vistas">
+  <button type="button" data-view="general" aria-pressed="true">vista general</button>
+  <button type="button" data-view="pasillo" aria-pressed="false">desde el pasillo</button>
+  <button type="button" data-view="mostrador" aria-pressed="false">mostrador</button>
+  <button type="button" data-view="pantalla" aria-pressed="false">pantalla</button>
+  <button type="button" id="spin" aria-pressed="true">girar</button>
+</nav>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+/* The brand: smart hc orange, its greys, its real logo */
+const ORANGE = '#f39200';
+const GRAPHITE = '#2b2f33';
+const LIGHT = '#e9ecee';
+
+const loadImg = (src) => new Promise((ok, fail) => { const i = new Image(); i.onload = () => ok(i); i.onerror = fail; i.src = src; });
+const [LOGO, SYMBOL] = await Promise.all([loadImg('./logo.png'), loadImg('./symbol.png')]);
+try { await Promise.race([document.fonts.load('300 100px Jura'), new Promise((r) => setTimeout(r, 2000))]); } catch (e) {}
+
+/* The logo is white on transparent: recolour it to any tone */
+function tinted(img, color) {
+  const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+  const x = c.getContext('2d'); x.drawImage(img, 0, 0);
+  x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height);
+  return c;
+}
+
+/* ---------- renderer ---------- */
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.AgXToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+const aniso = renderer.capabilities.getMaxAnisotropy();
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#2f2b2a');
+scene.fog = new THREE.Fog('#2f2b2a', 13, 34);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+scene.environmentIntensity = 0.55;
+
+const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.05, 100);
+camera.position.set(7.6, 3.0, 8.6);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 1.45, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.maxPolarAngle = Math.PI * 0.48;
+controls.minDistance = 2;
+controls.maxDistance = 18;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.35;
+
+/* ---------- textures ---------- */
+function canvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return [c, c.getContext('2d')]; }
+function tex(c) { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = aniso; return t; }
+
+// The logo alone, centred on a transparent sheet, for decals
+function logoSheet(img, color, w, h, scale = 0.9) {
+  const [c, x] = canvas(w, h);
+  const t = tinted(img, color);
+  const k = Math.min((w * scale) / t.width, (h * scale) / t.height);
+  x.drawImage(t, (w - t.width * k) / 2, (h - t.height * k) / 2, t.width * k, t.height * k);
+  return tex(c);
+}
+
+// The back-wall screen: the campaign line on graphite
+function screenTex() {
+  const [c, x] = canvas(1920, 1080);
+  const g = x.createLinearGradient(0, 0, 1920, 1080); g.addColorStop(0, '#30353a'); g.addColorStop(1, '#202427');
+  x.fillStyle = g; x.fillRect(0, 0, 1920, 1080);
+  x.fillStyle = ORANGE;
+  x.beginPath(); x.moveTo(1920, 1080); x.lineTo(1360, 1080); x.lineTo(1920, 700); x.fill();
+  x.fillStyle = '#ffffff'; x.font = '300 132px Jura, sans-serif'; x.fillText('Encajamos contigo.', 150, 420);
+  x.fillStyle = 'rgba(255,255,255,0.8)'; x.font = '300 64px Jura, sans-serif';
+  x.fillText('La pieza que toda compañía', 154, 540); x.fillText('necesita para ser segura.', 154, 625);
+  x.fillStyle = ORANGE; x.fillRect(154, 690, 140, 10);
+  const t = tinted(LOGO, '#ffffff'); const k = 520 / t.width;
+  x.drawImage(t, 150, 820, t.width * k, t.height * k);
+  return tex(c);
+}
+
+// Light-grey wall with a large orange symbol and the name beneath
+function sideWallTex() {
+  const [c, x] = canvas(1600, 1920);
+  x.fillStyle = LIGHT; x.fillRect(0, 0, 1600, 1920);
+  const s = tinted(SYMBOL, ORANGE); x.drawImage(s, 500, 380, 600, 600);
+  const l = tinted(LOGO, GRAPHITE); const k = 900 / l.width; x.drawImage(l, 350, 1120, l.width * k, l.height * k);
+  return tex(c);
+}
+
+/* ---------- materials ---------- */
+const P = 0.12; // platform height
+const m = {
+  platform: new THREE.MeshPhysicalMaterial({ color: '#25292c', roughness: 0.22, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.08 }),
+  graphite: new THREE.MeshStandardMaterial({ color: '#2e3236', roughness: 0.62 }),
+  graphiteGloss: new THREE.MeshPhysicalMaterial({ color: GRAPHITE, roughness: 0.25, clearcoat: 0.6 }),
+  white: new THREE.MeshPhysicalMaterial({ color: '#f1f3f4', roughness: 0.28, clearcoat: 0.8, clearcoatRoughness: 0.15 }),
+  canopy: new THREE.MeshPhysicalMaterial({ color: ORANGE, roughness: 0.38, clearcoat: 0.6, clearcoatRoughness: 0.2, emissive: ORANGE, emissiveIntensity: 0.28 }),
+  ledOrange: new THREE.MeshStandardMaterial({ color: '#000', emissive: ORANGE, emissiveIntensity: 4 }),
+  ledWarm: new THREE.MeshStandardMaterial({ color: '#000', emissive: '#ffe2bd', emissiveIntensity: 1.5 }),
+  chrome: new THREE.MeshStandardMaterial({ color: '#c9ced1', roughness: 0.18, metalness: 0.95 }),
+  glass: new THREE.MeshPhysicalMaterial({ color: '#e8eef1', roughness: 0.06, metalness: 0, transmission: 0.92, thickness: 0.02, ior: 1.5, transparent: true }),
+  frost: new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.6, transparent: true, opacity: 0.55 }),
+  counter: new THREE.MeshPhysicalMaterial({ color: '#fbf3ea', roughness: 0.38, emissive: ORANGE, emissiveIntensity: 0.32, clearcoat: 0.5 }),
+  floor: new THREE.MeshStandardMaterial({ color: '#2a2625', roughness: 0.45, metalness: 0.05 }),
+};
+
+function box(w, h, d, mat, x, y, z, shadow = true) {
+  const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  b.position.set(x, y, z); b.castShadow = shadow; b.receiveShadow = true; scene.add(b); return b;
+}
+function decal(texture, w, h, pos, rotY = 0, emissive = 0) {
+  const mat = new THREE.MeshStandardMaterial({ map: texture, transparent: true, roughness: 0.5, emissive: emissive ? '#ffffff' : '#000', emissiveMap: emissive ? texture : null, emissiveIntensity: emissive });
+  const p = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  p.position.set(...pos); p.rotation.y = rotY; p.receiveShadow = true; scene.add(p); return p;
+}
+// A flat shape with rounded corners (radii per corner: front-right gets the big curve)
+function roundedRect(w, d, r) {
+  const s = new THREE.Shape(); const x0 = -w / 2, z0 = -d / 2;
+  const [rbl, rbr, rfr, rfl] = r; // back-left, back-right, front-right, front-left
+  s.moveTo(x0 + rbl, z0);
+  s.lineTo(x0 + w - rbr, z0); s.quadraticCurveTo(x0 + w, z0, x0 + w, z0 + rbr);
+  s.lineTo(x0 + w, z0 + d - rfr); s.quadraticCurveTo(x0 + w, z0 + d, x0 + w - rfr, z0 + d);
+  s.lineTo(x0 + rfl, z0 + d); s.quadraticCurveTo(x0, z0 + d, x0, z0 + d - rfl);
+  s.lineTo(x0, z0 + rbl); s.quadraticCurveTo(x0, z0, x0 + rbl, z0);
+  return s;
+}
+// Extrude a footprint (drawn in x/z) upwards by h
+function slab(shape, h, mat, y) {
+  const g = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2, curveSegments: 32 });
+  g.rotateX(Math.PI / 2); g.translate(0, y + h, 0);
+  const s = new THREE.Mesh(g, mat); s.castShadow = true; s.receiveShadow = true; scene.add(s); return s;
+}
+
+/* ---------- hall ---------- */
+const hall = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), m.floor);
+hall.rotation.x = -Math.PI / 2; hall.receiveShadow = true; scene.add(hall);
+
+/* ---------- stand: 6 × 4 m corner stand, open to the front and the right ---------- */
+const W = 6, D = 4, H = 3.0;
+slab(roundedRect(W + 0.2, D + 0.2, [0, 0, 0.9, 0]), P, m.platform, 0);
+// Orange light along the open edges of the platform
+box(W - 0.7, 0.025, 0.02, m.ledOrange, -0.35, 0.05, D / 2 + 0.11, false);
+box(0.02, 0.025, D - 0.7, m.ledOrange, W / 2 + 0.11, 0.05, -0.35, false);
+
+// Back wall in graphite with the screen; side wall in light grey with the brand
+box(W, H, 0.14, m.graphite, 0, P + H / 2, -D / 2 + 0.07);
+box(0.14, H, D, new THREE.MeshStandardMaterial({ map: sideWallTex(), roughness: 0.7 }), -W / 2 + 0.07, P + H / 2, 0);
+box(2.72, 1.56, 0.06, new THREE.MeshStandardMaterial({ color: '#0c0d0e', roughness: 0.3 }), 1.1, P + 1.75, -D / 2 + 0.17);
+decal(screenTex(), 2.64, 1.485, [1.1, P + 1.75, -D / 2 + 0.205], 0, 0.85);
+
+// Canopy: a white band over the whole stand, its front-right corner swept in a curve,
+// lit orange underneath, carrying the logo
+const outer = roundedRect(W + 0.2, D + 0.2, [0.02, 0.02, 1.0, 0.02]);
+const inner = roundedRect(W - 0.6, D - 0.6, [0.02, 0.02, 0.62, 0.02]);
+outer.holes.push(inner);
+slab(outer, 0.42, m.canopy, P + H);
+const ledRing = roundedRect(W + 0.16, D + 0.16, [0.02, 0.02, 0.98, 0.02]);
+ledRing.holes.push(roundedRect(W + 0.08, D + 0.08, [0.02, 0.02, 0.94, 0.02]));
+slab(ledRing, 0.02, m.ledWarm, P + H - 0.02);
+decal(logoSheet(LOGO, '#ffffff', 2048, 600), 2.6, 0.38, [-0.8, P + H + 0.21, D / 2 + 0.125]);
+decal(logoSheet(SYMBOL, '#ffffff', 512, 512), 0.34, 0.34, [W / 2 + 0.125, P + H + 0.21, -0.9], Math.PI / 2);
+
+// Vertical light fins at the open corner, holding up the canopy
+for (let i = 0; i < 5; i++) box(0.04, H, 0.12, m.ledWarm, W / 2 - 0.12, P + H / 2, -1.75 + i * 0.26);
+box(0.08, H, 1.3, m.graphiteGloss, W / 2 - 0.2, P + H / 2, -1.23);
+
+// Glass partition closing a small meeting room against the side wall
+box(2.2, 2.7, 0.02, m.glass, -W / 2 + 1.24, P + 1.35, -0.55, false);
+box(2.2, 0.32, 0.025, m.frost, -W / 2 + 1.24, P + 1.25, -0.55, false);
+box(2.2, 0.04, 0.06, m.chrome, -W / 2 + 1.24, P + 2.7, -0.55);
+const meet = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.04, 48), m.white);
+meet.position.set(-2.0, P + 0.74, -1.3); meet.castShadow = true; scene.add(meet);
+box(0.06, 0.72, 0.06, m.chrome, -2.0, P + 0.36, -1.3);
+
+// The counter: a long capsule, backlit in orange, graphite top, logo on its face
+const counterShape = roundedRect(2.4, 0.7, [0.35, 0.35, 0.35, 0.35]);
+const counter = slab(counterShape, 1.0, m.counter, P);
+counter.position.set(0.55, 0, 0.75);
+const top = slab(roundedRect(2.5, 0.8, [0.4, 0.4, 0.4, 0.4]), 0.05, m.graphiteGloss, P + 1.0);
+top.position.set(0.55, 0, 0.75);
+box(2.0, 0.02, 0.02, m.ledOrange, 0.55, P + 0.03, 1.12, false);
+decal(logoSheet(LOGO, GRAPHITE, 2048, 600), 1.5, 0.44, [0.55, P + 0.58, 1.122]);
+
+// A high table with three stools on the open front-left
+const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.04, 48), m.white);
+bar.position.set(-1.75, P + 1.06, 1.15); bar.castShadow = true; scene.add(bar);
+box(0.06, 1.04, 0.06, m.chrome, -1.75, P + 0.52, 1.15);
+function stool(x, z) {
+  const seat = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.17, 0.07, 32), m.white); seat.position.set(x, P + 0.76, z);
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.72, 14), m.chrome); pole.position.set(x, P + 0.38, z);
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.02, 32), m.chrome); base.position.set(x, P + 0.01, z);
+  [seat, pole, base].forEach((o) => { o.castShadow = true; o.receiveShadow = true; scene.add(o); });
+}
+stool(-2.35, 1.35); stool(-1.75, 1.8); stool(-1.15, 1.45);
+
+/* ---------- light ---------- */
+scene.add(new THREE.HemisphereLight('#dfe6ea', '#16191b', 0.4));
+const key = new THREE.DirectionalLight('#ffffff', 1.1);
+key.position.set(5, 11, 8); key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048); key.shadow.camera.left = -7; key.shadow.camera.right = 7; key.shadow.camera.top = 7; key.shadow.camera.bottom = -7;
+key.shadow.bias = -0.0003; key.shadow.radius = 6;
+scene.add(key);
+function spot(x, z, tx, ty, tz, intensity) {
+  const l = new THREE.SpotLight('#fff1df', intensity, 8, Math.PI / 6, 0.6, 1.5);
+  l.position.set(x, P + H - 0.05, z); l.target.position.set(tx, ty, tz); scene.add(l, l.target);
+}
+spot(1.1, 0.2, 1.1, 1.8, -D / 2, 30);
+spot(-2.2, 0.6, -W / 2, 1.8, 0, 8);
+spot(0.55, 1.4, 0.55, 0.8, 0.75, 26);
+spot(-1.75, 1.4, -1.75, 1.0, 1.15, 18);
+
+/* ---------- post: ambient occlusion for weight, a whisper of bloom for the light ---------- */
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const gtao = new GTAOPass(scene, camera, innerWidth, innerHeight);
+gtao.updateGtaoMaterial({ radius: 0.35, distanceExponent: 1.2, thickness: 1.2, scale: 1.1 });
+composer.addPass(gtao);
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.28, 0.5, 0.92));
+composer.addPass(new OutputPass());
+
+/* ---------- views ---------- */
+const views = {
+  general: { pos: [7.6, 3.0, 8.6], look: [0, 1.45, 0] },
+  pasillo: { pos: [-3.6, 1.65, 8.4], look: [0.4, 1.55, -0.4] },
+  mostrador: { pos: [1.9, 1.55, 4.6], look: [0.55, 1.0, 0.75] },
+  pantalla: { pos: [1.1, 1.8, 1.9], look: [1.1, 1.8, -D / 2] },
+};
+let goal = null;
+const buttons = document.querySelectorAll('[data-view]');
+const spinBtn = document.getElementById('spin');
+const setSpin = (on) => { controls.autoRotate = on; spinBtn.setAttribute('aria-pressed', String(on)); };
+buttons.forEach((b) => b.addEventListener('click', () => {
+  const v = views[b.dataset.view];
+  goal = { pos: new THREE.Vector3(...v.pos), look: new THREE.Vector3(...v.look) };
+  buttons.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+  setSpin(false);
+}));
+spinBtn.addEventListener('click', () => setSpin(!controls.autoRotate));
+controls.addEventListener('start', () => { goal = null; setSpin(false); });
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) setSpin(false);
+// ?still: a clean frame for the case page (no interface, no spin)
+if (new URLSearchParams(location.search).has('still')) { setSpin(false); document.querySelectorAll('.label, .views').forEach((e) => (e.hidden = true)); }
+
+function fit() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  camera.aspect = w / h; camera.fov = w / h < 0.8 ? 56 : 38; camera.updateProjectionMatrix();
+  renderer.setSize(w, h); composer.setSize(w, h);
+}
+addEventListener('resize', fit); fit();
+
+renderer.setAnimationLoop(() => {
+  if (goal) {
+    camera.position.lerp(goal.pos, 0.05); controls.target.lerp(goal.look, 0.05);
+    if (camera.position.distanceTo(goal.pos) < 0.01) goal = null;
+  }
+  controls.update();
+  composer.render();
+});
+</script>
+</body>
+</html>

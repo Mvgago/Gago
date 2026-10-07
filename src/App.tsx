@@ -95,7 +95,7 @@ const Pages: React.FC<{ location: ReturnType<typeof useLocation> }> = ({ locatio
           <Route path="/buendia" element={<Navigate to="/projects/buendia" replace />} />
           <Route path="/needyt" element={caseStudy(<NeedytPage />)} />
           <Route path="/santa" element={<Navigate to="/projects/santa-engracia" replace />} />
-          <Route path="/alea" element={<Navigate to="/projects/alea" replace />} />
+          <Route path="/alea" element={<Navigate to="/projects" replace />} />
           <Route path="/amvreport" element={caseStudy(<AmvreportPage />)} />
           <Route path="/annet" element={caseStudy(<AnnetPage />)} />
           <Route path="/amorsacro" element={caseStudy(<AmorsacroPage />)} />

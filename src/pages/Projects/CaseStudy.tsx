@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cases, CASE_UI, DISCIPLINE, type Case, type CaseImage } from "../../outils/cases";
@@ -9,6 +9,9 @@ import { LightWall, MOUNT } from "../../components/Light/LightWall";
 import { ACTION, BODY, SMALL, SUBTITLE, TITLE } from "../../lib/type";
 
 /** Work is looked at, not taken: no dragging or saving from the context menu. */
+// three.js for the stand viewer loads only on the cases that have one
+const StandViewer = lazy(() => import("../../components/Stand/StandViewer"));
+
 const protect = {
   draggable: false,
   onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
@@ -38,7 +41,12 @@ const Arrow: React.FC<{ back?: boolean }> = ({ back }) => (
  * projects page so the one continues the other. It fades in on its own first
  * frame (no poster: a still framed differently would jump when the film took over).
  */
-const Film: React.FC<{ src: string; title: string }> = ({ src, title }) => {
+const Film: React.FC<{ src: string; title: string; ratio?: string; speed?: number }> = ({
+  src,
+  title,
+  ratio = "16 / 9",
+  speed = 1.35,
+}) => {
   const [ready, setReady] = useState(false);
   return (
     <video
@@ -50,11 +58,13 @@ const Film: React.FC<{ src: string; title: string }> = ({ src, title }) => {
       autoPlay
       preload="auto"
       onLoadedMetadata={(e) => {
-        e.currentTarget.defaultPlaybackRate = 1.35;
-        e.currentTarget.playbackRate = 1.35;
+        e.currentTarget.defaultPlaybackRate = speed;
+        e.currentTarget.playbackRate = speed;
       }}
       onLoadedData={() => setReady(true)}
-      className={`block aspect-video max-h-[88vh] w-full object-cover transition-opacity duration-700 ${
+      // Its own proportion, reserved before it loads, so nothing around it moves
+      style={{ aspectRatio: ratio }}
+      className={`block max-h-[88vh] w-full object-cover transition-opacity duration-700 ${
         ready ? "opacity-100" : "opacity-0"
       }`}
     />
@@ -147,11 +157,15 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
 export const CaseStudyPage: React.FC = () => {
   const { slug } = useParams();
   const { lang } = useI18n();
-  const index = cases.findIndex((c) => c.slug === slug);
+  // Hidden cases are neither reachable nor part of the case-to-case navigation
+  const shown = cases.filter((c) => !c.hidden);
+  const index = shown.findIndex((c) => c.slug === slug);
   if (index === -1) return <Navigate to="/projects" replace />;
 
-  const c = cases[index];
-  const next = cases[(index + 1) % cases.length];
+  const c = shown[index];
+  const next = shown[(index + 1) % shown.length];
+  // Cases told the new way (a film, or services in detail) open side by side
+  const side = Boolean(c.video || c.services);
 
   return (
     <main className="px-4 pb-16 pt-28 sm:px-6 md:px-8 md:pt-32">
@@ -174,11 +188,11 @@ export const CaseStudyPage: React.FC = () => {
           <Arrow />
         </Link>
       </motion.nav>
-      {/* With a film, the first screen holds everything, whole and still: the words on
-          the left, the film framed on the right, small enough to stay sharp. Without one,
-          the words come first and the cover follows at full width. */}
-      <header className={`grid gap-y-10 md:grid-cols-12 md:items-end md:gap-x-8 ${c.video ? "lg:gap-x-12" : ""}`}>
-        <div className={c.video ? "md:col-span-5" : "md:col-span-7"}>
+      {/* Side by side, the first screen holds everything, whole and still: the words and
+          the services on the left, the film or the cover on the right, framed, small enough
+          to stay sharp. Otherwise the words come first and the cover follows at full width. */}
+      <header className={`grid gap-y-10 md:grid-cols-12 md:items-end md:gap-x-8 ${side ? "lg:gap-x-12" : ""}`}>
+        <div className={side ? "md:col-span-5" : "md:col-span-7"}>
           <motion.h1
             variants={rise}
             initial="hidden"
@@ -197,16 +211,30 @@ export const CaseStudyPage: React.FC = () => {
           >
             {c.lead[lang]}
           </motion.p>
-          {c.video && <Facts c={c} lang={lang} className="mt-12" />}
+          {side && <Facts c={c} lang={lang} className="mt-12" />}
         </div>
 
-        {c.video ? (
+        {side ? (
           <motion.figure
             className="-mx-4 overflow-hidden sm:-mx-6 md:col-span-7 md:ml-0 md:-mr-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.25, ease: EASE_HAUS } }}
           >
-            <Film src={c.video} title={c.title} />
+            {c.headerViewer === "stand" ? (
+              <Suspense fallback={<div className="aspect-[16/10] w-full bg-[#a9b8ba]" />}>
+                <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[16/10] w-full" />
+              </Suspense>
+            ) : c.video ? (
+              <Film src={c.video} title={c.title} ratio="16 / 10" speed={c.videoSpeed} />
+            ) : (
+              <img
+                src={c.cover}
+                alt={c.title}
+                {...protect}
+                className="block aspect-[16/10] max-h-[88vh] w-full object-cover"
+                style={{ objectPosition: c.coverFocus }}
+              />
+            )}
           </motion.figure>
         ) : (
           <Facts c={c} lang={lang} className="self-end md:col-span-4 md:col-start-9" />
@@ -214,7 +242,7 @@ export const CaseStudyPage: React.FC = () => {
       </header>
 
       {/* The cover, at full width */}
-      {!c.video && (
+      {!side && (
         <motion.figure
           className="-mx-4 mt-16 overflow-hidden sm:-mx-6 md:-mx-8 md:mt-20"
           style={c.coverFit === "contain" ? { background: MOUNT } : undefined}
@@ -240,7 +268,7 @@ export const CaseStudyPage: React.FC = () => {
           <p className={`${BODY} text-graphite md:col-span-6 md:col-start-7`}>{c.body[lang]}</p>
         </section>
       ) : (
-        <div className={c.video ? "h-20 md:h-32" : "h-4 md:h-6"} />
+        <div className={side ? "h-20 md:h-32" : "h-4 md:h-6"} />
       )}
 
       {/* The work, large */}
@@ -251,14 +279,37 @@ export const CaseStudyPage: React.FC = () => {
               <div key={r} className="grid gap-4 md:grid-cols-2 md:gap-6">
                 {/* Every pair the same height: one shape for all, photographs cropped to it,
                     pieces on white shown whole on white */}
-                {row.map((img) => (
-                  <Plate
-                    key={img.src}
-                    src={img.src}
-                    className={`aspect-[16/10] ${img.fit === "contain" ? "bg-white object-contain" : "object-cover"}`}
-                  />
-                ))}
+                {row.map((img) =>
+                  img.viewer === "stand" ? (
+                    <Suspense key="stand" fallback={<div className="aspect-[16/10] w-full bg-[#a9b8ba]" />}>
+                      <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[16/10] w-full" />
+                    </Suspense>
+                  ) : img.video ? (
+                    <Film key={img.video} src={img.video} title={c.title} ratio="16 / 10" speed={img.videoSpeed} />
+                  ) : (
+                    <Plate
+                      key={img.src}
+                      src={img.src}
+                      className={`aspect-[16/10] ${img.fit === "contain" ? "bg-white object-contain" : "object-cover"}`}
+                    />
+                  ),
+                )}
               </div>
+            ) : row[0].href ? (
+              // A piece with an interactive version: the still opens it, with a quiet caption
+              <a key={r} href={row[0].href} target="_blank" rel="noopener noreferrer" className="group block">
+                <Plate src={row[0].src} />
+                <span className={`${SMALL} mt-3 flex items-center justify-between gap-4 px-4 text-graphite sm:px-6 md:px-8`}>
+                  <span>{CASE_UI.recreation[lang]}</span>
+                  <span className="inline-flex items-center gap-1.5 text-ink">
+                    <span className="relative">
+                      {CASE_UI.view3d[lang]}
+                      <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+                    </span>
+                    <span aria-hidden>↗</span>
+                  </span>
+                </span>
+              </a>
             ) : (
               <Plate key={r} src={row[0].src} />
             ),

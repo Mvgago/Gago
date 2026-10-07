@@ -36,9 +36,10 @@ import sapBillboard from "../assets/peojects/saphire/saphire (8).jpg";
 import sapStationery from "../assets/peojects/saphire/saphire (10).jpg";
 import smMascot from "../assets/peojects/smart/smart.png";
 import smScreens from "../assets/peojects/smart/smart (1).png";
-import smPad from "../assets/peojects/smart/smart.jpg";
 import smPrint from "../assets/peojects/smart/smart (2).jpg";
-import smBanner from "../assets/peojects/smart/smart (1).jpg";
+import smBrochure from "../assets/peojects/smart/smart-brochure.jpg";
+import smDetailGuides from "../assets/peojects/smart/smart-detail-guides.jpg";
+import smDetailLogo from "../assets/peojects/smart/smart-detail-logo.jpg";
 
 /**
  * The selected projects: a few, chosen and told the same way — one image to
@@ -48,7 +49,7 @@ import smBanner from "../assets/peojects/smart/smart (1).jpg";
  * `pair: true` on an image sets it beside the next one, half width each.
  */
 
-export type Discipline = "identity" | "web" | "direction" | "video" | "presentation" | "3d" | "cover" | "campaign";
+export type Discipline = "identity" | "web" | "direction" | "video" | "presentation" | "comms" | "events" | "social" | "3d" | "cover" | "campaign";
 
 type Text = Record<Lang, string>;
 
@@ -56,7 +57,18 @@ type Text = Record<Lang, string>;
  * pair: shares a row with the next image. fit "contain": shown whole on white instead
  * of cropped to the row's shape (for pieces on a white ground: type, colours, drawings)
  */
-export type CaseImage = { src: string; pair?: boolean; fit?: "contain" };
+export type CaseImage = {
+  src: string;
+  /** In place of the image: the interactive 3D stand */
+  viewer?: "stand";
+  /** In place of the image: a silent looping film (public/video), at its own speed */
+  video?: string;
+  videoSpeed?: number;
+  pair?: boolean;
+  fit?: "contain";
+  /** Opens an interactive version (e.g. a 3D recreation) in a new tab, with a small caption */
+  href?: string;
+};
 
 export type Case = {
   slug: string;
@@ -67,6 +79,8 @@ export type Case = {
   sector?: Text;
   /** A closing line inviting a similar project, linked to the contact */
   cta?: Text;
+  /** Kept but not shown: off the site and out of the case-to-case navigation */
+  hidden?: boolean;
   /** The services in detail: each discipline with what was actually delivered */
   services?: { d: Discipline; detail: Text }[];
   year?: string;
@@ -78,6 +92,12 @@ export type Case = {
   cover: string;
   /** A film to open the case with instead of the cover (a file in public/video) */
   video?: string;
+  /** The film's proportion, as CSS aspect-ratio (defaults to 16 / 9) */
+  videoRatio?: string;
+  /** Playback speed (defaults to 1.35, the projects page's pace) */
+  videoSpeed?: number;
+  /** Opens the case with the interactive 3D stand instead of a film or the cover */
+  headerViewer?: "stand";
   /** "contain": show the whole cover on a pale mount (square or small covers) */
   coverFit?: "contain";
   /** A calm image for the index strip, with no text or interface in it (defaults to the cover) */
@@ -90,7 +110,14 @@ export type Case = {
 };
 
 /** The labels of the case pages */
-export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "all" | "count", Text> = {
+export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "all" | "count" | "recreation" | "view3d", Text> = {
+  recreation: {
+    en: "3D recreation · Congress stand",
+    es: "Recreación 3D · Stand de congreso",
+    fr: "Recréation 3D · Stand de congrès",
+    de: "3D-Rekonstruktion · Kongressstand",
+  },
+  view3d: { en: "view in 3d", es: "ver en 3d", fr: "voir en 3d", de: "in 3d ansehen" },
   client: { en: "for", es: "para", fr: "pour", de: "für" },
   sector: { en: "sector", es: "sector", fr: "secteur", de: "branche" },
   year: { en: "year", es: "año", fr: "année", de: "jahr" },
@@ -107,6 +134,9 @@ export const DISCIPLINE: Record<Discipline, Text> = {
   direction: { en: "art direction", es: "dirección de arte", fr: "direction artistique", de: "art direction" },
   video: { en: "video", es: "vídeo", fr: "vidéo", de: "video" },
   presentation: { en: "sales presentation", es: "presentación comercial", fr: "présentation commerciale", de: "verkaufspräsentation" },
+  comms: { en: "communications", es: "comunicación", fr: "communication", de: "kommunikation" },
+  events: { en: "events", es: "eventos", fr: "événements", de: "events" },
+  social: { en: "content strategy", es: "estrategia de contenidos", fr: "stratégie de contenu", de: "content-strategie" },
   "3d": { en: "3d imagery", es: "visualización 3d", fr: "visualisation 3d", de: "3d-visualisierung" },
   cover: { en: "cover art", es: "portada", fr: "pochette", de: "cover" },
   campaign: { en: "campaigns", es: "campañas", fr: "campagnes", de: "kampagnen" },
@@ -244,27 +274,91 @@ export const cases: Case[] = [
     slug: "smarthc",
     title: "Smart Human Capital",
     client: { en: "SmartHC — security consultancy", es: "SmartHC — consultoría de seguridad", fr: "SmartHC — conseil en sécurité", de: "SmartHC — sicherheitsberatung" },
-    disciplines: ["identity", "3d", "campaign"],
+    disciplines: ["identity", "direction", "comms", "events", "social"],
+    sector: { en: "tech consultancy", es: "consultoría tecnológica", fr: "conseil technologique", de: "technologieberatung" },
     lead: {
       en: "Cybersecurity consultancy.",
       es: "Consultora de ciberseguridad.",
       fr: "Cabinet de cybersécurité.",
       de: "Cybersicherheitsberatung.",
     },
-    body: {
-      en: "For a consultancy in security and new technology: the visual identity, a 3D guardian carried across devices, print and events, and the campaigns around it.",
-      es: "Para una consultora de seguridad y nuevas tecnologías: la identidad visual, un guardián 3D presente en dispositivos, impresos y eventos, y las campañas a su alrededor.",
-      fr: "Pour un cabinet de conseil en sécurité et nouvelles technologies : l'identité visuelle, un gardien 3D décliné sur écrans, imprimés et événements, et les campagnes autour.",
-      de: "Für eine Beratung für Sicherheit und neue Technologien: die visuelle Identität, ein 3D-Wächter auf Geräten, Drucksachen und Events, und die Kampagnen dazu.",
+    services: [
+      {
+        d: "identity",
+        detail: {
+          en: "logo, visual system and character",
+          es: "logotipo, sistema visual y personaje",
+          fr: "logo, système visuel et personnage",
+          de: "logo, visuelles system und figur",
+        },
+      },
+      {
+        d: "direction",
+        detail: {
+          en: "the brand in digital, print and events",
+          es: "la marca en digital, impresos y eventos",
+          fr: "la marque en numérique, print et événements",
+          de: "die marke digital, in print und auf events",
+        },
+      },
+      {
+        d: "comms",
+        detail: {
+          en: "catalogue, guides and product sheets",
+          es: "catálogo, guías y fichas de producto",
+          fr: "catalogue, guides et fiches produit",
+          de: "katalog, leitfäden und produktblätter",
+        },
+      },
+      {
+        d: "events",
+        detail: {
+          en: "stands for congresses and fairs, 3D prototypes",
+          es: "stands para congresos y ferias, prototipos 3D",
+          fr: "stands pour congrès et salons, prototypes 3D",
+          de: "stände für kongresse und messen, 3D-prototypen",
+        },
+      },
+      {
+        d: "social",
+        detail: {
+          en: "editorial planning for social media",
+          es: "planificación editorial en redes",
+          fr: "planification éditoriale sur les réseaux",
+          de: "redaktionsplanung für social media",
+        },
+      },
+    ],
+    cta: {
+      en: "A similar project? Let's talk",
+      es: "¿Un proyecto parecido? Hablemos",
+      fr: "Un projet similaire ? Parlons-en",
+      de: "Ein ähnliches Projekt? Sprechen wir darüber",
     },
     cover: smMascot,
+    // The first screen is the stand, to turn round right away
+    headerViewer: "stand",
     thumb: smStrip,
     coverFocus: "50% 55%",
-    images: [{ src: smScreens }, { src: smPad, pair: true }, { src: smPrint }, { src: smBanner }],
+    // Three pairs of the same height: the presentation beside the product sheet, then
+    // each printed piece beside a close-up of it
+    images: [
+      // The character in motion (slowed to half with interpolated frames, looped forward
+      // and back, at its own calm pace) beside the presentation
+      { src: smScreens, pair: true },
+      { src: "", video: "/video/smarthc.mp4", videoSpeed: 1 },
+      { src: smBrochure, pair: true },
+      { src: smDetailLogo },
+      { src: smPrint, pair: true },
+      { src: smDetailGuides },
+    ],
+
   },
   {
     slug: "alea",
     title: "Alea Software",
+    // Work done as an employee: off the public site while that job lasts
+    hidden: true,
     client: { en: "AMV Soluciones — industrial software", es: "AMV Soluciones — software industrial", fr: "AMV Soluciones — logiciel industriel", de: "AMV Soluciones — industriesoftware" },
     disciplines: ["identity", "web", "campaign"],
     lead: {
