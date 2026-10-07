@@ -1,4 +1,6 @@
 import React, { Suspense, lazy, useState } from "react";
+import SocialPhone from "../../components/Social/SocialPhone";
+import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cases, CASE_UI, DISCIPLINE, type Case, type CaseImage } from "../../outils/cases";
@@ -304,6 +306,28 @@ export const CaseStudyPage: React.FC = () => {
                   ),
                 )}
               </div>
+            ) : row[0].viewer === "devices" ? (
+              // The interactive product scene, wide: taller on phones so the devices stay large
+              <DevicesFrame
+                key={r}
+                src="/concepts/smarthc-devices/index.html"
+                title={`${c.title} — 3D`}
+                className="aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[16/8]"
+              />
+            ) : row[0].viewer === "social" && row[0].tiles ? (
+              // The brand's social profile in a phone, on a wide band
+              <SocialPhone
+                key={r}
+                tiles={row[0].tiles}
+                name={c.title}
+                bio={c.lead[lang]}
+                avatar={
+                  <span className="flex h-full w-full items-center justify-center bg-[#f39200]">
+                    <img src="/concepts/smarthc-stand/symbol.png" alt="" className="h-[62%] w-[62%] object-contain" />
+                  </span>
+                }
+                className="aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[16/8]"
+              />
             ) : row[0].href ? (
               // A piece with an interactive version: the still opens it, with a quiet caption
               <a key={r} href={row[0].href} target="_blank" rel="noopener noreferrer" className="group block">

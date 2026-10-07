@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>smart hc — experiencia de producto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<style>
+/* A pale studio; Fuga Haus's quiet type over it */
+:root {
+  --ground: #d5dcdf;
+  --ink: #1c2023;
+  --soft: rgba(28, 32, 35, 0.55);
+  --orange: #e08700;
+  --display: 'Jura', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+html, body { height: 100%; margin: 0; }
+body { background: var(--ground); color: var(--ink); overflow: hidden; }
+#stage { position: fixed; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
+#stage.on { opacity: 1; }
+#stage canvas { display: block; width: 100%; height: 100%; }
+.label, .hint { position: fixed; top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; color: var(--soft); pointer-events: none; }
+.label { left: 24px; }
+.hint { right: 24px; transition: opacity .6s; }
+.line { position: fixed; left: 24px; bottom: 22px; margin: 0; font-family: var(--display); font-weight: 300; font-size: clamp(22px, 3vw, 40px); line-height: 1.05; letter-spacing: 0.01em; pointer-events: none; }
+.line span { color: var(--orange); }
+@media (max-width: 640px) {
+  .hint { display: none; }
+  .label { left: 16px; top: 14px; }
+  .line { left: 16px; bottom: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+<p class="label">Concepto · Experiencia interactiva de producto</p>
+<p class="hint" id="hint">arrastra para girar · firma en la tablet</p>
+<p class="line">Encajamos <span>contigo.</span></p>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
+import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
+/* smart hc's palette: graphite, greys, its orange. Light interfaces. */
+const C = { paper: '#eceff1', card: '#ffffff', line: 'rgba(43,47,51,0.16)', text: '#1f2326', muted: '#5f686d', orange: '#F39200', orangeDeep: '#d97f00', red: '#c9524f' };
+const DISPLAY = 'Jura, sans-serif';
+const MONO = '"JetBrains Mono", ui-monospace, Menlo, monospace';
+const TAU = Math.PI * 2;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* The company's real logo and symbol (white on transparent), recoloured */
+const loadImg = (src) => new Promise((ok, fail) => { const i = new Image(); i.onload = () => ok(i); i.onerror = fail; i.src = src; });
+const [LOGO, SYMBOL] = await Promise.all([loadImg('../smarthc-stand/logo.png'), loadImg('../smarthc-stand/symbol.png')]);
+function tinted(img, color) {
+  const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+  const x = c.getContext('2d'); x.drawImage(img, 0, 0);
+  x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height);
+  return c;
+}
+const LOGO_G = tinted(LOGO, C.text);
+const SYMBOL_O = tinted(SYMBOL, C.orange);
+try {
+  await Promise.race([
+    Promise.all([`300 40px ${DISPLAY}`, `500 40px ${DISPLAY}`, `400 20px ${MONO}`, `500 20px ${MONO}`].map(f => document.fonts.load(f))),
+    new Promise(r => setTimeout(r, 2000)),
+  ]);
+} catch (e) {}
+
+/* ================= helpers ================= */
+const clamp01 = x => Math.min(1, Math.max(0, x));
+const seg = (t, a, b) => clamp01((t - a) / (b - a));
+const eOut = x => 1 - Math.pow(1 - clamp01(x), 3);
+const eInOut = x => { x = clamp01(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function mono(ctx, txt, x, y, col = C.muted, size = 15, align = 'left', weight = 400) {
+  ctx.fillStyle = col; ctx.font = `${weight} ${size}px ${MONO}`; ctx.textAlign = align; ctx.fillText(txt, x, y); ctx.textAlign = 'left';
+}
+const LOGO_WH = tinted(LOGO, '#ffffff');
+function logoW(ctx, x, y, w) { const h = LOGO_WH.height * (w / LOGO_WH.width); ctx.drawImage(LOGO_WH, x, y - h / 2, w, h); }
+function logoAt(ctx, x, y, w, alpha = 1) {
+  const h = LOGO_G.height * (w / LOGO_G.width);
+  ctx.save(); ctx.globalAlpha *= alpha; ctx.drawImage(LOGO_G, x, y - h / 2, w, h); ctx.restore();
+}
+const paperCache = {};
+function paper(ctx, w, h) {
+  const key = w + 'x' + h;
+  if (!paperCache[key]) {
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    paperRaw(c.getContext('2d'), w, h);
+    paperCache[key] = c;
+  }
+  ctx.drawImage(paperCache[key], 0, 0);
+}
+function paperRaw(ctx, w, h) {
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, w, h);
+  // A very fine technical grid
+  ctx.strokeStyle = 'rgba(43,47,51,0.05)'; ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+}
+function check(ctx, x, y, s, col) {
+  ctx.strokeStyle = col; ctx.lineWidth = s * .16; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(x - s * .32, y + s * .02); ctx.lineTo(x - s * .08, y + s * .28); ctx.lineTo(x + s * .36, y - s * .24); ctx.stroke();
+}
+function shield(ctx, cx, cy, s, stroke, fill) {
+  ctx.save(); ctx.translate(cx, cy); ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(0, -s); ctx.bezierCurveTo(s * .5, -s * .76, s * .82, -s * .82, s * .82, -s * .82);
+  ctx.lineTo(s * .82, -s * .05); ctx.bezierCurveTo(s * .82, s * .55, s * .35, s * .88, 0, s);
+  ctx.bezierCurveTo(-s * .35, s * .88, -s * .82, s * .55, -s * .82, -s * .05);
+  ctx.lineTo(-s * .82, -s * .82); ctx.bezierCurveTo(-s * .82, -s * .82, -s * .5, -s * .76, 0, -s);
+  ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = stroke; ctx.lineWidth = s * .07; ctx.stroke();
+  ctx.restore();
+}
+
+/* ================= tablet: the Biometric PAD, a signature being captured ================= */
+const TW = 1280, TH = 904, PW = 600, PH = 1280;
+let userStrokes = [], lastInk = -10;
+/* A handwritten signature: a looped capital, joined letters of uneven height, the dot of an i,
+   and a flourish underneath. Drawn through smooth curves; the pen is thinner where it moves
+   fast, heavier on the turns, and tapers where it lands and lifts. */
+const SIG = (() => {
+  const strokes = [
+    // capital with its loop, then the joined letters
+    [[.08, .74], [.11, .52], [.16, .18], [.21, .08], [.23, .2], [.19, .5], [.13, .66], [.11, .6], [.17, .5], [.25, .46],
+     [.28, .6], [.31, .44], [.34, .61], [.37, .43], [.4, .62], [.43, .5], [.45, .2], [.47, .07], [.48, .22], [.47, .6],
+     [.5, .64], [.53, .46], [.56, .62], [.59, .45], [.61, .63], [.64, .52], [.67, .58], [.7, .3], [.72, .14], [.73, .32],
+     [.72, .63], [.76, .55], [.79, .6], [.83, .48]],
+    // the dot of the i
+    [[.555, .3], [.562, .29]],
+    // the flourish underneath
+    [[.06, .84], [.22, .8], [.42, .79], [.62, .82], [.8, .77], [.92, .66], [.95, .58]],
+  ];
+  // Catmull-Rom through the points, then pressure from speed and curvature, tapered at the ends
+  return strokes.map(pts => {
+    if (pts.length < 3) return pts.map(([x, y], i) => [x, y, .55 + i * .2]);
+    const out = [];
+    const P = (i) => pts[Math.max(0, Math.min(pts.length - 1, i))];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = P(i - 1), p1 = P(i), p2 = P(i + 1), p3 = P(i + 2);
+      for (let k = 0; k < 12; k++) {
+        const t = k / 12, t2 = t * t, t3 = t2 * t;
+        const x = .5 * (2 * p1[0] + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3);
+        const y = .5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3);
+        out.push([x, y]);
+      }
+    }
+    out.push(pts[pts.length - 1].slice(0, 2));
+    return out.map(([x, y], i) => {
+      const a = out[Math.max(0, i - 1)], b = out[Math.min(out.length - 1, i + 1)];
+      const speed = Math.hypot(b[0] - a[0], b[1] - a[1]) * 60;
+      const s = i / (out.length - 1), taper = Math.pow(Math.sin(Math.PI * Math.min(1, s * 1.15 + .02)), .5);
+      return [x, y, Math.max(.18, Math.min(1, (1.2 - speed * .45) * taper))];
+    });
+  });
+})();
+const SIG_LEN = SIG.reduce((n, s) => n + s.length, 0);
+
+function tabletUI(ctx, t) {
+  paper(ctx, TW, TH);
+  // App bar
+  ctx.fillStyle = '#23272a'; ctx.fillRect(0, 0, TW, 112);
+  ctx.fillStyle = C.orange; ctx.fillRect(0, 112, TW, 4);
+  logoW(ctx, 70, 58, 210);
+  mono(ctx, 'Biometric PAD', 312, 68, 'rgba(255,255,255,0.6)', 24);
+  ctx.fillStyle = C.orange; ctx.beginPath(); ctx.arc(TW - 218, 60, 8, 0, TAU); ctx.fill();
+  mono(ctx, 'conectado', TW - 70, 68, '#ffffff', 24, 'right');
+
+  // The document's signature card
+  const CX = 70, CY = 148, CW = TW - 140, CH = 490;
+  ctx.fillStyle = C.card; rr(ctx, CX, CY, CW, CH, 14); ctx.fill();
+  ctx.strokeStyle = C.line; ctx.lineWidth = 2; rr(ctx, CX, CY, CW, CH, 14); ctx.stroke();
+  mono(ctx, 'CONTRATO Nº 2048', CX + 36, CY + 56, C.orangeDeep, 22, 'left', 500);
+  mono(ctx, 'Firma del cliente', CX + 36, CY + 96, C.text, 26, 'left', 500);
+  ctx.fillStyle = C.orange; rr(ctx, CX + CW - 236, CY + 30, 200, 52, 26); ctx.fill();
+  mono(ctx, 'firmar aquí', CX + CW - 136, CY + 64, '#ffffff', 21, 'center', 500);
+  const SX = CX + 60, SY = CY + 120, SW = CW - 120, SH = 330;
+  ctx.strokeStyle = 'rgba(43,47,51,0.4)'; ctx.lineWidth = 2; ctx.setLineDash([3, 10]);
+  ctx.beginPath(); ctx.moveTo(SX + 40, SY + SH * .82); ctx.lineTo(SX + SW - 40, SY + SH * .82); ctx.stroke(); ctx.setLineDash([]);
+  mono(ctx, '×', SX + 14, SY + SH * .82 + 9, C.muted, 30);
+
+  const cyc = t % 10;
+  const useUser = userStrokes.length > 0;
+  let strokes;
+  if (useUser) strokes = userStrokes;
+  else {
+    // Written stroke after stroke at a steady hand's pace
+    let left = Math.floor(seg(cyc, .6, 5.2) * SIG_LEN);
+    strokes = SIG.map(s => { const n = Math.min(s.length, left); left -= n; return s.slice(0, n); })
+      .map(s => s.map(([x, y, pr]) => ({ x: SX + x * SW, y: SY + y * SH * .9, p: pr })));
+  }
+  const fade = useUser ? 1 : 1 - seg(cyc, 9.2, 9.9);
+  ctx.globalAlpha = fade; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  strokes.forEach(s => {
+    // a faint bleed of ink under the line, then the line itself, thin to full with the pressure
+    for (let pass = 0; pass < 2; pass++) {
+      for (let i = 1; i < s.length; i++) {
+        const w = 1.8 + s[i].p * 5.2;
+        ctx.strokeStyle = pass ? '#1d2f4a' : 'rgba(29,47,74,0.12)';
+        ctx.lineWidth = pass ? w : w + 2.4;
+        ctx.beginPath(); ctx.moveTo(s[i - 1].x, s[i - 1].y); ctx.lineTo(s[i].x, s[i].y); ctx.stroke();
+      }
+    }
+  });
+  const live = strokes.filter(s => s.length).at(-1);
+  const drawingNow = useUser ? (clockNow() - lastInk < 0.15) : (cyc > .6 && cyc < 5.2);
+  if (live && live.length && drawingNow) {
+    const tip = live.at(-1);
+    const g = ctx.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, 26);
+    g.addColorStop(0, 'rgba(243,146,0,0.55)'); g.addColorStop(1, 'rgba(243,146,0,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(tip.x, tip.y, 26, 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Live reading of the signature: pressure over time
+  const flat = strokes.flat();
+  const W0 = 70, W1 = TW - 70, base = 772, n = 90;
+  mono(ctx, 'PRESIÓN', W0, 682, C.muted, 20);
+  mono(ctx, `${String(flat.length).padStart(4, '0')} puntos`, W1, 682, C.muted, 20, 'right');
+  for (let i = 0; i < n; i++) {
+    const src = flat[Math.floor(i / n * flat.length)];
+    const h = src ? 6 + src.p * 52 : 3;
+    ctx.fillStyle = src ? `rgba(243,146,0,${(.6 + src.p * .4) * fade})` : 'rgba(43,47,51,0.14)';
+    ctx.fillRect(W0 + i * (W1 - W0) / n, base - h, 7, h);
+  }
+  // Verified
+  const v = useUser ? 0 : eOut(seg(cyc, 5.5, 6.1)) * (1 - seg(cyc, 9.2, 9.9));
+  if (v > 0) {
+    ctx.globalAlpha = v;
+    ctx.fillStyle = 'rgba(243,146,0,0.16)'; rr(ctx, W0, 800, 470, 76, 38); ctx.fill();
+    check(ctx, W0 + 46, 838, 40, C.orangeDeep);
+    mono(ctx, 'Firma verificada · 0,21 s', W0 + 84, 847, C.text, 24, 'left', 500);
+    ctx.globalAlpha = 1;
+  }
+  if (useUser) mono(ctx, 'tu firma', W1, 847, C.orangeDeep, 24, 'right');
+}
+
+/* ================= phone: the security status app, a calm activity log ================= */
+const EVENTS = [
+  { t: 'Firma verificada', d: 'Contrato Nº 2048 · 0,21 s', c: C.orange },
+  { t: 'Acceso bloqueado', d: 'Origen desconocido · 185.22.x.x', c: C.red },
+  { t: 'Documento cifrado', d: 'AES-256 · extremo a extremo', c: C.orange },
+  { t: 'Dispositivo de confianza', d: 'Biometric PAD · oficina central', c: C.text },
+  { t: 'Copia de seguridad', d: 'Completada · 2,4 GB', c: C.text },
+  { t: 'Acceso bloqueado', d: 'Contraseña errónea · 3 intentos', c: C.red },
+];
+function phoneUI(ctx, t) {
+  paper(ctx, PW, PH);
+  const hg = ctx.createLinearGradient(0, 0, PW, 590);
+  hg.addColorStop(0, '#f6a21c'); hg.addColorStop(1, '#d97f00');
+  ctx.fillStyle = hg; ctx.fillRect(0, 0, PW, 590);
+  // faint circuit lines in the header
+  ctx.strokeStyle = 'rgba(255,255,255,0.14)'; ctx.lineWidth = 2;
+  [[0, 250, 120, 250, 160, 210, 260, 210], [PW, 420, 470, 420, 430, 380, 360, 380], [PW, 120, 520, 120, 490, 150, 430, 150]].forEach(p => {
+    ctx.beginPath(); ctx.moveTo(p[0], p[1]); for (let i = 2; i < p.length; i += 2) ctx.lineTo(p[i], p[i + 1]); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.beginPath(); ctx.arc(p[p.length - 2], p[p.length - 1], 5, 0, TAU); ctx.fill();
+  });
+  mono(ctx, '9:41', 52, 60, '#ffffff', 26, 'left', 500);
+  logoW(ctx, 52, 138, 190);
+
+  // Status: protected
+  const cx = PW / 2, cy = 340;
+  const pulse = reduced ? 0 : (t * .5) % 1;
+  ctx.strokeStyle = `rgba(243,146,0,${.35 * (1 - pulse)})`; ctx.lineWidth = 2;
+  ctx.strokeStyle = `rgba(255,255,255,${.5 * (1 - pulse)})`; ctx.beginPath(); ctx.arc(cx, cy, 96 + pulse * 60, 0, TAU); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.beginPath(); ctx.arc(cx, cy, 96, 0, TAU); ctx.fill();
+  shield(ctx, cx, cy, 58, '#ffffff', 'rgba(255,255,255,0.15)');
+  check(ctx, cx, cy - 2, 50, '#ffffff');
+  ctx.fillStyle = '#ffffff'; ctx.font = `500 58px ${DISPLAY}`; ctx.textAlign = 'center'; ctx.fillText('Protegido', cx, 510);
+  mono(ctx, 'revisado hace 2 s', cx, 552, 'rgba(255,255,255,0.8)', 22, 'center');
+
+  // Activity: a new event slides in every few seconds; the latest four stay
+  mono(ctx, 'ACTIVIDAD', 52, 650, C.orangeDeep, 22, 'left', 500);
+  const step = 2.6, k = Math.floor(t / step), f = eOut(seg(t % step, 0, .7));
+  for (let i = 0; i < 4; i++) {
+    const e = EVENTS[((k - i) % EVENTS.length + EVENTS.length) % EVENTS.length];
+    const y = 690 + (i - 1 + f) * 150 + 150;
+    const a = i === 0 ? f : i === 3 ? 1 - f : 1;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = C.card; rr(ctx, 36, y - 42, PW - 72, 128, 16); ctx.fill();
+    ctx.strokeStyle = C.line; ctx.lineWidth = 2; rr(ctx, 36, y - 42, PW - 72, 128, 16); ctx.stroke();
+    ctx.fillStyle = e.c; rr(ctx, 36, y - 42, 8, 128, 4); ctx.fill();
+    ctx.beginPath(); ctx.arc(78, y + 20, 10, 0, TAU); ctx.fill();
+    ctx.fillStyle = C.text; ctx.font = `500 32px ${DISPLAY}`; ctx.textAlign = 'left'; ctx.fillText(e.t, 106, y + 14);
+    mono(ctx, e.d, 106, y + 56, C.muted, 19);
+    ctx.globalAlpha = 1;
+  }
+}
+function roundScreen(ctx, w, h, r) {
+  ctx.save(); ctx.globalCompositeOperation = 'destination-in';
+  rr(ctx, 0, 0, w, h, r); ctx.fillStyle = '#000'; ctx.fill(); ctx.restore();
+}
+function island(ctx) { ctx.fillStyle = '#050607'; rr(ctx, PW / 2 - 70, 28, 140, 40, 20); ctx.fill(); }
+
+/* ================= 3D scene ================= */
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+stage.appendChild(renderer.domElement);
+const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.7;
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 80);
+const HOME = new THREE.Vector3(0.55, 1.7, 5.1);
+const START = new THREE.Vector3(2.4, 3.0, 11);
+camera.position.copy(START);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0.45, 1.1, 0.15);
+controls.enableDamping = true; controls.dampingFactor = 0.045; controls.enablePan = false;
+controls.enableZoom = false; // the wheel scrolls the page
+controls.minPolarAngle = Math.PI * 0.3; controls.maxPolarAngle = Math.PI * 0.52;
+controls.minAzimuthAngle = -0.8; controls.maxAzimuthAngle = 0.8;
+renderer.domElement.style.touchAction = 'pan-y'; // phones: vertical swipes scroll the page
+
+/* Studio: pale cool cyclorama, a floor with a fine technical grid */
+const backdrop = new THREE.Mesh(new THREE.SphereGeometry(40, 48, 24), new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false,
+  uniforms: { top: { value: new THREE.Color('#dde4e7') }, hor: { value: new THREE.Color('#a9b5ba') } },
+  vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: 'uniform vec3 top; uniform vec3 hor; varying vec3 vP; void main(){ float h = smoothstep(-0.02, 0.55, vP.y); gl_FragColor = vec4(mix(hor, top, h), 1.0); }',
+}));
+scene.add(backdrop);
+const floorTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 1024; const x = c.getContext('2d');
+  const g = x.createRadialGradient(512, 512, 0, 512, 512, 512);
+  g.addColorStop(0, '#d9e0e3'); g.addColorStop(.6, '#c2cbcf'); g.addColorStop(1, '#a9b5ba');
+  x.fillStyle = g; x.fillRect(0, 0, 1024, 1024);
+  for (let i = 0; i <= 64; i++) {
+    const p = i * 16, major = i % 8 === 0;
+    x.strokeStyle = major ? 'rgba(224,135,0,0.22)' : 'rgba(43,47,51,0.07)';
+    x.lineWidth = major ? 1.2 : 1;
+    x.beginPath(); x.moveTo(p, 0); x.lineTo(p, 1024); x.stroke();
+    x.beginPath(); x.moveTo(0, p); x.lineTo(1024, p); x.stroke();
+  }
+  const v = x.createRadialGradient(512, 512, 200, 512, 512, 512);
+  v.addColorStop(0, 'rgba(169,181,186,0)'); v.addColorStop(1, 'rgba(169,181,186,1)');
+  x.fillStyle = v; x.fillRect(0, 0, 1024, 1024);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso; return t;
+})();
+const floor = new THREE.Mesh(new THREE.CircleGeometry(16, 64), new THREE.MeshBasicMaterial({ map: floorTex }));
+floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, -1); scene.add(floor);
+
+/* The backdrop, two quiet layers: columns of code in white, rising slowly with a soft glow,
+   and behind them a fine network mesh drifting very slowly */
+const CODE_W = 900, CODE_H = 1400;
+const codeCanvas = document.createElement('canvas'); codeCanvas.width = CODE_W; codeCanvas.height = CODE_H;
+const codeCtx = codeCanvas.getContext('2d');
+// Glyphs pre-drawn once with their glow, then only copied
+const GLYPHS = '0123456789ABCDEF';
+const atlas = (() => {
+  const gw = 38, gh = 50, c = document.createElement('canvas'); c.width = gw * GLYPHS.length; c.height = gh;
+  const x = c.getContext('2d');
+  x.font = '500 30px "JetBrains Mono", monospace'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.shadowColor = 'rgba(255,255,255,0.95)'; x.shadowBlur = 12; x.fillStyle = '#ffffff';
+  [...GLYPHS].forEach((ch, i) => { x.fillText(ch, i * gw + gw / 2, gh / 2); x.fillText(ch, i * gw + gw / 2, gh / 2); });
+  return { c, gw, gh };
+})();
+let cseed = 5; const crnd = () => (cseed = (cseed * 16807) % 2147483647) / 2147483647;
+// Close-set columns, evenly spaced, on one side only
+const COLUMNS = Array.from({ length: 21 }, (_, i) => ({
+  x: 30 + i * 41 + Math.round(crnd() * 4),
+  y: crnd() * CODE_H, speed: 12 + crnd() * 20, len: 6 + Math.floor(crnd() * 12),
+  a: .45 + crnd() * .45, g: Array.from({ length: 16 }, () => Math.floor(crnd() * 16)),
+}));
+function drawCode(T, dt) {
+  const x = codeCtx;
+  x.clearRect(0, 0, CODE_W, CODE_H);
+  COLUMNS.forEach(col => {
+    col.y -= col.speed * dt;
+    if (col.y < -col.len * 44) col.y = CODE_H + 30 + crnd() * 300;
+    for (let k = 0; k < col.len; k++) {
+      const py = col.y + k * 44;
+      if (py < -30 || py > CODE_H + 30) continue;
+      // fade at the top and bottom of the wall, and along the column's tail
+      // fade at the top, the floor and the two sides, so the block has no edge
+      const edge = Math.min(1, py / 260, (CODE_H - py) / 12, col.x / 160, (CODE_W - col.x) / 160);
+      const a = Math.max(0, edge) * col.a * (1 - k / col.len * .7);
+      if (a <= .02) continue;
+      if (Math.random() < .004) col.g[k % 16] = Math.floor(Math.random() * 16);
+      x.globalAlpha = a;
+      x.drawImage(atlas.c, col.g[k % 16] * atlas.gw, 0, atlas.gw, atlas.gh, col.x - atlas.gw / 2, py - atlas.gh / 2, atlas.gw, atlas.gh);
+    }
+  });
+  x.globalAlpha = 1;
+}
+const codeTex = new THREE.CanvasTexture(codeCanvas); codeTex.colorSpace = THREE.SRGBColorSpace;
+// Fixed to the camera, on the right of the frame, upright, rising from its bottom edge.
+// Drawn without depth, before the devices (which render after it), so it sits behind them.
+const tech = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: codeTex, transparent: true, depthWrite: false, depthTest: false, toneMapped: false, opacity: 1 }));
+tech.renderOrder = 0;
+camera.add(tech); scene.add(camera);
+const CODE_DIST = 9;
+
+// Soft white glow behind everything, at the centre
+const haloTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0, 'rgba(255,255,255,0.8)'); g.addColorStop(.5, 'rgba(255,255,255,0.25)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 256, 256); return new THREE.CanvasTexture(c);
+})();
+const halo = new THREE.Mesh(new THREE.PlaneGeometry(18, 11), new THREE.MeshBasicMaterial({ map: haloTex, transparent: true, depthWrite: false, toneMapped: false }));
+halo.position.set(0.3, 3.2, -9.3); scene.add(halo);
+
+// The network mesh: points, and fine lines between the near ones
+const mesh = new THREE.Group();
+{
+  let ms = 3; const mr = () => (ms = (ms * 16807) % 2147483647) / 2147483647;
+  const pts = Array.from({ length: 64 }, () => new THREE.Vector3((mr() - .5) * 20, .6 + mr() * 6.8, -8.6 + mr() * 2.4));
+  const seg = [];
+  for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) if (pts[i].distanceTo(pts[j]) < 2.4) seg.push(pts[i], pts[j]);
+  mesh.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(seg), new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: .32, depthWrite: false, toneMapped: false })));
+  const dot = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'); const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.35, 'rgba(255,255,255,0.7)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
+  mesh.add(new THREE.Points(new THREE.BufferGeometry().setFromPoints(pts), new THREE.PointsMaterial({ size: .14, map: dot, transparent: true, depthWrite: false, toneMapped: false })));
+}
+// (the mesh is kept out of the scene)
+const scan = new THREE.Group(); // (kept empty: no scan line)
+const panels = [];
+
+/* Devices: brushed aluminium, black glass front, a screen that emits its own light */
+const shellMat = new THREE.MeshPhysicalMaterial({ transparent: true, color: '#b9bfc4', metalness: 1, roughness: .32, clearcoat: .25, clearcoatRoughness: .3 });
+const bezelMat = new THREE.MeshPhysicalMaterial({ transparent: true, color: '#08090a', metalness: .1, roughness: .1, clearcoat: 1 });
+const glassMat = new THREE.MeshPhysicalMaterial({ color: '#ffffff', metalness: 0, roughness: .03, clearcoat: 1, clearcoatRoughness: .02, transparent: true, opacity: .04, depthWrite: false });
+const btnMat = new THREE.MeshStandardMaterial({ transparent: true, color: '#aab0b5', metalness: 1, roughness: .3 });
+function device(w, h, d, r, sw, sh, texW, texH) {
+  const g = new THREE.Group();
+  // The body as a rounded rectangle in plan (a rounded box would cap its radius at half the
+  // thickness), extruded with a soft bevel on its edges, as a real device is machined
+  const plan = (pw, ph, pr) => {
+    const s = new THREE.Shape(), x0 = -pw / 2, y0 = -ph / 2;
+    s.moveTo(x0 + pr, y0); s.lineTo(x0 + pw - pr, y0); s.quadraticCurveTo(x0 + pw, y0, x0 + pw, y0 + pr);
+    s.lineTo(x0 + pw, y0 + ph - pr); s.quadraticCurveTo(x0 + pw, y0 + ph, x0 + pw - pr, y0 + ph);
+    s.lineTo(x0 + pr, y0 + ph); s.quadraticCurveTo(x0, y0 + ph, x0, y0 + ph - pr);
+    s.lineTo(x0, y0 + pr); s.quadraticCurveTo(x0, y0, x0 + pr, y0);
+    return s;
+  };
+  const bev = d * .3;
+  const bodyGeo = new THREE.ExtrudeGeometry(plan(w - bev * 2, h - bev * 2, r - bev), { depth: d - bev * 2, bevelEnabled: true, bevelThickness: bev, bevelSize: bev, bevelSegments: 6, curveSegments: 24 });
+  bodyGeo.translate(0, 0, -(d - bev * 2) / 2);
+  g.add(new THREE.Mesh(bodyGeo, shellMat));
+  const front = new THREE.Mesh(new THREE.ShapeGeometry(plan(w - .02, h - .02, r * .92), 24), bezelMat); front.position.z = d / 2 + .001; g.add(front);
+  const c = document.createElement('canvas'); c.width = texW; c.height = texH;
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = maxAniso;
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(sw, sh), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, transparent: true }));
+  scr.position.z = d / 2 + .0032; g.add(scr);
+  const glass = new THREE.Mesh(new THREE.ShapeGeometry(plan(w - .03, h - .03, r * .9), 24), glassMat); glass.position.z = d / 2 + .0045; g.add(glass);
+  const btn = new THREE.Mesh(new RoundedBoxGeometry(.014, h * .09, d * .38, 2, .006), btnMat); btn.position.set(w / 2 + .004, h * .24, 0); g.add(btn);
+  g.traverse(o => { if (o.isMesh) o.renderOrder = 10; });
+  scene.add(g);
+  return { group: g, screen: scr, ctx: c.getContext('2d'), tex };
+}
+const tablet = device(2.3, 1.66, .06, .16, 2.17, 1.532, TW, TH);
+const phone = device(.78, 1.6, .075, .16, .716, 1.528, PW, PH);
+// Slightly crossed, with air between them
+const TPOS = new THREE.Vector3(-.6, 1.22, -.25), PPOS = new THREE.Vector3(1.65, .98, .7);
+tablet.group.position.copy(TPOS); tablet.group.rotation.set(-.12, .5, .03);
+phone.group.position.copy(PPOS); phone.group.rotation.set(-.06, -.32, -.09);
+
+/* Light */
+scene.add(new THREE.HemisphereLight('#ffffff', '#aeb8bc', .6));
+const key = new THREE.DirectionalLight('#fff6ec', 1.3); key.position.set(3, 6, 5); scene.add(key);
+const rim = new THREE.DirectionalLight('#ffd3a0', .7); rim.position.set(-4, 3, -4); scene.add(rim);
+
+/* Soft contact shadows under the devices */
+const SHW = 12, SHD = 10, SHH = 5;
+const shadowGroup = new THREE.Group(); shadowGroup.position.set(-.3, .002, -.6); scene.add(shadowGroup);
+const rt = new THREE.WebGLRenderTarget(1024, 1024); rt.texture.generateMipmaps = false;
+const rtBlur = new THREE.WebGLRenderTarget(1024, 1024); rtBlur.texture.generateMipmaps = false;
+const shPlaneGeo = new THREE.PlaneGeometry(SHW, SHD).rotateX(Math.PI / 2);
+const shPlane = new THREE.Mesh(shPlaneGeo, new THREE.MeshBasicMaterial({ map: rt.texture, opacity: .55, transparent: true, depthWrite: false, toneMapped: false }));
+shPlane.renderOrder = 1; shPlane.scale.y = -1; shadowGroup.add(shPlane);
+const blurPlane = new THREE.Mesh(shPlaneGeo); blurPlane.visible = false; shadowGroup.add(blurPlane);
+const shCam = new THREE.OrthographicCamera(-SHW / 2, SHW / 2, SHD / 2, -SHD / 2, 0, SHH); shCam.rotation.x = Math.PI / 2; shadowGroup.add(shCam);
+const depthMat = new THREE.MeshDepthMaterial(); depthMat.userData.darkness = { value: 1.3 };
+depthMat.onBeforeCompile = sh => {
+  sh.uniforms.darkness = depthMat.userData.darkness;
+  sh.fragmentShader = 'uniform float darkness;\n' + sh.fragmentShader.replace('gl_FragColor = vec4( vec3( 1.0 - fragCoordZ ), opacity );', 'gl_FragColor = vec4( vec3( 0.0 ), ( 1.0 - fragCoordZ ) * darkness );');
+};
+depthMat.depthTest = false; depthMat.depthWrite = false;
+const hBlur = new THREE.ShaderMaterial(HorizontalBlurShader); hBlur.depthTest = false;
+const vBlur = new THREE.ShaderMaterial(VerticalBlurShader); vBlur.depthTest = false;
+function blurShadow(amount) {
+  blurPlane.visible = true;
+  blurPlane.material = hBlur; hBlur.uniforms.tDiffuse.value = rt.texture; hBlur.uniforms.h.value = amount / 256;
+  renderer.setRenderTarget(rtBlur); renderer.render(blurPlane, shCam);
+  blurPlane.material = vBlur; vBlur.uniforms.tDiffuse.value = rtBlur.texture; vBlur.uniforms.v.value = amount / 256;
+  renderer.setRenderTarget(rt); renderer.render(blurPlane, shCam);
+  blurPlane.visible = false;
+}
+function renderContactShadow() {
+  [backdrop, floor, shPlane, tech, halo, mesh].forEach(o => o.visible = false);
+  [tablet, phone].forEach(d => d.group.children.forEach(m => { if (m.material === glassMat) m.visible = false; }));
+  scene.overrideMaterial = depthMat;
+  renderer.setClearColor(0x000000, 0);
+  renderer.setRenderTarget(rt); renderer.clear(); renderer.render(scene, shCam);
+  scene.overrideMaterial = null;
+  blurShadow(3.2); blurShadow(1.4);
+  renderer.setRenderTarget(null); renderer.setClearColor(0x000000, 1);
+  [backdrop, floor, shPlane, tech, halo, mesh].forEach(o => o.visible = true);
+  [tablet, phone].forEach(d => d.group.children.forEach(m => { if (m.material === glassMat) m.visible = true; }));
+}
+
+/* Post: a faint vignette and grain, multisampled for crisp edges */
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new OutputPass());
+const finish = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, res: { value: new THREE.Vector2(1, 1) } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float time; uniform vec2 res; varying vec2 vUv;
+    float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453); }
+    void main(){
+      vec4 c = texture2D(tDiffuse, vUv);
+      vec2 q = vUv - .5; q.x *= res.x / res.y;
+      c.rgb *= mix(.9, 1., smoothstep(1.05, .25, length(q)));
+      c.rgb += (h(vUv * res + fract(time) * 100.) - .5) * .015;
+      gl_FragColor = c;
+    }`,
+});
+composer.addPass(finish);
+
+/* ================= interaction: sign on the tablet ================= */
+let idleUntil = 0;
+controls.addEventListener('start', () => { idleUntil = Infinity; document.getElementById('hint').style.opacity = 0; });
+controls.addEventListener('end', () => { idleUntil = clockNow() + 4; });
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let drawing = false, lastPt = null;
+function hitTablet(e) {
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const hit = ray.intersectObject(tablet.screen)[0];
+  if (!hit) return null;
+  const x = hit.uv.x * TW, y = (1 - hit.uv.y) * TH;
+  return (y > 220 && y < 600 && x > 110 && x < TW - 110) ? { x, y } : null;
+}
+renderer.domElement.addEventListener('pointerdown', e => {
+  const p = hitTablet(e); if (!p) return;
+  if (clockNow() - lastInk > 6) userStrokes = [];
+  controls.enabled = false; drawing = true;
+  renderer.domElement.setPointerCapture(e.pointerId);
+  lastPt = { ...p, time: performance.now() };
+  userStrokes.push([{ ...p, p: .5 }]);
+  lastInk = clockNow();
+});
+renderer.domElement.addEventListener('pointermove', e => {
+  if (!drawing) { renderer.domElement.style.cursor = hitTablet(e) ? 'crosshair' : 'grab'; return; }
+  const p = hitTablet(e); if (!p) return;
+  const now = performance.now(), d = Math.hypot(p.x - lastPt.x, p.y - lastPt.y), sp = d / Math.max(1, now - lastPt.time);
+  userStrokes.at(-1).push({ ...p, p: Math.max(.12, Math.min(1, 1.1 - sp * .4)) });
+  lastPt = { ...p, time: now }; lastInk = clockNow();
+});
+const endDraw = () => { if (drawing) { drawing = false; controls.enabled = true; } };
+renderer.domElement.addEventListener('pointerup', endDraw);
+renderer.domElement.addEventListener('pointercancel', endDraw);
+
+function fit() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h); composer.setSize(w, h);
+  finish.uniforms.res.value.set(w, h);
+  camera.aspect = w / h;
+  camera.fov = w / h < .9 ? 48 : 30;
+  camera.updateProjectionMatrix();
+  const visH = 2 * CODE_DIST * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), visW = visH * camera.aspect;
+  const bandH = visH, bandW = bandH * (CODE_W / CODE_H);
+  tech.scale.set(bandW, bandH, 1);
+  tech.position.set(visW / 2 - bandW / 2 - visW * .02, 0, -CODE_DIST);
+}
+addEventListener('resize', fit); fit();
+
+/* ================= loop ================= */
+const clock = new THREE.Clock();
+const clockNow = () => clock.getElapsedTime();
+let prev = 0, introT = 0, frameN = 0, codeLast = 0;
+const sph = new THREE.Spherical(), tmp = new THREE.Vector3();
+
+function frame() {
+  const T = clockNow(); prev = T;
+  if (userStrokes.length && T - lastInk > 6 && !drawing) userStrokes = [];
+
+  frameN++;
+  if (frameN % 2 === 0) {
+    if (frameN % 4 === 0) { drawCode(T, Math.min(.2, T - codeLast)); codeLast = T; codeTex.needsUpdate = true; }
+    tabletUI(tablet.ctx, T); roundScreen(tablet.ctx, TW, TH, 54); tablet.tex.needsUpdate = true;
+    phoneUI(phone.ctx, T); island(phone.ctx); roundScreen(phone.ctx, PW, PH, 78); phone.tex.needsUpdate = true;
+  }
+
+  const it = eInOut((T - introT) / 3.2);
+  if (it < 1) camera.position.lerpVectors(START, HOME, it);
+  else if (T > idleUntil && !reduced) {
+    tmp.copy(camera.position).sub(controls.target); sph.setFromVector3(tmp);
+    sph.theta += (.02 + Math.sin(T * .12) * .16 - sph.theta) * .01;
+    sph.phi += (1.44 + Math.sin(T * .09) * .04 - sph.phi) * .01;
+    tmp.setFromSpherical(sph); camera.position.copy(controls.target).add(tmp);
+  }
+  if (it >= 1 && idleUntil === 0) idleUntil = T;
+
+  if (!reduced) {
+    mesh.rotation.y = Math.sin(T * .05) * .06; mesh.position.y = Math.sin(T * .12) * .08;
+    tablet.group.position.y = TPOS.y + Math.sin(T * .45) * .035;
+    phone.group.position.y = PPOS.y + Math.sin(T * .45 + 1.7) * .04;
+  }
+
+  controls.update();
+  if (frameN % 2 === 0) renderContactShadow();
+  finish.uniforms.time.value = T;
+  composer.render();
+}
+
+/* Run only while the page holding it says it is on screen */
+addEventListener('message', (e) => {
+  if (e.data && typeof e.data.fhVisible === 'boolean') renderer.setAnimationLoop(e.data.fhVisible ? frame : null);
+});
+introT = clockNow();
+frameN = 1;
+frame();
+stage.classList.add('on');
+renderer.setAnimationLoop(frame);
+</script>
+</body>
+</html>

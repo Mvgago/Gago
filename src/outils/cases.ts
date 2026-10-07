@@ -38,8 +38,8 @@ import smMascot from "../assets/peojects/smart/smart.png";
 import smScreens from "../assets/peojects/smart/smart (1).png";
 import smPrint from "../assets/peojects/smart/smart (2).jpg";
 import smBrochure from "../assets/peojects/smart/smart-brochure.jpg";
-import smDetailGuides from "../assets/peojects/smart/smart-detail-guides.jpg";
 import smDetailLogo from "../assets/peojects/smart/smart-detail-logo.jpg";
+import smDetailGuides from "../assets/peojects/smart/smart-detail-guides.jpg";
 
 /**
  * The selected projects: a few, chosen and told the same way — one image to
@@ -60,7 +60,9 @@ type Text = Record<Lang, string>;
 export type CaseImage = {
   src: string;
   /** In place of the image: the interactive 3D stand */
-  viewer?: "stand";
+  viewer?: "stand" | "social" | "devices";
+  /** For the social viewer: the posts shown in the phone */
+  tiles?: string[];
   /** In place of the image: a silent looping film (public/video), at its own speed */
   video?: string;
   videoSpeed?: number;
@@ -330,12 +332,6 @@ export const cases: Case[] = [
         },
       },
     ],
-    cta: {
-      en: "A similar project? Let's talk",
-      es: "¿Un proyecto parecido? Hablemos",
-      fr: "Un projet similaire ? Parlons-en",
-      de: "Ein ähnliches Projekt? Sprechen wir darüber",
-    },
     cover: smMascot,
     // The first screen is the stand, to turn round right away
     headerViewer: "stand",
@@ -344,6 +340,8 @@ export const cases: Case[] = [
     // Three pairs of the same height: the presentation beside the product sheet, then
     // each printed piece beside a close-up of it
     images: [
+      // Right under the stand, wide: a concept piece, the product told in an interactive 3D scene
+      { src: "", viewer: "devices" },
       // The character in motion (slowed to half with interpolated frames, looped forward
       // and back, at its own calm pace) beside the presentation
       { src: smScreens, pair: true },
