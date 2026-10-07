@@ -21,9 +21,14 @@ import buendiaLaptop from "../assets/peojects/buendia/buendia-laptop-web.jpg";
 import buendiaBook from "../assets/peojects/buendia/buendia-book-web.jpg";
 import buendiaCatalogue from "../assets/peojects/buendia/buendia-catalogue-web.jpg";
 import buendiaSocial from "../assets/peojects/buendia/buendia-social-web.jpg";import sapWeb from "../assets/peojects/saphire/saphire.jpg";
+import sapKey from "../assets/peojects/saphire/saphire-key.jpg";
+import sapAxo from "../assets/peojects/saphire/saphire-axo.jpg";
+import sapPlan from "../assets/peojects/saphire/saphire-plan.jpg";
+import sapSea from "../assets/peojects/saphire/saphire-sea.jpg";
+import sapClub from "../assets/peojects/saphire/saphire-club.jpg";
+import sapTerrace from "../assets/peojects/saphire/saphire-terrace.jpg";
 import sapRender from "../assets/peojects/saphire/saphire (9).jpg";
 import sapAerial from "../assets/peojects/saphire/saphire (1).jpg";
-import sapPalette from "../assets/peojects/saphire/saphire (2).jpg";
 import sapMark from "../assets/peojects/saphire/saphire (4).jpg";
 import sapColours from "../assets/peojects/saphire/saphire (6).jpg";
 import sapType from "../assets/peojects/saphire/saphire (7).jpg";
@@ -43,24 +48,36 @@ import smBanner from "../assets/peojects/smart/smart (1).jpg";
  * `pair: true` on an image sets it beside the next one, half width each.
  */
 
-export type Discipline = "identity" | "web" | "3d" | "cover" | "campaign";
+export type Discipline = "identity" | "web" | "direction" | "video" | "presentation" | "3d" | "cover" | "campaign";
 
 type Text = Record<Lang, string>;
 
-export type CaseImage = { src: string; pair?: boolean };
+/**
+ * pair: shares a row with the next image. fit "contain": shown whole on white instead
+ * of cropped to the row's shape (for pieces on a white ground: type, colours, drawings)
+ */
+export type CaseImage = { src: string; pair?: boolean; fit?: "contain" };
 
 export type Case = {
   slug: string;
   title: string;
   /** Who it was for, or what kind of project it is */
   client: Text;
+  /** When set, the facts name the sector instead of the client: the case reads as an offer to others */
+  sector?: Text;
+  /** A closing line inviting a similar project, linked to the contact */
+  cta?: Text;
+  /** The services in detail: each discipline with what was actually delivered */
+  services?: { d: Discipline; detail: Text }[];
   year?: string;
   disciplines: Discipline[];
   /** The one sentence that opens the case */
   lead: Text;
-  /** A short paragraph on what was done */
-  body: Text;
+  /** A short paragraph on what was done (left out when the lead already tells it) */
+  body?: Text;
   cover: string;
+  /** A film to open the case with instead of the cover (a file in public/video) */
+  video?: string;
   /** "contain": show the whole cover on a pale mount (square or small covers) */
   coverFit?: "contain";
   /** A calm image for the index strip, with no text or interface in it (defaults to the cover) */
@@ -73,10 +90,12 @@ export type Case = {
 };
 
 /** The labels of the case pages */
-export const CASE_UI: Record<"client" | "year" | "scope" | "next" | "all" | "count", Text> = {
+export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "all" | "count", Text> = {
   client: { en: "for", es: "para", fr: "pour", de: "für" },
+  sector: { en: "sector", es: "sector", fr: "secteur", de: "branche" },
   year: { en: "year", es: "año", fr: "année", de: "jahr" },
-  scope: { en: "scope", es: "alcance", fr: "périmètre", de: "umfang" },
+  // Named as what can be hired, not what was done: each case reads as an offer
+  scope: { en: "services", es: "servicios", fr: "services", de: "leistungen" },
   next: { en: "next project", es: "siguiente proyecto", fr: "projet suivant", de: "nächstes projekt" },
   all: { en: "all projects", es: "todos los proyectos", fr: "tous les projets", de: "alle projekte" },
   count: { en: "projects", es: "proyectos", fr: "projets", de: "projekte" },
@@ -85,6 +104,9 @@ export const CASE_UI: Record<"client" | "year" | "scope" | "next" | "all" | "cou
 export const DISCIPLINE: Record<Discipline, Text> = {
   identity: { en: "brand identity", es: "identidad de marca", fr: "identité de marque", de: "markenidentität" },
   web: { en: "web", es: "web", fr: "web", de: "web" },
+  direction: { en: "art direction", es: "dirección de arte", fr: "direction artistique", de: "art direction" },
+  video: { en: "video", es: "vídeo", fr: "vidéo", de: "video" },
+  presentation: { en: "sales presentation", es: "presentación comercial", fr: "présentation commerciale", de: "verkaufspräsentation" },
   "3d": { en: "3d imagery", es: "visualización 3d", fr: "visualisation 3d", de: "3d-visualisierung" },
   cover: { en: "cover art", es: "portada", fr: "pochette", de: "cover" },
   campaign: { en: "campaigns", es: "campañas", fr: "campagnes", de: "kampagnen" },
@@ -136,30 +158,86 @@ export const cases: Case[] = [
     slug: "sapphire",
     title: "The Sapphire",
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
-    disciplines: ["identity", "web", "3d"],
+    disciplines: ["identity", "web", "direction", "video", "presentation"],
+    sector: { en: "residential development", es: "promoción residencial", fr: "programme résidentiel", de: "wohnbauprojekt" },
+    // The problem first, so anyone selling something not yet built sees themselves in it
     lead: {
-      en: "Luxury residential development.",
-      es: "Promoción residencial de lujo.",
-      fr: "Programme résidentiel de luxe.",
-      de: "Luxus-Wohnprojekt.",
+      en: "Residential complex on the Costa del Sol.",
+      es: "Complejo residencial en la Costa del Sol.",
+      fr: "Complexe résidentiel sur la Costa del Sol.",
+      de: "Wohnanlage an der Costa del Sol.",
     },
-    body: {
-      en: "Brand identity, website and art direction of the 3D imagery for an exclusive development: light, clarity and a timeless, refined character.",
-      es: "Identidad de marca, web y dirección de arte de la visualización 3D para una promoción exclusiva: luz, claridad y un carácter refinado y atemporal.",
-      fr: "Identité de marque, site web et direction artistique des visuels 3D pour un programme exclusif : lumière, clarté et un caractère raffiné et intemporel.",
-      de: "Markenidentität, Website und Art Direction der 3D-Visualisierung für ein exklusives Projekt: Licht, Klarheit und ein zeitlos feiner Charakter.",
+    services: [
+      {
+        d: "identity",
+        detail: {
+          en: "logo, palette, typography and stationery",
+          es: "logotipo, paleta, tipografía y papelería",
+          fr: "logo, palette, typographie et papeterie",
+          de: "logo, farbpalette, typografie und geschäftsausstattung",
+        },
+      },
+      {
+        d: "web",
+        detail: { en: "design and development", es: "diseño y desarrollo", fr: "design et développement", de: "design und entwicklung" },
+      },
+      {
+        d: "direction",
+        detail: {
+          en: "renders, billboards and campaign",
+          es: "renders, vallas y campaña",
+          fr: "rendus, affichage et campagne",
+          de: "renderings, plakate und kampagne",
+        },
+      },
+      {
+        d: "video",
+        detail: {
+          en: "script, editing and motion",
+          es: "guion, montaje y motion",
+          fr: "scénario, montage et motion",
+          de: "skript, schnitt und motion",
+        },
+      },
+      {
+        d: "presentation",
+        detail: {
+          en: "interactive, animated floor plans",
+          es: "planos interactivos y animados",
+          fr: "plans interactifs et animés",
+          de: "interaktive, animierte grundrisse",
+        },
+      },
+    ],
+    cta: {
+      en: "A project that doesn't exist yet? Let's talk",
+      es: "¿Un proyecto que aún no existe? Hablemos",
+      fr: "Un projet qui n'existe pas encore ? Parlons-en",
+      de: "Ein Projekt, das es noch nicht gibt? Sprechen wir darüber",
     },
     cover: sapRender,
+    video: "/video/the-sapphire.mp4",
     coverFocus: "50% 62%",
+    // A rhythm, not a scroll of full screens: only two pieces wide, the rest in pairs of
+    // matching proportions (the web mockup is soft at full width, sharp at half)
     images: [
-      { src: sapWeb },
-      { src: sapMark },
-      { src: sapPalette },
-      { src: sapColours, pair: true },
-      { src: sapType },
+      // `pair` goes on the first of the two that share a row
+      // The system beside the brand on the building: from the drawing to the place
+      { src: sapMark, pair: true, fit: "contain" },
+      { src: sapKey },
+      { src: sapWeb, pair: true },
       { src: sapStationery },
+      { src: sapType, pair: true, fit: "contain" },
+      { src: sapColours, fit: "contain" },
+      // The sales presentation: the site in axonometry, then a plan set in the brand
+      { src: sapAxo, pair: true, fit: "contain" },
+      { src: sapPlan, fit: "contain" },
       { src: sapBillboard, pair: true },
       { src: sapAerial },
+      // The terrace, the building from the garden, then the sea: wide, to close
+      { src: sapTerrace },
+      { src: sapClub },
+      { src: sapSea },
     ],
   },
   {

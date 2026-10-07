@@ -1,4 +1,5 @@
-import React, { Suspense, lazy, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
@@ -119,6 +120,16 @@ export const AboutPage: React.FC = () => {
   const { t, lang } = useI18n();
   const s = STUDIO[lang];
   const lenis = useLenis();
+  const { hash } = useLocation();
+  // Arriving from a "let's talk" link: glide down to the contact once the page has come in
+  useEffect(() => {
+    if (hash !== "#contact") return;
+    const id = window.setTimeout(() => {
+      const target = document.getElementById("contact");
+      if (target) scrollToTarget(lenis, target, { offset: -96 });
+    }, 700);
+    return () => window.clearTimeout(id);
+  }, [hash, lenis]);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const set = (key: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [key]: v }));
 
