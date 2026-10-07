@@ -112,6 +112,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   controls.rotateSpeed = 0.6;
   controls.enableZoom = false; // the wheel scrolls the page
   controls.enablePan = false;
+  // Phones: a vertical swipe scrolls the page as anywhere else; a sideways drag turns the stand
+  renderer.domElement.style.touchAction = "pan-y";
   controls.maxPolarAngle = Math.PI * 0.48;
   controls.autoRotate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   controls.autoRotateSpeed = 0.22;
@@ -585,7 +587,7 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
     api.current?.go(v);
   };
   const button = (active: boolean) =>
-    `relative py-1 transition-colors duration-500 ${active ? "text-platinum" : "text-platinum/55 hover:text-platinum/85"}`;
+    `relative shrink-0 whitespace-nowrap py-1 transition-colors duration-500 ${active ? "text-platinum" : "text-platinum/55 hover:text-platinum/85"}`;
 
   return (
     <div className={`relative overflow-hidden ${className}`} style={{ background: BG }}>
@@ -600,7 +602,8 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
       )}
       <div ref={host} className={`absolute inset-0 cursor-grab transition-opacity duration-700 active:cursor-grabbing ${ready ? "opacity-100" : "opacity-0"}`} />
       {label && <p className={`${SMALL} pointer-events-none absolute left-4 top-3 normal-case text-[#2f3a3d]/70`}>{label}</p>}
-      <nav aria-label="Vistas" className={`${SMALL} absolute inset-x-0 bottom-0 flex flex-wrap justify-end gap-x-5 gap-y-1 px-4 pb-3 pt-8`} style={{ background: "linear-gradient(to top, rgba(28,33,36,0.55), transparent)" }}>
+      <nav aria-label="Vistas" // One line always: tighter on phones, scrolling sideways if it still doesn't fit
+        className={`${SMALL} absolute inset-x-0 bottom-0 flex gap-x-3 overflow-x-auto [&>*:first-child]:ml-auto px-3 pb-2.5 pt-8 [scrollbar-width:none] sm:gap-x-5 sm:px-4 sm:pb-3 [&::-webkit-scrollbar]:hidden`} style={{ background: "linear-gradient(to top, rgba(28,33,36,0.55), transparent)" }}>
         {(Object.keys(VIEWS) as View[]).map((v) => (
           <button key={v} type="button" onClick={() => go(v)} aria-pressed={view === v} className={button(view === v)}>
             {LABELS[v]}

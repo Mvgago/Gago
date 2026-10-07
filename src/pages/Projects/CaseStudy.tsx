@@ -110,7 +110,9 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
     initial="hidden"
     animate="shown"
     custom={3}
-    className={`${SMALL} grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 text-graphite ${className}`}
+    // Phones: each label above its value, so the services get the full width;
+    // wider screens: labels in their own column
+    className={`${SMALL} grid grid-cols-1 gap-y-1 text-graphite sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-3 [&>dd]:mb-3 sm:[&>dd]:mb-0 ${className}`}
   >
     <dt>{c.sector ? CASE_UI.sector[lang] : CASE_UI.client[lang]}</dt>
     <dd className="text-ink">{(c.sector ?? c.client)[lang]}</dd>
@@ -178,21 +180,23 @@ export const CaseStudyPage: React.FC = () => {
         animate="shown"
         className={`${ACTION} mb-12 flex items-center justify-between gap-6 text-ink md:mb-16`}
       >
-        <Link to="/projects" className="group inline-flex items-center gap-3 justify-self-start opacity-80 transition-opacity duration-500 hover:opacity-100">
+        {/* Phones: one short word each side, on one line */}
+        <Link to="/projects" className="group inline-flex items-center gap-3 whitespace-nowrap justify-self-start opacity-80 transition-opacity duration-500 hover:opacity-100">
           <Arrow back />
-          {CASE_UI.all[lang]}
+          <span className="hidden sm:inline">{CASE_UI.all[lang]}</span>
+          <span className="sm:hidden">{CASE_UI.count[lang]}</span>
         </Link>
-        <Link to={`/projects/${next.slug}`} className="group inline-flex items-center gap-3 justify-self-end opacity-80 transition-opacity duration-500 hover:opacity-100">
+        <Link to={`/projects/${next.slug}`} className="group inline-flex items-center gap-3 whitespace-nowrap justify-self-end opacity-80 transition-opacity duration-500 hover:opacity-100">
           <span className="hidden sm:inline">{next.title.toLowerCase()}</span>
-          <span className="sm:hidden">{CASE_UI.next[lang]}</span>
+          <span className="sm:hidden">{CASE_UI.nextShort[lang]}</span>
           <Arrow />
         </Link>
       </motion.nav>
       {/* Side by side, the first screen holds everything, whole and still: the words and
           the services on the left, the film or the cover on the right, framed, small enough
           to stay sharp. Otherwise the words come first and the cover follows at full width. */}
-      <header className={`grid gap-y-10 md:grid-cols-12 md:items-end md:gap-x-8 ${side ? "lg:gap-x-12" : ""}`}>
-        <div className={side ? "md:col-span-5" : "md:col-span-7"}>
+      <header className={`grid gap-y-10 ${side ? "lg:grid-cols-12 lg:items-end lg:gap-x-12" : "md:grid-cols-12 md:items-end md:gap-x-8"}`}>
+        <div className={side ? "lg:col-span-5" : "md:col-span-7"}>
           <motion.h1
             variants={rise}
             initial="hidden"
@@ -216,7 +220,7 @@ export const CaseStudyPage: React.FC = () => {
 
         {side ? (
           <motion.figure
-            className="-mx-4 overflow-hidden sm:-mx-6 md:col-span-7 md:ml-0 md:-mr-8"
+            className="-mx-4 overflow-hidden sm:-mx-6 md:-mx-8 lg:col-span-7 lg:ml-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.25, ease: EASE_HAUS } }}
           >

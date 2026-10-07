@@ -110,7 +110,8 @@ export type Case = {
 };
 
 /** The labels of the case pages */
-export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "all" | "count" | "recreation" | "view3d", Text> = {
+export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "nextShort" | "all" | "count" | "recreation" | "view3d", Text> = {
+  nextShort: { en: "next", es: "siguiente", fr: "suivant", de: "weiter" },
   recreation: {
     en: "3D recreation · Congress stand",
     es: "Recreación 3D · Stand de congreso",
