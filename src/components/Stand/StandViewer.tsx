@@ -34,8 +34,8 @@ const VIEWS: Record<View, { pos: [number, number, number]; look: [number, number
 };
 
 const LABELS: Record<View, string> = {
-  general: "vista general",
-  pasillo: "desde el pasillo",
+  general: "general",
+  pasillo: "pasillo",
   mostrador: "mostrador",
   pantalla: "pantalla",
 };

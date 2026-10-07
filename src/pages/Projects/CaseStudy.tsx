@@ -61,7 +61,9 @@ const Film: React.FC<{ src: string; title: string; ratio?: string; speed?: numbe
         e.currentTarget.defaultPlaybackRate = speed;
         e.currentTarget.playbackRate = speed;
       }}
+      // Phones may only start loading once playing: either signal shows it
       onLoadedData={() => setReady(true)}
+      onPlaying={() => setReady(true)}
       // Its own proportion, reserved before it loads, so nothing around it moves
       style={{ aspectRatio: ratio }}
       className={`block max-h-[88vh] w-full object-cover transition-opacity duration-700 ${
@@ -126,11 +128,14 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
     {c.services ? (
       // Each service on its own line, with what was delivered beside it
       <dd>
-        <ul className="flex flex-col gap-1.5">
+        {/* Phones: the service on its own line, what was delivered beneath it in grey;
+            wider screens: both on one line, joined by a dash */}
+        <ul className="flex flex-col gap-3 sm:gap-1.5">
           {c.services.map((s) => (
             <li key={s.d}>
-              <span className="text-ink">{DISCIPLINE[s.d][lang]}</span>
-              <span className="text-graphite/80"> — {s.detail[lang]}</span>
+              <span className="block text-ink sm:inline">{DISCIPLINE[s.d][lang]}</span>
+              <span className="hidden text-graphite/80 sm:inline"> — </span>
+              <span className="mt-0.5 block text-graphite/75 sm:mt-0 sm:inline sm:text-graphite/80">{s.detail[lang]}</span>
             </li>
           ))}
         </ul>

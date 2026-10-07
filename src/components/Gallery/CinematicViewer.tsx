@@ -153,6 +153,22 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
   const videoRef = useRef<HTMLVideoElement>(null);
   const [filmReady, setFilmReady] = React.useState(false);
   const [frameReady, setFrameReady] = React.useState(false);
+  const [filmFailed, setFilmFailed] = React.useState(false);
+
+  // Phones (iOS above all) don't load a film until asked to play it: ask straight away.
+  // If nothing is playing after a few seconds, fall back to the still.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!video || !v) return;
+    setFilmFailed(false);
+    v.defaultPlaybackRate = FILM_SPEED;
+    v.playbackRate = FILM_SPEED;
+    void v.play().catch(() => setFilmFailed(true));
+    const id = window.setTimeout(() => {
+      if (v.paused || v.readyState < 2) setFilmFailed(true);
+    }, 3500);
+    return () => window.clearTimeout(id);
+  }, [video]);
 
   // The camera's motion, passed on to the HUD and mirrored on the film as a transform
   const handleMotion = React.useCallback(
@@ -213,6 +229,11 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
       {/* The film is drawn by the browser itself, not resampled through WebGL: its own
           high-quality scaler keeps it as sharp as the file allows. It follows the same
           damped camera motion only through the HUD: the film itself stays pixel-exact. */}
+      {/* Fallback: if the phone won't play the film (low-power mode, data saver), the
+          project's picture shows instead of an empty screen */}
+      {video && filmFailed && (
+        <img src={image} alt="" aria-hidden className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+      )}
       {video && (
         <video
           ref={videoRef}
@@ -221,6 +242,7 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
           muted
           loop
           playsInline
+          autoPlay
           preload="auto"
           // Start only once enough is buffered to play through, at its final speed from
           // the first frame (changing speed mid-play makes it stutter), then lift the cloud
@@ -231,7 +253,10 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
             v.playbackRate = FILM_SPEED;
             if (v.paused) void v.play().catch(() => {});
           }}
-          onPlaying={() => window.setTimeout(() => setFilmReady(true), 120)}
+          onPlaying={() => {
+            setFrameReady(true);
+            window.setTimeout(() => setFilmReady(true), 120);
+          }}
           // Shown from its own first frame (no poster: a still framed differently made the
           // picture jump when the film took over), so it is in place from the first instant
           onLoadedData={() => setFrameReady(true)}
