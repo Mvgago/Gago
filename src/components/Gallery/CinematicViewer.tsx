@@ -232,9 +232,6 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
             if (v.paused) void v.play().catch(() => {});
           }}
           onPlaying={() => window.setTimeout(() => setFilmReady(true), 120)}
-          // A fixed grade, not animated: a touch darker and firmer, so the file's own
-          // softness reads as atmosphere rather than as low resolution
-          style={{ filter: "brightness(0.8) contrast(1.08) saturate(0.9)" }}
           // Shown from its own first frame (no poster: a still framed differently made the
           // picture jump when the film took over), so it is in place from the first instant
           onLoadedData={() => setFrameReady(true)}
