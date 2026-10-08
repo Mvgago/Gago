@@ -4,7 +4,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { Reflector } from "three/examples/jsm/objects/Reflector.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
@@ -20,15 +19,16 @@ import { SMALL } from "../../lib/type";
 const ORANGE = "#f39200";
 const GRAPHITE = "#2b2f33";
 const BG = "#a9b8ba"; // the blue-grey of the presentation beside it
-const BG_TOP = "#9baaac";
-const BG_BOTTOM = "#c1cfd1";
+// The far end of the hall, in shadow: the same blue-grey, deeper, so the room has a back to it
+const BG_FAR = "#cfd5d7";
 const ASSETS = "/concepts/smarthc-stand";
 
 type View = "general" | "pasillo" | "mostrador" | "pantalla";
 type Api = { go: (v: View) => void; spin: (on: boolean) => void };
 
 const VIEWS: Record<View, { pos: [number, number, number]; look: [number, number, number] }> = {
-  general: { pos: [7.8, 3.1, 8.8], look: [0, 1.45, 0] },
+  // Turned about 22° off the front: the open side still shows, but the stand faces you
+  general: { pos: [4.4, 3.1, 10.9], look: [0, 1.45, 0] },
   pasillo: { pos: [-3.6, 1.65, 8.4], look: [0.4, 1.55, -0.4] },
   mostrador: { pos: [1.9, 1.55, 4.6], look: [0.55, 1.0, 0.75] },
   pantalla: { pos: [1.1, 1.8, 1.9], look: [1.1, 1.8, -2] },
@@ -81,22 +81,10 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   const aniso = renderer.capabilities.getMaxAnisotropy();
 
   const scene = new THREE.Scene();
-  {
-    const c = document.createElement("canvas");
-    c.width = 2;
-    c.height = 256;
-    const x = c.getContext("2d")!;
-    const g = x.createLinearGradient(0, 0, 0, 256);
-    g.addColorStop(0, BG_TOP);
-    g.addColorStop(1, BG_BOTTOM);
-    x.fillStyle = g;
-    x.fillRect(0, 0, 2, 256);
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    scene.background = t;
-  }
-  // Fog only far off, where the hall meets the background: the stand itself stays clear
-  scene.fog = new THREE.Fog(BG, 26, 60);
+  // Behind everything, the hall's far end in shadow; floor and ceiling fade into it
+  scene.background = new THREE.Color(BG_FAR);
+  // The far walls sink into shade with distance; the stand itself stays clear
+  scene.fog = new THREE.Fog(BG_FAR, 20, 70);
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
   scene.environmentIntensity = 0.35;
@@ -430,7 +418,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     platform: new THREE.MeshPhysicalMaterial({ color: "#25292c", roughness: 0.22, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.08 }),
     graphite: new THREE.MeshStandardMaterial({ color: "#2e3236", roughness: 0.62 }),
     graphiteGloss: new THREE.MeshPhysicalMaterial({ color: GRAPHITE, roughness: 0.25, clearcoat: 0.6 }),
-    white: new THREE.MeshPhysicalMaterial({ color: "#f1f3f4", roughness: 0.28, clearcoat: 0.8, clearcoatRoughness: 0.15 }),
+    // satin white, as real furniture is: lit by a spot it reads as white, not as a light
+    white: new THREE.MeshStandardMaterial({ color: "#bfc3c4", roughness: 0.6 }),
     // The band over the stand, in the brand's orange
     canopy: new THREE.MeshPhysicalMaterial({ color: ORANGE, roughness: 0.38, clearcoat: 0.6, clearcoatRoughness: 0.2 }),
     ledOrange: new THREE.MeshStandardMaterial({ color: "#000", emissive: ORANGE, emissiveIntensity: 4 }),
@@ -439,7 +428,6 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     glass: new THREE.MeshPhysicalMaterial({ color: "#e8eef1", roughness: 0.06, transmission: 0.92, thickness: 0.02, ior: 1.5, transparent: true }),
     frost: new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.6, transparent: true, opacity: 0.55 }),
     counter: new THREE.MeshPhysicalMaterial({ color: "#f4f6f7", roughness: 0.38, emissive: ORANGE, emissiveIntensity: 0.08, clearcoat: 0.5 }),
-    floor: new THREE.MeshStandardMaterial({ color: "#aebcbe", roughness: 0.4, metalness: 0.05, transparent: true, opacity: 0.86 }),
     concrete: new THREE.MeshStandardMaterial({ map: concreteTex(1536, 896, 384, [124, 133, 138]), roughness: 0.88 }),
     concreteSide: new THREE.MeshStandardMaterial({ map: concreteTex(1024, 896, 384, [150, 158, 162]), roughness: 0.88 }),
   };
@@ -496,28 +484,190 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   };
 
   /* ---------- hall and stand: 6 × 4 m corner stand, open to the front and the right ---------- */
-  const mirror = new Reflector(new THREE.PlaneGeometry(90, 90), { clipBias: 0.003, textureWidth: 512, textureHeight: 512, color: 0x9aa3a8 });
-  mirror.rotation.x = -Math.PI / 2;
-  scene.add(mirror);
-  const hall = new THREE.Mesh(new THREE.PlaneGeometry(90, 90), m.floor);
+  /* The hall: an exhibition pavilion, empty but for this stand. A closed nave of 60 × 50 m and
+     12 m high: polished concrete with its joints, a concrete plinth and metal cladding on the
+     walls, steel columns, lattice trusses with high-bay lamps, an exit sign. The far walls sink
+     into shade with distance, so the stand stands in a real room with depth behind it. */
+  const HX = 30, HZ0 = -22, HZ1 = 28, HH = 12;
+  const HW = HX * 2, HD = HZ1 - HZ0, HCZ = (HZ0 + HZ1) / 2;
+  // The hall is carpeted, as fairs are: a blue-grey needle-felt, its fibre a fine, even
+  // speckle that tiles seamlessly, so no grid shows
+  const carpet = (() => {
+    const S = 512, [c, x] = canvas(S, S);
+    x.fillStyle = "#7d8c94";
+    x.fillRect(0, 0, S, S);
+    const img = x.getImageData(0, 0, S, S), d = img.data;
+    for (let k = 0; k < d.length; k += 4) {
+      const n = (Math.random() - 0.5) * 36 + (Math.random() > 0.985 ? 24 : 0);
+      d[k] += n * 0.92; d[k + 1] += n * 0.97; d[k + 2] += n;
+    }
+    x.putImageData(img, 0, 0);
+    const t = tex(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(HW / 4, HD / 4);
+    return t;
+  })();
+  const hall = new THREE.Mesh(new THREE.PlaneGeometry(HW, HD), new THREE.MeshStandardMaterial({ map: carpet, roughness: 1, metalness: 0 }));
   hall.rotation.x = -Math.PI / 2;
-  hall.position.y = 0.002;
+  hall.position.set(0, 0.002, HCZ);
   hall.receiveShadow = true;
   scene.add(hall);
-  const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(90, 90), new THREE.MeshStandardMaterial({ color: BG_TOP, roughness: 1 }));
+
+  // Walls of a congress venue, not a shed: large smooth panels in a warm light grey over a
+  // darker plinth, and warm wall-washers under the roof drawing soft arcs of light down them
+  const cladding = (len: number) => {
+    const PX = 24, W = Math.round(len * PX), H = HH * PX, plinth = H - 2.4 * PX;
+    const [c, x] = canvas(W, H);
+    const g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#d3d6d7");
+    g.addColorStop(plinth / H, "#dfe1e1");
+    g.addColorStop(plinth / H, "#c4c7c7");
+    g.addColorStop(1, "#bcbfbf");
+    x.fillStyle = g;
+    x.fillRect(0, 0, W, H);
+    // the washers' arcs, every 5 m
+    for (let px = 2.5 * PX; px < W; px += 5 * PX) {
+      x.save();
+      x.translate(px, 0);
+      x.scale(1, 1.9);
+      const r = 2.6 * PX, wg = x.createRadialGradient(0, 0, 0, 0, 0, r);
+      wg.addColorStop(0, "rgba(255,228,196,0.42)");
+      wg.addColorStop(0.55, "rgba(255,228,196,0.14)");
+      wg.addColorStop(1, "rgba(255,228,196,0)");
+      x.fillStyle = wg;
+      x.fillRect(-r, 0, r * 2, r);
+      x.restore();
+    }
+    // panel joints: every 3 m across, and one course line at 6 m
+    x.fillStyle = "rgba(45,48,48,0.28)";
+    for (let px = 0; px < W; px += 3 * PX) x.fillRect(px, 0, 1, plinth);
+    x.fillRect(0, H - 6 * PX, W, 1);
+    x.fillStyle = "rgba(30,32,32,0.45)";
+    x.fillRect(0, plinth, W, 2);
+    return tex(c);
+  };
+  const wall = (w: number, x: number, z: number, rotY: number) => {
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(w, HH), new THREE.MeshStandardMaterial({ map: cladding(w), roughness: 0.9 }));
+    p.position.set(x, HH / 2, z);
+    p.rotation.y = rotY;
+    scene.add(p);
+  };
+  wall(HW, 0, HZ0, 0); // back
+  wall(HW, 0, HZ1, Math.PI); // behind the visitor
+  wall(HD, -HX, HCZ, Math.PI / 2); // left
+  wall(HD, HX, HCZ, -Math.PI / 2); // right
+  const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(HW, HD), new THREE.MeshStandardMaterial({ color: "#d5dadb", roughness: 1 }));
   ceiling.rotation.x = Math.PI / 2;
-  ceiling.position.y = 12;
+  ceiling.position.set(0, HH, HCZ);
   scene.add(ceiling);
-  const truss = new THREE.MeshStandardMaterial({ color: "#6d7a7d", roughness: 0.6, metalness: 0.5 });
-  for (let z = -30; z <= 30; z += 6) box(80, 0.35, 0.35, truss, 0, 10.6, z, false);
-  const lamp = new THREE.MeshStandardMaterial({ color: "#000", emissive: "#eef3f6", emissiveIntensity: 2.5 });
-  for (let x = -30; x <= 30; x += 7.5)
-    for (let z = -30; z <= 30; z += 6) {
-      const l = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.1, 20), lamp);
-      l.position.set(x, 10.35, z);
-      scene.add(l);
+
+  // steel columns along the walls, every 10 m
+  const steel = new THREE.MeshStandardMaterial({ color: "#aab2b5", roughness: 0.5, metalness: 0.4 });
+  for (let z = HZ0 + 5; z < HZ1; z += 10) {
+    box(0.6, HH, 0.6, steel, -HX + 0.3, HH / 2, z, false);
+    box(0.6, HH, 0.6, steel, HX - 0.3, HH / 2, z, false);
+  }
+  for (let x = -HX + 10; x < HX; x += 10) box(0.6, HH, 0.6, steel, x, HH / 2, HZ0 + 0.3, false);
+
+  // lattice trusses across the hall every 8 m: two chords and a zigzag web, as one instanced set
+  const trussMat = new THREE.MeshStandardMaterial({ color: "#a7b0b3", roughness: 0.55, metalness: 0.4 });
+  const TOP = HH - 0.5, BOT = HH - 1.7, STEP = 1.2;
+  const trussZ: number[] = [];
+  for (let z = HZ0 + 4; z < HZ1; z += 8) trussZ.push(z);
+  const webCount = Math.ceil(HW / STEP);
+  const web = new THREE.InstancedMesh(new THREE.BoxGeometry(0.07, 1, 0.07), trussMat, trussZ.length * webCount);
+  const tmpM = new THREE.Matrix4(), tmpQ = new THREE.Quaternion(), tmpS = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
+  let wi = 0;
+  trussZ.forEach((z) => {
+    box(HW, 0.14, 0.14, trussMat, 0, TOP, z, false);
+    box(HW, 0.14, 0.14, trussMat, 0, BOT, z, false);
+    for (let k = 0; k < webCount; k++) {
+      const x0 = -HX + k * STEP, x1 = x0 + STEP;
+      const a = new THREE.Vector3(x0, k % 2 ? TOP : BOT, z), b = new THREE.Vector3(x1, k % 2 ? BOT : TOP, z);
+      const dir = b.clone().sub(a), len = dir.length();
+      tmpQ.setFromUnitVectors(up, dir.normalize());
+      tmpS.set(1, len, 1);
+      tmpM.compose(a.clone().add(b).multiplyScalar(0.5), tmpQ, tmpS);
+      web.setMatrixAt(wi++, tmpM);
+    }
+  });
+  scene.add(web);
+  // high-bay lamps hung under the trusses
+  const lampBody = new THREE.MeshStandardMaterial({ color: "#2a2f31", roughness: 0.45, metalness: 0.5 });
+  const lamp = new THREE.MeshStandardMaterial({ color: "#000", emissive: "#ffe6c4", emissiveIntensity: 2.4 });
+  for (const z of trussZ)
+    for (let x = -HX + 7.5; x < HX; x += 7.5) {
+      const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.5, 0.35, 24, 1, true), lampBody);
+      hood.position.set(x, BOT - 0.45, z);
+      const glow = new THREE.Mesh(new THREE.CircleGeometry(0.46, 24), lamp);
+      glow.rotation.x = Math.PI / 2;
+      glow.position.set(x, BOT - 0.62, z);
+      const cable = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.3, 4), lampBody);
+      cable.position.set(x, BOT - 0.15, z);
+      scene.add(hood, glow, cable);
     }
 
+  // The hall's number, painted large on the back wall, as venues mark their pavilions
+  {
+    const [c, x] = canvas(512, 768);
+    x.fillStyle = "rgba(52,60,63,0.78)";
+    x.font = "500 64px Jura, sans-serif";
+    x.textAlign = "center";
+    x.fillText("PABELLÓN", 256, 90);
+    x.font = "300 600px Jura, sans-serif";
+    x.fillText("3", 256, 690);
+    const t = tex(c);
+    const n = new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshStandardMaterial({ map: t, transparent: true, roughness: 0.9 }));
+    // on the stretch of wall just right of the stand in the general view, between two columns
+    n.position.set(4.6, 5.5, HZ0 + 0.04);
+    scene.add(n);
+  }
+  // A congress banner hung from the trusses, behind the stand
+  {
+    const [c, x] = canvas(1600, 352);
+    x.fillStyle = "#2c3134";
+    x.fillRect(0, 0, 1600, 352);
+    x.fillStyle = "#9fb3ba";
+    x.fillRect(0, 316, 1600, 12);
+    x.fillStyle = "#ffffff";
+    x.font = "300 112px Jura, sans-serif";
+    x.textAlign = "center";
+    x.fillText("Congreso de Ciberseguridad", 800, 190);
+    x.fillStyle = "rgba(255,255,255,0.7)";
+    x.font = "400 54px Jura, sans-serif";
+    x.fillText("2026", 800, 268);
+    const t = tex(c);
+    const banner = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.2), new THREE.MeshStandardMaterial({ map: t, roughness: 0.85, side: THREE.DoubleSide }));
+    const bz = -10, by = 8.4; // under the truss at z -10
+    banner.position.set(-1, by, bz);
+    scene.add(banner);
+    const wire = new THREE.MeshStandardMaterial({ color: "#2a2f31" });
+    const top = by + 1.1, len = BOT - top;
+    [-5.6, 3.6].forEach((wx) => {
+      const w = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, len, 4), wire);
+      w.position.set(wx, top + len / 2, bz);
+      scene.add(w);
+    });
+  }
+
+  // a green emergency exit sign over a door in the back wall
+  {
+    const [c, x] = canvas(512, 192);
+    x.fillStyle = "#1f8a4c";
+    x.fillRect(0, 0, 512, 192);
+    x.fillStyle = "#ffffff";
+    x.font = "600 92px Jura, sans-serif";
+    x.textAlign = "center";
+    x.fillText("SALIDA", 300, 128);
+    x.beginPath();
+    x.moveTo(40, 96); x.lineTo(110, 50); x.lineTo(110, 142); x.closePath();
+    x.fill();
+    const st = tex(c);
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.6), new THREE.MeshStandardMaterial({ map: st, emissive: "#ffffff", emissiveMap: st, emissiveIntensity: 0.9 }));
+    sign.position.set(-12, 4.2, HZ0 + 0.06);
+    scene.add(sign);
+    box(3, 3.4, 0.08, new THREE.MeshStandardMaterial({ color: "#4a5457", roughness: 0.6, metalness: 0.3 }), -12, 1.7, HZ0 + 0.05, false);
+  }
 
   const W = 6;
   const D = 4;
@@ -525,6 +675,61 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   slab(roundedRect(W + 0.2, D + 0.2, [0, 0, 0.9, 0]), P, m.platform, 0);
   box(W - 0.7, 0.025, 0.02, m.ledOrange, -0.35, 0.05, D / 2 + 0.11, false);
   box(0.02, 0.025, D - 0.7, m.ledOrange, W / 2 + 0.11, 0.05, -0.35, false);
+
+  // Grounding: the platform presses on the carpet. A soft contact shadow hugs its edge, and the
+  // LED lines at its foot spill warm light onto the carpet in front of them
+  {
+    const EX = 4.6, EZ = 3.6, PXM = 64;
+    const CWp = Math.round(EX * 2 * PXM), CHp = Math.round(EZ * 2 * PXM);
+    const at = (wx: number, wz: number): [number, number] => [(wx + EX) * PXM, (wz + EZ) * PXM];
+    const plate = (paint: (x: CanvasRenderingContext2D) => void, additive: boolean) => {
+      const [c, x] = canvas(CWp, CHp);
+      paint(x);
+      const t = tex(c);
+      const mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(EX * 2, EZ * 2),
+        new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending }),
+      );
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.position.y = additive ? 0.006 : 0.004;
+      mesh.renderOrder = 1;
+      scene.add(mesh);
+    };
+    // the platform's footprint, as drawn on the floor plan (its front-right corner rounded)
+    const footprint = (x: CanvasRenderingContext2D, grow: number) => {
+      const w = W + 0.2 + grow * 2, d = D + 0.2 + grow * 2, r = 0.9 + grow;
+      const [x0, z0] = at(-w / 2, -d / 2), [x1, z1] = at(w / 2, d / 2), rp = r * PXM;
+      x.beginPath();
+      x.moveTo(x0, z0);
+      x.lineTo(x1, z0);
+      x.lineTo(x1, z1 - rp);
+      x.quadraticCurveTo(x1, z1, x1 - rp, z1);
+      x.lineTo(x0, z1);
+      x.closePath();
+    };
+    plate((x) => {
+      x.fillStyle = "rgba(0,0,0,0.55)";
+      x.filter = "blur(26px)";
+      footprint(x, 0.12);
+      x.fill();
+      x.fillStyle = "rgba(0,0,0,0.6)";
+      x.filter = "blur(7px)";
+      footprint(x, 0.02);
+      x.fill();
+    }, false);
+    plate((x) => {
+      x.strokeStyle = "rgba(243,146,0,0.22)";
+      x.lineCap = "round";
+      x.lineWidth = 0.32 * PXM;
+      x.filter = "blur(18px)";
+      x.beginPath();
+      x.moveTo(...at(-3.0, D / 2 + 0.3));
+      x.lineTo(...at(2.3, D / 2 + 0.3));
+      x.moveTo(...at(W / 2 + 0.3, -2.0));
+      x.lineTo(...at(W / 2 + 0.3, 1.3));
+      x.stroke();
+    }, true);
+  }
 
   box(W, H, 0.14, m.concrete, 0, P + H / 2, -D / 2 + 0.07);
   box(0.14, H, D, m.concreteSide, -W / 2 + 0.07, P + H / 2, 0);
@@ -672,8 +877,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   stool(-1.75, 1.8);
   stool(-1.15, 1.45);
   /* ---------- light ---------- */
-  scene.add(new THREE.HemisphereLight("#e6eef0", "#8a989b", 0.45));
-  const key = new THREE.DirectionalLight("#dfe8ee", 0.6);
+  scene.add(new THREE.HemisphereLight("#f6f2ec", "#8d8a86", 0.5));
+  const key = new THREE.DirectionalLight("#fff4e8", 0.6);
   key.position.set(5, 11, 8);
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
@@ -681,6 +886,12 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   key.shadow.bias = -0.0003;
   key.shadow.radius = 6;
   scene.add(key);
+  // A wide, soft pool of light from the roof onto the stand and the carpet round it: the stand
+  // is the bright place in the hall
+  const pool = new THREE.SpotLight("#fff3e6", 50, 30, Math.PI / 5.5, 1, 1.4);
+  pool.position.set(0.3, 11.5, 0.6);
+  pool.target.position.set(0.3, 0, 0.4);
+  scene.add(pool, pool.target);
   const fixture = new THREE.MeshStandardMaterial({ color: "#16181a", roughness: 0.4, metalness: 0.6 });
   const spot = (x: number, z: number, tx: number, ty: number, tz: number, intensity: number, shadow = false) => {
     const l = new THREE.SpotLight("#fff1dc", intensity, 9, Math.PI / 6.2, 0.55, 1.6);
@@ -707,7 +918,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   spot(1.1, 0.4, 1.1, 1.8, -D / 2, 34, true);
   spot(-2.2, 0.4, -W / 2, 1.8, -0.3, 13);
   spot(0.55, 1.4, 0.55, 0.8, 0.75, 30, true);
-  spot(-1.75, 1.4, -1.75, 1.0, 1.15, 22);
+  spot(-1.75, 1.4, -1.75, 1.0, 1.15, 9);
   /* ---------- post ---------- */
   // A multisampled target, so edges stay crisp through the post-processing
   const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
@@ -725,8 +936,6 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
-    const pr = renderer.getPixelRatio();
-    mirror.getRenderTarget().setSize(Math.floor(w * pr * 0.6), Math.floor(h * pr * 0.6));
   };
   const ro = new ResizeObserver(fit);
   ro.observe(host);
@@ -791,7 +1000,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
       if (t === 1) { intro = null; swayFrom = now; }
     } else if (swayFrom && now > swayFrom && !glide) {
       sph.setFromVector3(camera.position.clone().sub(controls.target));
-      const theta = home.theta + Math.sin((now - swayFrom) / 1000 * .22) * .3;
+      const theta = home.theta + Math.sin((now - swayFrom) / 1000 * .22) * .18;
       sph.theta += (theta - sph.theta) * .02;
       sph.phi += (home.phi - sph.phi) * .02;
       sph.radius += (home.radius - sph.radius) * .02;
@@ -888,7 +1097,11 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
     `relative shrink-0 whitespace-nowrap py-1 transition-colors duration-500 ${active ? "text-platinum" : "text-platinum/55 hover:text-platinum/85"}`;
 
   return (
-    <div className={`relative overflow-hidden ${className}`} style={{ background: BG }}>
+    // Nothing shows until the model has its first picture: no empty frame while it builds
+    <div
+      className={`relative overflow-hidden transition-opacity duration-700 ${ready || poster ? "opacity-100" : "opacity-0"} ${className}`}
+      style={{ background: BG }}
+    >
       {/* The still holds the place until the model is built, then the model fades over it */}
       {poster && (
         <img

@@ -335,7 +335,7 @@ export const CaseStudyPage: React.FC = () => {
             {c.headerFrame ? (
               <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="aspect-[16/10] w-full" />
             ) : c.headerViewer === "stand" ? (
-              <Suspense fallback={<div className="aspect-[16/10] w-full bg-[#a9b8ba]" />}>
+              <Suspense fallback={<div className="aspect-[16/10] w-full" />}>
                 <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[16/10] w-full" />
               </Suspense>
             ) : c.video ? (
