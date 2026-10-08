@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from "react";
+﻿import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import SocialPhone from "../../components/Social/SocialPhone";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { Link, Navigate, useParams } from "react-router-dom";
@@ -36,6 +36,95 @@ const Arrow: React.FC<{ back?: boolean }> = ({ back }) => (
     <path d="M0 6h27M22 1.5l5 4.5-5 4.5" />
   </svg>
 );
+
+/**
+ * "All projects" opens the list right there: any other case is one click away, and the
+ * projects page stays at the foot of the list. Opens on hover with a mouse, on tap on phones.
+ */
+const ProjectsMenu: React.FC<{ current: string; list: Case[]; lang: Lang }> = ({ current, list, lang }) => {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const closeT = useRef<number>();
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: PointerEvent) => !box.current?.contains(e.target as Node) && setOpen(false);
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("pointerdown", away);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", away);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
+  useEffect(() => () => window.clearTimeout(closeT.current), []);
+  const hover = (on: boolean) => (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    window.clearTimeout(closeT.current);
+    if (on) setOpen(true);
+    else closeT.current = window.setTimeout(() => setOpen(false), 220);
+  };
+
+  return (
+    <div ref={box} className="relative" onPointerEnter={hover(true)} onPointerLeave={hover(false)}>
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        className="inline-flex items-center gap-2 whitespace-nowrap opacity-80 transition-opacity duration-500 hover:opacity-100"
+      >
+        <span className="hidden sm:inline">{CASE_UI.all[lang]}</span>
+        <span className="sm:hidden">{CASE_UI.count[lang]}</span>
+        {/* It opens a list, as the language switch does: the same small caret */}
+        <span aria-hidden className={`inline-block text-ink/75 transition-transform duration-500 ease-haus ${open ? "rotate-180" : ""}`}>
+          ▾
+        </span>
+      </button>
+      <div
+        className={`absolute left-0 top-full z-30 pt-3 transition-all duration-300 ease-haus ${
+          open ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0"
+        }`}
+      >
+        {/* One name per line, all on the same left edge; the case on view marked by a short
+            rule in the margin, as on the projects page */}
+        <ul className="w-max whitespace-nowrap rounded-md border border-ink/10 bg-[#f6f5f4]/95 py-3 shadow-[0_18px_44px_-18px_rgba(40,32,36,0.35)] backdrop-blur-sm">
+          {list.map((k) => {
+            const here = k.slug === current;
+            return (
+              <li key={k.slug}>
+                <Link
+                  to={`/projects/${k.slug}`}
+                  onClick={() => setOpen(false)}
+                  aria-current={here ? "page" : undefined}
+                  className={`group flex items-center gap-3 py-2 pl-4 pr-8 transition-colors duration-300 ${
+                    here ? "text-ink" : "text-ink/60 hover:bg-ink/[0.05] hover:text-ink"
+                  }`}
+                >
+                  {/* the rule draws itself in on hover, so the pointer's place is plain */}
+                  <span
+                    aria-hidden
+                    className={`h-px w-4 origin-left bg-current transition-all duration-500 ease-haus ${
+                      here ? "opacity-100" : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-60"
+                    }`}
+                  />
+                  {k.title.toLowerCase()}
+                </Link>
+              </li>
+            );
+          })}
+          <li className="mx-4 mt-2 border-t border-ink/10 pt-2">
+            <Link
+              to="/projects"
+              onClick={() => setOpen(false)}
+              className="-mx-4 flex items-center py-2 pl-11 text-ink/60 transition-colors duration-300 hover:bg-ink/[0.05] hover:text-ink"
+            >
+              {CASE_UI.page[lang]}
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 /** One image of the case, rising softly into view */
 /**
@@ -168,7 +257,10 @@ export const CaseStudyPage: React.FC = () => {
   const { slug } = useParams();
   const { lang } = useI18n();
   // Hidden cases are neither reachable nor part of the case-to-case navigation
-  const shown = cases.filter((c) => !c.hidden);
+  // In the same order as the projects page
+  const ORDER = ["sapphire", "smarthc", "buendia"];
+  const rank = (k: Case) => (ORDER.indexOf(k.slug) + 1 || ORDER.length + 1);
+  const shown = cases.filter((c) => !c.hidden).sort((a, b) => rank(a) - rank(b));
   const index = shown.findIndex((c) => c.slug === slug);
   if (index === -1) return <Navigate to="/projects" replace />;
 
@@ -189,11 +281,7 @@ export const CaseStudyPage: React.FC = () => {
         className={`${ACTION} mb-12 flex items-center justify-between gap-6 text-ink md:mb-16`}
       >
         {/* Phones: one short word each side, on one line */}
-        <Link to="/projects" className="group inline-flex items-center gap-3 whitespace-nowrap justify-self-start opacity-80 transition-opacity duration-500 hover:opacity-100">
-          <Arrow back />
-          <span className="hidden sm:inline">{CASE_UI.all[lang]}</span>
-          <span className="sm:hidden">{CASE_UI.count[lang]}</span>
-        </Link>
+        <ProjectsMenu key={c.slug} current={c.slug} list={shown} lang={lang} />
         <Link to={`/projects/${next.slug}`} className="group inline-flex items-center gap-3 whitespace-nowrap justify-self-end opacity-80 transition-opacity duration-500 hover:opacity-100">
           <span className="hidden sm:inline">{next.title.toLowerCase()}</span>
           <span className="sm:hidden">{CASE_UI.nextShort[lang]}</span>

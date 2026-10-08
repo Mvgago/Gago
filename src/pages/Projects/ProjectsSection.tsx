@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
+﻿import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { EASE_HAUS } from "../../lib/motion";
@@ -32,11 +32,14 @@ const WORKS: Work[] = [
   { slug: "sapphire", title: "The Sapphire" },
   { slug: "smarthc", title: "Smart Human Capital" },
   { slug: "buendia", title: "Buendía Travel" },
-  { slug: "santa-engracia", title: "Santa Engracia" },
 ];
 
-const scopeOf = (slug: string, lang: Lang) =>
-  (cases.find((c) => c.slug === slug)?.disciplines ?? []).map((d) => DISCIPLINE[d][lang]).join(" · ");
+// The sector first, so the range of clients shows at a glance, then what was done
+const scopeOf = (slug: string, lang: Lang) => {
+  const c = cases.find((k) => k.slug === slug);
+  const work = (c?.disciplines ?? []).map((d) => DISCIPLINE[d][lang]).join(" · ");
+  return c?.sector ? `${c.sector[lang]} — ${work}` : work;
+};
 const imageOf = (slug: string) => cases.find((c) => c.slug === slug)?.cover ?? "";
 
 // Projects shown as film instead of a still (files in public/video)

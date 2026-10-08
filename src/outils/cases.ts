@@ -116,7 +116,7 @@ export type Case = {
 };
 
 /** The labels of the case pages */
-export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "nextShort" | "all" | "count" | "recreation" | "view3d", Text> = {
+export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "nextShort" | "all" | "count" | "page" | "recreation" | "view3d", Text> = {
   nextShort: { en: "next", es: "siguiente", fr: "suivant", de: "weiter" },
   recreation: {
     en: "3D recreation · Congress stand",
@@ -133,6 +133,7 @@ export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "
   next: { en: "next project", es: "siguiente proyecto", fr: "projet suivant", de: "nächstes projekt" },
   all: { en: "all projects", es: "todos los proyectos", fr: "tous les projets", de: "alle projekte" },
   count: { en: "projects", es: "proyectos", fr: "projets", de: "projekte" },
+  page: { en: "projects page", es: "página de proyectos", fr: "page des projets", de: "projektseite" },
 };
 
 export const DISCIPLINE: Record<Discipline, Text> = {
@@ -153,8 +154,10 @@ export const cases: Case[] = [
   {
     slug: "santa-engracia",
     title: "Santa Engracia",
+    hidden: true,
     client: { en: "Santa Engracia — residential", es: "Santa Engracia — residencial", fr: "Santa Engracia — résidentiel", de: "Santa Engracia — wohnbau" },
     disciplines: ["identity", "web"],
+    sector: { en: "heritage residential", es: "residencial histórico", fr: "résidentiel patrimonial", de: "historischer wohnbau" },
     lead: {
       en: "Heritage residential building.",
       es: "Edificio residencial histórico.",
@@ -174,7 +177,7 @@ export const cases: Case[] = [
     slug: "buendia",
     title: "Buendía Travel",
     client: { en: "Buendía Travel — tourism", es: "Buendía Travel — turismo", fr: "Buendía Travel — tourisme", de: "Buendía Travel — tourismus" },
-    disciplines: ["identity", "web", "comms", "campaign"],
+    disciplines: ["identity", "web", "comms", "campaign", "video"],
     sector: { en: "tourism and travel", es: "turismo y viajes", fr: "tourisme et voyages", de: "tourismus und reisen" },
     lead: {
       en: "Travel agency.",
@@ -205,11 +208,15 @@ export const cases: Case[] = [
         d: "campaign",
         detail: { en: "seasonal promotions and stories for social media", es: "promociones de temporada y stories para redes", fr: "promotions saisonnières et stories pour les réseaux", de: "saisonaktionen und stories für soziale medien" },
       },
+      {
+        d: "video",
+        detail: { en: "destination spots: editing, copy and motion", es: "spots de destino: montaje, textos y motion", fr: "spots de destination : montage, textes et motion", de: "reiseziel-spots: schnitt, texte und motion" },
+      },
     ],
     cover: buendiaWeb,
     thumb: buendiaStrip,
-    // TODO: the campaign film opens the case once it is ready (video: "/video/buendia.mp4");
-    // until then, the cover beside the words
+    // The cover beside the words: the Asturias spot (2019) was tried here, but its shots are too
+    // short and mostly under titles to make a clean loop
     // Right under the header, wide: the scene, the site booking a trip and the campaign on the phone,
     // Amsterdam behind. Then pairs of the same height: the catalogue in hand beside a spread, the
     // site beside the campaign
@@ -226,7 +233,7 @@ export const cases: Case[] = [
     title: "The Sapphire",
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
     disciplines: ["identity", "web", "direction", "video", "presentation"],
-    sector: { en: "residential development", es: "promoción residencial", fr: "programme résidentiel", de: "wohnbauprojekt" },
+    sector: { en: "real estate", es: "inmobiliario", fr: "immobilier", de: "immobilien" },
     // The problem first, so anyone selling something not yet built sees themselves in it
     lead: {
       en: "Residential complex on the Costa del Sol.",
