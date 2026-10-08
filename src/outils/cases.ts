@@ -1,4 +1,4 @@
-import type { Lang } from "../i18n/strings";
+﻿import type { Lang } from "../i18n/strings";
 
 import aleaStrip from "../assets/peojects/alea/alea-strip.jpg";
 import aleaDashboard from "../assets/peojects/alea/alea-dashboard-web.jpg";
@@ -61,6 +61,8 @@ export type CaseImage = {
   src: string;
   /** In place of the image: the interactive 3D stand */
   viewer?: "stand" | "social" | "devices";
+  /** For the devices viewer: the concept page to frame (defaults to SmartHC's) */
+  frame?: string;
   /** For the social viewer: the posts shown in the phone */
   tiles?: string[];
   /** In place of the image: a silent looping film (public/video), at its own speed */
@@ -100,6 +102,8 @@ export type Case = {
   videoSpeed?: number;
   /** Opens the case with the interactive 3D stand instead of a film or the cover */
   headerViewer?: "stand";
+  /** Opens the case with an interactive concept page (public/concepts/…) framed beside the words */
+  headerFrame?: string;
   /** "contain": show the whole cover on a pale mount (square or small covers) */
   coverFit?: "contain";
   /** A calm image for the index strip, with no text or interface in it (defaults to the cover) */
@@ -170,7 +174,8 @@ export const cases: Case[] = [
     slug: "buendia",
     title: "Buendía Travel",
     client: { en: "Buendía Travel — tourism", es: "Buendía Travel — turismo", fr: "Buendía Travel — tourisme", de: "Buendía Travel — tourismus" },
-    disciplines: ["identity", "web", "campaign"],
+    disciplines: ["identity", "web", "comms", "campaign"],
+    sector: { en: "tourism and travel", es: "turismo y viajes", fr: "tourisme et voyages", de: "tourismus und reisen" },
     lead: {
       en: "Travel agency.",
       es: "Agencia de viajes.",
@@ -178,14 +183,43 @@ export const cases: Case[] = [
       de: "Reiseunternehmen.",
     },
     body: {
-      en: "A modernised identity, a redesigned website for booking activities and excursions, and the catalogues and campaigns that carry the brand.",
-      es: "Una identidad modernizada, una web rediseñada para reservar actividades y excursiones, y los catálogos y campañas que llevan la marca.",
-      fr: "Une identité modernisée, un site repensé pour réserver activités et excursions, et les catalogues et campagnes qui portent la marque.",
-      de: "Eine modernisierte Identität, eine neu gestaltete Website zum Buchen von Aktivitäten und Ausflügen, und die Kataloge und Kampagnen der Marke.",
+      es: "Buendía Travel necesitaba que su marca transmitiera lo que vende: experiencias, no paquetes. Modernizamos su identidad y la llevamos a una web pensada para reservar actividades y excursiones, y a catálogos y campañas que cuentan cada destino desde quien lo vive.",
+      en: "Buendía Travel needed its brand to convey what it sells: experiences, not packages. We modernised its identity and carried it into a website built for booking activities and excursions, and into catalogues and campaigns that tell each destination through those who live it.",
+      fr: "Buendía Travel avait besoin que sa marque transmette ce qu'elle vend : des expériences, pas des forfaits. Nous avons modernisé son identité et l'avons portée sur un site pensé pour réserver activités et excursions, et sur des catalogues et campagnes qui racontent chaque destination à travers ceux qui la vivent.",
+      de: "Buendía Travel brauchte eine Marke, die vermittelt, was sie verkauft: Erlebnisse, keine Pauschalreisen. Wir haben ihre Identität modernisiert und auf eine Website zum Buchen von Aktivitäten und Ausflügen übertragen, sowie auf Kataloge und Kampagnen, die jedes Reiseziel aus der Sicht derer erzählen, die es erleben.",
     },
+    services: [
+      {
+        d: "identity",
+        detail: { en: "modernised logo and visual system", es: "logotipo modernizado y sistema visual", fr: "logo modernisé et système visuel", de: "modernisiertes logo und visuelles system" },
+      },
+      {
+        d: "web",
+        detail: { en: "booking site for activities and excursions", es: "web de reserva de actividades y excursiones", fr: "site de réservation d'activités et d'excursions", de: "buchungsseite für aktivitäten und ausflüge" },
+      },
+      {
+        d: "comms",
+        detail: { en: "catalogues, guides and printed matter", es: "catálogos, guías y material impreso", fr: "catalogues, guides et imprimés", de: "kataloge, reiseführer und drucksachen" },
+      },
+      {
+        d: "campaign",
+        detail: { en: "seasonal promotions and stories for social media", es: "promociones de temporada y stories para redes", fr: "promotions saisonnières et stories pour les réseaux", de: "saisonaktionen und stories für soziale medien" },
+      },
+    ],
     cover: buendiaWeb,
     thumb: buendiaStrip,
-    images: [{ src: buendiaLaptop }, { src: buendiaBook, pair: true }, { src: buendiaCatalogue }, { src: buendiaSocial }],
+    // TODO: the campaign film opens the case once it is ready (video: "/video/buendia.mp4");
+    // until then, the cover beside the words
+    // Right under the header, wide: the scene, the site booking a trip and the campaign on the phone,
+    // Amsterdam behind. Then pairs of the same height: the catalogue in hand beside a spread, the
+    // site beside the campaign
+    images: [
+      { src: "", viewer: "devices", frame: "/concepts/buendia-devices/index.html" },
+      { src: buendiaCatalogue, pair: true },
+      { src: buendiaBook },
+      { src: buendiaLaptop, pair: true },
+      { src: buendiaSocial },
+    ],
   },
   {
     slug: "sapphire",
@@ -199,6 +233,12 @@ export const cases: Case[] = [
       es: "Complejo residencial en la Costa del Sol.",
       fr: "Complexe résidentiel sur la Costa del Sol.",
       de: "Wohnanlage an der Costa del Sol.",
+    },
+    body: {
+      es: "Para vender The Sapphire sobre plano era necesario construir una visión antes de la primera piedra. Desarrollamos la identidad, el relato y el ecosistema digital de la promoción —sitio web, campaña audiovisual y planos interactivos—, permitiendo a los futuros propietarios habitar la arquitectura mucho antes de su construcción.",
+      en: "Selling The Sapphire off-plan meant building a vision before the first stone was laid. We developed the development's identity, narrative and digital ecosystem — website, audiovisual campaign and interactive floor plans — allowing future owners to inhabit the architecture long before it was built.",
+      fr: "Vendre The Sapphire sur plan exigeait de construire une vision avant la première pierre. Nous avons développé l'identité, le récit et l'écosystème numérique du programme — site web, campagne audiovisuelle et plans interactifs —, permettant aux futurs propriétaires d'habiter l'architecture bien avant sa construction.",
+      de: "Um The Sapphire vom Plan zu verkaufen, musste vor dem ersten Stein eine Vision entstehen. Wir haben Identität, Erzählung und das digitale Ökosystem des Projekts entwickelt — Website, audiovisuelle Kampagne und interaktive Grundrisse — und so den künftigen Eigentümern ermöglicht, die Architektur lange vor ihrem Bau zu bewohnen.",
     },
     services: [
       {
@@ -284,6 +324,12 @@ export const cases: Case[] = [
       es: "Consultora de ciberseguridad.",
       fr: "Cabinet de cybersécurité.",
       de: "Cybersicherheitsberatung.",
+    },
+    body: {
+      es: "SmartHC necesitaba renovar su imagen y encontrar una dirección clara. Definimos su posicionamiento y una línea visual propia que da coherencia a todo lo que comunica, del catálogo al stand de congreso.",
+      en: "SmartHC needed to renew its image and find a clear direction. We defined its positioning and a visual language of its own that brings coherence to everything it communicates, from the catalogue to the congress stand.",
+      fr: "SmartHC avait besoin de renouveler son image et de trouver une direction claire. Nous avons défini son positionnement et une ligne visuelle propre qui donne de la cohérence à tout ce qu'elle communique, du catalogue au stand de congrès.",
+      de: "SmartHC brauchte ein neues Erscheinungsbild und eine klare Richtung. Wir haben ihre Positionierung und eine eigene visuelle Linie definiert, die allem, was sie kommuniziert, Kohärenz gibt, vom Katalog bis zum Kongressstand.",
     },
     services: [
       {

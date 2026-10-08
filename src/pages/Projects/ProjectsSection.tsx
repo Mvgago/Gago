@@ -31,6 +31,7 @@ type Work = { slug: string; title: string };
 const WORKS: Work[] = [
   { slug: "sapphire", title: "The Sapphire" },
   { slug: "smarthc", title: "Smart Human Capital" },
+  { slug: "buendia", title: "Buendía Travel" },
   { slug: "santa-engracia", title: "Santa Engracia" },
 ];
 

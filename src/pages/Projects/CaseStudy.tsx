@@ -175,7 +175,7 @@ export const CaseStudyPage: React.FC = () => {
   const c = shown[index];
   const next = shown[(index + 1) % shown.length];
   // Cases told the new way (a film, or services in detail) open side by side
-  const side = Boolean(c.video || c.services);
+  const side = Boolean(c.video || c.services || c.headerViewer || c.headerFrame);
 
   return (
     <main className="px-4 pb-16 pt-28 sm:px-6 md:px-8 md:pt-32">
@@ -223,7 +223,19 @@ export const CaseStudyPage: React.FC = () => {
           >
             {c.lead[lang]}
           </motion.p>
-          {side && <Facts c={c} lang={lang} className="mt-12" />}
+          {/* Beside the media, the story reads in order: who they are, what they needed, what was done */}
+          {side && c.body && (
+            <motion.p
+              variants={rise}
+              initial="hidden"
+              animate="shown"
+              custom={3}
+              className={`${BODY} mt-8 max-w-[52ch] text-graphite`}
+            >
+              {c.body[lang]}
+            </motion.p>
+          )}
+          {side && <Facts c={c} lang={lang} className={c.body ? "mt-10" : "mt-12"} />}
         </div>
 
         {side ? (
@@ -232,7 +244,9 @@ export const CaseStudyPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.25, ease: EASE_HAUS } }}
           >
-            {c.headerViewer === "stand" ? (
+            {c.headerFrame ? (
+              <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="aspect-[16/10] w-full" />
+            ) : c.headerViewer === "stand" ? (
               <Suspense fallback={<div className="aspect-[16/10] w-full bg-[#a9b8ba]" />}>
                 <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[16/10] w-full" />
               </Suspense>
@@ -275,7 +289,7 @@ export const CaseStudyPage: React.FC = () => {
       )}
 
       {/* What was done; when the lead already tells it, the work follows straight on */}
-      {c.body ? (
+      {c.body && !side ? (
         <section className="grid py-16 md:grid-cols-12 md:gap-x-8 md:py-24">
           <p className={`${BODY} text-graphite md:col-span-6 md:col-start-7`}>{c.body[lang]}</p>
         </section>
@@ -311,7 +325,7 @@ export const CaseStudyPage: React.FC = () => {
               // The interactive product scene, wide: taller on phones so the devices stay large
               <DevicesFrame
                 key={r}
-                src="/concepts/smarthc-devices/index.html"
+                src={row[0].frame ?? "/concepts/smarthc-devices/index.html"}
                 title={`${c.title} — 3D`}
                 className="aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[16/8]"
               />

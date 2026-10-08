@@ -66,12 +66,9 @@ const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t 
 
 async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: Api; dispose: () => void }> {
   const [LOGO, SYMBOL] = await Promise.all([loadImg(`${ASSETS}/logo.png`), loadImg(`${ASSETS}/symbol.png`)]);
-  try {
-    await Promise.race([document.fonts.load("300 100px Jura"), new Promise((r) => setTimeout(r, 1500))]);
-  } catch {
-    /* fonts are a nicety */
-  }
-
+  // Jura (the back screen's type) is not waited for: the screen is redrawn every other frame,
+  // so it takes the face as soon as it arrives
+  document.fonts.load("300 100px Jura").catch(() => {});
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -446,7 +443,6 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     concrete: new THREE.MeshStandardMaterial({ map: concreteTex(1536, 896, 384, [124, 133, 138]), roughness: 0.88 }),
     concreteSide: new THREE.MeshStandardMaterial({ map: concreteTex(1024, 896, 384, [150, 158, 162]), roughness: 0.88 }),
   };
-
   const box = (w: number, h: number, d: number, mat: THREE.Material, x: number, y: number, z: number, shadow = true) => {
     const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
     b.position.set(x, y, z);
@@ -539,7 +535,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   box(2.72, 1.56, 0.06, new THREE.MeshStandardMaterial({ color: "#0c0d0e", roughness: 0.3 }), 1.1, P + 1.75, -D / 2 + 0.17);
   // a screen gives its own light: not lit by the spots, with a faint glow at its brightest
   const screen = decal(screenT, 2.64, 1.485, [1.1, P + 1.75, -D / 2 + 0.205]);
-  screen.material = new THREE.MeshBasicMaterial({ map: screenT, color: new THREE.Color(0.94, 0.94, 0.94) });
+  screen.material.dispose();
+  (screen as THREE.Mesh).material = new THREE.MeshBasicMaterial({ map: screenT, color: new THREE.Color(0.94, 0.94, 0.94) });
 
   // Canopy: an orange band over the whole stand, its front-right corner swept in a curve,
   // a line of warm light beneath it, the logo in white
@@ -674,7 +671,6 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   stool(-2.35, 1.35);
   stool(-1.75, 1.8);
   stool(-1.15, 1.45);
-
   /* ---------- light ---------- */
   scene.add(new THREE.HemisphereLight("#e6eef0", "#8a989b", 0.45));
   const key = new THREE.DirectionalLight("#dfe8ee", 0.6);
@@ -712,7 +708,6 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   spot(-2.2, 0.4, -W / 2, 1.8, -0.3, 13);
   spot(0.55, 1.4, 0.55, 0.8, 0.75, 30, true);
   spot(-1.75, 1.4, -1.75, 1.0, 1.15, 22);
-
   /* ---------- post ---------- */
   // A multisampled target, so edges stay crisp through the post-processing
   const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
@@ -819,6 +814,20 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     if (entry.isIntersecting) startIntro();
     renderer.setAnimationLoop(entry.isIntersecting ? loop : null);
   }, { rootMargin: "-15% 0px" });
+  // Shown only once it has a picture: the camera waits where the intro begins, every shader is
+  // compiled ahead (off the main thread where the browser allows it) and a first frame is drawn
+  if (!reduced) {
+    const s0 = new THREE.Spherical(home.radius * 1.16, home.phi - 0.06, home.theta + 0.5);
+    camera.position.copy(homeLook).add(new THREE.Vector3().setFromSpherical(s0));
+    controls.target.copy(homeLook);
+    controls.update();
+  }
+  try {
+    await renderer.compileAsync(scene, camera);
+  } catch {
+    /* compiled on the first frame instead */
+  }
+  composer.render();
   io.observe(host);
   onReady();
 
