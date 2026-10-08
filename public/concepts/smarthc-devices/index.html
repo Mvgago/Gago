@@ -1,11 +1,11 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>smart hc — experiencia de producto</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap">
 <style>
 /* A pale studio; Fuga Haus's quiet type over it */
 :root {
@@ -23,10 +23,27 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 #stage.on { opacity: 1; }
 #stage canvas { display: block; width: 100%; height: 100%; }
 .label, .hint { position: fixed; top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; color: var(--soft); pointer-events: none; }
-.label { left: 24px; }
-.hint { right: 24px; transition: opacity .6s; }
-.line { position: fixed; left: 24px; bottom: 22px; margin: 0; font-family: var(--display); font-weight: 300; font-size: clamp(22px, 3vw, 40px); line-height: 1.05; letter-spacing: 0.01em; pointer-events: none; }
+.label { left: 40px; }
+.hint { right: 40px; transition: opacity .6s; }
+.line { position: fixed; left: 40px; bottom: 26px; margin: 0; font-family: var(--display); font-weight: 300; font-size: clamp(22px, 3vw, 40px); line-height: 1.05; letter-spacing: 0.01em; pointer-events: none; }
 .line span { color: var(--orange); }
+.steps { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; width: clamp(250px, 19vw, 290px); pointer-events: none; font-family: Inter, sans-serif; --brand: #dfb451; }
+.step { position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px; padding: 14px 18px 14px 14px; background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(244,246,247,0.7)); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); border: 1px solid rgba(255,255,255,0.9); border-radius: 12px; box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 14px 34px rgba(40,52,60,0.10), 0 2px 6px rgba(40,52,60,0.06); opacity: 0; }
+.step::after { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.75) 50%, transparent 62%); transform: translateX(-120%); animation: glint 7s ease-in-out infinite; }
+.step:nth-child(2)::after { animation-delay: 1.2s; }
+.step:nth-child(3)::after { animation-delay: 2.4s; }
+@keyframes glint { 0%, 8% { transform: translateX(-120%); } 22%, 100% { transform: translateX(120%); } }
+.step i { flex: none; width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(180deg, #e8c26a, #d6a63f); box-shadow: 0 1px 0 rgba(255,255,255,0.45) inset, 0 4px 12px rgba(214,166,63,0.35); display: grid; place-items: center; }
+.step svg { width: 16px; height: 16px; fill: none; stroke: #ffffff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.step div { min-width: 0; flex: 1; }
+.step small { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; color: #8a9398; margin-bottom: 3px; }
+.step small em { font-style: normal; display: inline-flex; align-items: center; gap: 5px; color: #b58a2c; }
+.step small em::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px rgba(223,180,81,0.18); }
+.step b { display: block; font-size: 14.5px; font-weight: 600; color: #1f2326; }
+.step span { display: block; margin-top: 2px; font-size: 12.5px; color: #5f686d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.step u { display: block; margin-top: 8px; height: 3px; border-radius: 1px; background: rgba(31,35,38,0.08); overflow: hidden; }
+.step s { display: block; height: 100%; background: var(--brand); transform-origin: left; transform: scaleX(0); }
+@media (max-width: 1100px) { .steps { display: none; } }
 @media (max-width: 640px) {
   .hint { display: none; }
   .label { left: 16px; top: 14px; }
@@ -38,8 +55,13 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 
 <div id="stage"></div>
 <p class="label">Concepto · Experiencia interactiva de producto</p>
-<p class="hint" id="hint">arrastra para girar · firma en la tablet</p>
+<p class="hint" id="hint">firma en la pantalla · arrastra para girar</p>
 <p class="line">Seguridad a tu <span>medida.</span></p>
+<div class="steps" aria-hidden="true">
+  <div class="step"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><div><small>01<em>verificado</em></small><b>Identidad verificada</b><span>María López · DNI ••••4521L</span></div></div>
+  <div class="step"><i><svg viewBox="0 0 24 24"><path d="M3 12c2-6 4-6 5 0s3 6 5 0 3-6 5 0 2 3 3 2"/></svg></i><div><small>02<em id="step-st">en curso</em></small><b>Captura biométrica</b><span id="step-val">0 pts · presión 0 %</span><u><s id="step-bar"></s></u></div></div>
+  <div class="step"><i><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i><div><small>03<em>eIDAS</em></small><b>Documento sellado</b><span>Sellado de tiempo · 10:42:07</span></div></div>
+</div>
 
 <script type="importmap">
 { "imports": {
@@ -79,7 +101,7 @@ const LOGO_G = tinted(LOGO, C.text);
 const SYMBOL_O = tinted(SYMBOL, C.orange);
 try {
   await Promise.race([
-    Promise.all([`300 40px ${DISPLAY}`, `500 40px ${DISPLAY}`, `400 20px ${MONO}`, `500 20px ${MONO}`].map(f => document.fonts.load(f))),
+    Promise.all([`300 40px ${DISPLAY}`, `500 40px ${DISPLAY}`, `400 20px ${MONO}`, `500 20px ${MONO}`, `400 20px Inter`, `500 20px Inter`, `600 20px Inter`, `700 20px Inter`].map(f => document.fonts.load(f))),
     new Promise(r => setTimeout(r, 2000)),
   ]);
 } catch (e) {}
@@ -133,7 +155,7 @@ function shield(ctx, cx, cy, s, stroke, fill) {
 
 /* ================= tablet: the Biometric PAD, a signature being captured ================= */
 const TW = 1280, TH = 904, PW = 600, PH = 1280;
-let userStrokes = [], lastInk = -10;
+let userStrokes = [], lastInk = -10, penTip = null, penPose = null;
 /* A handwritten signature: a looped capital, joined letters of uneven height, the dot of an i,
    and a flourish underneath. Drawn through smooth curves; the pen is thinner where it moves
    fast, heavier on the turns, and tapers where it lands and lifts. */
@@ -174,83 +196,212 @@ const SIG = (() => {
 })();
 const SIG_LEN = SIG.reduce((n, s) => n + s.length, 0);
 
+/* The Biometric PAD as a real e-signature app: the document on the left, the signing pad on
+   the right, the signer's details, the live biometric reading and the confirm action */
+const UIF = 'Inter, sans-serif';
+function ui(ctx, txt, x, y, size, weight = 400, col = C.text, align = 'left') {
+  ctx.fillStyle = col; ctx.font = `${weight} ${size}px ${UIF}`; ctx.textAlign = align; ctx.fillText(txt, x, y); ctx.textAlign = 'left';
+}
+const PAD = { x: 656, y: 206, w: 568, h: 340 };
+function lockIcon(ctx, x, y, col) {
+  ctx.strokeStyle = col; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(x, y - 7, 6, Math.PI, 0); ctx.stroke();
+  ctx.fillStyle = col; rr(ctx, x - 9, y - 7, 18, 14, 3); ctx.fill();
+}
+// The contract's last page, as real text
+const CLAUSES = [
+  ['OCTAVA. CONFIDENCIALIDAD', 'Las partes se obligan a mantener la más estricta confidencialidad sobre la información a la que tengan acceso con motivo del presente contrato, durante su vigencia y los cinco años siguientes a su terminación.'],
+  ['NOVENA. PROTECCIÓN DE DATOS', 'El tratamiento de los datos personales se realizará conforme al Reglamento (UE) 2016/679 y a la normativa vigente, con las medidas técnicas y organizativas adecuadas al riesgo.'],
+  ['DÉCIMA. FIRMA ELECTRÓNICA', 'Las partes aceptan la firma biométrica como medio válido de manifestación del consentimiento, con plena eficacia jurídica conforme al Reglamento eIDAS.'],
+  ['UNDÉCIMA. JURISDICCIÓN', 'Para cualquier controversia derivada del presente contrato, las partes se someten a los juzgados y tribunales que resulten competentes conforme a la ley.'],
+];
+function wrapText(ctx, txt, x, y, maxW, lh, size, weight, col) {
+  ctx.font = `${weight} ${size}px ${UIF}`; ctx.fillStyle = col; ctx.textAlign = 'left';
+  let line = '', yy = y;
+  txt.split(' ').forEach(w => {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, x, yy); line = w; yy += lh; } else line = test;
+  });
+  if (line) { ctx.fillText(line, x, yy); yy += lh; }
+  return yy;
+}
+/* A real signature is a scribble: a tall looped initial, a run of fast, shrinking waves,
+   and a stroke flung back underneath, all in one gesture. Points in a 0..1 box, slanted, then
+   smoothed; the pen thins where it moves fast and tapers where it lands and lifts. */
+function scribble(strokes, slant = .22) {
+  return strokes.map(pts => {
+    pts = pts.map(([x, y]) => [x + (1 - y) * slant * .35, y]);
+    const out = [], P = (i) => pts[Math.max(0, Math.min(pts.length - 1, i))];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = P(i - 1), p1 = P(i), p2 = P(i + 1), p3 = P(i + 2);
+      for (let k = 0; k < 10; k++) {
+        const t = k / 10, t2 = t * t, t3 = t2 * t;
+        const f = (a) => .5 * (2 * p1[a] + (-p0[a] + p2[a]) * t + (2 * p0[a] - 5 * p1[a] + 4 * p2[a] - p3[a]) * t2 + (-p0[a] + 3 * p1[a] - 3 * p2[a] + p3[a]) * t3);
+        out.push([f(0), f(1)]);
+      }
+    }
+    out.push(pts[pts.length - 1]);
+    return out.map(([x, y], i) => {
+      const a = out[Math.max(0, i - 1)], b = out[Math.min(out.length - 1, i + 1)];
+      const sp = Math.hypot(b[0] - a[0], b[1] - a[1]) * 40;
+      const u = i / (out.length - 1), taper = Math.min(1, u * 12, (1 - u) * 6);
+      return [x, y, Math.max(.15, Math.min(1, 1.15 - sp)) * (.25 + .75 * taper)];
+    });
+  });
+}
+const SCRIBBLE = {
+  // M. López, as a hand actually signs it
+  client: scribble([
+    [[.03, .78], [.07, .4], [.12, .04], [.15, .3], [.16, .78], [.2, .3], [.24, .06], [.26, .4], [.27, .8], [.24, .9], [.2, .72],
+     [.3, .55], [.35, .66], [.38, .5], [.4, .64], [.44, .46], [.46, .62], [.5, .5], [.53, .22], [.55, .1], [.555, .4], [.56, .64],
+     [.6, .54], [.63, .6], [.66, .52], [.69, .58], [.72, .53], [.76, .56], [.82, .5], [.9, .44], [.97, .38], [.92, .62],
+     [.7, .82], [.42, .9], [.16, .88], [.04, .82]],
+    [[.355, .34], [.37, .33]],
+  ]),
+  // A. Rivas: a different hand, flatter and quicker
+  company: scribble([
+    [[.04, .82], [.1, .5], [.17, .08], [.22, .42], [.26, .8], [.2, .58], [.1, .56], [.32, .5],
+     [.36, .62], [.4, .4], [.43, .64], [.47, .48], [.5, .6], [.55, .44], [.6, .6], [.66, .5], [.74, .54], [.84, .46], [.96, .34]],
+    [[.12, .7], [.5, .74], [.98, .66]],
+  ], .3),
+};
+const SCR_LEN = (sig) => sig.reduce((n, st) => n + st.length, 0);
+// Draws the first p of the gesture in a w × h box; returns the pen's position
+function writtenSignature(ctx, x, y, w, h, p, col = '#16263d', sig = SCRIBBLE.client, weight = 5) {
+  if (p <= 0) return null;
+  let left = Math.floor(p * SCR_LEN(sig)), tip = null;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = col;
+  sig.forEach(st => {
+    const n = Math.min(st.length, left); left -= n;
+    for (let k = 1; k < n; k++) {
+      ctx.lineWidth = .7 + st[k][2] * weight;
+      ctx.beginPath(); ctx.moveTo(x + st[k - 1][0] * w, y + st[k - 1][1] * h); ctx.lineTo(x + st[k][0] * w, y + st[k][1] * h); ctx.stroke();
+    }
+    if (n > 0 && n < st.length) tip = [x + st[n - 1][0] * w, y + st[n - 1][1] * h];
+  });
+  return tip;
+}
 function tabletUI(ctx, t) {
-  paper(ctx, TW, TH);
+  ctx.fillStyle = '#dfe3e6'; ctx.fillRect(0, 0, TW, TH);
   // App bar
-  ctx.fillStyle = '#23272a'; ctx.fillRect(0, 0, TW, 112);
-  ctx.fillStyle = C.orange; ctx.fillRect(0, 112, TW, 4);
-  logoW(ctx, 70, 58, 210);
-  mono(ctx, 'Biometric PAD', 312, 68, 'rgba(255,255,255,0.6)', 24);
-  ctx.fillStyle = C.orange; ctx.beginPath(); ctx.arc(TW - 218, 60, 8, 0, TAU); ctx.fill();
-  mono(ctx, 'conectado', TW - 70, 68, '#ffffff', 24, 'right');
-
-  // The document's signature card
-  const CX = 70, CY = 148, CW = TW - 140, CH = 490;
-  ctx.fillStyle = C.card; rr(ctx, CX, CY, CW, CH, 14); ctx.fill();
-  ctx.strokeStyle = C.line; ctx.lineWidth = 2; rr(ctx, CX, CY, CW, CH, 14); ctx.stroke();
-  mono(ctx, 'CONTRATO Nº 2048', CX + 36, CY + 56, C.orangeDeep, 22, 'left', 500);
-  mono(ctx, 'Firma del cliente', CX + 36, CY + 96, C.text, 26, 'left', 500);
-  ctx.fillStyle = C.orange; rr(ctx, CX + CW - 236, CY + 30, 200, 52, 26); ctx.fill();
-  mono(ctx, 'firmar aquí', CX + CW - 136, CY + 64, '#ffffff', 21, 'center', 500);
-  const SX = CX + 60, SY = CY + 120, SW = CW - 120, SH = 330;
-  ctx.strokeStyle = 'rgba(43,47,51,0.4)'; ctx.lineWidth = 2; ctx.setLineDash([3, 10]);
-  ctx.beginPath(); ctx.moveTo(SX + 40, SY + SH * .82); ctx.lineTo(SX + SW - 40, SY + SH * .82); ctx.stroke(); ctx.setLineDash([]);
-  mono(ctx, '×', SX + 14, SY + SH * .82 + 9, C.muted, 30);
+  ctx.fillStyle = '#16191b'; ctx.fillRect(0, 0, TW, 88);
+  logoW(ctx, 56, 45, 160);
+  ctx.fillStyle = 'rgba(255,255,255,0.16)'; ctx.fillRect(244, 28, 1, 34);
+  ui(ctx, 'Firma biométrica', 266, 52, 19, 500, '#ffffff');
+  ctx.fillStyle = C.orange; rr(ctx, TW - 214, 33, 158, 30, 15); ctx.fill();
+  ui(ctx, 'Paso 2 de 3 · Firma', TW - 135, 53, 14, 600, '#16191b', 'center');
+  ctx.fillStyle = C.orange; ctx.fillRect(0, 88, TW * .66, 4);
 
   const cyc = t % 10;
   const useUser = userStrokes.length > 0;
-  let strokes;
-  if (useUser) strokes = userStrokes;
-  else {
-    // Written stroke after stroke at a steady hand's pace
-    let left = Math.floor(seg(cyc, .6, 5.2) * SIG_LEN);
-    strokes = SIG.map(s => { const n = Math.min(s.length, left); left -= n; return s.slice(0, n); })
-      .map(s => s.map(([x, y, pr]) => ({ x: SX + x * SW, y: SY + y * SH * .9, p: pr })));
-  }
-  const fade = useUser ? 1 : 1 - seg(cyc, 9.2, 9.9);
-  ctx.globalAlpha = fade; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  strokes.forEach(s => {
-    // a faint bleed of ink under the line, then the line itself, thin to full with the pressure
-    for (let pass = 0; pass < 2; pass++) {
-      for (let i = 1; i < s.length; i++) {
-        const w = 1.8 + s[i].p * 5.2;
-        ctx.strokeStyle = pass ? '#1d2f4a' : 'rgba(29,47,74,0.12)';
-        ctx.lineWidth = pass ? w : w + 2.4;
-        ctx.beginPath(); ctx.moveTo(s[i - 1].x, s[i - 1].y); ctx.lineTo(s[i].x, s[i].y); ctx.stroke();
-      }
-    }
-  });
-  const live = strokes.filter(s => s.length).at(-1);
-  const drawingNow = useUser ? (clockNow() - lastInk < 0.15) : (cyc > .6 && cyc < 5.2);
-  if (live && live.length && drawingNow) {
-    const tip = live.at(-1);
-    const g = ctx.createRadialGradient(tip.x, tip.y, 0, tip.x, tip.y, 26);
-    g.addColorStop(0, 'rgba(243,146,0,0.55)'); g.addColorStop(1, 'rgba(243,146,0,0)');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(tip.x, tip.y, 26, 0, TAU); ctx.fill();
-  }
-  ctx.globalAlpha = 1;
+  const p = useUser ? 0 : eInOut(seg(cyc, .6, 4.6));
+  const signed = !useUser && cyc > 5.2 && cyc < 9.4;
+  const fade = useUser ? 1 : 1 - seg(cyc, 9.3, 9.9);
 
-  // Live reading of the signature: pressure over time
-  const flat = strokes.flat();
-  const W0 = 70, W1 = TW - 70, base = 772, n = 90;
-  mono(ctx, 'PRESIÓN', W0, 682, C.muted, 20);
-  mono(ctx, `${String(flat.length).padStart(4, '0')} puntos`, W1, 682, C.muted, 20, 'right');
-  for (let i = 0; i < n; i++) {
-    const src = flat[Math.floor(i / n * flat.length)];
-    const h = src ? 6 + src.p * 52 : 3;
-    ctx.fillStyle = src ? `rgba(243,146,0,${(.6 + src.p * .4) * fade})` : 'rgba(43,47,51,0.14)';
-    ctx.fillRect(W0 + i * (W1 - W0) / n, base - h, 7, h);
+  // The document: the contract's last page, real text, its signature block
+  const D = { x: 56, y: 120, w: 560, h: 750 };
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(D.x, D.y, D.w, D.h);
+  ctx.fillStyle = 'rgba(31,35,38,0.10)'; ctx.fillRect(D.x, D.y + D.h, D.w, 2);
+  ui(ctx, 'Contrato de prestación de servicios', D.x + 40, D.y + 52, 15, 600, '#1f2326');
+  ui(ctx, 'Ref. SHC-2048', D.x + D.w - 40, D.y + 52, 12, 500, '#5f686d', 'right');
+  ctx.fillStyle = C.orange; ctx.fillRect(D.x + 40, D.y + 70, 48, 3); ctx.fillStyle = 'rgba(31,35,38,0.18)'; ctx.fillRect(D.x + 88, D.y + 71, D.w - 128, 1);
+  let y = D.y + 104;
+  CLAUSES.forEach(([h, txt]) => {
+    ui(ctx, h, D.x + 40, y, 11.5, 700, '#1f2326'); y += 22;
+    y = wrapText(ctx, txt, D.x + 40, y, D.w - 80, 19, 12, 400, '#353c41') + 14;
+  });
+  ui(ctx, 'Y en prueba de conformidad, firman el presente documento.', D.x + 40, y + 6, 12, 400, '#353c41');
+  // two signature blocks: the company (signed) and the client (being signed)
+  const SB = D.y + D.h - 210;
+  [['Por Smart Human Capital', 'Andrés Rivas · Director general', true], ['El cliente', 'María López', false]].forEach(([who, name, done], k) => {
+    const x = D.x + 40 + k * ((D.w - 80) / 2 + 10), w = (D.w - 80) / 2 - 10;
+    ui(ctx, who, x, SB, 12, 600, '#1f2326');
+    if (done) writtenSignature(ctx, x + 6, SB + 22, 190, 78, 1, '#22324a', SCRIBBLE.company, 2.4);
+    else if (signed) writtenSignature(ctx, x + 6, SB + 20, 200, 80, eOut(seg(cyc, 5.2, 6)), '#16263d', SCRIBBLE.client, 2.4);
+    else { ctx.fillStyle = 'rgba(243,146,0,0.14)'; ctx.fillRect(x, SB + 20, w, 80); ctx.fillStyle = C.orange; ctx.fillRect(x, SB + 20, 3, 80); }
+    ctx.fillStyle = 'rgba(31,35,38,0.35)'; ctx.fillRect(x, SB + 102, w, 1);
+    ui(ctx, name, x, SB + 124, 12, 400, '#353c41');
+  });
+  ui(ctx, '7 de octubre de 2026', D.x + 40, D.y + D.h - 30, 11, 400, '#5f686d');
+
+  // Right column: who signs, the pad
+  const R = PAD.x;
+  ui(ctx, 'Firme en el recuadro', R, 150, 21, 600, '#1f2326');
+  ui(ctx, 'María López  ·  DNI ••••4521L  ·  identidad verificada', R, 180, 14, 400, '#4a5358');
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(PAD.x, PAD.y, PAD.w, PAD.h);
+  ctx.strokeStyle = signed ? 'rgba(46,160,90,0.8)' : 'rgba(31,35,38,0.22)'; ctx.lineWidth = signed ? 2 : 1.5; ctx.strokeRect(PAD.x, PAD.y, PAD.w, PAD.h);
+  if (!signed) { ctx.strokeStyle = C.orange; ctx.lineWidth = 3; const m = 22; [[PAD.x, PAD.y, 1, 1], [PAD.x + PAD.w, PAD.y, -1, 1], [PAD.x, PAD.y + PAD.h, 1, -1], [PAD.x + PAD.w, PAD.y + PAD.h, -1, -1]].forEach(([cx, cy, sx, sy]) => { ctx.beginPath(); ctx.moveTo(cx + sx * m, cy); ctx.lineTo(cx, cy); ctx.lineTo(cx, cy + sy * m); ctx.stroke(); }); }
+  ctx.strokeStyle = 'rgba(31,35,38,0.45)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(PAD.x + 36, PAD.y + PAD.h - 70); ctx.lineTo(PAD.x + PAD.w - 36, PAD.y + PAD.h - 70); ctx.stroke();
+  ui(ctx, 'Firma', PAD.x + 36, PAD.y + PAD.h - 44, 12, 500, '#6b7479');
+
+  // the signature: a real hand, or the visitor's own strokes
+  ctx.globalAlpha = fade;
+  let tip = null;
+  if (useUser) {
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    userStrokes.forEach(st => { for (let k = 1; k < st.length; k++) { ctx.strokeStyle = '#16263d'; ctx.lineWidth = 1.4 + st[k].p * 3.2; ctx.beginPath(); ctx.moveTo(st[k - 1].x, st[k - 1].y); ctx.lineTo(st[k].x, st[k].y); ctx.stroke(); } });
+  } else tip = writtenSignature(ctx, PAD.x + 70, PAD.y + 40, PAD.w - 150, PAD.h - 110, p, '#16263d', SCRIBBLE.client, 3.8);
+  ctx.globalAlpha = 1;
+  if (tip) penTip = tip;
+  if (tip && p < 1) {
+    const g = ctx.createRadialGradient(tip[0], tip[1], 0, tip[0], tip[1], 24);
+    g.addColorStop(0, 'rgba(243,146,0,0.45)'); g.addColorStop(1, 'rgba(243,146,0,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(tip[0], tip[1], 24, 0, TAU); ctx.fill();
   }
-  // Verified
-  const v = useUser ? 0 : eOut(seg(cyc, 5.5, 6.1)) * (1 - seg(cyc, 9.2, 9.9));
-  if (v > 0) {
-    ctx.globalAlpha = v;
-    ctx.fillStyle = 'rgba(243,146,0,0.16)'; rr(ctx, W0, 800, 470, 76, 38); ctx.fill();
-    check(ctx, W0 + 46, 838, 40, C.orangeDeep);
-    mono(ctx, 'Firma verificada · 0,21 s', W0 + 84, 847, C.text, 24, 'left', 500);
-    ctx.globalAlpha = 1;
+
+  // live biometric reading
+  const MY = PAD.y + PAD.h + 34;
+  const flatN = useUser ? userStrokes.flat().length : Math.round(p * 472);
+  const stat = (label, val, x) => { ui(ctx, label, x, MY, 12, 500, '#5f686d'); ui(ctx, val, x, MY + 28, 20, 600, '#1f2326'); };
+  stat('Puntos capturados', String(flatN), R);
+  stat('Presión media', flatN ? Math.round(34 + p * 6) + ' %' : '—', R + 190);
+  stat('Velocidad', flatN ? (1.8 + p * .4).toFixed(1).replace('.', ',') + ' cm/s' : '—', R + 360);
+  const TY = MY + 52, TH2 = 40, n = 160;
+  ctx.strokeStyle = 'rgba(31,35,38,0.08)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(R, TY + TH2); ctx.lineTo(R + PAD.w, TY + TH2); ctx.stroke();
+  ctx.strokeStyle = C.orange; ctx.lineWidth = 2.2; ctx.beginPath();
+  const shown = Math.floor(n * (useUser ? 1 : p));
+  for (let k = 0; k <= shown; k++) {
+    const v = .35 + .3 * Math.sin(k * .55) * Math.sin(k * .13 + 1) + .2 * Math.sin(k * 1.7);
+    const xx = R + k * PAD.w / n, yy = TY + TH2 - Math.max(.05, Math.min(1, v)) * TH2;
+    k ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy);
   }
-  if (useUser) mono(ctx, 'tu firma', W1, 847, C.orangeDeep, 24, 'right');
+  ctx.globalAlpha = fade; ctx.stroke(); ctx.globalAlpha = 1;
+
+  // the evidence the signature is sealed with
+  const EY = 708, sealed = signed ? eOut(seg(cyc, 5.4, 6)) : 0;
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(R, EY, PAD.w, 52);
+  ctx.fillStyle = signed ? C.orange : 'rgba(31,35,38,0.18)'; ctx.fillRect(R, EY, 3, 52);
+  lockIcon(ctx, R + 26, EY + 33, signed ? C.orangeDeep : '#6b7479');
+  [['Sellado de tiempo', signed ? '10:42:07' : '—'], ['Certificado', signed ? 'cualificado' : '—'], ['Huella SHA-256', signed ? '3f9a·e21c·07b4' : '—']].forEach(([k, v], i) => {
+    const xx = R + 52 + i * 170;
+    ui(ctx, k, xx, EY + 22, 11, 500, '#5f686d');
+    ctx.globalAlpha = signed ? sealed : 1; ui(ctx, v, xx, EY + 40, 13, 600, '#1f2326'); ctx.globalAlpha = 1;
+  });
+
+  // actions
+  const BY = 790, BH = 52, BW2 = 232, BW1 = 124, BR = R + PAD.w, B2 = BR - BW2, B1 = B2 - 12 - BW1;
+  ctx.strokeStyle = 'rgba(31,35,38,0.22)'; ctx.lineWidth = 1.5; ctx.strokeRect(B1, BY, BW1, BH);
+  ui(ctx, 'Borrar', B1 + BW1 / 2, BY + 33, 15, 500, '#4a5358', 'center');
+  const okA = signed ? eOut(seg(cyc, 5.2, 5.7)) : 0;
+  ctx.fillStyle = signed ? `rgb(${243 - 197 * okA | 0},${146 + 14 * okA | 0},${0 + 90 * okA | 0})` : (p > .98 ? C.orange : 'rgba(243,146,0,0.5)');
+  ctx.fillRect(B2, BY, BW2, BH);
+  if (signed) {
+    // the tick and the label centred together in the button
+    ctx.font = `600 15px ${UIF}`; const gw = 22 + 10 + ctx.measureText('Firma verificada').width, gx = B2 + (BW2 - gw) / 2;
+    check(ctx, gx + 11, BY + BH / 2, 22, '#ffffff'); ui(ctx, 'Firma verificada', gx + 32, BY + 33, 15, 600, '#ffffff');
+  }
+  else ui(ctx, 'Confirmar firma', B2 + BW2 / 2, BY + 33, 15, 600, '#ffffff', 'center');
+
+  // the pen's shadow on the glass
+  if (penPose) {
+    const { pos, dir, light } = penPose, toCv = (x, y) => [(x / 2.17 + .5) * TW, (.5 - y / 1.532) * TH];
+    const at = (u) => { const px = pos.x + dir.x * u, py = pos.y + dir.y * u, h = Math.max(0, pos.z + dir.z * u - .036); return toCv(px - light.x / light.z * h, py - light.y / light.z * h); };
+    ctx.save(); ctx.lineCap = 'round';
+    [[0, .14, 2, .38, 5], [.1, .6, 7, .22, 11], [.5, 1.25, 14, .13, 16]].forEach(([u0, u1, blur, a, lw]) => {
+      ctx.filter = `blur(${blur}px)`; ctx.strokeStyle = `rgba(20,24,28,${a})`; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.moveTo(...at(u0)); ctx.lineTo(...at(u1)); ctx.stroke();
+    });
+    ctx.restore();
+  }
 }
 
 /* ================= phone: the security status app, a calm activity log ================= */
@@ -326,11 +477,11 @@ scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.7;
 
 const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 80);
-const HOME = new THREE.Vector3(0.55, 1.7, 5.1);
+const HOME = new THREE.Vector3(0.2, 1.6, 5.1);
 const START = new THREE.Vector3(2.4, 3.0, 11);
 camera.position.copy(START);
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0.45, 1.1, 0.15);
+controls.target.set(0.05, 1.2, 0);
 controls.enableDamping = true; controls.dampingFactor = 0.045; controls.enablePan = false;
 controls.enableZoom = false; // the wheel scrolls the page
 controls.minPolarAngle = Math.PI * 0.3; controls.maxPolarAngle = Math.PI * 0.52;
@@ -444,7 +595,7 @@ const panels = [];
 /* Devices: brushed aluminium, black glass front, a screen that emits its own light */
 const shellMat = new THREE.MeshPhysicalMaterial({ transparent: true, color: '#b9bfc4', metalness: 1, roughness: .32, clearcoat: .25, clearcoatRoughness: .3 });
 const bezelMat = new THREE.MeshPhysicalMaterial({ transparent: true, color: '#08090a', metalness: .1, roughness: .1, clearcoat: 1 });
-const glassMat = new THREE.MeshPhysicalMaterial({ color: '#ffffff', metalness: 0, roughness: .03, clearcoat: 1, clearcoatRoughness: .02, transparent: true, opacity: .04, depthWrite: false });
+const glassMat = new THREE.MeshPhysicalMaterial({ color: '#ffffff', metalness: 0, roughness: .03, clearcoat: 1, clearcoatRoughness: .02, transparent: true, opacity: .04, depthWrite: false, envMapIntensity: .3 });
 const btnMat = new THREE.MeshStandardMaterial({ transparent: true, color: '#aab0b5', metalness: 1, roughness: .3 });
 function device(w, h, d, r, sw, sh, texW, texH) {
   const g = new THREE.Group();
@@ -474,11 +625,75 @@ function device(w, h, d, r, sw, sh, texW, texH) {
   return { group: g, screen: scr, ctx: c.getContext('2d'), tex };
 }
 const tablet = device(2.3, 1.66, .06, .16, 2.17, 1.532, TW, TH);
+const pen = (() => {
+  const g = new THREE.Group(), L = 1.25, R0 = .03;
+  const bodyM = new THREE.MeshPhysicalMaterial({ color: '#2a2e32', metalness: .35, roughness: .28, clearcoat: .8, clearcoatRoughness: .15 });
+  const metalM = new THREE.MeshStandardMaterial({ color: '#c3c8cc', metalness: 1, roughness: .25 });
+  const bandM = new THREE.MeshStandardMaterial({ color: C.orange, metalness: .2, roughness: .35 });
+  // drawn last and over everything: the pen is always in front of the screen
+  [bodyM, metalM, bandM].forEach(m => { m.transparent = true; });
+  const add = (geo, m, y) => { const o = new THREE.Mesh(geo, m); o.position.y = y; o.renderOrder = 50 + g.children.length; g.add(o); };
+  add(new THREE.ConeGeometry(R0 * .8, .09, 32), metalM, .045); // the nib cone, turned to point down
+  g.children[0].rotation.x = Math.PI;
+  add(new THREE.CylinderGeometry(R0 * .82, R0 * .95, .06, 32), metalM, .12);
+  add(new THREE.CylinderGeometry(R0, R0, L - .3, 32), bodyM, .15 + (L - .3) / 2);
+  add(new THREE.CylinderGeometry(R0 * 1.004, R0 * 1.004, .05, 32), bandM, L - .3);
+  add(new THREE.CylinderGeometry(R0, R0, .12, 32), bodyM, L - .09);
+  add(new THREE.SphereGeometry(R0, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), bodyM, L - .03);
+  // its parts still hide one another: the depth is cleared just before the first one is drawn
+  g.children[0].onBeforeRender = (r) => r.clearDepth();
+  tablet.group.add(g);
+  return g;
+})();
+// held by a right hand: leaning back towards the viewer and to the right
+const PEN_WRITE = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(.45, .32, .84).normalize());
+const PEN_REST = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(.2, .92, .3).normalize());
+const SURF = .036;
+const toLocal = (u, v, lift = 0) => new THREE.Vector3((u / TW - .5) * 2.17, (.5 - v / TH) * 1.532, SURF + lift);
+const penTarget = new THREE.Vector3(), penQ = new THREE.Quaternion();
+let penLast = 0;
+const tabQ = new THREE.Quaternion(), PEN_AXIS = new THREE.Vector3(), PEN_LIGHT = new THREE.Vector3();
+function penFrame(T) {
+  const cyc = T % 10, useUser = userStrokes.length > 0;
+  const st0 = SCRIBBLE.client[0][0], start = toLocal(PAD.x + 70 + st0[0] * (PAD.w - 150), PAD.y + 40 + st0[1] * (PAD.h - 110), .09);
+  const btn = [PAD.x + PAD.w - 116, 816], rest = new THREE.Vector3(1.4, -.45, .2);
+  let k = .14, q = PEN_WRITE;
+  if (useUser) { penTarget.copy(rest); q = PEN_REST; k = .06; }
+  else if (cyc < .6) { penTarget.copy(start); k = .1; }
+  else if (cyc < 4.6) { if (penTip) penTarget.copy(toLocal(penTip[0], penTip[1], 0)); k = .55; }
+  else if (cyc < 5.0) { penTarget.copy(toLocal(btn[0], btn[1], .12)); k = .12; }
+  else if (cyc < 5.2) { penTarget.copy(toLocal(btn[0], btn[1], .005)); k = .3; }
+  else if (cyc < 5.6) { penTarget.copy(toLocal(btn[0], btn[1], .14)); k = .12; }
+  else if (cyc < 9.4) { penTarget.copy(rest); q = PEN_REST; k = .05; }
+  else { penTarget.copy(start); k = .06; }
+  // frame-rate independent easing
+  const dt = Math.min(.1, T - penLast) * 60; penLast = T;
+  pen.position.lerp(penTarget, 1 - Math.pow(1 - k, dt));
+  penQ.copy(q); pen.quaternion.slerp(penQ, 1 - Math.pow(.94, dt));
+  // a soft light from the upper left, so the shadow falls beside the barrel
+  penPose = { pos: pen.position, dir: PEN_AXIS.set(0, 1, 0).applyQuaternion(pen.quaternion), light: PEN_LIGHT.set(-.25, .6, 1) };
+}
 const phone = device(.78, 1.6, .075, .16, .716, 1.528, PW, PH);
 // Slightly crossed, with air between them
-const TPOS = new THREE.Vector3(-.6, 1.22, -.25), PPOS = new THREE.Vector3(1.65, .98, .7);
-tablet.group.position.copy(TPOS); tablet.group.rotation.set(-.12, .5, .03);
-phone.group.position.copy(PPOS); phone.group.rotation.set(-.06, -.32, -.09);
+// The Biometric PAD alone, large and centred: the product, to sign on (the phone is kept out of view)
+const TPOS = new THREE.Vector3(0, 1.25, 0), PPOS = new THREE.Vector3(1.65, .98, .7);
+tablet.group.position.copy(TPOS); tablet.group.rotation.set(-.16, .14, .01);
+phone.group.position.copy(PPOS); phone.group.rotation.set(-.06, -.32, -.09); phone.group.visible = false;
+
+/* The process, step by step, in a straight column beside the tablet */
+const STEPS = [...document.querySelectorAll('.step')];
+const stepSt = document.getElementById('step-st'), stepVal = document.getElementById('step-val'), stepBar = document.getElementById('step-bar');
+function cardsFrame(T) {
+  const cyc = T % 10, useUser = userStrokes.length > 0, out = useUser ? 0 : seg(cyc, 9.3, 9.8);
+  const p = useUser ? 1 : eInOut(seg(cyc, .6, 4.6));
+  const n = useUser ? userStrokes.flat().length : Math.round(p * 472);
+  const show = [useUser ? 1 : seg(cyc, .1, .7), useUser ? 1 : seg(cyc, .8, 1.4), useUser ? 0 : seg(cyc, 5.5, 6.1)];
+  STEPS.forEach((el, k) => { const a = eOut(show[k]) * (1 - out); el.style.opacity = a.toFixed(3); el.style.transform = `translateY(${((1 - eOut(show[k])) * 10).toFixed(1)}px)`; });
+  stepVal.textContent = `${n} puntos · presión ${n ? Math.round(34 + p * 6) : 0} %`;
+  stepSt.textContent = p >= 1 ? 'completado' : 'en curso';
+  stepBar.style.transform = `scaleX(${p.toFixed(3)})`;
+}
+let wideView = true;
 
 /* Light */
 scene.add(new THREE.HemisphereLight('#ffffff', '#aeb8bc', .6));
@@ -556,7 +771,7 @@ function hitTablet(e) {
   const hit = ray.intersectObject(tablet.screen)[0];
   if (!hit) return null;
   const x = hit.uv.x * TW, y = (1 - hit.uv.y) * TH;
-  return (y > 220 && y < 600 && x > 110 && x < TW - 110) ? { x, y } : null;
+  return (x > PAD.x + 8 && x < PAD.x + PAD.w - 8 && y > PAD.y + 8 && y < PAD.y + PAD.h - 8) ? { x, y } : null;
 }
 renderer.domElement.addEventListener('pointerdown', e => {
   const p = hitTablet(e); if (!p) return;
@@ -584,6 +799,14 @@ function fit() {
   finish.uniforms.res.value.set(w, h);
   camera.aspect = w / h;
   camera.fov = w / h < .9 ? 48 : 30;
+  wideView = w / h > 1.25;
+  // wide screens: closer, and the tablet drawn up beside the step column
+  const wasWide = HOME.z < 5;
+  if (wideView !== wasWide) {
+    const dx = wideView ? -.12 : 0, dz = wideView ? 4.25 : 5.1;
+    camera.position.x += (dx + .2) - HOME.x; camera.position.z += dz - HOME.z;
+    HOME.set(dx + .2, 1.6, dz); controls.target.set(dx + .05, 1.2, 0);
+  }
   camera.updateProjectionMatrix();
   const visH = 2 * CODE_DIST * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), visW = visH * camera.aspect;
   const bandH = visH, bandW = bandH * (CODE_W / CODE_H);
@@ -606,6 +829,8 @@ function frame() {
   if (frameN % 2 === 0) {
     if (frameN % 4 === 0) { drawCode(T, Math.min(.2, T - codeLast)); codeLast = T; codeTex.needsUpdate = true; }
     tabletUI(tablet.ctx, T); roundScreen(tablet.ctx, TW, TH, 54); tablet.tex.needsUpdate = true;
+    cardsFrame(T);
+    if (userStrokes.length === 0 && T % 10 < .6) penTip = null;
     phoneUI(phone.ctx, T); island(phone.ctx); roundScreen(phone.ctx, PW, PH, 78); phone.tex.needsUpdate = true;
   }
 
@@ -625,6 +850,7 @@ function frame() {
     phone.group.position.y = PPOS.y + Math.sin(T * .45 + 1.7) * .04;
   }
 
+  penFrame(T);
   controls.update();
   if (frameN % 2 === 0) renderContactShadow();
   finish.uniforms.time.value = T;

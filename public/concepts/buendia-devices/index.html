@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Buendía Travel — diseño digital y campañas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500;600&family=Poppins:wght@300;400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<style>
+/* A pale studio; Fuga Haus's quiet type over it */
+:root {
+  --ground: #c9d6e0;
+  --ink: #1c2023;
+  --soft: rgba(28, 32, 35, 0.55);
+  --orange: #5aa83a;
+  --display: 'Jura', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+html, body { height: 100%; margin: 0; }
+body { background: var(--ground); color: var(--ink); overflow: hidden; }
+#stage { position: fixed; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
+#stage.on { opacity: 1; }
+#stage canvas { display: block; width: 100%; height: 100%; }
+.label, .hint { position: fixed; top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; color: rgba(255,255,255,0.85); text-shadow: 0 1px 8px rgba(0,0,0,0.45); pointer-events: none; }
+.label { left: 24px; }
+.hint { right: 24px; transition: opacity .6s; }
+.line { position: fixed; left: 24px; bottom: 22px; margin: 0; color: #ffffff; text-shadow: 0 2px 18px rgba(0,0,0,0.5); font-family: var(--display); font-weight: 300; font-size: clamp(22px, 3vw, 40px); line-height: 1.05; letter-spacing: 0.01em; pointer-events: none; }
+.line span { color: #8fd36a; }
+@media (max-width: 640px) {
+  .hint { display: none; }
+  .label { left: 16px; top: 14px; }
+  .line { left: 16px; bottom: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+<p class="label">Concepto · Diseño digital y campañas en redes</p>
+<p class="hint" id="hint">arrastra para girar</p>
+<p class="line">Europa empieza <span>aquí.</span></p>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
+import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { GroundedSkybox } from 'three/addons/objects/GroundedSkybox.js';
+
+/* Buendía Travel's palette: its green, graphite, white. */
+const C = { paper: '#f4f5f3', card: '#ffffff', line: 'rgba(35,39,42,0.12)', text: '#23272a', muted: '#6b7276', green: '#66b944', greenDeep: '#4f9a31', red: '#e0524f' };
+const POP = 'Poppins, sans-serif';
+const DISPLAY = 'Jura, sans-serif';
+const MONO = '"JetBrains Mono", ui-monospace, Menlo, monospace';
+const TAU = Math.PI * 2;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* The destinations, from Buendía's own pieces */
+const loadImg = (src) => new Promise((ok, fail) => { const i = new Image(); i.onload = () => ok(i); i.onerror = fail; i.src = src; });
+const IMG = Object.fromEntries(await Promise.all(['londres', 'lisboa', 'bruselas', 'granada', 'leones', 'costa'].map(async n => [n, await loadImg('../buendia-words/' + n + '.jpg')])));
+try {
+  await Promise.race([
+    Promise.all([`300 40px ${POP}`, `400 40px ${POP}`, `600 40px ${POP}`, `700 40px ${POP}`, `800 40px ${POP}`, `400 20px ${MONO}`].map(f => document.fonts.load(f))),
+    new Promise(r => setTimeout(r, 2000)),
+  ]);
+} catch (e) {}
+
+/* ================= helpers ================= */
+const clamp01 = x => Math.min(1, Math.max(0, x));
+const seg = (t, a, b) => clamp01((t - a) / (b - a));
+const eOut = x => 1 - Math.pow(1 - clamp01(x), 3);
+const eInOut = x => { x = clamp01(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function mono(ctx, txt, x, y, col = C.muted, size = 15, align = 'left', weight = 400) {
+  ctx.fillStyle = col; ctx.font = `${weight} ${size}px ${MONO}`; ctx.textAlign = align; ctx.fillText(txt, x, y); ctx.textAlign = 'left';
+}
+// Large photos come from mockups: a whisper of blur and film grain hides their pixels
+const grainTile = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); const d = x.createImageData(128, 128); for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 22; } x.putImageData(d, 0, 0); return c; })();
+function coverSoft(ctx, img, x, y, w, h, zoom = 1) {
+  ctx.save(); ctx.filter = 'blur(1.2px) saturate(1.08)'; cover(ctx, img, x, y, w, h, zoom); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.fillStyle = ctx.createPattern(grainTile, 'repeat'); ctx.fillRect(x, y, w, h); ctx.restore();
+}
+function cover(ctx, img, x, y, w, h, zoom = 1) {
+  const s = Math.max(w / img.width, h / img.height) * zoom, iw = img.width * s, ih = img.height * s;
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih); ctx.restore();
+}
+function pop(ctx, txt, x, y, size, weight = 400, col = C.text, align = 'left') {
+  ctx.fillStyle = col; ctx.font = `${weight} ${size}px ${POP}`; ctx.textAlign = align; ctx.fillText(txt, x, y); ctx.textAlign = 'left';
+}
+// Buendía's wordmark as on its website: "Buendía" bold, "Travel" light in green
+function wordmark(ctx, x, y, size, dark = true) {
+  ctx.font = `700 ${size}px ${POP}`; ctx.fillStyle = dark ? C.text : '#ffffff'; ctx.textAlign = 'left'; ctx.fillText('Buendía', x, y);
+  const w = ctx.measureText('Buendía').width;
+  ctx.font = `300 ${size}px ${POP}`; ctx.fillStyle = dark ? C.green : '#ffffff'; ctx.fillText('Travel', x + w + size * .2, y);
+}
+const paperCache = {};
+function paper(ctx, w, h) {
+  const key = w + 'x' + h;
+  if (!paperCache[key]) {
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    paperRaw(c.getContext('2d'), w, h);
+    paperCache[key] = c;
+  }
+  ctx.drawImage(paperCache[key], 0, 0);
+}
+function paperRaw(ctx, w, h) {
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, w, h);
+  // A very fine technical grid
+  ctx.strokeStyle = 'rgba(35,39,42,0.0)'; ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+}
+function check(ctx, x, y, s, col) {
+  ctx.strokeStyle = col; ctx.lineWidth = s * .16; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(x - s * .32, y + s * .02); ctx.lineTo(x - s * .08, y + s * .28); ctx.lineTo(x + s * .36, y - s * .24); ctx.stroke();
+}
+function shield(ctx, cx, cy, s, stroke, fill) {
+  ctx.save(); ctx.translate(cx, cy); ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(0, -s); ctx.bezierCurveTo(s * .5, -s * .76, s * .82, -s * .82, s * .82, -s * .82);
+  ctx.lineTo(s * .82, -s * .05); ctx.bezierCurveTo(s * .82, s * .55, s * .35, s * .88, 0, s);
+  ctx.bezierCurveTo(-s * .35, s * .88, -s * .82, s * .55, -s * .82, -s * .05);
+  ctx.lineTo(-s * .82, -s * .82); ctx.bezierCurveTo(-s * .82, -s * .82, -s * .5, -s * .76, 0, -s);
+  ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = stroke; ctx.lineWidth = s * .07; ctx.stroke();
+  ctx.restore();
+}
+
+/* ================= tablet: the Buendía website, a search for Europe and a booking ================= */
+const TW = 1280, TH = 904, PW = 600, PH = 1280;
+const CARDS = [
+  { img: 'londres', city: 'Londres', what: 'Paseo por el Támesis', price: 29 },
+  { img: 'lisboa', city: 'Lisboa', what: 'Barrios del tranvía 28', price: 24 },
+  { img: 'granada', city: 'Granada', what: 'La Alhambra al completo', price: 35 },
+  { img: 'bruselas', city: 'Bruselas', what: 'La Grand-Place y su historia', price: 19 },
+];
+function tabletUI(ctx, t) {
+  const cyc = t % 13;
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, TW, TH);
+  // Header
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, TW, 92);
+  wordmark(ctx, 56, 60, 34);
+  { ctx.font = `400 20px ${POP}`; let nx = TW - 56 - ctx.measureText('ES').width - 48;
+    ['Ofertas', 'Experiencias', 'Destinos'].forEach(n => { pop(ctx, n, nx, 58, 20, 400, C.muted, 'right'); nx -= ctx.measureText(n).width + 40; }); }
+  pop(ctx, 'ES', TW - 56, 58, 20, 600, C.text, 'right');
+  // Promo bar
+  ctx.fillStyle = '#23272a'; ctx.fillRect(0, 92, TW, 50);
+  ctx.fillStyle = C.green; ctx.beginPath(); ctx.arc(70, 117, 7, 0, TAU); ctx.fill();
+  pop(ctx, 'Verano en Europa · hasta ', 92, 125, 20, 400, '#ffffff');
+  ctx.font = `400 20px ${POP}`; const pw = ctx.measureText('Verano en Europa · hasta ').width;
+  pop(ctx, '-30 %', 92 + pw, 125, 20, 700, C.green);
+
+  // Hero: the destinations cross-fade slowly behind the line
+  const HY = 142, HH = 330;
+  // One destination behind the search, still: London on the Thames
+  coverSoft(ctx, IMG.londres, 0, HY, TW, HH, 1.04);
+  const sh = ctx.createLinearGradient(0, HY, 0, HY + HH); sh.addColorStop(0, 'rgba(20,24,28,0.15)'); sh.addColorStop(1, 'rgba(20,24,28,0.55)');
+  ctx.fillStyle = sh; ctx.fillRect(0, HY, TW, HH);
+  pop(ctx, 'Reserva actividades y', TW / 2, HY + 112, 52, 700, '#ffffff', 'center');
+  pop(ctx, 'excursiones únicas', TW / 2, HY + 174, 52, 700, '#ffffff', 'center');
+  // Search: the question, then "Europa" typed in
+  // One piece: a white field and the green button joined, a single rounded shape, centred
+  const BTN = 180, SW = 600, SX = (TW - SW - BTN) / 2, SY = HY + 214, SHh = 68;
+  ctx.save(); rr(ctx, SX, SY, SW + BTN, SHh, 12); ctx.clip();
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(SX, SY, SW, SHh);
+  ctx.restore();
+  const query = 'Europa';
+  const n = Math.floor(seg(cyc, 1.0, 2.4) * query.length);
+  if (n === 0) pop(ctx, '¿Dónde quieres pasar un Buendía?', SX + 28, SY + 44, 21, 400, '#9aa0a4');
+  else {
+    pop(ctx, query.slice(0, n), SX + 28, SY + 45, 24, 600, C.text);
+    if (cyc < 3.2 && Math.floor(t * 2) % 2) { ctx.font = `600 24px ${POP}`; ctx.fillStyle = C.text; ctx.fillRect(SX + 30 + ctx.measureText(query.slice(0, n)).width, SY + 22, 2, 30); }
+  }
+  const press = cyc > 2.8 && cyc < 3.1 ? .96 : 1;
+  // the button: square where it meets the field, rounded on the outside
+  ctx.save(); rr(ctx, SX, SY, SW + BTN, SHh, 12); ctx.clip();
+  ctx.fillStyle = press < 1 ? C.greenDeep : C.green; ctx.fillRect(SX + SW, SY, BTN, SHh);
+  ctx.restore();
+  pop(ctx, 'Buscar', SX + SW + BTN / 2, SY + SHh / 2 + 8, 24, 600, '#ffffff', 'center');
+
+  // Results: Europe's experiences, appearing one after another
+  const RY = 478;
+  // Before the search: the popular destinations, as on the real site; after it, the results for Europe.
+  // The page is never empty.
+  const results = cyc >= 3.4;
+  const show = results ? seg(cyc, 3.4, 3.8) : 1 - seg(cyc, 3.2, 3.4);
+  ctx.globalAlpha = show;
+  pop(ctx, results ? 'Experiencias en Europa' : 'Destinos más populares', 56, RY + 30, 30, 700, C.text);
+  pop(ctx, results ? '4 destinos · reserva al instante' : 'elegidos por nuestros viajeros', TW - 56, RY + 28, 18, 400, C.muted, 'right');
+  ctx.globalAlpha = 1;
+  const CW = (TW - 112 - 3 * 24) / 4, CH = 296, CY0 = RY + 52;
+  const picked = 1; // Lisboa
+  const lift = eOut(seg(cyc, 6.6, 7.1)) * (1 - seg(cyc, 11.5, 12));
+  CARDS.forEach((c, i) => {
+    const a = results ? eOut(seg(cyc, 3.5 + i * .2, 4.2 + i * .2)) : 1 - seg(cyc, 3.2, 3.4);
+    if (a <= 0) return;
+    const x = 56 + i * (CW + 24), y = CY0 + (1 - a) * 30 - (i === picked ? lift * 12 : 0);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = i === picked && lift > 0 ? `rgba(0,0,0,${.08 * lift})` : 'rgba(0,0,0,0)';
+    rr(ctx, x + 4, y + 14, CW, CH, 16); ctx.fill();
+    ctx.fillStyle = '#ffffff'; rr(ctx, x, y, CW, CH, 16); ctx.fill();
+    ctx.save(); rr(ctx, x, y, CW, 170, 16); ctx.clip(); cover(ctx, IMG[c.img], x, y, CW, 186); ctx.restore();
+    if (results) {
+    ctx.font = `700 18px ${POP}`; const bw = ctx.measureText('-30 %').width + 32;
+    ctx.fillStyle = C.green; rr(ctx, x + 16, y + 16, bw, 38, 19); ctx.fill();
+    pop(ctx, '-30 %', x + 16 + bw / 2, y + 41, 18, 700, '#ffffff', 'center');
+    }
+    pop(ctx, c.city, x + 22, y + 210, 24, 700, C.text);
+    pop(ctx, c.what, x + 22, y + 240, 17, 400, C.muted);
+    pop(ctx, 'desde', x + 22, y + 276, 17, 400, C.muted);
+    ctx.font = `400 17px ${POP}`; const dw = ctx.measureText('desde ').width;
+    pop(ctx, c.price + ' €', x + 22 + dw, y + 276, 24, 700, C.greenDeep);
+    if (i === picked && lift > 0) { ctx.strokeStyle = `rgba(102,185,68,${lift})`; ctx.lineWidth = 3; rr(ctx, x, y, CW, CH, 16); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+  });
+  // A pointer goes to Lisboa and books it
+  const px0 = SX + SW + 90, py0 = SY + SHh / 2, px1 = 56 + picked * (CW + 24) + CW * .62, py1 = CY0 + 120;
+  const m = eInOut(seg(cyc, 5.2, 6.6));
+  if (cyc > 2.2 && cyc < 11.6) {
+    const pxx = cyc < 5.2 ? px0 : px0 + (px1 - px0) * m, pyy = cyc < 5.2 ? py0 : py0 + (py1 - py0) * m;
+    ctx.save(); ctx.translate(pxx, pyy);
+    ctx.fillStyle = '#ffffff'; ctx.strokeStyle = C.text; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, 34); ctx.lineTo(9, 26); ctx.lineTo(16, 40); ctx.lineTo(22, 37); ctx.lineTo(15, 23); ctx.lineTo(27, 23); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.restore();
+  }
+  // Booking confirmed
+  const ok = eOut(seg(cyc, 7.6, 8.2)) * (1 - seg(cyc, 11.4, 12));
+  if (ok > 0) {
+    ctx.globalAlpha = ok;
+    const msg = 'Reserva confirmada · Lisboa · 2 personas';
+    ctx.font = `600 19px ${POP}`; const tw = ctx.measureText(msg).width + 24 + 32 + 16 + 28;
+    const bx = TW / 2 - tw / 2, by = TH - 70 - (1 - ok) * 20;
+    ctx.fillStyle = '#23272a'; rr(ctx, bx, by, tw, 60, 30); ctx.fill();
+    ctx.fillStyle = C.green; ctx.beginPath(); ctx.arc(bx + 24 + 16, by + 30, 16, 0, TAU); ctx.fill();
+    check(ctx, bx + 24 + 16, by + 29, 22, '#ffffff');
+    pop(ctx, msg, bx + 24 + 32 + 16, by + 37, 19, 600, '#ffffff');
+    ctx.globalAlpha = 1;
+  }
+  // A short fade through white where the loop starts again (end of the cycle → start of the next)
+  const wipe = Math.max(seg(cyc, 12.5, 12.95), 1 - seg(cyc, 0, .45));
+  if (wipe > 0) { ctx.fillStyle = `rgba(255,255,255,${eInOut(wipe) * .92})`; ctx.fillRect(0, 0, TW, TH); }
+}
+
+/* ================= phone: the summer campaign, as stories ================= */
+// A line of type arriving: rises and fades in from its own moment in the story (f: 0 → 1)
+function arrive(f, at) { const p = eOut(seg(f, at, at + .1)); return { a: p, dy: (1 - p) * 26 }; }
+// No shadow on the type: the veil over the photograph carries the contrast
+function shadowOn(ctx) { ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; }
+function shadowOff(ctx) { ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; }
+// Text sized to fill a width, as a poster headline
+function fitPop(ctx, txt, x, y, maxW, maxSize, weight, col, align = 'center') {
+  ctx.font = `${weight} ${maxSize}px ${POP}`; const w = ctx.measureText(txt).width;
+  const size = Math.min(maxSize, maxSize * maxW / w);
+  pop(ctx, txt, x, y, size, weight, col, align); return size;
+}
+// A green tag, slightly turned, as on Buendía's posts
+function tag(ctx, txt, cx, cy, size, rot, a) {
+  ctx.save(); ctx.globalAlpha = a; ctx.translate(cx, cy); ctx.rotate(rot);
+  ctx.font = `800 ${size}px ${POP}`; const w = ctx.measureText(txt).width;
+  ctx.fillStyle = C.green; rr(ctx, -w / 2 - size * .5, -size * .98, w + size * 1, size * 1.4, size * .2); ctx.fill();
+  pop(ctx, txt, 0, 0, size, 800, '#ffffff', 'center'); ctx.restore();
+}
+/* Every story on one layout: a small label, a light line, a bold line, a green tag.
+   Same sizes, same weights, same places, never closer than M to the screen's edges. */
+const M = 64, TXT_W = PW - M * 2;
+const STORY_T = { label: 24, line: 60, tag: 56 };
+function story(ctx, f, { label, light, bold, tagTxt }) {
+  let r = arrive(f, .04); ctx.globalAlpha = r.a;
+  ctx.font = `600 ${STORY_T.label}px ${POP}`;
+  // a little tracking on the label
+  const chars = [...label], gap = 3, lw = chars.reduce((w, ch) => w + ctx.measureText(ch).width + gap, -gap);
+  let x = PW / 2 - lw / 2; ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.textAlign = 'left';
+  chars.forEach(ch => { ctx.fillText(ch, x, 520 + r.dy); x += ctx.measureText(ch).width + gap; });
+  r = arrive(f, .1); ctx.globalAlpha = r.a; fitPop(ctx, light, PW / 2, 600 + r.dy, TXT_W, STORY_T.line, 300, '#ffffff');
+  r = arrive(f, .16); ctx.globalAlpha = r.a; fitPop(ctx, bold, PW / 2, 672 + r.dy, TXT_W, STORY_T.line, 700, '#ffffff');
+  ctx.globalAlpha = 1;
+  r = arrive(f, .26); tag(ctx, tagTxt, PW / 2, 800 + r.dy, STORY_T.tag, -.05, r.a);
+}
+const STORIES = [
+  { img: 'lisboa', draw: (ctx, f) => story(ctx, f, { label: 'ESTE VERANO', light: 'te ligas al', bold: 'vecino guapo.', tagTxt: 'PORTUGAL' }) },
+  { img: 'bruselas', draw: (ctx, f) => story(ctx, f, { label: 'VERANO EN EUROPA', light: 'viaja con', bold: 'hasta un -30 %', tagTxt: 'RESERVA YA' }) },
+  { img: 'leones', draw: (ctx, f) => story(ctx, f, { label: 'GRANADA', light: 'los 12 guardianes', bold: 'te esperan.', tagTxt: 'ALHAMBRA' }) },
+];
+
+/* The lion's water: a thin falling jet of light drops, with a soft sheen, from its mouth.
+   The mouth's place is computed from how the photograph is fitted to the screen. */
+function fountain(ctx, t) {
+  const img = IMG.leones, s = Math.max(PW / img.width, PH / img.height) * (1.06 + ((t % 4.2) / 4.2) * .08);
+  const ox = (PW - img.width * s) / 2, oy = (PH - img.height * s) / 2;
+  const mx = ox + 583 * s, my = oy + 214 * s, fall = PH - my;
+  ctx.save();
+  // the continuous sheen of the jet
+  const g = ctx.createLinearGradient(0, my, 0, my + fall);
+  g.addColorStop(0, 'rgba(235,245,255,0.95)'); g.addColorStop(1, 'rgba(235,245,255,0.3)');
+  ctx.shadowColor = 'rgba(255,255,255,0.8)'; ctx.shadowBlur = 10;
+  ctx.strokeStyle = g; ctx.lineWidth = 6; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(mx, my);
+  for (let y = 0; y <= fall; y += 20) ctx.lineTo(mx + Math.sin(y * .05 + t * 9) * 1.2 + y * .012, my + y);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  // drops running down it
+  for (let i = 0; i < 26; i++) {
+    const p = ((t * 1.6 + i / 26) % 1), y = my + p * p * fall;
+    ctx.fillStyle = `rgba(255,255,255,${.85 * (1 - p * .7)})`;
+    ctx.beginPath(); ctx.ellipse(mx + p * fall * .012 + Math.sin(i * 7) * 1.5, y, 2.4, 6 + p * 8, 0, 0, TAU); ctx.fill();
+  }
+  // a little splash where it lands
+  for (let i = 0; i < 6; i++) {
+    const p = ((t * 2 + i / 6) % 1), a = i / 6 * Math.PI;
+    ctx.fillStyle = `rgba(255,255,255,${.6 * (1 - p)})`;
+    ctx.beginPath(); ctx.arc(mx + fall * .012 + Math.cos(a) * p * 26, PH - 6 - Math.sin(a) * p * 18, 2.5, 0, TAU); ctx.fill();
+  }
+  ctx.restore();
+}
+function phoneUI(ctx, t) {
+  const D = 4.2, k = Math.floor(t / D) % STORIES.length, f = (t % D) / D, st = STORIES[k];
+  // the photograph, slowly closing in
+  coverSoft(ctx, IMG[st.img], 0, 0, PW, PH, 1.06 + f * .08);
+  const g = ctx.createLinearGradient(0, 0, 0, PH); g.addColorStop(0, 'rgba(0,0,0,0.35)'); g.addColorStop(.35, 'rgba(0,0,0,0)'); g.addColorStop(.6, 'rgba(0,0,0,0.05)'); g.addColorStop(1, 'rgba(0,0,0,0.6)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, PW, PH);
+  // progress of the stories
+  STORIES.forEach((_, i) => {
+    const x = 28 + i * ((PW - 56) / 3), w = (PW - 56) / 3 - 8;
+    ctx.fillStyle = 'rgba(255,255,255,0.35)'; rr(ctx, x, 86, w, 5, 3); ctx.fill();
+    ctx.fillStyle = '#ffffff'; rr(ctx, x, 86, w * (i < k ? 1 : i === k ? f : 0), 5, 3); ctx.fill();
+  });
+  // the account
+  ctx.fillStyle = C.green; ctx.beginPath(); ctx.arc(60, 140, 26, 0, TAU); ctx.fill();
+  pop(ctx, 'b', 60, 151, 32, 700, '#ffffff', 'center');
+  pop(ctx, 'buendia.travel', 100, 138, 22, 600, '#ffffff');
+  pop(ctx, 'Patrocinado', 100, 164, 17, 400, 'rgba(255,255,255,0.8)');
+  // the fountain in Granada runs: the lion's water falls in the photograph
+  // a darker veil behind the type, so every line reads on any photograph
+  const veil = ctx.createLinearGradient(0, 0, 0, PH);
+  veil.addColorStop(0, 'rgba(10,14,12,0.10)'); veil.addColorStop(.3, 'rgba(10,14,12,0.38)'); veil.addColorStop(.75, 'rgba(10,14,12,0.55)'); veil.addColorStop(1, 'rgba(10,14,12,0.7)');
+  ctx.fillStyle = veil; ctx.fillRect(0, 0, PW, PH);
+  // the campaign line: each story set as a poster, lines arriving one after another
+  st.draw(ctx, f);
+  // a swipe-up to book, and the likes adding up
+  const bob = Math.sin(t * 3) * 5;
+  // the label and a drawn arrow, centred together in the pill
+  {
+    const label = 'Reserva ahora', fs = 22, aw = 18, gap = 12;
+    ctx.font = `700 ${fs}px ${POP}`; const lw = ctx.measureText(label).width, total = lw + gap + aw;
+    const pw = total + 64, ph = 64, px = PW / 2 - pw / 2, py = PH - 150 + bob;
+    ctx.fillStyle = '#ffffff'; rr(ctx, px, py, pw, ph, ph / 2); ctx.fill();
+    const x0 = PW / 2 - total / 2, cy = py + ph / 2;
+    pop(ctx, label, x0, cy + fs * .36, fs, 700, C.text, 'left');
+    const ax = x0 + lw + gap + aw / 2;
+    ctx.strokeStyle = C.text; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(ax, cy + 10); ctx.lineTo(ax, cy - 10); ctx.moveTo(ax - 8, cy - 2); ctx.lineTo(ax, cy - 10); ctx.lineTo(ax + 8, cy - 2); ctx.stroke();
+  }
+  const likes = 1248 + Math.floor(t * 3.7);
+  pop(ctx, '♥ ' + likes.toLocaleString('es-ES'), PW - M, PH - 52, 20, 600, '#ffffff', 'right');
+  // hearts drifting up now and then
+  for (let i = 0; i < 4; i++) {
+    const p = ((t * .35 + i * .27) % 1);
+    ctx.globalAlpha = Math.sin(p * Math.PI) * .9;
+    pop(ctx, '♥', PW - 70 - Math.sin(p * 6 + i) * 18, PH - 90 - p * 360, 26 + i * 4, 400, i % 2 ? C.green : '#ffffff', 'center');
+  }
+  ctx.globalAlpha = 1;
+}
+function roundScreen(ctx, w, h, r) {
+  ctx.save(); ctx.globalCompositeOperation = 'destination-in';
+  rr(ctx, 0, 0, w, h, r); ctx.fillStyle = '#000'; ctx.fill(); ctx.restore();
+}
+function island(ctx) { ctx.fillStyle = '#050607'; rr(ctx, PW / 2 - 70, 28, 140, 40, 20); ctx.fill(); }
+
+/* ================= 3D scene ================= */
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+stage.appendChild(renderer.domElement);
+const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.7;
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 80);
+const HOME = new THREE.Vector3(0.55, 2.95, 5.0); // a little below the devices, looking up at them
+const START = new THREE.Vector3(1.2, 3.1, 10);
+camera.position.copy(START);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0.45, 3.62, 0.15); // eye level: the palazzi behind, the ground far below the devices
+controls.enableDamping = true; controls.dampingFactor = 0.045; controls.enablePan = false;
+controls.enableZoom = false; // the wheel scrolls the page
+controls.minPolarAngle = Math.PI * 0.5; controls.maxPolarAngle = Math.PI * 0.58;
+controls.minAzimuthAngle = -0.28; controls.maxAzimuthAngle = 0.28; // stays on the palazzi
+renderer.domElement.style.touchAction = 'pan-y'; // phones: vertical swipes scroll the page
+
+/* A European square on a warm afternoon: a Lisbon street far behind, out of focus as in a
+   photograph with shallow depth, and the devices standing on calçada portuguesa, the white
+   cobbles with dark waves of Lisbon's squares, fading into the haze */
+const HAZE = '#e9dfd0';
+// Backdrops: Palermo (the chosen one) and Amsterdam, picked with ?bg=bridge
+const BG_Q = new URLSearchParams(location.search);
+const BGS = { palermo: { file: 'plaza-palermo.jpg', rot: 1.95, ground: true }, bridge: { file: 'plaza-bridge.jpg', rot: 3.25, ground: false } };
+const BG = BGS[BG_Q.get('bg')] || BGS.bridge; // Amsterdam by default
+const plazaTex = await new THREE.TextureLoader().loadAsync(BG.file);
+plazaTex.mapping = THREE.EquirectangularReflectionMapping; plazaTex.colorSpace = THREE.SRGBColorSpace; plazaTex.anisotropy = maxAniso;
+const sky = new GroundedSkybox(plazaTex, 4.4, 60);
+const ROT = BG_Q.has('rot') ? +BG_Q.get('rot') : BG.rot;
+sky.position.y = 4.4 - .01; sky.rotation.y = ROT;
+// The photograph as a plain sphere around the scene, exactly as shot: nothing is flattened
+// onto a ground, so railings and façades close to the camera stay straight
+// (?ground brings back the ground-projected version)
+if (BG.ground || BG_Q.has('ground')) scene.add(sky);
+else { scene.background = plazaTex; scene.backgroundRotation.y = -ROT; scene.environmentRotation.y = -ROT; }
+scene.environment = pmrem.fromEquirectangular(plazaTex).texture;
+scene.environmentIntensity = 1;
+const backdrop = new THREE.Mesh(new THREE.SphereGeometry(80, 48, 24), new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, fog: false,
+  uniforms: { top: { value: new THREE.Color('#8fb6d6') }, hor: { value: new THREE.Color('#f3e6d2') } },
+  vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: 'uniform vec3 top; uniform vec3 hor; varying vec3 vP; void main(){ float h = smoothstep(0.0, 0.5, vP.y); gl_FragColor = vec4(mix(hor, top, h), 1.0); }',
+}));
+backdrop.visible = false;
+const streetTex = (() => {
+  const W = 1600, H = 700, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  x.fillStyle = HAZE; x.fillRect(0, 0, W, H);
+  x.filter = 'blur(16px) saturate(1.05)';
+  cover(x, IMG.lisboa, -60, -60, W + 120, H + 120);
+  x.filter = 'none';
+  // melt into the haze at the bottom, where the square meets the street
+  // the lower part dissolves away, so the square's haze shows through without a seam
+  x.globalCompositeOperation = 'destination-out';
+  const g = x.createLinearGradient(0, H * .5, 0, H * .82); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,1)');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.globalCompositeOperation = 'source-over';
+  // a soft warm sun from the upper left
+  const sun = x.createRadialGradient(W * .22, H * .1, 0, W * .22, H * .1, W * .5);
+  sun.addColorStop(0, 'rgba(255,240,215,0.55)'); sun.addColorStop(1, 'rgba(255,240,215,0)');
+  x.fillStyle = sun; x.fillRect(0, 0, W, H);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const street = new THREE.Mesh(new THREE.PlaneGeometry(44, 19.25), new THREE.MeshBasicMaterial({ map: streetTex, fog: false, depthWrite: false, transparent: true }));
+street.position.set(.4, 3.4, -13);
+
+/* The square: a row of Lisbon-style buildings around it, painted facades with framed
+   windows, shutters, iron balconies, arched doors, cornices and terracotta roofs */
+function facadeTex(base, floors, bays, opts = {}) {
+  const BW = 120, FH = 150, W = bays * BW, H = floors * FH + 40, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  let sd = opts.seed || 3; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  x.fillStyle = base; x.fillRect(0, 0, W, H);
+  // weathering: soft patches and fine noise
+  for (let i = 0; i < 60; i++) { const px = r() * W, py = r() * H, rad = 20 + r() * 90; const g = x.createRadialGradient(px, py, 0, px, py, rad); g.addColorStop(0, r() < .5 ? 'rgba(255,255,255,0.08)' : 'rgba(60,40,20,0.07)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(px - rad, py - rad, rad * 2, rad * 2); }
+  if (opts.tiles) { // azulejo: small blue-and-white tiles over the whole wall
+    for (let ty = 40; ty < H - FH; ty += 14) for (let tx = 0; tx < W; tx += 14) {
+      x.fillStyle = (tx / 14 + ty / 14) % 2 ? 'rgba(40,80,150,0.55)' : 'rgba(240,244,250,0.6)'; x.fillRect(tx + 1, ty + 1, 12, 12);
+      x.fillStyle = 'rgba(40,80,150,0.5)'; x.beginPath(); x.arc(tx + 7, ty + 7, 2.5, 0, TAU); x.fill();
+    }
+  }
+  // roof cornice
+  x.fillStyle = '#f2ece2'; x.fillRect(0, 0, W, 26); x.fillStyle = 'rgba(0,0,0,0.18)'; x.fillRect(0, 26, W, 6);
+  for (let f = 0; f < floors; f++) {
+    const y0 = 40 + f * FH, ground = f === floors - 1;
+    // floor band
+    x.fillStyle = 'rgba(255,255,255,0.55)'; x.fillRect(0, y0 + FH - 10, W, 8);
+    for (let b = 0; b < bays; b++) {
+      const cx = b * BW + BW / 2;
+      if (ground) {
+        // stone base, arched door or shop window
+        x.fillStyle = '#d9d1c4'; x.fillRect(b * BW, y0, BW, FH);
+        x.fillStyle = 'rgba(0,0,0,0.12)'; x.fillRect(b * BW, y0, 2, FH);
+        const dw = 64, dh = 112;
+        x.fillStyle = b % 2 ? '#3d2f25' : '#2c3a33';
+        x.beginPath(); x.moveTo(cx - dw / 2, y0 + FH); x.lineTo(cx - dw / 2, y0 + FH - dh + dw / 2); x.arc(cx, y0 + FH - dh + dw / 2, dw / 2, Math.PI, 0); x.lineTo(cx + dw / 2, y0 + FH); x.fill();
+        x.strokeStyle = '#efe8dc'; x.lineWidth = 6; x.stroke();
+        if (b % 2 === 0) { x.fillStyle = 'rgba(255,214,150,0.35)'; x.fillRect(cx - dw / 2 + 8, y0 + FH - dh + 40, dw - 16, dh - 50); }
+      } else {
+        // window: stone frame, dark glass with reflection, mullions, shutters
+        const ww = 52, wh = 92, wx = cx - ww / 2, wy = y0 + 24;
+        x.fillStyle = '#f4efe6'; x.fillRect(wx - 9, wy - 9, ww + 18, wh + 22);
+        const gl = x.createLinearGradient(wx, wy, wx + ww, wy + wh); gl.addColorStop(0, '#5f7383'); gl.addColorStop(.5, '#2d3a44'); gl.addColorStop(1, '#46586a');
+        x.fillStyle = gl; x.fillRect(wx, wy, ww, wh);
+        x.fillStyle = 'rgba(255,255,255,0.18)'; x.beginPath(); x.moveTo(wx, wy); x.lineTo(wx + ww * .5, wy); x.lineTo(wx, wy + wh * .45); x.fill();
+        x.strokeStyle = '#f4efe6'; x.lineWidth = 4; x.beginPath(); x.moveTo(cx, wy); x.lineTo(cx, wy + wh); x.moveTo(wx, wy + wh * .38); x.lineTo(wx + ww, wy + wh * .38); x.stroke();
+        if ((b + f) % 3 === 0 && opts.shutter) { x.fillStyle = opts.shutter; x.fillRect(wx - 30, wy - 4, 24, wh + 8); x.fillRect(wx + ww + 6, wy - 4, 24, wh + 8); x.fillStyle = 'rgba(0,0,0,0.2)'; for (let k = 0; k < 9; k++) { x.fillRect(wx - 30, wy + k * 11, 24, 2); x.fillRect(wx + ww + 6, wy + k * 11, 24, 2); } }
+        // iron balcony on the first floor above the street
+        if (f === floors - 2) {
+          x.fillStyle = 'rgba(0,0,0,0.25)'; x.fillRect(wx - 14, wy + wh + 10, ww + 28, 8);
+          x.strokeStyle = '#26282a'; x.lineWidth = 2.5;
+          x.beginPath(); x.moveTo(wx - 14, wy + wh - 26); x.lineTo(wx + ww + 14, wy + wh - 26); x.stroke();
+          for (let k = 0; k <= 8; k++) { const bx = wx - 14 + k * (ww + 28) / 8; x.beginPath(); x.moveTo(bx, wy + wh - 26); x.lineTo(bx, wy + wh + 10); x.stroke(); }
+          if (opts.flowers && b % 2) { x.fillStyle = '#c94a4a'; for (let k = 0; k < 6; k++) { x.beginPath(); x.arc(wx + 4 + k * 9, wy + wh - 30 + (k % 2) * 3, 5, 0, TAU); x.fill(); } x.fillStyle = '#4f7a3a'; x.fillRect(wx, wy + wh - 26, ww, 6); }
+        }
+      }
+    }
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso; return { t, aspect: W / H };
+}
+const square = new THREE.Group();
+const roofMat = new THREE.MeshStandardMaterial({ color: '#a8583c', roughness: .85 });
+const BUILDINGS = [
+  { base: '#e8c56c', floors: 4, bays: 5, shutter: '#3f6b4c', flowers: true },
+  { base: '#f1ece2', floors: 5, bays: 4, tiles: true },
+  { base: '#d98c74', floors: 4, bays: 4, shutter: '#2e4a5e' },
+  { base: '#ecd9a8', floors: 3, bays: 5, shutter: '#6b3f2e', flowers: true },
+  { base: '#9fb7a1', floors: 4, bays: 4, shutter: '#f1ece2' },
+  { base: '#e9b9a4', floors: 5, bays: 3, shutter: '#3f6b4c', flowers: true },
+  { base: '#f1ece2', floors: 4, bays: 5, shutter: '#2e4a5e' },
+  { base: '#e8c56c', floors: 3, bays: 4, tiles: false, shutter: '#6b3f2e' },
+];
+const SCALE = .55; // metres per window bay
+let along = 0;
+const row = BUILDINGS.map((b, i) => {
+  const { t, aspect } = facadeTex(b.base, b.floors, b.bays, { ...b, seed: 7 + i * 13 });
+  const w = b.bays * 2.2 * SCALE * 1.6, h = w / aspect;
+  const side = new THREE.MeshStandardMaterial({ color: b.base, roughness: .95 });
+  const face = new THREE.MeshStandardMaterial({ map: t, roughness: .9 });
+  const box = new THREE.Mesh(new THREE.BoxGeometry(w, h, 4), [side, side, roofMat, side, face, side]);
+  const g = { box, w, h }; along += w; return g;
+});
+// Lay them along a shallow arc behind the devices, facing the square
+let pos = -along / 2;
+row.forEach(({ box, w, h }) => {
+  const mid = pos + w / 2; pos += w;
+  const a = mid / 26; // radians along the arc
+  box.position.set(Math.sin(a) * 26, h / 2, -13 - (1 - Math.cos(a)) * 26 + 13 - 13);
+  box.position.z = -26 * Math.cos(a) + 13;
+  box.rotation.y = -a;
+  square.add(box);
+});
+// Iron street lamps
+const iron = new THREE.MeshStandardMaterial({ color: '#2a2c2e', roughness: .5, metalness: .6 });
+const lampGlass = new THREE.MeshStandardMaterial({ color: '#fff2d6', emissive: '#ffe2b0', emissiveIntensity: .6, roughness: .3 });
+[[-5.6, -5.2], [5.4, -5.6], [-9, -1.5]].forEach(([lx, lz]) => {
+  const lamp = new THREE.Group();
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(.05, .08, 3.6, 12), iron); pole.position.y = 1.8;
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(.16, .2, .3, 12), iron); base.position.y = .15;
+  const head = new THREE.Mesh(new THREE.CylinderGeometry(.18, .1, .42, 6), lampGlass); head.position.y = 3.85;
+  const cap = new THREE.Mesh(new THREE.ConeGeometry(.26, .22, 6), iron); cap.position.y = 4.17;
+  lamp.add(pole, base, head, cap); lamp.position.set(lx, 0, lz); square.add(lamp);
+});
+// (the drawn square is not shown)
+
+const floorTex = (() => {
+  // one tile of calçada: small irregular stones, white, with a dark wave running through
+  const S = 1024, c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d');
+  x.fillStyle = '#b9b1a5'; x.fillRect(0, 0, S, S); // the joints
+  let sd = 9; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  const st = 16;
+  for (let gy = 0; gy < S; gy += st) for (let gx = 0; gx < S; gx += st) {
+    const cx = gx + st / 2 + (r() - .5) * 3, cy = gy + st / 2 + (r() - .5) * 3;
+    // the wave: two bands per tile, so the tile repeats seamlessly
+    const wave = Math.sin((cx / S) * Math.PI * 2 * 2 + Math.sin((cy / S) * Math.PI * 2) * 1.2) * .5 + .5;
+    const band = Math.abs(((cy / S) * 2 + wave * .35) % 1 - .5) < .07;
+    const base = band ? 70 + r() * 25 : 228 + r() * 22;
+    const tone = band ? [base, base, base + 4] : [base, base - 4, base - 12];
+    x.fillStyle = `rgb(${tone[0] | 0},${tone[1] | 0},${tone[2] | 0})`;
+    rr(x, cx - st / 2 + 1.5, cy - st / 2 + 1.5, st - 3 + (r() - .5) * 2, st - 3 + (r() - .5) * 2, 4); x.fill();
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(44, 44);
+  return t;
+})();
+const floor = new THREE.Mesh(new THREE.CircleGeometry(70, 96), new THREE.MeshStandardMaterial({ map: floorTex, roughness: .9, color: '#f4eee6' }));
+floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, -1);
+
+/* The backdrop, two quiet layers: columns of code in white, rising slowly with a soft glow,
+   and behind them a fine network mesh drifting very slowly */
+const CODE_W = 900, CODE_H = 1400;
+const codeCanvas = document.createElement('canvas'); codeCanvas.width = CODE_W; codeCanvas.height = CODE_H;
+const codeCtx = codeCanvas.getContext('2d');
+// Glyphs pre-drawn once with their glow, then only copied
+const GLYPHS = '0123456789ABCDEF';
+const atlas = (() => {
+  const gw = 38, gh = 50, c = document.createElement('canvas'); c.width = gw * GLYPHS.length; c.height = gh;
+  const x = c.getContext('2d');
+  x.font = '500 30px "JetBrains Mono", monospace'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.shadowColor = 'rgba(255,255,255,0.95)'; x.shadowBlur = 12; x.fillStyle = '#ffffff';
+  [...GLYPHS].forEach((ch, i) => { x.fillText(ch, i * gw + gw / 2, gh / 2); x.fillText(ch, i * gw + gw / 2, gh / 2); });
+  return { c, gw, gh };
+})();
+let cseed = 5; const crnd = () => (cseed = (cseed * 16807) % 2147483647) / 2147483647;
+// Close-set columns, evenly spaced, on one side only
+const COLUMNS = Array.from({ length: 21 }, (_, i) => ({
+  x: 30 + i * 41 + Math.round(crnd() * 4),
+  y: crnd() * CODE_H, speed: 12 + crnd() * 20, len: 6 + Math.floor(crnd() * 12),
+  a: .45 + crnd() * .45, g: Array.from({ length: 16 }, () => Math.floor(crnd() * 16)),
+}));
+function drawCode(T, dt) {
+  const x = codeCtx;
+  x.clearRect(0, 0, CODE_W, CODE_H);
+  COLUMNS.forEach(col => {
+    col.y -= col.speed * dt;
+    if (col.y < -col.len * 44) col.y = CODE_H + 30 + crnd() * 300;
+    for (let k = 0; k < col.len; k++) {
+      const py = col.y + k * 44;
+      if (py < -30 || py > CODE_H + 30) continue;
+      // fade at the top and bottom of the wall, and along the column's tail
+      // fade at the top, the floor and the two sides, so the block has no edge
+      const edge = Math.min(1, py / 260, (CODE_H - py) / 12, col.x / 160, (CODE_W - col.x) / 160);
+      const a = Math.max(0, edge) * col.a * (1 - k / col.len * .7);
+      if (a <= .02) continue;
+      if (Math.random() < .004) col.g[k % 16] = Math.floor(Math.random() * 16);
+      x.globalAlpha = a;
+      x.drawImage(atlas.c, col.g[k % 16] * atlas.gw, 0, atlas.gw, atlas.gh, col.x - atlas.gw / 2, py - atlas.gh / 2, atlas.gw, atlas.gh);
+    }
+  });
+  x.globalAlpha = 1;
+}
+const codeTex = new THREE.CanvasTexture(codeCanvas); codeTex.colorSpace = THREE.SRGBColorSpace;
+// Fixed to the camera, on the right of the frame, upright, rising from its bottom edge.
+// Drawn without depth, before the devices (which render after it), so it sits behind them.
+const tech = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: codeTex, transparent: true, depthWrite: false, depthTest: false, toneMapped: false, opacity: 1 }));
+tech.renderOrder = 0;
+scene.add(camera); // (no code layer here)
+const CODE_DIST = 9;
+
+// Soft white glow behind everything, at the centre
+const haloTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0, 'rgba(255,255,255,0.8)'); g.addColorStop(.5, 'rgba(255,255,255,0.25)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 256, 256); return new THREE.CanvasTexture(c);
+})();
+const halo = new THREE.Mesh(new THREE.PlaneGeometry(18, 11), new THREE.MeshBasicMaterial({ map: haloTex, transparent: true, depthWrite: false, toneMapped: false }));
+halo.position.set(0.3, 3.2, -9.3); halo.material.opacity = 0;
+
+// The network mesh: points, and fine lines between the near ones
+const mesh = new THREE.Group();
+{
+  let ms = 3; const mr = () => (ms = (ms * 16807) % 2147483647) / 2147483647;
+  const pts = Array.from({ length: 64 }, () => new THREE.Vector3((mr() - .5) * 20, .6 + mr() * 6.8, -8.6 + mr() * 2.4));
+  const seg = [];
+  for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) if (pts[i].distanceTo(pts[j]) < 2.4) seg.push(pts[i], pts[j]);
+  mesh.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(seg), new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: .32, depthWrite: false, toneMapped: false })));
+  const dot = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'); const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.35, 'rgba(255,255,255,0.7)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
+  mesh.add(new THREE.Points(new THREE.BufferGeometry().setFromPoints(pts), new THREE.PointsMaterial({ size: .14, map: dot, transparent: true, depthWrite: false, toneMapped: false })));
+}
+// (the mesh is kept out of the scene)
+const scan = new THREE.Group(); // (kept empty: no scan line)
+const panels = [];
+
+/* Devices: brushed aluminium, black glass front, a screen that emits its own light */
+const shellMat = new THREE.MeshPhysicalMaterial({ fog: false, transparent: true, color: '#b9bfc4', metalness: 1, roughness: .32, clearcoat: .25, clearcoatRoughness: .3 });
+const bezelMat = new THREE.MeshPhysicalMaterial({ fog: false, transparent: true, color: '#08090a', metalness: .1, roughness: .1, clearcoat: 1 });
+const glassMat = new THREE.MeshPhysicalMaterial({ color: '#ffffff', metalness: 0, roughness: .03, clearcoat: 1, clearcoatRoughness: .02, transparent: true, opacity: .04, depthWrite: false });
+const btnMat = new THREE.MeshStandardMaterial({ transparent: true, color: '#aab0b5', metalness: 1, roughness: .3 });
+function device(w, h, d, r, sw, sh, texW, texH) {
+  const g = new THREE.Group();
+  // The body as a rounded rectangle in plan (a rounded box would cap its radius at half the
+  // thickness), extruded with a soft bevel on its edges, as a real device is machined
+  const plan = (pw, ph, pr) => {
+    const s = new THREE.Shape(), x0 = -pw / 2, y0 = -ph / 2;
+    s.moveTo(x0 + pr, y0); s.lineTo(x0 + pw - pr, y0); s.quadraticCurveTo(x0 + pw, y0, x0 + pw, y0 + pr);
+    s.lineTo(x0 + pw, y0 + ph - pr); s.quadraticCurveTo(x0 + pw, y0 + ph, x0 + pw - pr, y0 + ph);
+    s.lineTo(x0 + pr, y0 + ph); s.quadraticCurveTo(x0, y0 + ph, x0, y0 + ph - pr);
+    s.lineTo(x0, y0 + pr); s.quadraticCurveTo(x0, y0, x0 + pr, y0);
+    return s;
+  };
+  const bev = d * .3;
+  const bodyGeo = new THREE.ExtrudeGeometry(plan(w - bev * 2, h - bev * 2, r - bev), { depth: d - bev * 2, bevelEnabled: true, bevelThickness: bev, bevelSize: bev, bevelSegments: 6, curveSegments: 24 });
+  bodyGeo.translate(0, 0, -(d - bev * 2) / 2);
+  g.add(new THREE.Mesh(bodyGeo, shellMat));
+  const front = new THREE.Mesh(new THREE.ShapeGeometry(plan(w - .02, h - .02, r * .92), 24), bezelMat); front.position.z = d / 2 + .001; g.add(front);
+  const c = document.createElement('canvas'); c.width = texW; c.height = texH;
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = maxAniso;
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(sw, sh), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, transparent: true, fog: false }));
+  scr.position.z = d / 2 + .0032; g.add(scr);
+  const glass = new THREE.Mesh(new THREE.ShapeGeometry(plan(w - .03, h - .03, r * .9), 24), glassMat); glass.position.z = d / 2 + .0045; g.add(glass);
+  const btn = new THREE.Mesh(new RoundedBoxGeometry(.014, h * .09, d * .38, 2, .006), btnMat); btn.position.set(w / 2 + .004, h * .24, 0); g.add(btn);
+  g.traverse(o => { if (o.isMesh) o.renderOrder = 10; });
+  scene.add(g);
+  return { group: g, screen: scr, ctx: c.getContext('2d'), tex };
+}
+const tablet = device(2.3, 1.66, .06, .16, 2.17, 1.532, TW, TH);
+const phone = device(.78, 1.6, .075, .16, .716, 1.528, PW, PH);
+// Slightly crossed, with air between them
+const TPOS = new THREE.Vector3(-.6, 3.65, -.25), PPOS = new THREE.Vector3(1.65, 3.5, .7);
+tablet.group.position.copy(TPOS); tablet.group.rotation.set(-.12, .5, .03);
+phone.group.position.copy(PPOS); phone.group.rotation.set(-.06, -.32, -.09);
+
+/* Light */
+scene.add(new THREE.HemisphereLight('#ffffff', '#9a958c', .25));
+const key = new THREE.DirectionalLight('#fff3e0', .9); key.position.set(-6, 9, 4); scene.add(key);
+const rim = new THREE.DirectionalLight('#fff0d8', .6); rim.position.set(-4, 3, -4); scene.add(rim);
+
+/* Soft contact shadows under the devices */
+const SHW = 12, SHD = 10, SHH = 5;
+const shadowGroup = new THREE.Group(); shadowGroup.position.set(-.3, .002, -.6); scene.add(shadowGroup);
+const rt = new THREE.WebGLRenderTarget(1024, 1024); rt.texture.generateMipmaps = false;
+const rtBlur = new THREE.WebGLRenderTarget(1024, 1024); rtBlur.texture.generateMipmaps = false;
+const shPlaneGeo = new THREE.PlaneGeometry(SHW, SHD).rotateX(Math.PI / 2);
+const shPlane = new THREE.Mesh(shPlaneGeo, new THREE.MeshBasicMaterial({ map: rt.texture, opacity: .55, transparent: true, depthWrite: false, toneMapped: false }));
+shPlane.renderOrder = 1; shPlane.scale.y = -1; shPlane.visible = false;
+const blurPlane = new THREE.Mesh(shPlaneGeo); blurPlane.visible = false; shadowGroup.add(blurPlane);
+const shCam = new THREE.OrthographicCamera(-SHW / 2, SHW / 2, SHD / 2, -SHD / 2, 0, SHH); shCam.rotation.x = Math.PI / 2; shadowGroup.add(shCam);
+const depthMat = new THREE.MeshDepthMaterial(); depthMat.userData.darkness = { value: 1.3 };
+depthMat.onBeforeCompile = sh => {
+  sh.uniforms.darkness = depthMat.userData.darkness;
+  sh.fragmentShader = 'uniform float darkness;\n' + sh.fragmentShader.replace('gl_FragColor = vec4( vec3( 1.0 - fragCoordZ ), opacity );', 'gl_FragColor = vec4( vec3( 0.0 ), ( 1.0 - fragCoordZ ) * darkness );');
+};
+depthMat.depthTest = false; depthMat.depthWrite = false;
+const hBlur = new THREE.ShaderMaterial(HorizontalBlurShader); hBlur.depthTest = false;
+const vBlur = new THREE.ShaderMaterial(VerticalBlurShader); vBlur.depthTest = false;
+function blurShadow(amount) {
+  blurPlane.visible = true;
+  blurPlane.material = hBlur; hBlur.uniforms.tDiffuse.value = rt.texture; hBlur.uniforms.h.value = amount / 256;
+  renderer.setRenderTarget(rtBlur); renderer.render(blurPlane, shCam);
+  blurPlane.material = vBlur; vBlur.uniforms.tDiffuse.value = rtBlur.texture; vBlur.uniforms.v.value = amount / 256;
+  renderer.setRenderTarget(rt); renderer.render(blurPlane, shCam);
+  blurPlane.visible = false;
+}
+function renderContactShadow() {
+  [sky, shPlane, tech, halo].forEach(o => o.visible = false);
+  [tablet, phone].forEach(d => d.group.children.forEach(m => { if (m.material === glassMat) m.visible = false; }));
+  scene.overrideMaterial = depthMat;
+  renderer.setClearColor(0x000000, 0);
+  renderer.setRenderTarget(rt); renderer.clear(); renderer.render(scene, shCam);
+  scene.overrideMaterial = null;
+  blurShadow(3.2); blurShadow(1.4);
+  renderer.setRenderTarget(null); renderer.setClearColor(0x000000, 1);
+  [sky, tech, halo].forEach(o => o.visible = true);
+  [tablet, phone].forEach(d => d.group.children.forEach(m => { if (m.material === glassMat) m.visible = true; }));
+}
+
+/* Post: a faint vignette and grain, multisampled for crisp edges */
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new OutputPass());
+const finish = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, res: { value: new THREE.Vector2(1, 1) } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float time; uniform vec2 res; varying vec2 vUv;
+    float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453); }
+    void main(){
+      vec4 c = texture2D(tDiffuse, vUv);
+      vec2 q = vUv - .5; q.x *= res.x / res.y;
+      c.rgb *= mix(.9, 1., smoothstep(1.05, .25, length(q)));
+      c.rgb += (h(vUv * res + fract(time) * 100.) - .5) * .015;
+      gl_FragColor = c;
+    }`,
+});
+composer.addPass(finish);
+
+/* ================= interaction: drag to turn ================= */
+let idleUntil = 0;
+controls.addEventListener('start', () => { idleUntil = Infinity; document.getElementById('hint').style.opacity = 0; });
+controls.addEventListener('end', () => { idleUntil = clockNow() + 4; });
+function fit() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h); composer.setSize(w, h);
+  finish.uniforms.res.value.set(w, h);
+  camera.aspect = w / h;
+  camera.fov = w / h < .9 ? 48 : 30;
+  camera.updateProjectionMatrix();
+  const visH = 2 * CODE_DIST * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), visW = visH * camera.aspect;
+  const bandH = visH, bandW = bandH * (CODE_W / CODE_H);
+  tech.scale.set(bandW, bandH, 1);
+  tech.position.set(visW / 2 - bandW / 2 - visW * .02, 0, -CODE_DIST);
+}
+addEventListener('resize', fit); fit();
+
+/* ================= loop ================= */
+const clock = new THREE.Clock();
+const clockNow = () => clock.getElapsedTime();
+let prev = 0, introT = 0, frameN = 0, codeLast = 0;
+const sph = new THREE.Spherical(), tmp = new THREE.Vector3();
+
+function frame() {
+  const T = clockNow(); prev = T;
+
+  frameN++;
+  if (frameN % 2 === 0) {
+    tabletUI(tablet.ctx, T); roundScreen(tablet.ctx, TW, TH, 54); tablet.tex.needsUpdate = true;
+    phoneUI(phone.ctx, T); island(phone.ctx); roundScreen(phone.ctx, PW, PH, 78); phone.tex.needsUpdate = true;
+  }
+
+  const it = eInOut((T - introT) / 3.2);
+  if (it < 1) camera.position.lerpVectors(START, HOME, it);
+  else if (T > idleUntil && !reduced) {
+    tmp.copy(camera.position).sub(controls.target); sph.setFromVector3(tmp);
+    sph.theta += (.02 + Math.sin(T * .12) * .1 - sph.theta) * .01;
+    sph.phi += (1.72 + Math.sin(T * .09) * .02 - sph.phi) * .01;
+    tmp.setFromSpherical(sph); camera.position.copy(controls.target).add(tmp);
+  }
+  if (it >= 1 && idleUntil === 0) idleUntil = T;
+
+  if (!reduced) {
+    mesh.rotation.y = Math.sin(T * .05) * .06; mesh.position.y = Math.sin(T * .12) * .08;
+    tablet.group.position.y = TPOS.y + Math.sin(T * .45) * .035;
+    phone.group.position.y = PPOS.y + Math.sin(T * .45 + 1.7) * .04;
+  }
+
+  controls.update();
+  // no contact shadow: the devices are held at eye level, not standing on the square
+  finish.uniforms.time.value = T;
+  composer.render();
+}
+
+/* Run only while the page holding it says it is on screen */
+addEventListener('message', (e) => {
+  if (e.data && typeof e.data.fhVisible === 'boolean') renderer.setAnimationLoop(e.data.fhVisible ? frame : null);
+});
+introT = clockNow();
+frameN = 1;
+frame();
+stage.classList.add('on');
+renderer.setAnimationLoop(frame);
+</script>
+</body>
+</html>

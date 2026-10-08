@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { Reflector } from "three/examples/jsm/objects/Reflector.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { SMALL } from "../../lib/type";
@@ -115,8 +116,6 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   // Phones: a vertical swipe scrolls the page as anywhere else; a sideways drag turns the stand
   renderer.domElement.style.touchAction = "pan-y";
   controls.maxPolarAngle = Math.PI * 0.48;
-  controls.autoRotate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  controls.autoRotateSpeed = 0.22;
 
   /* ---------- textures ---------- */
   const canvas = (w: number, h: number) => {
@@ -187,39 +186,244 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     x.drawImage(t, (w - t.width * k) / 2, (h - t.height * k) / 2, t.width * k, t.height * k);
     return tex(c);
   };
-  const screenTex = () => {
-    const [c, x] = canvas(1920, 1080);
+  // The back screen plays a short loop: the claim, then what they do, crossfading every five seconds
+  const [scrC, scrX] = canvas(1920, 1080);
+  const screenT = tex(scrC);
+  const scrLogo = tinted(LOGO, "#ffffff");
+  const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+  const easeOut = (v: number) => 1 - Math.pow(1 - clamp01(v), 3);
+  const drawScreen = (time: number) => {
+    const x = scrX;
+    const t = time % 10, slide = t < 5 ? 0 : 1, st = t % 5;
     const g = x.createLinearGradient(0, 0, 1920, 1080);
-    g.addColorStop(0, "#30353a");
-    g.addColorStop(1, "#202427");
+    g.addColorStop(0, "#5a6166");
+    g.addColorStop(1, "#3c4246");
     x.fillStyle = g;
     x.fillRect(0, 0, 1920, 1080);
+    // a warm glow drifting slowly behind
+    const glow = (gx: number, gy: number, r: number, col: string) => {
+      const rg = x.createRadialGradient(gx, gy, 0, gx, gy, r);
+      rg.addColorStop(0, col);
+      rg.addColorStop(1, "rgba(0,0,0,0)");
+      x.fillStyle = rg;
+      x.fillRect(0, 0, 1920, 1080);
+    };
+    glow(1350 + Math.sin(time * 0.25) * 220, 380 + Math.cos(time * 0.2) * 140, 900, "rgba(243,146,0,0.13)");
+   // a fine dot grid, lit where the warm glow passes
+    for (let gy = 60; gy < 1080; gy += 60)
+      for (let gx = 60; gx < 1920; gx += 60) {
+        const d = Math.hypot(gx - (1350 + Math.sin(time * 0.25) * 220), gy - (380 + Math.cos(time * 0.2) * 140));
+        x.fillStyle = `rgba(255,255,255,${0.06 + Math.max(0, 1 - d / 700) * 0.14})`;
+        x.fillRect(gx - 2, gy - 2, 4, 4);
+      }
+    // The corner: an orange triangle, from the brand's lighter orange to its deep one, breathing
+    // slowly, with a soft light passing over it now and then
+    {
+      const b = 1 + Math.sin(time * 0.9) * 0.04;
+      const tw = 640 * b, th = 430 * b;
+      const tri = () => {
+        x.beginPath();
+        x.moveTo(1920, 1080);
+        x.lineTo(1920 - tw, 1080);
+        x.lineTo(1920, 1080 - th);
+        x.closePath();
+      };
+      tri();
+      const tgr = x.createLinearGradient(1920 - tw * 0.6, 1080 - th * 0.6, 1920, 1080);
+      tgr.addColorStop(0, "#ffab2a");
+      tgr.addColorStop(1, "#e47f00");
+      x.fillStyle = tgr;
+      x.fill();
+      x.save();
+      tri();
+      x.clip();
+      const sx = ((time * 0.18) % 1) * 1400 + 1100;
+      const sh = x.createLinearGradient(sx - 140, 0, sx + 140, 0);
+      sh.addColorStop(0, "rgba(255,255,255,0)");
+      sh.addColorStop(0.5, "rgba(255,255,255,0.22)");
+      sh.addColorStop(1, "rgba(255,255,255,0)");
+      x.fillStyle = sh;
+      x.fillRect(1100, 600, 820, 480);
+      x.restore();
+    }
+    // A phone over the corner, with their biometric signing app: a signature written, then verified
+    {
+      const PX = 1440, PY = 400, PWd = 340, PHt = 690, R = 44;
+      // part of the film: smaller, rising in with each slide and leaving with it
+      const pin = easeOut(st / 0.9), pout = 1 - clamp01((st - 4.5) / 0.5);
+      x.save();
+      x.globalAlpha = pin * pout;
+      // small and a little turned, its centre over the corner's edge
+      x.translate(1585, 700 + (1 - pin) * 60);
+      x.rotate(-0.14);
+      x.scale(0.64, 0.64);
+      x.translate(-PX - PWd / 2, -PY - PHt / 2);
+      const rr = (rx: number, ry: number, w: number, h: number, r: number) => {
+        x.beginPath();
+        x.roundRect(rx, ry, w, h, r);
+      };
+      x.save();
+      x.shadowColor = "rgba(0,0,0,0.45)";
+      x.shadowBlur = 50;
+      x.shadowOffsetY = 24;
+      rr(PX, PY, PWd, PHt, R);
+      // a white aluminium body, lit from above
+      const body = x.createLinearGradient(PX, PY, PX + PWd, PY + PHt);
+      body.addColorStop(0, "#f6f7f8");
+      body.addColorStop(1, "#cfd5d8");
+      x.fillStyle = body;
+      x.fill();
+      x.restore();
+      rr(PX + 1, PY + 1, PWd - 2, PHt - 2, R - 1);
+      x.strokeStyle = "rgba(31,35,38,0.35)";
+      x.lineWidth = 3;
+      x.stroke();
+      // the black glass around the display, as on any phone, white or not
+      rr(PX + 9, PY + 9, PWd - 18, PHt - 18, R - 9);
+      x.fillStyle = "#1b1e20";
+      x.fill();
+      const SX = PX + 19, SY = PY + 19, SW = PWd - 38, SH = PHt - 38;
+      x.save();
+      rr(SX, SY, SW, SH, R - 14);
+      x.clip();
+      x.fillStyle = "#eef0f1";
+      x.fillRect(SX, SY, SW, SH);
+      // app bar
+      x.fillStyle = "#1f2326";
+      x.fillRect(SX, SY, SW, 96);
+      x.fillStyle = ORANGE;
+      x.fillRect(SX, SY + 96, SW * 0.66, 4);
+      x.fillStyle = "#ffffff";
+      x.font = "600 22px Jura, sans-serif";
+      x.fillText("Firma biométrica", SX + 24, SY + 64);
+      x.fillStyle = "#1f2326";
+      x.font = "600 24px Jura, sans-serif";
+      x.fillText("Firme aquí", SX + 24, SY + 150);
+      x.fillStyle = "#6b7479";
+      x.font = "400 17px Jura, sans-serif";
+      x.fillText("María López · contrato 2048", SX + 24, SY + 180);
+      // the pad, and the signature drawing itself
+      const PDX = SX + 20, PDY = SY + 205, PDW = SW - 40, PDH = 230;
+      x.fillStyle = "#ffffff";
+      x.fillRect(PDX, PDY, PDW, PDH);
+      const p = easeOut((st - 0.6) / 2.4), done = st > 3.2;
+      x.strokeStyle = done ? "rgba(46,160,90,0.8)" : "rgba(31,35,38,0.18)";
+      x.lineWidth = 2;
+      x.strokeRect(PDX, PDY, PDW, PDH);
+      x.strokeStyle = "rgba(31,35,38,0.3)";
+      x.lineWidth = 1.5;
+      x.beginPath();
+      x.moveTo(PDX + 20, PDY + PDH - 50);
+      x.lineTo(PDX + PDW - 20, PDY + PDH - 50);
+      x.stroke();
+      x.strokeStyle = "#16263d";
+      x.lineWidth = 3.2;
+      x.lineCap = "round";
+      x.lineJoin = "round";
+      x.beginPath();
+      const N = 120, n = Math.floor(N * p);
+      for (let k = 0; k <= n; k++) {
+        const u = k / N;
+        // a quick scribble: a tall loop, shrinking waves, a stroke back underneath
+        const sx = u < 0.82 ? PDX + 30 + u / 0.82 * (PDW - 70) : PDX + PDW - 40 - (u - 0.82) / 0.18 * (PDW - 90);
+        const amp = u < 0.15 ? 70 : u < 0.82 ? 38 * (1 - (u - 0.15) * 0.9) : 0;
+        const sy = u < 0.82 ? PDY + 120 - Math.abs(Math.sin(u * 30)) * amp + (u < 0.15 ? Math.sin(u * 40) * 20 : 0) : PDY + 150 + Math.sin((u - 0.82) * 9) * 10;
+        if (k) x.lineTo(sx, sy);
+        else x.moveTo(sx, sy);
+      }
+      x.stroke();
+      // the reading, and the action
+      x.fillStyle = ORANGE;
+      x.fillRect(PDX, PDY + PDH + 30, PDW * p, 4);
+      x.fillStyle = "rgba(31,35,38,0.1)";
+      x.fillRect(PDX + PDW * p, PDY + PDH + 30, PDW * (1 - p), 4);
+      x.fillStyle = "#6b7479";
+      x.font = "400 16px Jura, sans-serif";
+      x.fillText(`${Math.round(p * 472)} puntos capturados`, PDX, PDY + PDH + 66);
+      x.fillStyle = done ? "#2ea05a" : p > 0.98 ? ORANGE : "rgba(243,146,0,0.5)";
+      x.fillRect(PDX, SY + SH - 110, PDW, 64);
+      x.fillStyle = "#ffffff";
+      x.font = "600 21px Jura, sans-serif";
+      x.textAlign = "center";
+      x.fillText(done ? "✓  Firma verificada" : "Confirmar firma", PDX + PDW / 2, SY + SH - 70);
+      x.textAlign = "left";
+      x.restore();
+      x.restore();
+    }
+    // each slide comes in line by line, and fades out at its end
+    const out = 1 - clamp01((st - 4.5) / 0.5);
+    const line = (txt: string, y: number, size: number, col: string, delay: number, indent = 0) => {
+      const e = easeOut((st - delay) / 0.7);
+      x.globalAlpha = e * out;
+      x.fillStyle = col;
+      x.font = `300 ${size}px Jura, sans-serif`;
+      x.fillText(txt, 150 + indent + (1 - e) * -60, y);
+      x.globalAlpha = 1;
+    };
+    if (slide === 0) {
+      line("Encajamos contigo.", 420, 132, "#ffffff", 0.1);
+      line("La pieza que toda compañía", 540, 64, "#e4e8ea", 0.5);
+      line("necesita para ser segura.", 625, 64, "#e4e8ea", 0.7);
+    } else {
+      line("Ciberseguridad a medida", 330, 96, "#ffffff", 0.1);
+      ["Auditoría y consultoría", "Firma biométrica", "Formación de equipos"].forEach((txt, k) => {
+        const e = easeOut((st - 0.6 - k * 0.3) / 0.6) * out;
+        x.globalAlpha = e;
+        x.fillStyle = ORANGE;
+        x.fillRect(154 + (1 - e) * -40, 430 + k * 92, 14, 14);
+        x.globalAlpha = 1;
+        line(txt, 456 + k * 92, 58, "#e4e8ea", 0.6 + k * 0.3, 52);
+      });
+    }
+    x.globalAlpha = out;
     x.fillStyle = ORANGE;
-    x.beginPath();
-    x.moveTo(1920, 1080);
-    x.lineTo(1360, 1080);
-    x.lineTo(1920, 700);
-    x.fill();
-    x.fillStyle = "#ffffff";
-    x.font = "300 132px Jura, sans-serif";
-    x.fillText("Encajamos contigo.", 150, 420);
-    x.fillStyle = "rgba(255,255,255,0.8)";
-    x.font = "300 64px Jura, sans-serif";
-    x.fillText("La pieza que toda compañía", 154, 540);
-    x.fillText("necesita para ser segura.", 154, 625);
+    x.fillRect(154, 690 + (slide ? 30 : 0), 140 * easeOut((st - 1) / 0.6), 10);
+    x.globalAlpha = 1;
+    // the logo stays
+    const k = 520 / scrLogo.width;
+    x.drawImage(scrLogo, 150, 820, scrLogo.width * k, scrLogo.height * k);
+    // the orange band along the bottom, with a fine light line counting the slide's time
     x.fillStyle = ORANGE;
-    x.fillRect(154, 690, 140, 10);
-    const t = tinted(LOGO, "#ffffff");
-    const k = 520 / t.width;
-    x.drawImage(t, 150, 820, t.width * k, t.height * k);
-    return tex(c);
+    x.fillRect(0, 1062, 1920, 18);
+    x.fillStyle = "rgba(255,255,255,0.45)";
+    x.fillRect(0, 1062, 1920 * (st / 5), 3);
+    screenT.needsUpdate = true;
   };
-  const sideWallTex = () => {
-    const [c, x] = canvas(1600, 1920);
-    x.drawImage(tinted(SYMBOL, ORANGE), 500, 380, 600, 600);
-    const l = tinted(LOGO, "#ffffff");
-    const k = 900 / l.width;
-    x.drawImage(l, 350, 1120, l.width * k, l.height * k);
+  drawScreen(0);
+  // An image cropped to its visible pixels, so it centres by its shape, not by its padding
+  const trimmed = (img: HTMLCanvasElement) => {
+    const d = img.getContext("2d")!.getImageData(0, 0, img.width, img.height).data;
+    let x0 = img.width, y0 = img.height, x1 = 0, y1 = 0;
+    for (let y = 0; y < img.height; y++)
+      for (let x = 0; x < img.width; x++)
+        if (d[(y * img.width + x) * 4 + 3] > 20) {
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        }
+    const [c, x] = canvas(x1 - x0 + 1, y1 - y0 + 1);
+    x.drawImage(img, -x0, -y0);
+    return c;
+  };
+  // The side wall's sign: the symbol over the logotype, both centred on the same axis. Drawn
+  // twice: the letters themselves, and the soft shadow they cast on the concrete
+  const SIGN_W = 1600, SIGN_H = 1920;
+  const sideWallSign = (shadow: boolean) => {
+    const [c, x] = canvas(SIGN_W, SIGN_H);
+    const sym = trimmed(tinted(SYMBOL, shadow ? "#000000" : ORANGE));
+    const logo = trimmed(tinted(LOGO, shadow ? "#000000" : "#ffffff"));
+    const sw = 560, sh = (sym.height / sym.width) * sw;
+    const lw = 980, lh = (logo.height / logo.width) * lw;
+    const gap = 150, top = (SIGN_H - (sh + gap + lh)) / 2;
+    if (shadow) {
+      // lit from above: the shadow falls a little below and spreads
+      x.filter = "blur(14px)";
+      x.globalAlpha = 0.42;
+      x.translate(6, 26);
+    }
+    x.drawImage(sym, (SIGN_W - sw) / 2, top, sw, sh);
+    x.drawImage(logo, (SIGN_W - lw) / 2, top + sh + gap, lw, lh);
     return tex(c);
   };
 
@@ -328,9 +532,14 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
 
   box(W, H, 0.14, m.concrete, 0, P + H / 2, -D / 2 + 0.07);
   box(0.14, H, D, m.concreteSide, -W / 2 + 0.07, P + H / 2, 0);
-  decal(sideWallTex(), D * 0.6, H, [-W / 2 + 0.145, P + H / 2, -0.3], Math.PI / 2);
+  // standoff letters, 3 cm off the concrete, their shadow on the wall behind them
+  decal(sideWallSign(true), D * 0.6, H, [-W / 2 + 0.143, P + H / 2, -0.3], Math.PI / 2);
+  const letters = decal(sideWallSign(false), D * 0.6, H, [-W / 2 + 0.175, P + H / 2, -0.3], Math.PI / 2);
+  (letters.material as THREE.MeshStandardMaterial).roughness = 0.3;
   box(2.72, 1.56, 0.06, new THREE.MeshStandardMaterial({ color: "#0c0d0e", roughness: 0.3 }), 1.1, P + 1.75, -D / 2 + 0.17);
-  decal(screenTex(), 2.64, 1.485, [1.1, P + 1.75, -D / 2 + 0.205], 0, 0.85);
+  // a screen gives its own light: not lit by the spots, with a faint glow at its brightest
+  const screen = decal(screenT, 2.64, 1.485, [1.1, P + 1.75, -D / 2 + 0.205]);
+  screen.material = new THREE.MeshBasicMaterial({ map: screenT, color: new THREE.Color(0.94, 0.94, 0.94) });
 
   // Canopy: an orange band over the whole stand, its front-right corner swept in a curve,
   // a line of warm light beneath it, the logo in white
@@ -412,8 +621,36 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   counter.position.set(0.55, 0, 0.75);
   const top = slab(roundedRect(2.5, 0.8, [0.4, 0.4, 0.4, 0.4]), 0.05, m.graphiteGloss, P + 1.0);
   top.position.set(0.55, 0, 0.75);
-  box(2.0, 0.02, 0.02, m.ledOrange, 0.55, P + 0.03, 1.12, false);
-  decal(logoSheet(LOGO, GRAPHITE, 2048, 600), 1.5, 0.44, [0.55, P + 0.58, 1.122]);
+  // an orange band wrapping the counter's foot, flush with the floor
+  const band = slab(roundedRect(2.42, 0.72, [0.36, 0.36, 0.36, 0.36]), 0.15, m.canopy, P);
+  band.position.set(0.55, 0, 0.75);
+
+  // A real plant (a scanned CC0 model), its leaves set in a tall graphite pot, in the back right corner
+  {
+    const px = 2.2, pz = -1.45, POT = 0.6;
+    const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.19, POT, 40), m.graphiteGloss);
+    pot.position.set(px, P + POT / 2, pz);
+    pot.castShadow = pot.receiveShadow = true;
+    scene.add(pot);
+    new GLTFLoader().load("/models/plant/plant.gltf", (gltf) => {
+      const plant = gltf.scene;
+      // its own clay pot is left out: only the leaves and the soil
+      plant.traverse((o) => {
+        if (o.name.endsWith("_pot")) o.visible = false;
+        if ((o as THREE.Mesh).isMesh) o.castShadow = o.receiveShadow = true;
+      });
+      // centred on its soil, scaled so the soil fills the pot's mouth
+      const db = new THREE.Box3().setFromObject(plant.getObjectByName("potted_plant_02_dirt")!);
+      plant.position.set(-(db.min.x + db.max.x) / 2, -db.max.y, -(db.min.z + db.max.z) / 2);
+      const holder = new THREE.Group();
+      holder.add(plant);
+      holder.scale.setScalar(0.44 / (db.max.x - db.min.x));
+      holder.position.set(px, P + POT - 0.02, pz);
+      holder.rotation.y = 0.6;
+      scene.add(holder);
+    });
+  }
+  decal(logoSheet(LOGO, GRAPHITE, 4096, 1200), 1.5, 0.44, [0.55, P + 0.58, 1.122]);
 
   // A high table with three stools on the open front-left
   const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.04, 48), m.white);
@@ -464,10 +701,15 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     f.position.set(x, P + H - 0.1, z);
     f.lookAt(tx, ty, tz);
     f.rotateX(Math.PI / 2);
-    scene.add(f);
+    // each spot hangs from its bar on a short stem
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.2, 8), fixture);
+    stem.position.set(x, P + H + 0.02, z);
+    scene.add(f, stem);
   };
-  spot(1.1, 0.2, 1.1, 1.8, -D / 2, 34, true);
-  spot(-2.2, 0.6, -W / 2, 1.8, -0.3, 13);
+  // Two lighting bars across the canopy's opening, from one side of the band to the other
+  [0.4, 1.4].forEach((z) => box(W - 0.4, 0.05, 0.05, fixture, 0, P + H + 0.12, z, false));
+  spot(1.1, 0.4, 1.1, 1.8, -D / 2, 34, true);
+  spot(-2.2, 0.4, -W / 2, 1.8, -0.3, 13);
   spot(0.55, 1.4, 0.55, 0.8, 0.75, 30, true);
   spot(-1.75, 1.4, -1.75, 1.0, 1.15, 22);
 
@@ -497,10 +739,19 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
 
   // An eased glide between framed views, instead of a constant-rate chase
   let glide: { from: THREE.Vector3; to: THREE.Vector3; fromT: THREE.Vector3; toT: THREE.Vector3; start: number } | null = null;
+  // The general view is the stand's best side. On arrival the camera slides in from the other
+  // side, further out, and settles on it; then it sways gently around it rather than spinning away.
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const homeLook = new THREE.Vector3(...VIEWS.general.look);
+  const home = new THREE.Spherical().setFromVector3(new THREE.Vector3(...VIEWS.general.pos).sub(homeLook));
+  let intro: { start: number } | null = null;
+  let introDone = false;
+  let swayFrom = 0; // sway runs while > 0 and now > swayFrom
   const api: Api = {
     go: (v) => {
       const target = VIEWS[v];
-      controls.autoRotate = false;
+      intro = null;
+      swayFrom = v === "general" ? performance.now() + 1900 : 0;
       glide = {
         from: camera.position.clone(),
         to: new THREE.Vector3(...target.pos),
@@ -510,16 +761,50 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
       };
     },
     spin: (on) => {
-      controls.autoRotate = on;
+      swayFrom = on ? performance.now() : 0;
     },
   };
+  controls.autoRotate = false;
   controls.addEventListener("start", () => {
     glide = null;
+    intro = null;
+    swayFrom = 0;
   });
+  // After a drag, it drifts back to its best side and sways again a few seconds later
+  controls.addEventListener("end", () => {
+    if (!reduced) swayFrom = performance.now() + 4000;
+  });
+  const sph = new THREE.Spherical();
+  const startIntro = () => {
+    if (introDone) return;
+    introDone = true;
+    if (reduced) return;
+    intro = { start: performance.now() };
+  };
 
+  let frameN = 0;
   const loop = () => {
+    const now = performance.now();
+    if (++frameN % 2 === 0) drawScreen(now / 1000);
+    if (intro) {
+      const t = Math.min(1, (now - intro.start) / 3000);
+      const e = 1 - Math.pow(1 - t, 3);
+      // from the corner (+0.5 rad), a little further out and higher, gently onto the best side
+      sph.set(home.radius * (1.16 - 0.16 * e), home.phi - 0.06 * (1 - e), home.theta + 0.5 * (1 - e));
+      camera.position.copy(homeLook).add(new THREE.Vector3().setFromSpherical(sph));
+      controls.target.copy(homeLook);
+      if (t === 1) { intro = null; swayFrom = now; }
+    } else if (swayFrom && now > swayFrom && !glide) {
+      sph.setFromVector3(camera.position.clone().sub(controls.target));
+      const theta = home.theta + Math.sin((now - swayFrom) / 1000 * .22) * .3;
+      sph.theta += (theta - sph.theta) * .02;
+      sph.phi += (home.phi - sph.phi) * .02;
+      sph.radius += (home.radius - sph.radius) * .02;
+      controls.target.lerp(homeLook, .02);
+      camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(sph));
+    }
     if (glide) {
-      const t = Math.min(1, (performance.now() - glide.start) / 1700);
+      const t = Math.min(1, (now - glide.start) / 1700);
       const e = easeInOut(t);
       camera.position.lerpVectors(glide.from, glide.to, e);
       controls.target.lerpVectors(glide.fromT, glide.toT, e);
@@ -530,7 +815,10 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   };
 
   // Render only while the viewer is on screen
-  const io = new IntersectionObserver(([entry]) => renderer.setAnimationLoop(entry.isIntersecting ? loop : null), { rootMargin: "100px" });
+  const io = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) startIntro();
+    renderer.setAnimationLoop(entry.isIntersecting ? loop : null);
+  }, { rootMargin: "-15% 0px" });
   io.observe(host);
   onReady();
 
@@ -563,6 +851,7 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
   const api = useRef<Api | null>(null);
   const [ready, setReady] = useState(false);
   const [view, setView] = useState<View>("general");
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
     let dispose: (() => void) | null = null;
@@ -600,7 +889,24 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${ready ? "opacity-0" : "opacity-100"}`}
         />
       )}
-      <div ref={host} className={`absolute inset-0 cursor-grab transition-opacity duration-700 active:cursor-grabbing ${ready ? "opacity-100" : "opacity-0"}`} />
+      <div
+        ref={host}
+        onPointerDown={() => setTouched(true)}
+        className={`absolute inset-0 cursor-grab transition-opacity duration-700 active:cursor-grabbing ${ready ? "opacity-100" : "opacity-0"}`}
+      />
+      {/* An invitation to touch it, gone at the first drag: a hand swaying from side to side */}
+      <style>{`@keyframes stand-sway { 0%,100% { transform: translateX(-14px) rotate(-8deg); } 50% { transform: translateX(14px) rotate(8deg); } }`}</style>
+      <div
+        aria-hidden
+        className={`${SMALL} pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-3 rounded-full bg-[#1c2124]/55 px-5 py-2.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
+          ready && !touched ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" style={{ animation: "stand-sway 1.8s ease-in-out infinite" }}>
+          <path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.3 15.6a1.5 1.5 0 0 1 2.2-2l2.5 2.4" />
+        </svg>
+        arrastra para girar
+      </div>
       {label && <p className={`${SMALL} pointer-events-none absolute left-4 top-3 normal-case text-[#2f3a3d]/70`}>{label}</p>}
       <nav aria-label="Vistas" // One line always: tighter on phones, scrolling sideways if it still doesn't fit
         className={`${SMALL} absolute inset-x-0 bottom-0 flex gap-x-3 overflow-x-auto [&>*:first-child]:ml-auto px-3 pb-2.5 pt-8 [scrollbar-width:none] sm:gap-x-5 sm:px-4 sm:pb-3 [&::-webkit-scrollbar]:hidden`} style={{ background: "linear-gradient(to top, rgba(28,33,36,0.55), transparent)" }}>

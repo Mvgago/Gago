@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Buendía Tours — viaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;600;800&family=JetBrains+Mono:wght@400&family=Noto+Sans+JP:wght@300;700&family=Noto+Sans+Arabic:wght@300;700&family=Noto+Sans+Devanagari:wght@300;700&display=swap">
+<style>
+/* "Viaje" in many languages, as on Buendía Tours' own post: a slow, living wall of type.
+   Some words are windows: point at one and its letters fill with the destination. */
+:root {
+  --paper: #f3f4f2;
+  --ink: #23272a;
+  --green: #66b944;
+  --soft: rgba(35, 39, 42, 0.5);
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--paper); color: var(--ink); overflow: hidden; font-family: Poppins, 'Noto Sans JP', 'Noto Sans Arabic', 'Noto Sans Devanagari', sans-serif; }
+
+.wall { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 0.6vh; user-select: none; }
+.row { display: flex; width: max-content; animation: drift linear infinite; will-change: transform; }
+.row.rev { animation-direction: reverse; }
+.row:hover { animation-play-state: paused; }
+@keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.w { flex: none; padding: 0 0.28em; line-height: 0.96; white-space: nowrap; letter-spacing: -0.01em; transition: opacity .6s ease, color .6s ease; cursor: default; }
+.w.light { font-weight: 200; }
+.w.reg { font-weight: 300; }
+.w.bold { font-weight: 800; letter-spacing: -0.03em; }
+.w.green { color: var(--green); }
+.w.outline { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+.w.outline.green { -webkit-text-stroke-color: var(--green); }
+
+/* A window: its letters become the photograph */
+.w.win { cursor: pointer; }
+.w.win.open {
+  color: transparent; -webkit-text-stroke: 0;
+  background-image: var(--img); background-size: cover; background-position: center;
+  -webkit-background-clip: text; background-clip: text;
+}
+.wall.focus .w:not(.open) { opacity: .18; }
+
+.caption { position: fixed; left: 24px; bottom: 22px; pointer-events: none; }
+.caption small { display: block; font: 400 12px var(--mono); letter-spacing: .03em; color: var(--soft); }
+.caption p { margin: 6px 0 0; font-weight: 300; font-size: clamp(20px, 2.6vw, 34px); line-height: 1.1; min-height: 1.1em; }
+.caption p b { font-weight: 600; color: var(--green); }
+.caption p span { display: inline-block; transition: opacity .5s ease, transform .5s ease; }
+.caption.swap p span { opacity: 0; transform: translateY(6px); }
+.label, .hint { position: fixed; top: 18px; font: 400 12px var(--mono); letter-spacing: .03em; color: var(--soft); pointer-events: none; }
+.label { left: 24px; }
+.hint { right: 24px; }
+@media (max-width: 640px) { .hint { display: none; } .label { left: 16px; top: 14px; } .caption { left: 16px; bottom: 16px; } }
+@media (prefers-reduced-motion: reduce) { .row { animation: none; } }
+</style>
+</head>
+<body>
+<p class="label">Concepto · Experiencia interactiva</p>
+<p class="hint">pasa por las palabras</p>
+<div class="wall" id="wall"></div>
+<div class="caption" id="caption"><small>Buendía Tours</small><p><span id="capText">¿Dónde quieres pasar un <b>Buendía</b>?</span></p></div>
+
+<script>
+/* The words: "travel" in many languages. Those with a destination open onto it. */
+const DEST = {
+  londres: { img: 'londres.jpg', text: 'Londres · <b>el Támesis al atardecer</b>' },
+  granada: { img: 'granada.jpg', text: 'Granada · <b>la Alhambra</b>' },
+  leones: { img: 'leones.jpg', text: 'Granada · <b>los 12 guardianes</b>' },
+  costa: { img: 'costa.jpg', text: 'Ruta por la costa · <b>al final del camino</b>' },
+};
+const ROWS = [
+  [['TRAVEL', 'bold', 'londres'], ['viaggio', 'light green'], ['REISE', 'outline'], ['旅行', 'reg'], ['VIAJE', 'bold green', 'granada'], ['podróż', 'light']],
+  [['voyage', 'light'], ['رحلة', 'bold'], ['VIAGEM', 'outline green'], ['matka', 'reg'], ['TAXÍDI', 'bold'], ['resa', 'light green']],
+  [['VIAXE', 'bold green', 'costa'], ['perjalanan', 'light'], ['REIS', 'outline'], ['यात्रा', 'reg green'], ['SEYAHAT', 'bold'], ['viatge', 'light']],
+  [['путешествие', 'light'], ['VIAGGIO', 'bold', 'leones'], ['utazás', 'reg green'], ['TRAVEL', 'outline'], ['rejse', 'light'], ['MATKA', 'bold green']],
+];
+const SIZES = ['clamp(56px, 10.5vw, 168px)', 'clamp(46px, 8.6vw, 138px)', 'clamp(52px, 9.6vw, 154px)', 'clamp(44px, 8.2vw, 130px)'];
+const SPEEDS = [120, 150, 110, 140];
+
+const wall = document.getElementById('wall');
+const wins = [];
+ROWS.forEach((row, r) => {
+  const el = document.createElement('div');
+  el.className = 'row' + (r % 2 ? ' rev' : '');
+  el.style.animationDuration = SPEEDS[r] + 's';
+  el.style.fontSize = SIZES[r];
+  // twice over, so the drift loops without a seam
+  for (let pass = 0; pass < 2; pass++) row.forEach(([word, cls, dest]) => {
+    const w = document.createElement('span');
+    w.className = 'w ' + cls + (dest ? ' win' : '');
+    w.textContent = word;
+    if (dest) { w.dataset.dest = dest; w.style.setProperty('--img', `url(${DEST[dest].img})`); wins.push(w); }
+    if (pass) w.setAttribute('aria-hidden', 'true');
+    el.appendChild(w);
+  });
+  wall.appendChild(el);
+});
+
+/* Opening a window: its letters show the place, the rest of the wall steps back, the caption names it */
+const cap = document.getElementById('caption'), capText = document.getElementById('capText');
+const DEFAULT = capText.innerHTML;
+let current = null;
+function setCaption(html) {
+  if (capText.innerHTML === html) return;
+  cap.classList.add('swap');
+  setTimeout(() => { capText.innerHTML = html; cap.classList.remove('swap'); }, 260);
+}
+function open(dest) {
+  current = dest;
+  wins.forEach(w => w.classList.toggle('open', w.dataset.dest === dest));
+  wall.classList.toggle('focus', !!dest);
+  setCaption(dest ? DEST[dest].text : DEFAULT);
+}
+let userAt = -1e9;
+wins.forEach(w => {
+  w.addEventListener('pointerenter', () => { userAt = performance.now(); open(w.dataset.dest); });
+  w.addEventListener('pointerleave', () => { userAt = performance.now(); open(null); });
+  w.addEventListener('click', () => { userAt = performance.now(); open(current === w.dataset.dest ? null : w.dataset.dest); });
+});
+
+/* Left alone, it travels by itself: one destination after another */
+// Only a word fully on screen opens, so the caption never names a place you can't see
+const visibleDests = () => [...new Set(wins.filter(w => {
+  const r = w.getBoundingClientRect();
+  return r.left > 20 && r.right < innerWidth - 20;
+}).map(w => w.dataset.dest))];
+let last = null;
+setInterval(() => {
+  if (performance.now() - userAt < 6000) return;
+  if (current) { open(null); return; }
+  const pool = visibleDests().filter(d => d !== last);
+  if (!pool.length) return;
+  last = pool[Math.floor(Math.random() * pool.length)];
+  open(last);
+}, 2600);
+
+/* Pause everything while off screen, when told so by the page that holds it */
+addEventListener('message', (e) => {
+  if (e.data && typeof e.data.fhVisible === 'boolean')
+    document.querySelectorAll('.row').forEach(r => r.style.animationPlayState = e.data.fhVisible ? '' : 'paused');
+});
+</script>
+</body>
+</html>

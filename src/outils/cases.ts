@@ -168,8 +168,8 @@ export const cases: Case[] = [
     images: [{ src: santaTerrace }, { src: santaSketch }, { src: santaMark, pair: true }, { src: santaPalette }, { src: santaDevices }, { src: santaInterior, pair: true }, { src: santaStationery }],
   },  {
     slug: "buendia",
-    title: "Buendía Travels",
-    client: { en: "Buendía Travels — tourism", es: "Buendía Travels — turismo", fr: "Buendía Travels — tourisme", de: "Buendía Travels — tourismus" },
+    title: "Buendía Travel",
+    client: { en: "Buendía Travel — tourism", es: "Buendía Travel — turismo", fr: "Buendía Travel — tourisme", de: "Buendía Travel — tourismus" },
     disciplines: ["identity", "web", "campaign"],
     lead: {
       en: "Travel agency.",
