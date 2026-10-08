@@ -31,7 +31,8 @@
     min-height: 100%;
     background: #a8a0a2;
     color: var(--color-ink);
-    overflow-x: hidden;
+    /* clip, not hidden: hidden makes body a scroll box of its own and breaks position: sticky */
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

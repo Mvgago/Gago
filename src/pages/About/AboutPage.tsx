@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+﻿import React, { Suspense, lazy, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
@@ -6,11 +6,12 @@ import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { LightWall } from "../../components/Light/LightWall";
-import { ACTION, BODY as BODY_TYPE, HEADING, LEAD, SMALL } from "../../lib/type";
+import { ACTION, HEADING, LEAD, SMALL } from "../../lib/type";
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import { FUGA_SEI_EP } from "../../outils/artwork";
 import Footer from "../../components/Footer/Footer";
 import grimaldi from "../../assets/gallery/grimaldi-lines.jpg";
+import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
 
 // three.js loads only on this page, after the text
 const WhiteRoom = lazy(() => import("../../components/Light/WhiteRoom"));
@@ -26,12 +27,6 @@ const ROOM_FADE = [
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
-
-/** One grid for every chapter with entries: equal columns, equal gaps */
-const GRID = "grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8";
-
-/** Body copy of the inner rooms */
-const BODY = `${BODY_TYPE} text-graphite`;
 
 /**
  * A chapter of the page: a hairline across, the label in the left column,
@@ -56,14 +51,6 @@ const Chapter: React.FC<{
     </h2>
     <div className="col-span-12 md:col-span-9">{children}</div>
   </motion.section>
-);
-
-/** Title and text, used for the disciplines and the steps of the process */
-const Entry: React.FC<{ title: string; text: string }> = ({ title, text }) => (
-  <div>
-    <h3 className={`${HEADING} text-ink`}>{title}</h3>
-    <p className={`mt-3 ${BODY}`}>{text}</p>
-  </div>
 );
 
 /** A text link that darkens and draws its hairline on hover */
@@ -181,7 +168,7 @@ export const AboutPage: React.FC = () => {
       </motion.header>
 
       {/* Statement and way in */}
-      <div className="mb-32 mt-20 grid items-center gap-14 md:mb-44 md:mt-28 lg:grid-cols-12 lg:gap-8">
+      <div className="mb-16 mt-16 grid items-center gap-14 md:mb-20 md:mt-20 lg:grid-cols-12 lg:gap-8">
       <div className="lg:col-span-7">
       {/* The statement: the one thing to read first */}
       <motion.p
@@ -232,21 +219,11 @@ export const AboutPage: React.FC = () => {
 
       </div>
 
-      <Chapter label={s.disciplinesLabel}>
-        {/* Same four-column grid as the process below, so the columns line up chapter to chapter */}
-        <div className={GRID}>
-          {s.disciplines.map((d) => (
-            <Entry key={d.title} title={d.title} text={d.text} />
-          ))}
-        </div>
-      </Chapter>
+      {/* What the studio does, shown: an example for each discipline, held while it is read */}
+      <ServicesShowcase s={s} />
 
       <Chapter label={s.processLabel}>
-        <div className={GRID}>
-          {s.process.map((p) => (
-            <Entry key={p.title} title={p.title} text={p.text} />
-          ))}
-        </div>
+        <ProcessSteps steps={s.process} />
       </Chapter>
 
       <Chapter label={s.voiceLabel}>
