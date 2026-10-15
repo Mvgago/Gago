@@ -6,7 +6,7 @@ import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { LightWall } from "../../components/Light/LightWall";
-import { ACTION, HEADING, LEAD, SMALL } from "../../lib/type";
+import { ACTION, HEADING, LEAD, SMALL, SUBTITLE } from "../../lib/type";
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import { FUGA_SEI_EP } from "../../outils/artwork";
 import Footer from "../../components/Footer/Footer";
@@ -168,17 +168,28 @@ export const AboutPage: React.FC = () => {
       </motion.header>
 
       {/* Statement and way in */}
-      <div className="mb-16 mt-16 grid items-center gap-14 md:mb-20 md:mt-20 lg:grid-cols-12 lg:gap-8">
-      <div className="lg:col-span-7">
+      <div className="mb-8 mt-8 grid items-center gap-14 md:mb-10 md:mt-10 lg:grid-cols-12 lg:gap-8">
+      <div className="lg:col-span-9">
       {/* The statement: the one thing to read first */}
       <motion.p
         variants={rise}
         initial="hidden"
         animate="shown"
         custom={3}
-        className={`${LEAD} max-w-[34ch] text-ink`}
+        className={`${SUBTITLE} text-ink`}
       >
-        {s.statement}
+        {/* Two lines, each whole: what the studio is, then its principle, set back in grey */}
+        {(() => {
+          const cut = s.statement.lastIndexOf(". ");
+          if (cut < 0) return s.statement;
+          return (
+            <>
+              {/* held to a width that sets it in two lines, the principle making the third */}
+              <span className="block max-w-[66ch]">{s.statement.slice(0, cut + 1)}</span>
+              <span className="block text-graphite">{s.statement.slice(cut + 2)}</span>
+            </>
+          );
+        })()}
       </motion.p>
 
       {/* The way in, right under it: down to the contact chapter, or straight to the address */}
@@ -188,7 +199,7 @@ export const AboutPage: React.FC = () => {
         animate="shown"
         custom={4}
         // One line, one voice: the shortcut and the address in the same small type
-        className={`${ACTION} mt-12 flex flex-wrap items-center gap-x-4 gap-y-3 text-ink`}
+        className={`${ACTION} mt-7 flex flex-wrap items-center gap-x-4 gap-y-3 text-ink`}
       >
         <a
           href="#contact"

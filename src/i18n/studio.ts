@@ -18,6 +18,8 @@ export type Studio = {
   seenIn: string;
   /** Under the video example: what the studio did on it, with no client named */
   videoNote: string;
+  /** Under the disciplines' tabs: an invitation to keep scrolling */
+  scrollHint: string;
   voiceLabel: string;
   /** `{name}` is replaced with the project's name, as a link; `{ep}` with the EP's title. */
   voice: string;
@@ -31,7 +33,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "Fuga Haus is an independent design studio. We create video, interactive 3D, websites and identities on one principle: less noise, more intent.",
+      "Independent design studio. Strategy, identity and visual language for brands and spaces that want to be told beyond words. Less noise, more intent.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -43,8 +45,8 @@ export const STUDIO: Record<Lang, Studio> = {
         text: "Bespoke sites, fast and finished to the last detail, from design to launch. Made to tell, not to fill.",
       },
       {
-        title: "Video",
-        text: "Pieces for campaigns, spaces and social media: script, editing and motion, from footage or from renders.",
+        title: "Audiovisual",
+        text: "Spaces and brands told in motion: script, editing and motion, for campaigns and social media, from footage or from renders.",
       },
       {
         title: "Interactive 3D",
@@ -52,7 +54,8 @@ export const STUDIO: Record<Lang, Studio> = {
       },
     ],
     seenIn: "in projects",
-    videoNote: "Editing and scene detail over residential renders.",
+    videoNote: "Editing and grading.",
+    scrollHint: "scroll to see each discipline",
     processLabel: "process",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
@@ -77,7 +80,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Fuga Haus es un estudio de diseño independiente. Creamos vídeo, experiencias 3D, webs e identidades con un mismo principio: menos ruido, más intención.",
+      "Estudio de diseño independiente. Estrategia, identidad y lenguaje visual para marcas y espacios que quieren contarse más allá de las palabras. Menos ruido, más intención.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
@@ -89,8 +92,8 @@ export const STUDIO: Record<Lang, Studio> = {
         text: "Sitios a medida, rápidos y cuidados hasta el último detalle, del diseño a la publicación. Hechos para contar, no para rellenar.",
       },
       {
-        title: "Vídeo",
-        text: "Piezas para campañas, espacios y redes: guion, montaje y motion, a partir de rodaje o de renders.",
+        title: "Audiovisual",
+        text: "Espacios y marcas contados en movimiento: guion, montaje y motion para campañas y redes, a partir de rodaje o de renders.",
       },
       {
         title: "3D interactivo",
@@ -98,7 +101,8 @@ export const STUDIO: Record<Lang, Studio> = {
       },
     ],
     seenIn: "en proyectos",
-    videoNote: "Montaje y dirección de detalle sobre renders residenciales.",
+    videoNote: "Montaje y grading.",
+    scrollHint: "desliza para ver cada disciplina",
     processLabel: "proceso",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
@@ -123,7 +127,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Fuga Haus est un studio de design indépendant. Nous créons vidéos, expériences 3D, sites web et identités selon un même principe : moins de bruit, plus d'intention.",
+      "Studio de design indépendant. Stratégie, identité et langage visuel pour les marques et les lieux qui veulent se raconter au-delà des mots. Moins de bruit, plus d'intention.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -135,8 +139,8 @@ export const STUDIO: Record<Lang, Studio> = {
         text: "Des sites sur mesure, rapides et soignés jusqu'au moindre détail, de la conception à la mise en ligne. Faits pour raconter, pas pour remplir.",
       },
       {
-        title: "Vidéo",
-        text: "Des pièces pour campagnes, espaces et réseaux : scénario, montage et motion, à partir de tournages ou de rendus.",
+        title: "Audiovisuel",
+        text: "Des espaces et des marques racontés en mouvement : scénario, montage et motion pour campagnes et réseaux, à partir de tournages ou de rendus.",
       },
       {
         title: "3D interactive",
@@ -144,7 +148,8 @@ export const STUDIO: Record<Lang, Studio> = {
       },
     ],
     seenIn: "dans les projets",
-    videoNote: "Montage et direction du détail sur des rendus résidentiels.",
+    videoNote: "Montage et étalonnage.",
+    scrollHint: "faites défiler pour voir chaque discipline",
     processLabel: "processus",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
@@ -169,7 +174,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Fuga Haus ist ein unabhängiges Designstudio. Wir gestalten Videos, 3D-Erlebnisse, Websites und Identitäten nach einem Prinzip: weniger Rauschen, mehr Absicht.",
+      "Unabhängiges Designstudio. Strategie, Identität und Bildsprache für Marken und Räume, die sich jenseits der Worte erzählen wollen. Weniger Rauschen, mehr Absicht.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
@@ -181,8 +186,8 @@ export const STUDIO: Record<Lang, Studio> = {
         text: "Maßgeschneiderte Websites, schnell und bis ins Detail ausgearbeitet, vom Entwurf bis zum Launch. Gemacht, um zu erzählen, nicht um zu füllen.",
       },
       {
-        title: "Video",
-        text: "Stücke für Kampagnen, Räume und Social Media: Drehbuch, Schnitt und Motion, aus Drehmaterial oder aus Renderings.",
+        title: "Audiovisuell",
+        text: "Räume und Marken in Bewegung erzählt: Drehbuch, Schnitt und Motion für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
       },
       {
         title: "Interaktives 3D",
@@ -190,7 +195,8 @@ export const STUDIO: Record<Lang, Studio> = {
       },
     ],
     seenIn: "in projekten",
-    videoNote: "Schnitt und Szenendetail über Wohnbau-Renderings.",
+    videoNote: "Schnitt und Grading.",
+    scrollHint: "scrollen, um jede Disziplin zu sehen",
     processLabel: "prozess",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },

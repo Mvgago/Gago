@@ -11,8 +11,9 @@ export type Lang = (typeof LANGS)[number];
 
 const en = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Identity, web and video.",
+  "hero.sub": "Audiovisual, 3D, web and identity.",
   "hero.cta": "see projects",
+  "hero.services": "see services",
 
   "status": "studio open",
   "index.open": "index",
@@ -30,10 +31,10 @@ const en = {
 
   "section.projects": "projects",
   "section.artwork": "artwork",
-  "section.studio": "info",
+  "section.studio": "studio",
   "section.projects.caption": "selected works — identity, web, video",
   "section.artwork.caption": "experiments, covers & rendered matter",
-  "section.studio.caption": "studio, process & contact",
+  "section.studio.caption": "services, process & contact",
 
   "availability": "open to new projects",
 
@@ -53,8 +54,9 @@ export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Identidad, web y vídeo.",
+  "hero.sub": "Audiovisual, 3D, web e identidad.",
   "hero.cta": "ver proyectos",
+  "hero.services": "ver servicios",
 
   "status": "estudio abierto",
   "index.open": "índice",
@@ -72,10 +74,10 @@ const es: Record<Key, string> = {
 
   "section.projects": "proyectos",
   "section.artwork": "obra",
-  "section.studio": "info",
+  "section.studio": "estudio",
   "section.projects.caption": "trabajos seleccionados — identidad, web, vídeo",
   "section.artwork.caption": "experimentos, portadas y materia renderizada",
-  "section.studio.caption": "estudio, proceso y contacto",
+  "section.studio.caption": "servicios, proceso y contacto",
 
   "availability": "abierto a nuevos proyectos",
 
@@ -93,8 +95,9 @@ const es: Record<Key, string> = {
 
 const fr: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Identité, web et vidéo.",
+  "hero.sub": "Audiovisuel, 3D, web et identité.",
   "hero.cta": "voir les projets",
+  "hero.services": "voir les services",
 
   "status": "studio ouvert",
   "index.open": "index",
@@ -112,10 +115,10 @@ const fr: Record<Key, string> = {
 
   "section.projects": "projets",
   "section.artwork": "œuvres",
-  "section.studio": "info",
+  "section.studio": "studio",
   "section.projects.caption": "travaux choisis — identité, web, vidéo",
   "section.artwork.caption": "expériences, pochettes & matière rendue",
-  "section.studio.caption": "studio, processus & contact",
+  "section.studio.caption": "services, processus & contact",
 
   "availability": "ouvert aux nouveaux projets",
 
@@ -133,8 +136,9 @@ const fr: Record<Key, string> = {
 
 const de: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Identität, Web und Video.",
+  "hero.sub": "Audiovisuell, 3D, Web und Identität.",
   "hero.cta": "projekte ansehen",
+  "hero.services": "leistungen ansehen",
 
   "status": "studio geöffnet",
   "index.open": "index",
@@ -152,10 +156,10 @@ const de: Record<Key, string> = {
 
   "section.projects": "projekte",
   "section.artwork": "arbeiten",
-  "section.studio": "info",
+  "section.studio": "studio",
   "section.projects.caption": "ausgewählte arbeiten — identität, web, video",
   "section.artwork.caption": "experimente, cover & gerenderte materie",
-  "section.studio.caption": "studio, prozess & kontakt",
+  "section.studio.caption": "leistungen, prozess & kontakt",
 
   "availability": "offen für neue projekte",
 

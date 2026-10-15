@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { rise } from "../../lib/motion";
@@ -62,29 +62,30 @@ export const Home: React.FC = () => {
           {t("hero.sub")}
         </motion.p>
 
-        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12 lg:mt-16">
+        {/* Two ways in: the work first and strongest, what the studio does under it */}
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12 flex flex-col items-start gap-2.5 lg:mt-16">
           <Link
             to="/projects"
-            // The one way into the work, in the same type as every other action
-            className={`${ACTION} group inline-flex items-center gap-3 text-silver`}
+            className={`${ACTION} group inline-flex items-center gap-4 text-silver transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
           >
-            <span className="relative">
+            <span className="transition-[letter-spacing] duration-700 ease-haus group-hover:tracking-[0.12em] group-focus-visible:tracking-[0.12em]">
               {t("hero.cta")}
-              <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-silver transition-transform duration-700 ease-haus group-hover:scale-x-100 group-focus-visible:scale-x-100" />
             </span>
-            {/* A long hairline arrow, drawn: it stretches towards the work on hover */}
-            <svg
-              aria-hidden
-              viewBox="0 0 48 12"
-              className="ml-1 h-3 w-10 overflow-visible transition-transform duration-700 ease-haus group-hover:translate-x-2 lg:w-12"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.1}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M0 6h47M41 1l6 5-6 5" />
-            </svg>
+            <span aria-hidden className="relative block h-px w-16 lg:w-20">
+              <span className="absolute inset-y-0 left-0 w-full origin-left bg-current opacity-60 transition-all duration-700 ease-haus group-hover:opacity-100 group-hover:scale-x-[1.6] group-focus-visible:scale-x-[1.6]" />
+            </span>
+          </Link>
+          {/* the second way in, a step below: the same gesture, a shorter, fainter line */}
+          <Link
+            to="/about"
+            className={`${ACTION} group inline-flex items-center gap-4 text-silver/85 transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
+          >
+            <span className="transition-[letter-spacing] duration-700 ease-haus group-hover:tracking-[0.12em] group-focus-visible:tracking-[0.12em]">
+              {t("hero.services")}
+            </span>
+            <span aria-hidden className="relative block h-px w-8">
+              <span className="absolute inset-y-0 left-0 w-full origin-left bg-current opacity-60 transition-all duration-700 ease-haus group-hover:opacity-100 group-hover:scale-x-[2.2] group-focus-visible:scale-x-[2.2]" />
+            </span>
           </Link>
         </motion.div>
       </div>

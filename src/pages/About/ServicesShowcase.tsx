@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { cases } from "../../outils/cases";
 import { EASE_HAUS } from "../../lib/motion";
+import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { ACTION, BODY, SMALL, TITLE } from "../../lib/type";
 import type { Studio } from "../../i18n/studio";
 import identityImg from "../../assets/peojects/saphire/saphire (10).jpg";
@@ -17,13 +18,16 @@ import webImg from "../../assets/peojects/buendia/buendia-laptop-web.jpg";
  * example above it.
  */
 
-type Example = { img?: string; video?: string; frame?: string; seen: string[] };
+const GRAIN =
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
+
+type Example ={ img?: string; video?: string; frame?: string; seen: string[] };
 
 // In the order of the disciplines: identity, web, video, interactive 3D
 const EXAMPLES: Example[] = [
   { img: identityImg, seen: ["sapphire", "smarthc", "buendia"] },
   { img: webImg, seen: ["buendia", "sapphire"] },
-  { video: "/video/interiors.mp4", seen: ["sapphire", "buendia"] },
+  { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
   // the scene runs on its own; the pointer is left to the page so scrolling over it never sticks
   { frame: "/concepts/smarthc-devices/index.html", seen: ["smarthc", "buendia"] },
 ];
@@ -34,7 +38,11 @@ const Frame: React.FC<{ ex: Example; note?: string }> = ({ ex, note }) => (
   <div className="relative h-full w-full overflow-hidden bg-[#dfe1e2]">
     {ex.img && <img src={ex.img} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />}
     {ex.video && (
-      <video src={ex.video} muted loop playsInline autoPlay preload="auto" className="absolute inset-0 h-full w-full object-cover" />
+      <>
+        <video src={ex.video} muted loop playsInline autoPlay preload="auto" className="absolute inset-0 h-full w-full object-cover" />
+        {/* a fine film grain over the footage, as on the projects page: one texture for every shot */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.09] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
+      </>
     )}
     {ex.frame && <DevicesFrame src={ex.frame} title="3D" className="pointer-events-none absolute inset-0 h-full w-full" />}
     {note && (
@@ -67,15 +75,22 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s: studio }) => {
   }, []);
 
   const noteFor = (i: number) => (EX[i].video ? s.videoNote : undefined);
+  const lenis = useLenis();
+  // A tab brings its discipline to the middle of the screen
+  const goTo = (i: number) => {
+    const el = items.current[i];
+    if (el) scrollToTarget(lenis, el, { offset: -112 }); // level with the held frame, under the header
+  };
 
   return (
-    <section className="grid scroll-mt-24 grid-cols-12 gap-x-8 border-t border-ink/10 pt-10 md:pt-12">
-      <h2 className={`${SMALL} col-span-12 mb-8 text-graphite`}>{s.disciplinesLabel}</h2>
+    <section className="grid scroll-mt-24 grid-cols-12 gap-x-8">
+      <h2 className="sr-only">{s.disciplinesLabel}</h2>
 
       {/* The frame, held while the disciplines pass (large screens) */}
-      <div className="col-span-7 hidden lg:block">
+      <div className="col-span-8 hidden lg:block">
         <div className="sticky top-28">
-          <div className="relative aspect-[16/10] w-full">
+          {/* wide and low: room for the film to lead, whole on the first screen */}
+          <div className="relative aspect-[2/1] w-full">
             <AnimatePresence initial={false}>
               <motion.div
                 key={active}
@@ -88,20 +103,36 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s: studio }) => {
               </motion.div>
             </AnimatePresence>
           </div>
-          {/* where we are: one mark per discipline */}
-          <div aria-hidden className="mt-4 flex gap-2">
-            {s.disciplines.map((_, i) => (
-              <span
-                key={i}
-                className={`h-px flex-1 transition-colors duration-700 ${i === active ? "bg-ink" : "bg-ink/15"}`}
-              />
-            ))}
+          {/* The disciplines as tabs under the frame: where we are, and a way straight to any of them */}
+          <div className="mt-5 flex items-start gap-3">
+            <div className="grid flex-1 grid-cols-4 gap-3">
+              {s.disciplines.map((d, i) => (
+                <button
+                  key={d.title}
+                  type="button"
+                  onClick={() => goTo(i)}
+                  className={`group -mx-2 cursor-pointer rounded-sm px-2 pb-2 text-left outline-none transition-colors duration-500 hover:bg-ink/[0.045] focus-visible:bg-ink/[0.06] ${i === active ? "text-ink" : "text-ink/45 hover:text-ink"}`}
+                >
+                  <span className="relative block h-px w-full bg-ink/15">
+                    <span
+                      className={`absolute inset-y-0 left-0 bg-ink transition-[width] duration-700 ease-haus ${
+                        i <= active ? "w-full" : "w-0 group-hover:w-full group-hover:bg-ink/50"
+                      }`}
+                    />
+                  </span>
+                  <span className={`${SMALL} mt-3 block`}>
+                    {String(i + 1).padStart(2, "0")} {d.title.toLowerCase()}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* The disciplines, about half a screen each on large screens: room for the frame to change */}
-      <div className="col-span-12 lg:col-span-5">
+      {/* the room below the last keeps the frame held until the last discipline has been read */}
+      <div className="col-span-12 lg:col-span-4 lg:pb-[30vh]">
         {s.disciplines.map((d, i) => {
           const seen = EX[i]?.seen.map((slug) => ({ slug, title: titleOf(slug) })).filter((p) => p.title) ?? [];
           return (
@@ -109,14 +140,14 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s: studio }) => {
               key={d.title}
               data-i={i}
               ref={(el) => (items.current[i] = el)}
-              className="flex flex-col justify-center pb-20 lg:min-h-[56vh] lg:pb-0 lg:first:justify-start lg:last:min-h-[44vh]"
+              className="flex flex-col justify-center pb-20 lg:min-h-[60vh] lg:pb-0 lg:first:justify-start"
             >
               {/* phones and tablets: the example sits above its discipline */}
               <div className="mb-8 aspect-[16/10] w-full lg:hidden">
                 {EX[i] && <Frame ex={EX[i]} note={noteFor(i)} />}
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
-                <p className={`${SMALL} text-graphite`}>{String(i + 1).padStart(2, "0")}</p>
+                <p className={`${SMALL} text-graphite`}>{String(i + 1).padStart(2, "0")} / {String(s.disciplines.length).padStart(2, "0")}</p>
                 <h3 className={`${TITLE} mt-4 text-ink`}>{d.title}</h3>
                 <p className={`${BODY} mt-6 max-w-[42ch] text-graphite`}>{d.text}</p>
                 {seen.length > 0 && (
@@ -134,6 +165,20 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s: studio }) => {
                       </React.Fragment>
                     ))}
                   </p>
+                )}
+                {/* on arrival, a plain word that the others follow below */}
+                {i === 0 && (
+                  <div className={`mt-14 hidden items-center gap-5 transition-opacity duration-700 lg:flex ${active === 0 ? "opacity-100" : "opacity-0"}`}>
+                    {/* a mouse, its wheel rolling down, and a line that keeps drawing itself downwards */}
+                    <style>{`@keyframes fh-wheel{0%{transform:translateY(0);opacity:0}20%{opacity:1}70%{transform:translateY(9px);opacity:0}100%{opacity:0}}@keyframes fh-draw{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}`}</style>
+                    <span aria-hidden className="relative flex h-9 w-[22px] justify-center rounded-full border border-ink/40">
+                      <span className="mt-[7px] h-[6px] w-[2px] rounded-full bg-ink" style={{ animation: "fh-wheel 1.8s cubic-bezier(.4,0,.2,1) infinite" }} />
+                    </span>
+                    <span aria-hidden className="relative h-12 w-px overflow-hidden bg-ink/10">
+                      <span className="absolute inset-0 bg-ink/60" style={{ animation: "fh-draw 2.4s cubic-bezier(.65,0,.35,1) infinite" }} />
+                    </span>
+                    <span className={`${SMALL} text-graphite`}>{s.scrollHint}</span>
+                  </div>
                 )}
               </div>
             </div>
