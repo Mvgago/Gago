@@ -1,4 +1,4 @@
-import * as THREE from "three";
+﻿import * as THREE from "three";
 
 /**
  * The FUGA HAUS wordmark as solid geometry — the one model behind every
@@ -15,7 +15,7 @@ const GAP = 30; // extra air before "ga", as on the logo
 const UNIT = 300; // logo units per world unit
 /** Bar weights in logo units. */
 const FUGA_WEIGHT = 35;
-const HAUS_WEIGHT = 7;
+const HAUS_WEIGHT = 11; // heavier than its size alone would ask, so it holds at the corner logo's size
 /** Extrusion depths in world units: Fuga a thin slab, haus a little shallower. */
 const FUGA_DEPTH = 0.07;
 const HAUS_DEPTH = 0.035;

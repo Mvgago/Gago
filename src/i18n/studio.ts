@@ -6,7 +6,7 @@
  * founder prefers not to appear for now.
  */
 
-type Item = { title: string; text: string };
+type Item = { title: string; text: string; /** what the client receives */ list?: string[] };
 
 export type Studio = {
   statement: string;
@@ -37,20 +37,24 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disciplines",
     disciplines: [
       {
-        title: "Brand identity",
-        text: "Name, mark, typography, colour and visual system: a complete, coherent identity, ready to grow.",
-      },
-      {
-        title: "Web",
-        text: "Bespoke sites, fast and finished to the last detail, from design to launch. Made to tell, not to fill.",
-      },
-      {
         title: "Audiovisual",
-        text: "Spaces and brands told in motion: script, editing and motion, for campaigns and social media, from footage or from renders.",
+        text: "Spaces and brands told in motion, for campaigns and social media, from footage or from renders.",
+        list: ["Script, shooting and editing", "Motion and graphics", "Original music and sound design"],
       },
       {
-        title: "Interactive 3D",
-        text: "Spaces and products in 3D to explore on the web: stands, prototypes and scenes you can turn and touch, light and made to tell.",
+        title: "Web and interactive 3D",
+        text: "Bespoke websites and experiences you can explore: fast, finished to the last detail and made to tell.",
+        list: ["Bespoke websites", "3D scenes, product viewers and configurators", "Monthly care and evolution"],
+      },
+      {
+        title: "Spaces and events",
+        text: "The brand carried into physical space, where it is seen, walked through and remembered.",
+        list: ["Stands for fairs and congresses", "Shops, venues and window displays", "Signage and point-of-sale material"],
+      },
+      {
+        title: "Strategy and identity",
+        text: "What a brand is, who it speaks to and how it looks: one clear idea behind everything it does.",
+        list: ["Positioning and brand story", "Name, logo and visual system", "Brand guidelines and applications"],
       },
     ],
     seenIn: "in projects",
@@ -84,20 +88,24 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
-        title: "Identidad de marca",
-        text: "Nombre, símbolo, tipografía, color y sistema visual: una identidad completa y coherente, lista para crecer.",
-      },
-      {
-        title: "Web",
-        text: "Sitios a medida, rápidos y cuidados hasta el último detalle, del diseño a la publicación. Hechos para contar, no para rellenar.",
-      },
-      {
         title: "Audiovisual",
-        text: "Espacios y marcas contados en movimiento: guion, montaje y motion para campañas y redes, a partir de rodaje o de renders.",
+        text: "Espacios y marcas contados en movimiento, para campañas y redes, a partir de rodaje o de renders.",
+        list: ["Guion, rodaje y montaje", "Motion y grafismo", "Música y diseño sonoro original"],
       },
       {
-        title: "3D interactivo",
-        text: "Espacios y productos en 3D que se recorren en la web: stands, prototipos y escenas que se giran y se tocan, ligeras y pensadas para contar.",
+        title: "Web y 3D interactivo",
+        text: "Webs a medida y experiencias que se recorren: rápidas, cuidadas hasta el último detalle y hechas para contar.",
+        list: ["Webs a medida", "Escenas 3D, visores y configuradores de producto", "Mantenimiento y evolución mensual"],
+      },
+      {
+        title: "Espacios y eventos",
+        text: "La marca llevada al espacio físico, donde se ve, se recorre y se recuerda.",
+        list: ["Stands para ferias y congresos", "Imagen de tiendas, locales y escaparates", "Señalética y material de punto de venta"],
+      },
+      {
+        title: "Estrategia e identidad",
+        text: "Qué es una marca, a quién habla y cómo se ve: una idea clara detrás de todo lo que hace.",
+        list: ["Posicionamiento y relato de marca", "Nombre, logotipo y sistema visual", "Guía de marca y aplicaciones"],
       },
     ],
     seenIn: "en proyectos",
@@ -131,20 +139,24 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disciplines",
     disciplines: [
       {
-        title: "Identité de marque",
-        text: "Nom, symbole, typographie, couleur et système visuel : une identité complète et cohérente, prête à grandir.",
-      },
-      {
-        title: "Web",
-        text: "Des sites sur mesure, rapides et soignés jusqu'au moindre détail, de la conception à la mise en ligne. Faits pour raconter, pas pour remplir.",
-      },
-      {
         title: "Audiovisuel",
-        text: "Des espaces et des marques racontés en mouvement : scénario, montage et motion pour campagnes et réseaux, à partir de tournages ou de rendus.",
+        text: "Des lieux et des marques racontés en mouvement, pour campagnes et réseaux, à partir de tournages ou de rendus.",
+        list: ["Scénario, tournage et montage", "Motion et graphisme", "Musique et design sonore originaux"],
       },
       {
-        title: "3D interactive",
-        text: "Des espaces et des produits en 3D à parcourir sur le web : stands, prototypes et scènes que l'on tourne et que l'on touche, légers et faits pour raconter.",
+        title: "Web et 3D interactive",
+        text: "Des sites sur mesure et des expériences à parcourir : rapides, soignés jusqu'au moindre détail et faits pour raconter.",
+        list: ["Sites sur mesure", "Scènes 3D, visionneuses et configurateurs de produit", "Maintenance et évolution mensuelle"],
+      },
+      {
+        title: "Espaces et événements",
+        text: "La marque portée dans l'espace physique, là où on la voit, la parcourt et s'en souvient.",
+        list: ["Stands pour salons et congrès", "Image de boutiques, de lieux et de vitrines", "Signalétique et PLV"],
+      },
+      {
+        title: "Stratégie et identité",
+        text: "Ce qu'est une marque, à qui elle parle et à quoi elle ressemble : une idée claire derrière tout ce qu'elle fait.",
+        list: ["Positionnement et récit de marque", "Nom, logo et système visuel", "Charte de marque et déclinaisons"],
       },
     ],
     seenIn: "dans les projets",
@@ -178,20 +190,24 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
-        title: "Markenidentität",
-        text: "Name, Zeichen, Typografie, Farbe und visuelles System: eine vollständige, stimmige Identität, bereit zu wachsen.",
-      },
-      {
-        title: "Web",
-        text: "Maßgeschneiderte Websites, schnell und bis ins Detail ausgearbeitet, vom Entwurf bis zum Launch. Gemacht, um zu erzählen, nicht um zu füllen.",
-      },
-      {
         title: "Audiovisuell",
-        text: "Räume und Marken in Bewegung erzählt: Drehbuch, Schnitt und Motion für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
+        text: "Räume und Marken in Bewegung erzählt, für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
+        list: ["Drehbuch, Dreh und Schnitt", "Motion und Grafik", "Eigene Musik und Sounddesign"],
       },
       {
-        title: "Interaktives 3D",
-        text: "Räume und Produkte in 3D, die man im Web erkundet: Messestände, Prototypen und Szenen zum Drehen und Berühren, leicht und gemacht, um zu erzählen.",
+        title: "Web und interaktives 3D",
+        text: "Maßgeschneiderte Websites und Erlebnisse zum Erkunden: schnell, bis ins Detail ausgearbeitet und gemacht, um zu erzählen.",
+        list: ["Maßgeschneiderte Websites", "3D-Szenen, Produktviewer und Konfiguratoren", "Monatliche Pflege und Weiterentwicklung"],
+      },
+      {
+        title: "Räume und Events",
+        text: "Die Marke im physischen Raum, wo man sie sieht, durchschreitet und sich an sie erinnert.",
+        list: ["Messe- und Kongressstände", "Läden, Lokale und Schaufenster", "Beschilderung und Point-of-Sale-Material"],
+      },
+      {
+        title: "Strategie und Identität",
+        text: "Was eine Marke ist, wen sie anspricht und wie sie aussieht: eine klare Idee hinter allem, was sie tut.",
+        list: ["Positionierung und Markengeschichte", "Name, Logo und visuelles System", "Markenrichtlinien und Anwendungen"],
       },
     ],
     seenIn: "in projekten",

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
+﻿import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Monolith } from "../Monolith/Monolith";
@@ -38,6 +38,33 @@ export const SiteHeader: React.FC = () => {
     const id = idle(() => void preloadLogoSpace(), { timeout: 4000 });
     return () => cancel(id);
   }, []);
+
+  // On the landing, until the index has been opened once in the visit, the control invites a
+  // touch: a few seconds in, a soft halo breathes out from the pill and its short line draws
+  // itself out and back, every few seconds. The first open ends it for the rest of the visit.
+  const [seen, setSeen] = useState(() => {
+    try {
+      return sessionStorage.getItem("fh-index-seen") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const [invite, setInvite] = useState(false);
+  useEffect(() => {
+    if (seen || pathname !== "/") return setInvite(false);
+    const id = window.setTimeout(() => setInvite(true), 2000);
+    return () => window.clearTimeout(id);
+  }, [seen, pathname]);
+  useEffect(() => {
+    if (!open || seen) return;
+    setSeen(true);
+    try {
+      sessionStorage.setItem("fh-index-seen", "1");
+    } catch {
+      /* the invitation simply comes back next visit */
+    }
+  }, [open, seen]);
+  const inviting = invite && !open;
 
   // When the index closes, keyboard focus returns to the button that opened it.
   const toggle = useRef<HTMLButtonElement>(null);
@@ -114,6 +141,7 @@ export const SiteHeader: React.FC = () => {
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
           <LanguageSwitch dark={pathname === "/projects" && !open} />
 
+          <style>{`@keyframes fh-bloom{0%,100%{opacity:0;transform:scale(.9)}35%{opacity:.85;transform:scale(1.15)}70%{opacity:0;transform:scale(1.3)}}@keyframes fh-halo{0%{transform:scale(1);opacity:0}12%{opacity:.75}80%,100%{transform:scale(1.35,1.6);opacity:0}}@keyframes fh-open{0%,100%{letter-spacing:.08em}14%,30%{letter-spacing:.2em}44%{letter-spacing:.08em}}@keyframes fh-sheen{0%,8%{transform:translateX(-110%)}52%,100%{transform:translateX(70%)}}@keyframes fh-nudge{0%,100%{transform:scale(1)}18%{transform:scale(1.025)}40%{transform:scale(1)}}@keyframes fh-draw{0%,55%,100%{width:.625rem}20%,35%{width:1rem}}@media (prefers-reduced-motion:reduce){.fh-invite *{animation:none!important}}`}</style>
           <button
             ref={toggle}
             type="button"
@@ -123,8 +151,19 @@ export const SiteHeader: React.FC = () => {
             aria-expanded={open}
             aria-label={open ? t("index.aria.close") : t("index.aria.open")}
             // Hover, quietly: the graphite lifts a shade lighter, the letters open a touch, the short line grows. No shadow.
-            className="group relative flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 backdrop-blur-md transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2"
+            className={`group relative flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 backdrop-blur-md transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
           >
+            {inviting && (
+              <>
+                {/* two hairline waves leaving the pill's edge */}
+                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full border border-white/80 shadow-[0_0_14px_rgba(255,255,255,0.35)]" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) infinite" }} />
+                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full border border-white/40" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) .7s infinite" }} />
+                {/* a band of light passing over the pill */}
+                <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-full">
+                  <span className="absolute -inset-y-2 left-0 w-[170%] bg-[linear-gradient(100deg,transparent_0%,rgba(255,255,255,0.06)_30%,rgba(255,255,255,0.32)_50%,rgba(255,255,255,0.06)_70%,transparent_100%)] blur-[2px]" style={{ animation: "fh-sheen 7s cubic-bezier(.45,0,.25,1) infinite" }} />
+                </span>
+              </>
+            )}
             <span className={`meta min-w-10 text-left transition-[color,letter-spacing] duration-500 group-hover:tracking-[0.18em] ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
             <span className="relative block h-2 w-4">
               <span
@@ -136,6 +175,7 @@ export const SiteHeader: React.FC = () => {
                 className={`absolute bottom-0 right-0 h-px ${line} transition-all duration-700 ease-haus ${
                   open ? "bottom-1 w-4 -rotate-45" : "w-2.5 group-hover:w-4"
                 }`}
+                style={inviting ? { animation: "fh-draw 7s cubic-bezier(.65,0,.35,1) infinite" } : undefined}
               />
             </span>
           </button>

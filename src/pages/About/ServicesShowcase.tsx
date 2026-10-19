@@ -8,7 +8,6 @@ import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothSc
 import { ACTION, BODY, SMALL, TITLE } from "../../lib/type";
 import type { Studio } from "../../i18n/studio";
 import identityImg from "../../assets/peojects/saphire/saphire (10).jpg";
-import webImg from "../../assets/peojects/buendia/buendia-laptop-web.jpg";
 
 /**
  * What the studio does, shown rather than listed. One discipline after another down the
@@ -23,13 +22,13 @@ const GRAIN =
 
 type Example ={ img?: string; video?: string; frame?: string; seen: string[] };
 
-// In the order of the disciplines: identity, web, video, interactive 3D
+// In the order of the disciplines: audiovisual, web and 3D, spaces and events, strategy and identity.
+// The 3D scenes run on their own; the pointer is left to the page so scrolling over them never sticks
 const EXAMPLES: Example[] = [
-  { img: identityImg, seen: ["sapphire", "smarthc", "buendia"] },
-  { img: webImg, seen: ["buendia", "sapphire"] },
   { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
-  // the scene runs on its own; the pointer is left to the page so scrolling over it never sticks
-  { frame: "/concepts/smarthc-devices/index.html", seen: ["smarthc", "buendia"] },
+  { frame: "/concepts/smarthc-devices/index.html", seen: ["smarthc", "buendia", "sapphire"] },
+  { frame: "/concepts/smarthc-stand/index.html", seen: ["smarthc"] },
+  { img: identityImg, seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
 const titleOf = (slug: string) => cases.find((c) => c.slug === slug && !c.hidden)?.title;
@@ -51,12 +50,9 @@ const Frame: React.FC<{ ex: Example; note?: string }> = ({ ex, note }) => (
   </div>
 );
 
-// The story-telling work first, then what sets the studio apart, then the foundations
-const ORDER = [2, 3, 1, 0]; // video, interactive 3D, web, identity
 
-export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s: studio }) => {
-  const s = { ...studio, disciplines: ORDER.map((k) => studio.disciplines[k]).filter(Boolean) };
-  const EX = ORDER.map((k) => EXAMPLES[k]);
+export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
+  const EX = EXAMPLES;
   const [active, setActive] = useState(0);
   const items = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -150,6 +146,15 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s: studio }) => {
                 <p className={`${SMALL} text-graphite`}>{String(i + 1).padStart(2, "0")} / {String(s.disciplines.length).padStart(2, "0")}</p>
                 <h3 className={`${TITLE} mt-4 text-ink`}>{d.title}</h3>
                 <p className={`${BODY} mt-6 max-w-[42ch] text-graphite`}>{d.text}</p>
+                {d.list && (
+                  <ul className={`${BODY} mt-5 max-w-[42ch] text-ink`}>
+                    {d.list.map((item) => (
+                      <li key={item} className="flex gap-3 border-t border-ink/10 py-2">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 {seen.length > 0 && (
                   <p className={`${ACTION} mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-graphite`}>
                     <span>{s.seenIn}</span>

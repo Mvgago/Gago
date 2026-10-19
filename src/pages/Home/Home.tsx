@@ -33,37 +33,49 @@ export const Home: React.FC = () => {
     <section className="relative flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:pb-12">
       {/* Manifesto */}
       <div className="max-w-xl lg:max-w-3xl">
-        <motion.h1
-          variants={rise}
-          initial="hidden"
-          animate="shown"
-          custom={7}
-          className={DISPLAY}
-        >
-          {/* Always two lines, on every screen: the lema reads as one block with the subtitle */}
-          {(() => {
-            const [first, ...rest] = t("hero.title").split(" ");
-            return (
-              <>
-                <span className="block">{first}</span>
-                <span className="block">{rest.join(" ")}</span>
-              </>
-            );
-          })()}
-        </motion.h1>
+        {/* The lema and the line under it are one way in: both lead to what the studio does.
+            They arrive line by line, each rising out of its own edge and coming into focus, then
+            the disciplines one after another */}
+        <style>{`@keyframes fh-line{from{transform:translateY(105%);opacity:0;filter:blur(6px)}to{transform:none;opacity:1;filter:none}}@keyframes fh-word{from{transform:translateY(8px);opacity:0;filter:blur(4px)}to{transform:none;opacity:1;filter:none}}@media (prefers-reduced-motion:reduce){.fh-manifesto *{animation:none!important}}`}</style>
+        <Link to="/about" className="fh-manifesto group block">
+          <h1 className={DISPLAY}>
+            {/* Always two lines, on every screen: the lema reads as one block with the subtitle */}
+            {(() => {
+              const [first, ...rest] = t("hero.title").split(" ");
+              return [first, rest.join(" ")].map((line, i) => (
+                <span key={line} className="block overflow-hidden pb-[0.08em]">
+                  <span className="block" style={{ animation: `fh-line 1.4s cubic-bezier(.22,1,.36,1) ${0.9 + i * 0.16}s both` }}>
+                    {line}
+                  </span>
+                </span>
+              ));
+            })()}
+          </h1>
 
-        <motion.p
-          variants={rise}
-          initial="hidden"
-          animate="shown"
-          custom={8}
-          className={`${SUBTITLE} mt-3 text-silver/85 [text-wrap:balance] lg:mt-5`}
-        >
-          {t("hero.sub")}
-        </motion.p>
+          {/* always bright; on hover the line grows a little, as one piece (a transform, so it glides) */}
+          <p className={`${SUBTITLE} mt-3 !font-normal text-white origin-left transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] will-change-transform [text-wrap:balance] group-hover:scale-[1.035] group-focus-visible:scale-[1.035] lg:mt-5`}>
+            {t("hero.sub")
+              .split(", ")
+              .map((part, i, all) => (
+                <span
+                  key={part}
+                  className="inline-block"
+                  style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.5 + i * 0.12}s both` }}
+                >
+                  <span
+                    className="inline-block"
+                    style={{ transitionDelay: `${i * 110}ms` }}
+                  >
+                    {part}
+                    {i < all.length - 1 ? "," : ""}
+                  </span>
+                  {i < all.length - 1 ? "\u00a0" : ""}
+                </span>
+              ))}
+          </p>
+        </Link>
 
-        {/* Two ways in: the work first and strongest, what the studio does under it */}
-        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12 flex flex-col items-start gap-2.5 lg:mt-16">
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12 lg:mt-16">
           <Link
             to="/projects"
             className={`${ACTION} group inline-flex items-center gap-4 text-silver transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
@@ -72,19 +84,7 @@ export const Home: React.FC = () => {
               {t("hero.cta")}
             </span>
             <span aria-hidden className="relative block h-px w-16 lg:w-20">
-              <span className="absolute inset-y-0 left-0 w-full origin-left bg-current opacity-60 transition-all duration-700 ease-haus group-hover:opacity-100 group-hover:scale-x-[1.6] group-focus-visible:scale-x-[1.6]" />
-            </span>
-          </Link>
-          {/* the second way in, a step below: the same gesture, a shorter, fainter line */}
-          <Link
-            to="/about"
-            className={`${ACTION} group inline-flex items-center gap-4 text-silver/85 transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
-          >
-            <span className="transition-[letter-spacing] duration-700 ease-haus group-hover:tracking-[0.12em] group-focus-visible:tracking-[0.12em]">
-              {t("hero.services")}
-            </span>
-            <span aria-hidden className="relative block h-px w-8">
-              <span className="absolute inset-y-0 left-0 w-full origin-left bg-current opacity-60 transition-all duration-700 ease-haus group-hover:opacity-100 group-hover:scale-x-[2.2] group-focus-visible:scale-x-[2.2]" />
+              <span className="absolute inset-y-0 left-0 w-full origin-left bg-current opacity-60 transition-all duration-700 ease-haus group-hover:opacity-100 group-hover:scale-x-[1.3] group-focus-visible:scale-x-[1.3]" />
             </span>
           </Link>
         </motion.div>

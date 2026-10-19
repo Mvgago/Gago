@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Every visible string of the landing, the index, the header, the footer and
  * the contact menu, in the four site languages.
  *
@@ -11,9 +11,10 @@ export type Lang = (typeof LANGS)[number];
 
 const en = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Audiovisual, 3D, web and identity.",
+  "hero.sub": "Audiovisual, 3D web and identity.",
   "hero.cta": "see projects",
-  "hero.services": "see services",
+  "hero.services": "services",
+  "hero.or": "or",
 
   "status": "studio open",
   "index.open": "index",
@@ -54,9 +55,10 @@ export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Audiovisual, 3D, web e identidad.",
+  "hero.sub": "Audiovisual, web 3D e identidad.",
   "hero.cta": "ver proyectos",
-  "hero.services": "ver servicios",
+  "hero.services": "servicios",
+  "hero.or": "o",
 
   "status": "estudio abierto",
   "index.open": "índice",
@@ -95,9 +97,10 @@ const es: Record<Key, string> = {
 
 const fr: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Audiovisuel, 3D, web et identité.",
+  "hero.sub": "Audiovisuel, web 3D et identité.",
   "hero.cta": "voir les projets",
-  "hero.services": "voir les services",
+  "hero.services": "services",
+  "hero.or": "ou",
 
   "status": "studio ouvert",
   "index.open": "index",
@@ -136,9 +139,10 @@ const fr: Record<Key, string> = {
 
 const de: Record<Key, string> = {
   "hero.title": "Designing atmospheres.",
-  "hero.sub": "Audiovisuell, 3D, Web und Identität.",
+  "hero.sub": "Audiovisuell, 3D-Web und Identität.",
   "hero.cta": "projekte ansehen",
-  "hero.services": "leistungen ansehen",
+  "hero.services": "Leistungen",
+  "hero.or": "oder",
 
   "status": "studio geöffnet",
   "index.open": "index",
