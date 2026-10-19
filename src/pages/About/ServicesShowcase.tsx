@@ -1,11 +1,9 @@
 ﻿import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
-import { cases } from "../../outils/cases";
 import { EASE_HAUS } from "../../lib/motion";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
-import { ACTION, BODY, SMALL, TITLE } from "../../lib/type";
+import { BODY, SMALL, TITLE } from "../../lib/type";
 import type { Studio } from "../../i18n/studio";
 import identityImg from "../../assets/peojects/saphire/saphire (10).jpg";
 
@@ -26,12 +24,10 @@ type Example ={ img?: string; video?: string; frame?: string; seen: string[] };
 // The 3D scenes run on their own; the pointer is left to the page so scrolling over them never sticks
 const EXAMPLES: Example[] = [
   { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
-  { frame: "/concepts/smarthc-devices/index.html", seen: ["smarthc", "buendia", "sapphire"] },
-  { frame: "/concepts/smarthc-stand/index.html", seen: ["smarthc"] },
+  { frame: "/concepts/smarthc-devices/index.html?bare", seen: ["smarthc", "buendia", "sapphire"] },
+  { frame: "/concepts/smarthc-stand/index.html?bare", seen: ["smarthc"] },
   { img: identityImg, seen: ["smarthc", "sapphire", "buendia"] },
 ];
-
-const titleOf = (slug: string) => cases.find((c) => c.slug === slug && !c.hidden)?.title;
 
 const Frame: React.FC<{ ex: Example; note?: string }> = ({ ex, note }) => (
   <div className="relative h-full w-full overflow-hidden bg-[#dfe1e2]">
@@ -85,8 +81,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
       {/* The frame, held while the disciplines pass (large screens) */}
       <div className="col-span-8 hidden lg:block">
         <div className="sticky top-28">
-          {/* wide and low: room for the film to lead, whole on the first screen */}
-          <div className="relative aspect-[2/1] w-full">
+          {/* the film's own shape, so no shot loses its top or bottom */}
+          <div className="relative aspect-video w-full">
             <AnimatePresence initial={false}>
               <motion.div
                 key={active}
@@ -130,7 +126,6 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
       {/* the room below the last keeps the frame held until the last discipline has been read */}
       <div className="col-span-12 lg:col-span-4 lg:pb-[30vh]">
         {s.disciplines.map((d, i) => {
-          const seen = EX[i]?.seen.map((slug) => ({ slug, title: titleOf(slug) })).filter((p) => p.title) ?? [];
           return (
             <div
               key={d.title}
@@ -139,7 +134,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               className="flex flex-col justify-center pb-20 lg:min-h-[60vh] lg:pb-0 lg:first:justify-start"
             >
               {/* phones and tablets: the example sits above its discipline */}
-              <div className="mb-8 aspect-[16/10] w-full lg:hidden">
+              <div className="mb-8 aspect-video w-full lg:hidden">
                 {EX[i] && <Frame ex={EX[i]} note={noteFor(i)} />}
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
@@ -147,29 +142,13 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                 <h3 className={`${TITLE} mt-4 text-ink`}>{d.title}</h3>
                 <p className={`${BODY} mt-6 max-w-[42ch] text-graphite`}>{d.text}</p>
                 {d.list && (
-                  <ul className={`${BODY} mt-5 max-w-[42ch] text-ink`}>
+                  <ul className="ml-6 mt-7 max-w-[40ch] border-b border-ink/20 lg:ml-10">
                     {d.list.map((item) => (
-                      <li key={item} className="flex gap-3 border-t border-ink/10 py-2">
+                      <li key={item} className={`${BODY} border-t border-ink/20 py-3 text-ink`}>
                         {item}
                       </li>
                     ))}
                   </ul>
-                )}
-                {seen.length > 0 && (
-                  <p className={`${ACTION} mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-graphite`}>
-                    <span>{s.seenIn}</span>
-                    {seen.map((p, k) => (
-                      <React.Fragment key={p.slug}>
-                        {k > 0 && <span aria-hidden>·</span>}
-                        <Link
-                          to={`/projects/${p.slug}`}
-                          className="text-ink underline decoration-ink/25 underline-offset-[5px] transition-colors duration-500 hover:decoration-ink"
-                        >
-                          {p.title!.toLowerCase()}
-                        </Link>
-                      </React.Fragment>
-                    ))}
-                  </p>
                 )}
                 {/* on arrival, a plain word that the others follow below */}
                 {i === 0 && (

@@ -295,6 +295,8 @@ controls.addEventListener('start', () => { goal = null; setSpin(false); });
 if (matchMedia('(prefers-reduced-motion: reduce)').matches) setSpin(false);
 // ?still: a clean frame for the case page (no interface, no spin)
 if (new URLSearchParams(location.search).has('still')) { setSpin(false); document.querySelectorAll('.label, .views').forEach((e) => (e.hidden = true)); }
+// ?bare: the scene alone and still turning, as on the studio page
+if (new URLSearchParams(location.search).has('bare')) document.querySelectorAll('.label, .views').forEach((e) => (e.hidden = true));
 
 function fit() {
   const w = stage.clientWidth, h = stage.clientHeight;

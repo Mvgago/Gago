@@ -6,7 +6,7 @@ import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { LightWall } from "../../components/Light/LightWall";
-import { ACTION, HEADING, LEAD, SMALL, SUBTITLE } from "../../lib/type";
+import { ACTION, HEADING, LEAD, SMALL } from "../../lib/type";
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import { FUGA_SEI_EP } from "../../outils/artwork";
 import Footer from "../../components/Footer/Footer";
@@ -161,14 +161,50 @@ export const AboutPage: React.FC = () => {
         <h1>
           <span className="text-ink">{t("section.studio")}</span> — {t("section.studio.caption")}
         </h1>
-        <p className="flex items-center gap-2">
-          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
-          {t("availability")}
-        </p>
+        {/* On the right: open to new projects, and under it the way in: down to the contact chapter, or straight to the address */}
+        <div className="flex flex-col gap-5 sm:items-end">
+          <p className="flex items-center gap-2">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
+            {t("availability")}
+          </p>
+          <motion.div
+            variants={rise}
+            initial="hidden"
+            animate="shown"
+            custom={4}
+            // One line, one voice: the shortcut and the address in the same small type
+            className={`${ACTION} flex flex-wrap items-center gap-x-4 gap-y-3 text-ink`}
+          >
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.getElementById("contact");
+                if (target) scrollToTarget(lenis, target, { offset: -96 });
+              }}
+              // A link, not a button: the index control stays the page's one solid form
+              className="group inline-flex items-center gap-2.5"
+            >
+              <span className="relative">
+                {s.cta}
+                <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
+                <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+              </span>
+              <span aria-hidden className="transition-transform duration-700 ease-haus group-hover:translate-y-0.5">
+                ↓
+              </span>
+            </a>
+            {/* Phones: the address wraps under the link, so the separator would dangle */}
+            <span aria-hidden className="hidden text-graphite sm:inline">
+              ·
+            </span>
+            <PlainLink href={`mailto:${EMAIL}`}>{EMAIL}</PlainLink>
+          </motion.div>
+        </div>
       </motion.header>
 
       {/* Statement and way in */}
-      <div className="mb-8 mt-8 grid items-center gap-14 md:mb-10 md:mt-10 lg:grid-cols-12 lg:gap-8">
+      <div className="mb-8 mt-8 grid items-center gap-14 md:mb-10 md:mt-3 lg:grid-cols-12 lg:gap-8">
       <div className="lg:col-span-9">
       {/* The statement: the one thing to read first */}
       <motion.p
@@ -176,7 +212,8 @@ export const AboutPage: React.FC = () => {
         initial="hidden"
         animate="shown"
         custom={3}
-        className={`${SUBTITLE} text-ink`}
+        // Smaller than a subtitle here, so the film below fits whole on the first screen
+        className="font-geo text-[1.05rem] font-light leading-snug tracking-[0.01em] text-ink lg:text-[1.2rem]"
       >
         {/* Two lines, each whole: what the studio is, then its principle, set back in grey */}
         {(() => {
@@ -192,40 +229,6 @@ export const AboutPage: React.FC = () => {
         })()}
       </motion.p>
 
-      {/* The way in, right under it: down to the contact chapter, or straight to the address */}
-      <motion.div
-        variants={rise}
-        initial="hidden"
-        animate="shown"
-        custom={4}
-        // One line, one voice: the shortcut and the address in the same small type
-        className={`${ACTION} mt-7 flex flex-wrap items-center gap-x-4 gap-y-3 text-ink`}
-      >
-        <a
-          href="#contact"
-          onClick={(e) => {
-            e.preventDefault();
-            const target = document.getElementById("contact");
-            if (target) scrollToTarget(lenis, target, { offset: -96 });
-          }}
-          // A link, not a button: the index control stays the page's one solid form
-          className="group inline-flex items-center gap-2.5"
-        >
-          <span className="relative">
-            {s.cta}
-            <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
-            <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-          </span>
-          <span aria-hidden className="transition-transform duration-700 ease-haus group-hover:translate-y-0.5">
-            ↓
-          </span>
-        </a>
-        {/* Phones: the address wraps under the link, so the separator would dangle */}
-        <span aria-hidden className="hidden text-graphite sm:inline">
-          ·
-        </span>
-        <PlainLink href={`mailto:${EMAIL}`}>{EMAIL}</PlainLink>
-      </motion.div>
       </div>
 
       </div>

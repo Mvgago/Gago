@@ -39,16 +39,9 @@ export const SiteHeader: React.FC = () => {
     return () => cancel(id);
   }, []);
 
-  // On the landing, until the index has been opened once in the visit, the control invites a
-  // touch: a few seconds in, a soft halo breathes out from the pill and its short line draws
-  // itself out and back, every few seconds. The first open ends it for the rest of the visit.
-  const [seen, setSeen] = useState(() => {
-    try {
-      return sessionStorage.getItem("fh-index-seen") === "1";
-    } catch {
-      return false;
-    }
-  });
+  // Each time the landing loads, the control invites a touch: a couple of seconds in, waves leave
+  // its edge and a light passes through it, twice, then it rests. Opening the index ends it.
+  const [seen, setSeen] = useState(false);
   const [invite, setInvite] = useState(false);
   useEffect(() => {
     if (seen || pathname !== "/") return setInvite(false);
@@ -56,14 +49,8 @@ export const SiteHeader: React.FC = () => {
     return () => window.clearTimeout(id);
   }, [seen, pathname]);
   useEffect(() => {
-    if (!open || seen) return;
-    setSeen(true);
-    try {
-      sessionStorage.setItem("fh-index-seen", "1");
-    } catch {
-      /* the invitation simply comes back next visit */
-    }
-  }, [open, seen]);
+    if (open) setSeen(true);
+  }, [open]);
   const inviting = invite && !open;
 
   // When the index closes, keyboard focus returns to the button that opened it.
@@ -156,11 +143,11 @@ export const SiteHeader: React.FC = () => {
             {inviting && (
               <>
                 {/* two hairline waves leaving the pill's edge */}
-                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full border border-white/80 shadow-[0_0_14px_rgba(255,255,255,0.35)]" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) infinite" }} />
-                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full border border-white/40" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) .7s infinite" }} />
+                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full border border-white/80 shadow-[0_0_14px_rgba(255,255,255,0.35)]" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) 2" }} />
+                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full border border-white/40" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) .7s 2" }} />
                 {/* a band of light passing over the pill */}
                 <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-full">
-                  <span className="absolute -inset-y-2 left-0 w-[170%] bg-[linear-gradient(100deg,transparent_0%,rgba(255,255,255,0.06)_30%,rgba(255,255,255,0.32)_50%,rgba(255,255,255,0.06)_70%,transparent_100%)] blur-[2px]" style={{ animation: "fh-sheen 7s cubic-bezier(.45,0,.25,1) infinite" }} />
+                  <span className="absolute -inset-y-2 left-0 w-[170%] bg-[linear-gradient(100deg,transparent_0%,rgba(255,255,255,0.06)_30%,rgba(255,255,255,0.32)_50%,rgba(255,255,255,0.06)_70%,transparent_100%)] blur-[2px]" style={{ animation: "fh-sheen 7s cubic-bezier(.45,0,.25,1) 2" }} />
                 </span>
               </>
             )}
@@ -175,7 +162,7 @@ export const SiteHeader: React.FC = () => {
                 className={`absolute bottom-0 right-0 h-px ${line} transition-all duration-700 ease-haus ${
                   open ? "bottom-1 w-4 -rotate-45" : "w-2.5 group-hover:w-4"
                 }`}
-                style={inviting ? { animation: "fh-draw 7s cubic-bezier(.65,0,.35,1) infinite" } : undefined}
+                style={inviting ? { animation: "fh-draw 7s cubic-bezier(.65,0,.35,1) 2" } : undefined}
               />
             </span>
           </button>

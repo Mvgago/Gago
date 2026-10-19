@@ -57,6 +57,14 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 <p class="label">Concepto · Experiencia interactiva de producto</p>
 <p class="hint" id="hint">firma en la pantalla · arrastra para girar</p>
 <p class="line">Seguridad a tu <span>medida.</span></p>
+<script>
+// ?bare: the scene alone, as on the studio page (no title, hint or tagline over it)
+// The steps stay on in the smaller frame there, so the left of the scene is never empty
+if (new URLSearchParams(location.search).has('bare')) {
+  document.querySelectorAll('.label, .hint, .line').forEach((e) => (e.style.display = 'none'));
+  document.head.insertAdjacentHTML('beforeend', '<style>@media (min-width: 641px) { .steps { display: flex !important; left: 32px; width: clamp(230px, 25vw, 290px); } }</style>');
+}
+</script>
 <div class="steps" aria-hidden="true">
   <div class="step"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><div><small>01<em>verificado</em></small><b>Identidad verificada</b><span>María López · DNI ••••4521L</span></div></div>
   <div class="step"><i><svg viewBox="0 0 24 24"><path d="M3 12c2-6 4-6 5 0s3 6 5 0 3-6 5 0 2 3 3 2"/></svg></i><div><small>02<em id="step-st">en curso</em></small><b>Captura biométrica</b><span id="step-val">0 pts · presión 0 %</span><u><s id="step-bar"></s></u></div></div>

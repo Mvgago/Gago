@@ -38,7 +38,7 @@ export const Home: React.FC = () => {
             the disciplines one after another */}
         <style>{`@keyframes fh-line{from{transform:translateY(105%);opacity:0;filter:blur(6px)}to{transform:none;opacity:1;filter:none}}@keyframes fh-word{from{transform:translateY(8px);opacity:0;filter:blur(4px)}to{transform:none;opacity:1;filter:none}}@media (prefers-reduced-motion:reduce){.fh-manifesto *{animation:none!important}}`}</style>
         <Link to="/about" className="fh-manifesto group block">
-          <h1 className={DISPLAY}>
+          <h1 className={`${DISPLAY} origin-bottom-left transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] will-change-transform group-hover:scale-[1.02] group-focus-visible:scale-[1.02]`}>
             {/* Always two lines, on every screen: the lema reads as one block with the subtitle */}
             {(() => {
               const [first, ...rest] = t("hero.title").split(" ");

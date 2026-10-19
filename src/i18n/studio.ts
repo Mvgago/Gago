@@ -1,4 +1,4 @@
-﻿import type { Lang } from "./strings";
+import type { Lang } from "./strings";
 
 /**
  * The studio page in the four site languages. Written in the studio's voice
@@ -33,18 +33,18 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "Independent design studio. Strategy, identity and visual language for brands and spaces that want to be told beyond words. Less noise, more intent.",
+      "Independent design studio. Strategy, identity and visual language for brands that want to be told beyond words. Less noise, more intent.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
         title: "Audiovisual",
         text: "Spaces and brands told in motion, for campaigns and social media, from footage or from renders.",
-        list: ["Script, shooting and editing", "Motion and graphics", "Original music and sound design"],
+        list: ["Concept, filming and editing", "Motion and graphics", "Original music and sound design"],
       },
       {
         title: "Web and interactive 3D",
         text: "Bespoke websites and experiences you can explore: fast, finished to the last detail and made to tell.",
-        list: ["Bespoke websites", "3D scenes, product viewers and configurators", "Monthly care and evolution"],
+        list: ["Bespoke web design and development", "Spaces and products in 3D to explore", "Ongoing care and improvements"],
       },
       {
         title: "Spaces and events",
@@ -58,7 +58,7 @@ export const STUDIO: Record<Lang, Studio> = {
       },
     ],
     seenIn: "in projects",
-    videoNote: "Editing and grading.",
+    videoNote: "In-house production.",
     scrollHint: "scroll to see each discipline",
     processLabel: "process",
     process: [
@@ -84,18 +84,18 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Estudio de diseño independiente. Estrategia, identidad y lenguaje visual para marcas y espacios que quieren contarse más allá de las palabras. Menos ruido, más intención.",
+      "Estudio de diseño independiente. Estrategia, identidad y lenguaje visual para marcas que quieren contarse más allá de las palabras. Menos ruido, más intención.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
         title: "Audiovisual",
         text: "Espacios y marcas contados en movimiento, para campañas y redes, a partir de rodaje o de renders.",
-        list: ["Guion, rodaje y montaje", "Motion y grafismo", "Música y diseño sonoro original"],
+        list: ["Concepto, grabación y montaje", "Motion y grafismo", "Música y diseño sonoro original"],
       },
       {
         title: "Web y 3D interactivo",
         text: "Webs a medida y experiencias que se recorren: rápidas, cuidadas hasta el último detalle y hechas para contar.",
-        list: ["Webs a medida", "Escenas 3D, visores y configuradores de producto", "Mantenimiento y evolución mensual"],
+        list: ["Diseño y desarrollo web a medida", "Espacios y productos en 3D que se pueden explorar", "Mantenimiento y mejoras continuas"],
       },
       {
         title: "Espacios y eventos",
@@ -109,7 +109,7 @@ export const STUDIO: Record<Lang, Studio> = {
       },
     ],
     seenIn: "en proyectos",
-    videoNote: "Montaje y grading.",
+    videoNote: "Producción propia.",
     scrollHint: "desliza para ver cada disciplina",
     processLabel: "proceso",
     process: [
@@ -135,18 +135,18 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Studio de design indépendant. Stratégie, identité et langage visuel pour les marques et les lieux qui veulent se raconter au-delà des mots. Moins de bruit, plus d'intention.",
+      "Studio de design indépendant. Stratégie, identité et langage visuel pour les marques qui veulent se raconter au-delà des mots. Moins de bruit, plus d'intention.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
         title: "Audiovisuel",
         text: "Des lieux et des marques racontés en mouvement, pour campagnes et réseaux, à partir de tournages ou de rendus.",
-        list: ["Scénario, tournage et montage", "Motion et graphisme", "Musique et design sonore originaux"],
+        list: ["Concept, tournage et montage", "Motion et graphisme", "Musique et design sonore originaux"],
       },
       {
         title: "Web et 3D interactive",
         text: "Des sites sur mesure et des expériences à parcourir : rapides, soignés jusqu'au moindre détail et faits pour raconter.",
-        list: ["Sites sur mesure", "Scènes 3D, visionneuses et configurateurs de produit", "Maintenance et évolution mensuelle"],
+        list: ["Conception et développement web sur mesure", "Espaces et produits en 3D à explorer", "Maintenance et améliorations continues"],
       },
       {
         title: "Espaces et événements",
@@ -160,7 +160,7 @@ export const STUDIO: Record<Lang, Studio> = {
       },
     ],
     seenIn: "dans les projets",
-    videoNote: "Montage et étalonnage.",
+    videoNote: "Production maison.",
     scrollHint: "faites défiler pour voir chaque discipline",
     processLabel: "processus",
     process: [
@@ -186,18 +186,18 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Unabhängiges Designstudio. Strategie, Identität und Bildsprache für Marken und Räume, die sich jenseits der Worte erzählen wollen. Weniger Rauschen, mehr Absicht.",
+      "Unabhängiges Designstudio. Strategie, Identität und Bildsprache für Marken, die sich jenseits der Worte erzählen wollen. Weniger Rauschen, mehr Absicht.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
         title: "Audiovisuell",
         text: "Räume und Marken in Bewegung erzählt, für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
-        list: ["Drehbuch, Dreh und Schnitt", "Motion und Grafik", "Eigene Musik und Sounddesign"],
+        list: ["Konzept, Dreh und Schnitt", "Motion und Grafik", "Eigene Musik und Sounddesign"],
       },
       {
         title: "Web und interaktives 3D",
         text: "Maßgeschneiderte Websites und Erlebnisse zum Erkunden: schnell, bis ins Detail ausgearbeitet und gemacht, um zu erzählen.",
-        list: ["Maßgeschneiderte Websites", "3D-Szenen, Produktviewer und Konfiguratoren", "Monatliche Pflege und Weiterentwicklung"],
+        list: ["Webdesign und -entwicklung nach Maß", "Räume und Produkte in 3D zum Erkunden", "Laufende Pflege und Verbesserungen"],
       },
       {
         title: "Räume und Events",
@@ -211,7 +211,7 @@ export const STUDIO: Record<Lang, Studio> = {
       },
     ],
     seenIn: "in projekten",
-    videoNote: "Schnitt und Grading.",
+    videoNote: "Eigenproduktion.",
     scrollHint: "scrollen, um jede Disziplin zu sehen",
     processLabel: "prozess",
     process: [
