@@ -1,11 +1,10 @@
-﻿import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { EASE_HAUS } from "../../lib/motion";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { BODY, SMALL, TITLE } from "../../lib/type";
 import type { Studio } from "../../i18n/studio";
-import identityImg from "../../assets/peojects/saphire/saphire (10).jpg";
 
 /**
  * What the studio does, shown rather than listed. One discipline after another down the
@@ -18,13 +17,18 @@ import identityImg from "../../assets/peojects/saphire/saphire (10).jpg";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
-// Another sector than the devices above it: an invented Galician cannery's stand
-const CanneryStand = lazy(() => import("../../components/Stand/CanneryStand"));
+// Other brands than the cases: an invented Galician cannery's stand, and the stationery of an
+// invented guesthouse on the coast
+const SCENES = {
+  stand: lazy(() => import("../../components/Stand/CanneryStand")),
+  stationery: lazy(() => import("../../components/Identity/StationeryScene")),
+};
 
-type Example ={ img?: string; video?: string; frame?: string; stand?: boolean; seen: string[] };
+type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; seen: string[] };
 
-// The stand is built only once its frame nears the screen (never while hidden at this width)
-const StandInView: React.FC = () => {
+// A 3D scene is built only once its frame nears the screen (never while hidden at this width)
+const SceneInView: React.FC<{ name: keyof typeof SCENES }> = ({ name }) => {
+  const Scene = SCENES[name];
   const box = useRef<HTMLDivElement>(null);
   const [load, setLoad] = useState(false);
   useEffect(() => {
@@ -38,7 +42,7 @@ const StandInView: React.FC = () => {
     <div ref={box} className="pointer-events-none absolute inset-0">
       {load && (
         <Suspense fallback={null}>
-          <CanneryStand className="h-full w-full" />
+          <Scene className="h-full w-full" />
         </Suspense>
       )}
     </div>
@@ -50,8 +54,8 @@ const StandInView: React.FC = () => {
 const EXAMPLES: Example[] = [
   { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
   { frame: "/concepts/smarthc-devices/index.html?bare", seen: ["smarthc", "buendia", "sapphire"] },
-  { stand: true, seen: ["smarthc"] },
-  { img: identityImg, seen: ["smarthc", "sapphire", "buendia"] },
+  { scene: "stand", seen: ["smarthc"] },
+  { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
 const Frame: React.FC<{ ex: Example; note?: string }> = ({ ex, note }) => (
@@ -64,7 +68,7 @@ const Frame: React.FC<{ ex: Example; note?: string }> = ({ ex, note }) => (
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.09] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
       </>
     )}
-    {ex.stand && <StandInView />}
+    {ex.scene && <SceneInView name={ex.scene} />}
     {ex.frame && <DevicesFrame src={ex.frame} title="3D" className="pointer-events-none absolute inset-0 h-full w-full" />}
     {note && (
       <p className={`${SMALL} absolute bottom-3 left-4 normal-case text-white/85 [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]`}>{note}</p>
