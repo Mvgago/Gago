@@ -40,4 +40,13 @@ export const SECTIONS: Section[] = [
     atmosphere: "/fugahaus-hero.jpg",
     tint: "#86b5b0", // sea-glass
   },
+  {
+    num: "04",
+    label: "contact",
+    // straight to the form at the foot of the studio page
+    path: "/about#contact",
+    caption: "start a project",
+    atmosphere: "/fugahaus-hero.jpg",
+    tint: "#86b5b0",
+  },
 ];

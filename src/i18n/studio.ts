@@ -43,14 +43,14 @@ export const STUDIO: Record<Lang, Studio> = {
         list: ["Concept, filming and editing", "Motion and graphics", "Original music and sound design"],
       },
       {
-        title: "Web and interactive 3D",
-        text: "Bespoke websites and experiences you can explore: fast, finished to the last detail and made to tell.",
-        list: ["Bespoke web design and development", "Spaces and products in 3D to explore", "Ongoing care and improvements"],
-      },
-      {
         title: "Spaces and events",
         text: "The brand carried into physical space, where it is seen, touched and walked through.",
         list: ["Stands for fairs and congresses", "Shops, venues and window displays", "Signage and point-of-sale material"],
+      },
+      {
+        title: "Web and interactive 3D",
+        text: "Bespoke websites and experiences you can explore: fast, finished to the last detail and made to tell.",
+        list: ["Bespoke web design and development", "Spaces and products in 3D to explore", "Ongoing care and improvements"],
       },
       {
         title: "Strategy and identity",
@@ -98,14 +98,14 @@ export const STUDIO: Record<Lang, Studio> = {
         list: ["Concepto, grabación y montaje", "Motion y grafismo", "Música y diseño sonoro original"],
       },
       {
-        title: "Web y 3D interactivo",
-        text: "Webs a medida y experiencias que se recorren: rápidas, cuidadas hasta el último detalle y hechas para contar.",
-        list: ["Diseño y desarrollo web a medida", "Espacios y productos en 3D que se pueden explorar", "Mantenimiento y mejoras continuas"],
-      },
-      {
         title: "Espacios y eventos",
         text: "La marca llevada al espacio físico, donde se ve, se toca y se recorre.",
         list: ["Stands para ferias y congresos", "Imagen de tiendas, locales y escaparates", "Señalética y material de punto de venta"],
+      },
+      {
+        title: "Web y 3D interactivo",
+        text: "Webs a medida y experiencias que se recorren: rápidas, cuidadas hasta el último detalle y hechas para contar.",
+        list: ["Diseño y desarrollo web a medida", "Espacios y productos en 3D que se pueden explorar", "Mantenimiento y mejoras continuas"],
       },
       {
         title: "Estrategia e identidad",
@@ -153,14 +153,14 @@ export const STUDIO: Record<Lang, Studio> = {
         list: ["Concept, tournage et montage", "Motion et graphisme", "Musique et design sonore originaux"],
       },
       {
-        title: "Web et 3D interactive",
-        text: "Des sites sur mesure et des expériences à parcourir : rapides, soignés jusqu'au moindre détail et faits pour raconter.",
-        list: ["Conception et développement web sur mesure", "Espaces et produits en 3D à explorer", "Maintenance et améliorations continues"],
-      },
-      {
         title: "Espaces et événements",
         text: "La marque portée dans l'espace physique, là où on la voit, la touche et la parcourt.",
         list: ["Stands pour salons et congrès", "Image de boutiques, de lieux et de vitrines", "Signalétique et PLV"],
+      },
+      {
+        title: "Web et 3D interactive",
+        text: "Des sites sur mesure et des expériences à parcourir : rapides, soignés jusqu'au moindre détail et faits pour raconter.",
+        list: ["Conception et développement web sur mesure", "Espaces et produits en 3D à explorer", "Maintenance et améliorations continues"],
       },
       {
         title: "Stratégie et identité",
@@ -208,14 +208,14 @@ export const STUDIO: Record<Lang, Studio> = {
         list: ["Konzept, Dreh und Schnitt", "Motion und Grafik", "Eigene Musik und Sounddesign"],
       },
       {
-        title: "Web und interaktives 3D",
-        text: "Maßgeschneiderte Websites und Erlebnisse zum Erkunden: schnell, bis ins Detail ausgearbeitet und gemacht, um zu erzählen.",
-        list: ["Webdesign und -entwicklung nach Maß", "Räume und Produkte in 3D zum Erkunden", "Laufende Pflege und Verbesserungen"],
-      },
-      {
         title: "Räume und Events",
         text: "Die Marke im physischen Raum, wo man sie sieht, berührt und durchschreitet.",
         list: ["Messe- und Kongressstände", "Läden, Lokale und Schaufenster", "Beschilderung und Point-of-Sale-Material"],
+      },
+      {
+        title: "Web und interaktives 3D",
+        text: "Maßgeschneiderte Websites und Erlebnisse zum Erkunden: schnell, bis ins Detail ausgearbeitet und gemacht, um zu erzählen.",
+        list: ["Webdesign und -entwicklung nach Maß", "Räume und Produkte in 3D zum Erkunden", "Laufende Pflege und Verbesserungen"],
       },
       {
         title: "Strategie und Identität",

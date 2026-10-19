@@ -33,7 +33,17 @@ const LETTERS: Record<string, string> = {
 const ADV = [0, 150, 300, 450, 592, 704];
 const WORD_W = 804;
 
-async function build(host: HTMLDivElement, onReady: () => void): Promise<() => void> {
+async function build(host: HTMLDivElement, onReady: () => void, paused: { current: boolean } = { current: false }): Promise<() => void> {
+  // stills from the studio's own film, printed in the brochure and shown on the phone's site
+  const loadImg = (src: string) =>
+    new Promise<HTMLImageElement>((ok) => {
+      const i = new Image();
+      i.onload = () => ok(i);
+      i.onerror = () => ok(i);
+      i.src = src;
+    });
+  const [beach, facade] = await Promise.all(["beach", "facade"].map((n) => loadImg(`/concepts/stationery/${n}.jpg`)));
+  const photos = { beach, facade };
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   // drawn at least at 1.5× even on ordinary screens: the small print and the foil stay crisp
   renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 1.5), 2));
@@ -148,28 +158,6 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     scene.add(o);
     return o;
   };
-  // A sheet or card lying on the table: a thin box, its top printed, its foil just above the ink
-  const sheet = (w: number, d: number, t: number, ground: string, printed: { map: THREE.Texture; mask: THREE.Texture | null }, x: number, z: number, rot: number, y = 0) => {
-    const g = new THREE.Group();
-    const edge = new THREE.MeshStandardMaterial({ color: ground, roughness: 0.85 });
-    const top = new THREE.MeshStandardMaterial({ map: printed.map, roughness: 0.82 });
-    const b = new THREE.Mesh(new THREE.BoxGeometry(w, t, d), [edge, edge, top, edge, edge, edge]);
-    b.position.y = t / 2;
-    g.add(b);
-    if (printed.mask) {
-      const f = new THREE.Mesh(new THREE.PlaneGeometry(w, d), foilMat(printed.mask));
-      f.rotation.x = -Math.PI / 2;
-      f.position.y = t + 0.002;
-      g.add(f);
-    }
-    // only what lies on the table casts its soft contact shadow there
-    if (y === 0) {
-      g.add(contact(w, d));
-    }
-    g.position.set(x, y, z);
-    g.rotation.y = rot;
-    return add(g);
-  };
 
   /* ---------- the table: a smooth matte surface in a cool light grey, its grain barely there ---------- */
   {
@@ -211,70 +199,355 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     return m;
   };
 
+
   /* ---------- the stationery, laid square on the table ---------- */
   const SANS = "'Helvetica Neue', Arial, sans-serif";
-  // letterhead, A4: the sign and name at the head, the address, a letter set in grey lines
-  sheet(
-    2.1, 2.97, 0.008, PAPER,
-    face(1240, 1754, PAPER, (x) => {
-      x.fillStyle = "#8d9397";
-      x.font = `22px ${SANS}`;
-      x.fillText("Rúa da Ribeira 4 · 15350 Cedeira · A Coruña", 140, 1640);
-      x.fillText("ola@ourela.gal · +34 981 000 404", 140, 1676);
-      x.fillStyle = "#c3c8cb";
-      for (let k = 0; k < 15; k++) x.fillRect(140, 560 + k * 46, k % 5 === 4 ? 520 : 940 - (k % 3) * 60, 12);
-      x.fillStyle = "#6f767a";
-      x.font = "italic 30px Georgia, serif";
-      x.fillText("Cedeira, 12 de maio", 140, 470);
-    }, (x) => {
-      sign(x, 210, 210, 62, 7);
-      word(x, 310, 170, 300, 6);
-    }),
-    -2.75, -0.15, 0,
-  );
-  // envelope, DL, in graphite, the sign stamped in silver on its flap
-  sheet(
-    2.2, 1.1, 0.03, GRAPHITE,
-    face(1100, 550, GRAPHITE, (x) => {
-      x.strokeStyle = "rgba(0,0,0,0.35)";
-      x.lineWidth = 3;
-      x.beginPath();
-      x.moveTo(0, 6);
-      x.lineTo(550, 300);
-      x.lineTo(1100, 6);
-      x.stroke();
-    }, (x) => sign(x, 550, 300, 70, 7)),
-    2.7, -0.95, 0,
-  );
-  // a wax seal on the envelope's flap, in the sea's green, the sign pressed into it
+  // A small box covered in linen, its lid set down beside it: inside, folded tissue and a card, the
+  // way the house leaves a welcome in the room. The lid carries the sign in silver
   {
-    const [c, x] = canvas(256, 256);
-    x.fillStyle = "#2f6f73";
-    x.fillRect(0, 0, 256, 256);
-    x.strokeStyle = "#1d4a4d";
-    sign(x, 128, 128, 62, 7);
-    const pts: THREE.Vector2[] = [];
-    // the edge where the wax spread, uneven, then the raised rim round the stamp
-    for (let k = 0; k <= 10; k++) pts.push(new THREE.Vector2(0.17 - k * 0.0005, k * 0.003));
-    pts.push(new THREE.Vector2(0.16, 0.032), new THREE.Vector2(0.135, 0.034), new THREE.Vector2(0.13, 0.026), new THREE.Vector2(0, 0.026));
-    const geo = new THREE.LatheGeometry(pts, 64);
-    const pos = geo.attributes.position;
-    for (let k = 0; k < pos.count; k++) {
-      const a = Math.atan2(pos.getZ(k), pos.getX(k)), r = Math.hypot(pos.getX(k), pos.getZ(k));
-      const wob = 1 + Math.sin(a * 5) * 0.04 + Math.sin(a * 11 + 1) * 0.025;
-      pos.setX(k, Math.cos(a) * r * wob);
-      pos.setZ(k, Math.sin(a) * r * wob);
-    }
-    geo.computeVertexNormals();
-    const wax = new THREE.MeshPhysicalMaterial({ color: "#2f6f73", roughness: 0.38, clearcoat: 0.5, clearcoatRoughness: 0.3 });
-    const seal = new THREE.Mesh(geo, wax);
-    const face = new THREE.Mesh(new THREE.CircleGeometry(0.13, 48), new THREE.MeshPhysicalMaterial({ map: tex(c), roughness: 0.4, clearcoat: 0.5 }));
-    face.rotation.x = -Math.PI / 2;
-    face.position.y = 0.0265;
+    const linen = (() => {
+      const S = 512, [c, x] = canvas(S, S);
+      x.fillStyle = "#3f6466";
+      x.fillRect(0, 0, S, S);
+      // the weave: fine threads both ways, each a shade off
+      for (let k = 0; k < S; k += 2) {
+        x.fillStyle = `rgba(255,255,255,${0.03 + Math.random() * 0.05})`;
+        x.fillRect(0, k, S, 1);
+        x.fillStyle = `rgba(0,0,0,${0.03 + Math.random() * 0.05})`;
+        x.fillRect(k, 0, 1, S);
+      }
+      for (let k = 0; k < 220; k++) {
+        x.fillStyle = `rgba(255,255,255,${Math.random() * 0.08})`;
+        x.fillRect(Math.random() * S, Math.random() * S, 1 + Math.random() * 14, 1);
+      }
+      const t = tex(c);
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      t.repeat.set(2, 2);
+      return t;
+    })();
+    const cloth = new THREE.MeshStandardMaterial({ map: linen, roughness: 0.95 });
+    const BW = 1.3, BD = 0.95, BH = 0.34, WALL = 0.035;
     const g = new THREE.Group();
-    g.add(seal, face);
-    g.position.set(2.7, 0.03, -0.9);
-    g.rotation.y = 0.3;
+    // the base: four walls and a floor, open at the top
+    const wall = (w: number, d: number, x: number, z: number) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, BH, d), cloth);
+      m.position.set(x, BH / 2, z);
+      g.add(m);
+    };
+    wall(BW, WALL, 0, -BD / 2 + WALL / 2);
+    wall(BW, WALL, 0, BD / 2 - WALL / 2);
+    wall(WALL, BD, -BW / 2 + WALL / 2, 0);
+    wall(WALL, BD, BW / 2 - WALL / 2, 0);
+    const floorB = new THREE.Mesh(new THREE.BoxGeometry(BW, 0.02, BD), cloth);
+    floorB.position.y = 0.01;
+    g.add(floorB);
+    // inside: white tissue folded over, lying in soft ridges, and a card tucked in it
+    {
+      const tg = new THREE.PlaneGeometry(BW - WALL * 2.2, BD - WALL * 2.2, 40, 30);
+      const p = tg.attributes.position;
+      for (let k = 0; k < p.count; k++) {
+        const px = p.getX(k), py = p.getY(k);
+        p.setZ(k, 0.025 * Math.sin(px * 9 + Math.sin(py * 5) * 1.5) + 0.012 * Math.sin(py * 17 + px * 3));
+      }
+      tg.computeVertexNormals();
+      const tissue = new THREE.Mesh(tg, new THREE.MeshStandardMaterial({ color: "#f4f3ef", roughness: 0.9, side: THREE.DoubleSide }));
+      tissue.rotation.x = -Math.PI / 2;
+      tissue.position.y = BH - 0.08;
+      g.add(tissue);
+      const [c, x] = canvas(600, 400);
+      x.fillStyle = PAPER;
+      x.fillRect(0, 0, 600, 400);
+      x.strokeStyle = "#2b2e32";
+      x.fillStyle = "#2b2e32";
+      sign(x, 300, 120, 48, 4);
+      x.textAlign = "center";
+      x.font = "italic 40px Georgia, serif";
+      x.fillText("Benvida.", 300, 260);
+      x.fillStyle = "#6f767a";
+      x.font = `20px ${SANS}`;
+      x.fillText("unha lembranza da ría para levar", 300, 310);
+      const card = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.008, 0.4), [
+        new THREE.MeshStandardMaterial({ color: PAPER }), new THREE.MeshStandardMaterial({ color: PAPER }),
+        new THREE.MeshStandardMaterial({ map: tex(c), roughness: 0.8 }), new THREE.MeshStandardMaterial({ color: PAPER }),
+        new THREE.MeshStandardMaterial({ color: PAPER }), new THREE.MeshStandardMaterial({ color: PAPER }),
+      ]);
+      card.position.set(0.12, BH - 0.035, 0.08);
+      card.rotation.set(0.06, -0.18, 0.04);
+      g.add(card);
+    }
+    g.add(contact(BW, BD));
+    g.position.set(-2.55, 0, -0.55);
+    add(g);
+    // the lid, set down beside it: a shallow cover in the same linen, the sign in silver on top
+    const LW = BW + 0.04, LD = BD + 0.04, LH = 0.1;
+    const lid = new THREE.Group();
+    const top = (() => {
+      const [c, x] = canvas(1024, 750);
+      x.drawImage((linen.image as HTMLCanvasElement), 0, 0, 1024, 750);
+      return tex(c);
+    })();
+    const lidTop = new THREE.Mesh(new THREE.BoxGeometry(LW, LH, LD), [cloth, cloth, new THREE.MeshStandardMaterial({ map: top, roughness: 0.95 }), cloth, cloth, cloth]);
+    lidTop.position.y = LH / 2;
+    const [mc, mx] = canvas(1024, 750);
+    mx.fillStyle = "#000";
+    mx.fillRect(0, 0, 1024, 750);
+    mx.strokeStyle = "#fff";
+    mx.fillStyle = "#fff";
+    // small and quiet on the linen
+    sign(mx, 512, 330, 70, 6);
+    word(mx, 512 - 100, 430, 200, 4);
+    const mask = tex(mc, false);
+    const f = new THREE.Mesh(new THREE.PlaneGeometry(LW, LD), foilMat(mask));
+    f.rotation.x = -Math.PI / 2;
+    f.position.y = LH + 0.002;
+    lid.add(lidTop, f, contact(LW, LD));
+    lid.position.set(-2.55, 0, 0.74);
+    lid.rotation.y = 0.04;
+    add(lid);
+  }
+  // A notebook in Swiss binding: the sewn spine left bare, its signatures and coral thread on
+  // show, the graphite cover glued only to the back, the sign in silver small on its front
+  {
+    const NW = 1.9, ND = 1.3, NT = 0.11, BOARD = 0.018;
+    const g = new THREE.Group();
+    // the page block: white edges with the fine lines of the leaves
+    const leaves = (() => {
+      const [c, x] = canvas(1024, 64);
+      x.fillStyle = "#f2f1ec";
+      x.fillRect(0, 0, 1024, 64);
+      for (let y = 0; y < 64; y += 2) {
+        x.fillStyle = `rgba(150,148,140,${0.12 + Math.random() * 0.1})`;
+        x.fillRect(0, y, 1024, 1);
+      }
+      return tex(c);
+    })();
+    // the spine: the signatures stacked, each a slightly rounded band, the thread passing through
+    // them in stitches, and the kettle stitches at each end
+    const spine = (() => {
+      const [c, x] = canvas(2048, 128);
+      x.fillStyle = "#ece9e1";
+      x.fillRect(0, 0, 2048, 128);
+      const n = 7, bh = 128 / n;
+      for (let i = 0; i < n; i++) {
+        const g2 = x.createLinearGradient(0, i * bh, 0, (i + 1) * bh);
+        g2.addColorStop(0, "rgba(255,255,255,0.5)");
+        g2.addColorStop(0.5, "rgba(255,255,255,0)");
+        g2.addColorStop(1, "rgba(80,76,68,0.28)");
+        x.fillStyle = g2;
+        x.fillRect(0, i * bh, 2048, bh);
+      }
+      x.fillStyle = "#d0664a";
+      const stations = [140, 520, 900, 1148, 1528, 1908];
+      for (let i = 0; i < n; i++)
+        stations.forEach((sx, k) => {
+          // the thread runs along inside each signature between stations, shows across the spine
+          if (k % 2 === 0) x.fillRect(sx, i * bh + bh * 0.42, stations[k + 1] - sx, bh * 0.16);
+          x.fillRect(sx - 4, i * bh + 2, 8, bh - 4);
+        });
+      return tex(c);
+    })();
+    const white = new THREE.MeshStandardMaterial({ color: "#f2f1ec", roughness: 0.85 });
+    const leafMat = new THREE.MeshStandardMaterial({ map: leaves, roughness: 0.9 });
+    const spineMat = new THREE.MeshStandardMaterial({ map: spine, roughness: 0.85 });
+    // faces: +x, -x, +y, -y, +z (the spine, towards us), -z
+    const block = new THREE.Mesh(new THREE.BoxGeometry(NW - 0.03, NT, ND - 0.03), [leafMat, leafMat, white, white, spineMat, leafMat]);
+    block.position.y = BOARD + NT / 2;
+    // the back cover, the one the block is glued to
+    const coverMat = new THREE.MeshStandardMaterial({ color: GRAPHITE, roughness: 0.7 });
+    const backB = new THREE.Mesh(new THREE.BoxGeometry(NW, BOARD, ND), coverMat);
+    backB.position.y = BOARD / 2;
+    // the front cover, lying on the block, stopping short of the bare spine
+    const SHORT = 0.07;
+    const [c, x] = canvas(1024, 700);
+    x.fillStyle = "#000";
+    x.fillRect(0, 0, 1024, 700);
+    x.strokeStyle = "#fff";
+    x.fillStyle = "#fff";
+    sign(x, 512, 300, 56, 5);
+    word(x, 512 - 90, 390, 180, 3.5);
+    const frontMask = tex(c, false);
+    const frontB = new THREE.Mesh(new THREE.BoxGeometry(NW, BOARD * 0.7, ND - SHORT), coverMat);
+    frontB.position.set(0, BOARD + NT + (BOARD * 0.7) / 2, -SHORT / 2);
+    const foil = new THREE.Mesh(new THREE.PlaneGeometry(NW, ND - SHORT), foilMat(frontMask));
+    foil.rotation.x = -Math.PI / 2;
+    foil.position.set(0, BOARD + NT + BOARD * 0.7 + 0.002, -SHORT / 2);
+    g.add(block, backB, frontB, foil, contact(NW, ND));
+    // up level with the palette, clear above the cards
+    g.position.set(2.72, 0, -1.42);
+    add(g);
+  }
+  // A card as it is cut: a thin slab with rounded corners, its faces printed edge to edge
+  const roundedSlab = (w: number, d: number, t: number, r: number, cap: THREE.Material, edge: THREE.Material) => {
+    const sh = new THREE.Shape();
+    sh.moveTo(-w / 2 + r, -d / 2);
+    sh.lineTo(w / 2 - r, -d / 2);
+    sh.quadraticCurveTo(w / 2, -d / 2, w / 2, -d / 2 + r);
+    sh.lineTo(w / 2, d / 2 - r);
+    sh.quadraticCurveTo(w / 2, d / 2, w / 2 - r, d / 2);
+    sh.lineTo(-w / 2 + r, d / 2);
+    sh.quadraticCurveTo(-w / 2, d / 2, -w / 2, d / 2 - r);
+    sh.lineTo(-w / 2, -d / 2 + r);
+    sh.quadraticCurveTo(-w / 2, -d / 2, -w / 2 + r, -d / 2);
+    const geo = new THREE.ExtrudeGeometry(sh, { depth: t, bevelEnabled: false, curveSegments: 8 });
+    // the faces take the whole picture, corner to corner
+    const p = geo.attributes.position, uv = geo.attributes.uv;
+    for (let k = 0; k < p.count; k++) uv.setXY(k, (p.getX(k) + w / 2) / w, (p.getY(k) + d / 2) / d);
+    geo.rotateX(-Math.PI / 2);
+    return new THREE.Mesh(geo, [cap, edge]);
+  };
+
+  // business cards: a stack of heavy white cotton card, and one on it that turns over to show its
+  // graphite back. Front: the name and the role set small, the sign and the name of the house
+  const front = face(850, 550, "#f5f4f0", (x) => {
+    x.fillStyle = "#2b2e32";
+    x.font = "30px Georgia, serif";
+    x.fillText("Lúa Couto", 70, 380);
+    x.fillStyle = "#7d8488";
+    x.font = `20px ${SANS}`;
+    x.fillText("directora", 70, 414);
+    x.fillText("ola@ourela.gal · +34 981 000 404", 70, 480);
+    x.fillStyle = "#d0664a";
+    x.fillRect(70, 440, 34, 2);
+    // the sign and the name of the house, printed in graphite: silver vanishes on white card
+    x.strokeStyle = "#2b2e32";
+    sign(x, 108, 112, 38, 4);
+    word(x, 160, 96, 150, 2.6);
+  });
+  // back: graphite, the sign alone and large, off centre, in silver
+  const back = face(850, 550, GRAPHITE, () => {}, (x) => {
+    sign(x, 640, 300, 130, 7);
+  });
+  const cotton = new THREE.MeshStandardMaterial({ map: front.map, roughness: 0.9 });
+  const cottonEdge = new THREE.MeshStandardMaterial({ color: "#f1efe9", roughness: 0.95 });
+  for (let k = 0; k < 7; k++) {
+    const cardK = roundedSlab(0.85, 0.55, 0.009, 0.02, cotton, cottonEdge);
+    const g = new THREE.Group();
+    g.add(cardK);
+    if (k === 0) g.add(contact(0.85, 0.55));
+    g.position.set(2.025 + (k % 2) * 0.004, k * 0.009, 0.025 - k * 0.0015);
+    g.rotation.y = (k % 3) * 0.006 - 0.006;
+    add(g);
+  }
+  const flip = new THREE.Group();
+  {
+    const t = 0.0045;
+    const top = roundedSlab(0.85, 0.55, t, 0.02, cotton, cottonEdge);
+    const backMap = back.map;
+    backMap.wrapS = THREE.RepeatWrapping;
+    backMap.repeat.x = -1; // seen from below, its picture turned to read right once the card is over
+    const under = roundedSlab(0.85, 0.55, t, 0.02, new THREE.MeshStandardMaterial({ map: backMap, roughness: 0.75 }), new THREE.MeshStandardMaterial({ color: GRAPHITE, roughness: 0.8 }));
+    under.position.y = -t;
+    flip.add(top, under);
+    const backMask = back.mask!;
+    backMask.wrapS = THREE.RepeatWrapping;
+    backMask.repeat.x = -1;
+    const f2 = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 0.55), foilMat(backMask));
+    f2.rotation.x = Math.PI / 2;
+    f2.position.y = -t - 0.002;
+    flip.add(f2);
+    flip.position.set(2.025, 0.068, 0.025);
+    add(flip);
+  }
+  // the room key: a glossy card in the sea blue, the house's own colour for its rooms. The room's
+  // number large in silver, the sign, the contactless mark, and a fine white rule
+  const key = new THREE.Group();
+  {
+    const KW = 0.856, KD = 0.54;
+    const art = face(856, 540, "#2f5f62", (x) => {
+      x.fillStyle = "rgba(255,255,255,0.85)";
+      x.font = `500 18px ${SANS}`;
+      x.fillText("H A B I T A C I Ó N", 60, 92);
+      x.fillStyle = "rgba(255,255,255,0.35)";
+      x.fillRect(60, 420, 736, 1.5);
+      x.fillStyle = "rgba(255,255,255,0.7)";
+      x.font = `18px ${SANS}`;
+      x.fillText("ourela · casa de mar · cedeira", 60, 470);
+      // the contactless mark: three arcs
+      x.strokeStyle = "rgba(255,255,255,0.7)";
+      x.lineWidth = 3;
+      x.lineCap = "round";
+      [14, 24, 34].forEach((rr) => {
+        x.beginPath();
+        x.arc(760, 92, rr, -Math.PI / 4, Math.PI / 4);
+        x.stroke();
+      });
+    }, (x) => {
+      x.font = "200px Georgia, serif";
+      x.fillText("04", 56, 330);
+      sign(x, 700, 300, 70, 5);
+    });
+    const pvc = new THREE.MeshPhysicalMaterial({ map: art.map, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.12 });
+    const slab = roundedSlab(KW, KD, 0.012, 0.035, pvc, new THREE.MeshStandardMaterial({ color: "#264e51", roughness: 0.4 }));
+    const foil = new THREE.Mesh(new THREE.PlaneGeometry(KW, KD), foilMat(art.mask!));
+    foil.rotation.x = -Math.PI / 2;
+    foil.position.y = 0.0135;
+    key.add(slab, foil, contact(KW, KD));
+    key.position.set(2.025, 0, 0.72);
+    add(key);
+  }
+
+  // a lanyard laid along the foot of the brochure: a flat strap in the brand's green with the name
+  // woven along it, drawn out into a long loop, its two ends meeting at a steel clip
+  {
+    const [c, x] = canvas(2048, 64);
+    x.fillStyle = "#2f5f62";
+    x.fillRect(0, 0, 2048, 64);
+    // the weave's fine ribs
+    for (let px = 0; px < 2048; px += 3) {
+      x.fillStyle = `rgba(0,0,0,${0.05 + Math.random() * 0.05})`;
+      x.fillRect(px, 0, 1, 64);
+    }
+    x.fillStyle = "#e6e2da";
+    x.font = `400 28px ${SANS}`;
+    for (let px = 30; px < 2048; px += 300) x.fillText("O U R E L A", px, 42);
+    const strapTex = tex(c);
+    strapTex.wrapS = THREE.RepeatWrapping;
+    const L = 1.3; // half the loop's length
+    // let fall onto the table as it would be: loose, the strap wandering in soft bends, the loop
+    // turning back over itself once on the way to the clip
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(L + 0.05, 0, 0.02),
+      new THREE.Vector3(L * 0.7, 0, -0.16),
+      new THREE.Vector3(L * 0.25, 0, -0.08),
+      new THREE.Vector3(-L * 0.2, 0, -0.27),
+      new THREE.Vector3(-L * 0.7, 0, -0.2),
+      new THREE.Vector3(-L * 0.98, 0, 0.02),
+      new THREE.Vector3(-L * 0.78, 0, 0.24),
+      new THREE.Vector3(-L * 0.35, 0, 0.12),
+      new THREE.Vector3(-L * 0.05, 0, -0.14),
+      new THREE.Vector3(L * 0.3, 0, 0.1),
+      new THREE.Vector3(L * 0.62, 0, 0.2),
+      new THREE.Vector3(L + 0.05, 0, 0.06),
+    ]);
+    // a ribbon following the curve, flat on the table
+    const N = 300, SWD = 0.075;
+    const pos: number[] = [], uv: number[] = [], idx: number[] = [];
+    for (let i = 0; i <= N; i++) {
+      const u = i / N, p = curve.getPoint(u), tg = curve.getTangent(u);
+      const nx = -tg.z, nz = tg.x, l = Math.hypot(nx, nz) || 1;
+      const py = 0.004 + u * 0.006; // the later length lies over the earlier where they cross
+      pos.push(p.x + (nx / l) * SWD / 2, py, p.z + (nz / l) * SWD / 2, p.x - (nx / l) * SWD / 2, py, p.z - (nz / l) * SWD / 2);
+      // the woven name reads the right way round, as on the real strap
+      uv.push(u * 2.6, 0, u * 2.6, 1);
+      if (i < N) idx.push(i * 2, i * 2 + 1, i * 2 + 2, i * 2 + 1, i * 2 + 3, i * 2 + 2);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(idx);
+    geo.computeVertexNormals();
+    const strap = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: strapTex, roughness: 0.8, side: THREE.DoubleSide }));
+    strap.receiveShadow = true;
+    // the clip: a steel crimp where the ends meet, and the swivel hook beyond it
+    const steelM = new THREE.MeshStandardMaterial({ color: "#c9ced1", metalness: 1, roughness: 0.3 });
+    const crimp = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.03, 0.1), steelM);
+    crimp.position.set(L + 0.08, 0.015, 0);
+    const hook = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.012, 10, 30), steelM);
+    hook.rotation.x = Math.PI / 2;
+    hook.position.set(L + 0.19, 0.012, 0);
+    const g = new THREE.Group();
+    g.add(strap, crimp, hook);
+    g.position.set(0.0, 0, 1.62);
     add(g);
   }
   // a fan of colour chips: the palette, as a printer's swatch book pinned at one end; it fans open
@@ -322,7 +595,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     const fs = contact(1.7, 0.42);
     fs.position.set(0.8, 0.0015, -0.08);
     fan.add(fs);
-    fan.position.set(-3.05, 0.008, 2.1);
+    // up top, to the right of the vase, above the brochure; it fans open away from it
+    fan.position.set(-0.85, 0.008, -1.4);
     add(fan);
   }
   // A narrow, straight-sided bud vase in clear glass, and in it a single lilac flower: the one living thing on the table
@@ -489,133 +763,104 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
       vase.add(proxy);
     }
     vase.scale.setScalar(1.25);
-    vase.position.set(-0.95, 0, -1.4);
+    // off centre, towards the left column, so the brochure keeps the middle to itself
+    vase.position.set(-1.4, 0, -1.55);
     add(vase);
   }
-  // business cards: a white stack, and one card on it that turns over to show its graphite back
-  const front = face(850, 550, PAPER, (x) => {
-    x.fillStyle = "#2b2e32";
-    x.font = "34px Georgia, serif";
-    x.fillText("Lúa Couto", 70, 360);
-    x.fillStyle = "#7d8488";
-    x.font = `22px ${SANS}`;
-    x.fillText("dirección · ola@ourela.gal", 70, 402);
-  }, (x) => {
-    sign(x, 110, 120, 42, 5);
-    word(x, 70, 450, 170, 3.2);
-  });
-  for (let k = 0; k < 7; k++) sheet(0.85, 0.55, 0.006, PAPER, front, 2.025 + (k % 2) * 0.006, 0.025 - k * 0.002, (k % 3) * 0.008 - 0.008, k * 0.006);
-  const back = face(850, 550, GRAPHITE, () => {}, (x) => {
-    sign(x, 425, 210, 80, 6.5);
-    word(x, 300, 335, 250, 4);
-  });
-  // the turning card: front on top, back beneath, each with its foil; it turns about its long axis
-  const flip = new THREE.Group();
-  {
-    const t = 0.006;
-    const edge = new THREE.MeshStandardMaterial({ color: PAPER, roughness: 0.85 });
-    const card = new THREE.Mesh(new THREE.BoxGeometry(0.85, t, 0.55), [
-      edge, edge, new THREE.MeshStandardMaterial({ map: front.map, roughness: 0.82 }),
-      new THREE.MeshStandardMaterial({ map: back.map, roughness: 0.82 }), edge, edge,
-    ]);
-    flip.add(card);
-    const f1 = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 0.55), foilMat(front.mask!));
-    f1.rotation.x = -Math.PI / 2;
-    f1.position.y = t / 2 + 0.002;
-    const f2 = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 0.55), foilMat(back.mask!));
-    f2.rotation.x = Math.PI / 2;
-    f2.position.y = -t / 2 - 0.002;
-    flip.add(f1, f2);
-    flip.position.set(2.025, 0.05, 0.025);
-    add(flip);
-  }
-  // the room key: graphite card, the sign and the number in silver; it slides in beside the cards
-  const key = sheet(0.86, 0.54, 0.012, GRAPHITE, face(860, 540, GRAPHITE, (x) => {
-    x.fillStyle = MIST;
-    x.fillRect(0, 470, 860, 14);
-  }, (x) => {
-    sign(x, 170, 230, 92, 7);
-    x.font = "150px Georgia, serif";
-    x.fillText("04", 360, 290);
-    x.font = `26px ${SANS}`;
-    x.fillText("H A B I T A C I Ó N", 366, 128);
-  }), 2.025, 0.72, 0);
-
   // The phone, lying beside the cards, with the house's site on its screen: the brand's digital side
   let screenMap: THREE.Texture;
   {
-    const W = 460, H = 2400, SANS2 = SANS;
+    // the page as long as its content, so scrolled to its foot it never shows an empty screen
+    const W = 460, H = 2000, SANS2 = SANS;
     const [c, x] = canvas(W, H);
-    x.fillStyle = PAPER;
+    x.fillStyle = "#f6f5f2";
     x.fillRect(0, 0, W, H);
-    // status bar and the site's header
-    x.fillStyle = "#2b2e32";
-    x.font = `600 18px ${SANS2}`;
-    x.fillText("9:41", 30, 38);
-    x.fillRect(370, 26, 52, 14);
-    x.strokeStyle = "#2b2e32";
-    sign(x, 52, 104, 22, 3);
-    word(x, 88, 94, 110, 2.2);
-    x.fillRect(400, 96, 30, 2.5);
-    x.fillRect(400, 106, 30, 2.5);
-    x.fillRect(400, 116, 30, 2.5);
-    // the first view: the sea, the line, the button
-    const g = x.createLinearGradient(0, 150, 0, 820);
-    g.addColorStop(0, "#c7d3d5");
-    g.addColorStop(0.5, "#6f8a8e");
-    g.addColorStop(1, "#2f4246");
-    x.fillStyle = g;
-    x.fillRect(0, 150, W, 670);
-    x.strokeStyle = "rgba(247,244,238,0.35)";
-    sign(x, 360, 420, 150, 5);
-    x.fillStyle = PAPER;
-    x.font = "48px Georgia, serif";
-    x.fillText("Volver", 34, 680);
-    x.fillText("á ourela.", 34, 736);
-    x.font = `17px ${SANS2}`;
-    x.fillText("Casa de mar en Cedeira", 36, 776);
+    // a photograph cropped to fill a box, as a site's image block does
+    const cover = (img: HTMLImageElement, bx: number, by: number, bw: number, bh: number, r = 0) => {
+      const s = Math.max(bw / img.width, bh / img.height), w = img.width * s, h = img.height * s;
+      x.save();
+      x.beginPath();
+      x.roundRect(bx, by, bw, bh, r);
+      x.clip();
+      x.drawImage(img, bx + (bw - w) / 2, by + (bh - h) / 2, w, h);
+      x.restore();
+    };
+    // the first view: the beach, full bleed, the header and the line over it
+    cover(photos.beach, 0, 0, W, 900);
+    const shade = x.createLinearGradient(0, 380, 0, 900);
+    shade.addColorStop(0, "rgba(20,30,34,0)");
+    shade.addColorStop(1, "rgba(20,30,34,0.62)");
+    x.fillStyle = shade;
+    x.fillRect(0, 0, W, 900);
+    const top = x.createLinearGradient(0, 0, 0, 160);
+    top.addColorStop(0, "rgba(20,30,34,0.35)");
+    top.addColorStop(1, "rgba(20,30,34,0)");
+    x.fillStyle = top;
+    x.fillRect(0, 0, W, 160);
+    // status bar
+    x.fillStyle = "#ffffff";
+    x.font = `600 17px ${SANS2}`;
+    x.fillText("9:41", 34, 40);
+    x.fillRect(372, 28, 24, 12);
+    x.fillRect(400, 28, 30, 12);
+    // header
+    x.strokeStyle = "#ffffff";
+    sign(x, 50, 100, 20, 2.6);
+    word(x, 82, 91, 100, 2);
+    x.fillRect(398, 94, 28, 2);
+    x.fillRect(398, 104, 28, 2);
+    // the line and the button
+    x.fillStyle = "#ffffff";
+    x.font = "44px Georgia, serif";
+    x.fillText("Volver", 34, 710);
+    x.fillText("á ourela.", 34, 762);
+    x.font = `16px ${SANS2}`;
+    x.fillStyle = "rgba(255,255,255,0.85)";
+    x.fillText("Seis habitacións fronte á ría de Cedeira", 36, 800);
     x.beginPath();
-    x.roundRect(34, 880, 392, 64, 32);
-    x.fillStyle = "#2b2e32";
+    x.roundRect(34, 830, 180, 48, 24);
+    x.fillStyle = "#f6f5f2";
     x.fill();
-    x.fillStyle = PAPER;
+    x.fillStyle = "#1f2a30";
     x.textAlign = "center";
-    x.font = `600 19px ${SANS2}`;
-    x.fillText("Reservar", W / 2, 920);
+    x.font = `600 16px ${SANS2}`;
+    x.fillText("Reservar", 124, 860);
     x.textAlign = "left";
-    // the rooms, as a list of cards
-    x.fillStyle = "#4f6b70";
-    x.font = "italic 34px Georgia, serif";
-    x.fillText("Habitacións", 34, 1040);
-    ["Area", "Cons", "Salitre", "Ourizo"].forEach((r, i) => {
-      const y = 1080 + i * 250;
-      const rg = x.createLinearGradient(0, y, 0, y + 170);
-      rg.addColorStop(0, ["#d5dcdd", "#c9d1d2", "#dcdfdf", "#c3cccd"][i]);
-      rg.addColorStop(1, "#8fa2a5");
-      x.fillStyle = rg;
-      x.fillRect(34, y, 392, 170);
-      x.fillStyle = "#2b2e32";
-      x.font = "28px Georgia, serif";
-      x.fillText(r, 34, y + 212);
-      x.fillStyle = "#8d9397";
+    // the rooms, as a quiet list: name, a line about it, the price, a hairline between
+    x.fillStyle = "#1f2a30";
+    x.font = "italic 30px Georgia, serif";
+    x.fillText("Habitacións", 34, 980);
+    const rooms: [string, string, string][] = [
+      ["Salitre", "vista á ría · 24 m²", "140 €"],
+      ["Area", "terraza ao sur · 20 m²", "120 €"],
+      ["Cons", "xanela ao xardín · 18 m²", "110 €"],
+      ["Ourizo", "baixo cuberta · 22 m²", "125 €"],
+      ["Faro", "a máis alta · 26 m²", "150 €"],
+      ["Ribeira", "porta á rúa · 19 m²", "115 €"],
+    ];
+    rooms.forEach(([name, line, price], i) => {
+      const y = 1060 + i * 120;
+      x.fillStyle = "#1f2a30";
+      x.font = "26px Georgia, serif";
+      x.fillText(name, 34, y);
+      x.fillStyle = "#7d8488";
+      x.font = `15px ${SANS2}`;
+      x.fillText(line, 34, y + 30);
+      x.textAlign = "right";
+      x.fillStyle = "#1f2a30";
       x.font = `16px ${SANS2}`;
-      x.fillText(`0${i + 1} · vista ao mar`, 300, y + 210);
+      x.fillText(price, 426, y);
+      x.textAlign = "left";
+      x.fillStyle = "#e1e3e3";
+      x.fillRect(34, y + 58, 392, 1.5);
     });
-    // and the way there
-    x.fillStyle = "#dfe4e5";
-    x.fillRect(34, 2100, 392, 220);
-    x.strokeStyle = "#4f6b70";
-    x.lineWidth = 2;
-    x.beginPath();
-    x.moveTo(34, 2160);
-    x.bezierCurveTo(160, 2150, 200, 2260, 300, 2230);
-    x.bezierCurveTo(360, 2210, 400, 2140, 426, 2130);
-    x.stroke();
-    x.fillStyle = "#2b2e32";
-    x.beginPath();
-    x.arc(300, 2230, 7, 0, 7);
-    x.fill();
-    screenMap = tex(c);
+    // the address and the booking line at the foot
+    x.fillStyle = "#1f2a30";
+    x.font = "italic 26px Georgia, serif";
+    x.fillText("Como chegar", 34, 1860);
+    x.fillStyle = "#7d8488";
+    x.font = `15px ${SANS2}`;
+    ["Rúa da Ribeira 4, 15350 Cedeira", "A 45 minutos de Ferrol", "ola@ourela.gal · +34 981 000 404"].forEach((l, i) => x.fillText(l, 34, 1900 + i * 28));    screenMap = tex(c);
     screenMap.repeat.set(1, 993 / H);
     screenMap.offset.y = 1 - 993 / H;
 
@@ -631,7 +876,23 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     );
     screen.rotation.x = -Math.PI / 2;
     screen.position.y = 0.081;
-    phone.add(body, glass, screen, contact(0.76, 1.56));
+    // the glass over the screen takes the window's light as a soft sheen across it
+    const sheen = (() => {
+      const [sc, sx] = canvas(256, 512);
+      const sg = sx.createLinearGradient(0, 0, 256, 512);
+      sg.addColorStop(0, "rgba(255,255,255,0)");
+      sg.addColorStop(0.42, "rgba(255,255,255,0)");
+      sg.addColorStop(0.5, "rgba(255,255,255,0.10)");
+      sg.addColorStop(0.62, "rgba(255,255,255,0)");
+      sx.fillStyle = sg;
+      sx.fillRect(0, 0, 256, 512);
+      return tex(sc);
+    })();
+    const gloss = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 1.52), new THREE.MeshBasicMaterial({ map: sheen, transparent: true, depthWrite: false }));
+    gloss.rotation.x = -Math.PI / 2;
+    gloss.position.y = 0.0825;
+    gloss.userData.flat = true;
+    phone.add(body, glass, screen, gloss, contact(0.76, 1.56));
     phone.position.set(2.98, 0, 0.53);
     add(phone);
   }
@@ -650,14 +911,22 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
       x.fillStyle = "#2b2e32";
       x.font = "26px Georgia, serif";
       ["Seis habitacións", "fronte ao mar,", "nunha casa de", "pedra de 1908."].forEach((l, i) => x.fillText(l, 60, 270 + i * 40));
-      x.fillStyle = "#c3c8cb";
-      for (let k = 0; k < 9; k++) x.fillRect(60, 470 + k * 34, k % 4 === 3 ? 220 : 380 - (k % 2) * 40, 10);
-      // a photograph of the house, as a soft block of sea and stone
-      const g = x.createLinearGradient(0, 800, 0, 990);
-      g.addColorStop(0, "#c2ced0");
-      g.addColorStop(1, "#6f8589");
-      x.fillStyle = g;
-      x.fillRect(60, 800, 380, 190);
+      // the text, set as print is: a serif at reading size, ragged right
+      x.fillStyle = "#5a6064";
+      x.font = "19px Georgia, serif";
+      ["Unha casa de indianos na ribeira,", "restaurada pedra a pedra. Seis", "habitacións, todas co mar diante;", "almorzo na mesa grande, con pan", "do forno da vila e marmelada de", "figo feita na casa."].forEach((l, i) => x.fillText(l, 60, 470 + i * 30));
+      // the house, photographed
+      const img = photos.facade, bw = 380, bh = 300, bx = 60, by = 690;
+      const sc = Math.max(bw / img.width, bh / img.height);
+      x.save();
+      x.beginPath();
+      x.rect(bx, by, bw, bh);
+      x.clip();
+      x.drawImage(img, bx + (bw - img.width * sc) / 2, by + (bh - img.height * sc) / 2, img.width * sc, img.height * sc);
+      x.restore();
+      x.fillStyle = "#8d9397";
+      x.font = `16px ${SANS}`;
+      x.fillText("A fachada, desde a rúa da Ribeira", 60, 1020);
     }),
     // the map: the land in a pale grey with its contour lines, the ría cutting in, the house marked
     panelFace((x) => {
@@ -794,23 +1063,23 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     const t = time % LOOP;
     const openL = span(t, 1.2, 2.8) - span(t, 10.4, 11.8);
     const openR = span(t, 2.2, 3.8) - span(t, 9.6, 11.0);
-    leftHinge.rotation.z = -Math.PI * (1 - openL);
-    rightHinge.rotation.z = Math.PI * (1 - openR);
+    // opened, a folded sheet never lies quite flat: the side panels keep a little lift at the fold
+    leftHinge.rotation.z = -Math.PI * (1 - openL) - 0.035 * openL;
+    rightHinge.rotation.z = Math.PI * (1 - openR) + 0.035 * openR;
     bShadow.scale.x = 1 + openL + openR;
     bShadow.position.x = 0.035 + (PW * (openR - openL)) / 2;
-    const turn = span(t, 4.4, 5.6) - span(t, 9.2, 10.4);
+    // the site on the phone scrolls down the page and back, as someone reads it
+    // the top card turns over: lifted, turned in one easy arc, set down on the stack again (resting
+    // on it exactly, so nothing jumps as it lands), and turned back before the loop ends
+    const turn = span(t, 4.4, 6.0) - span(t, 9.0, 10.6);
     flip.rotation.x = Math.PI * turn;
-    flip.position.y = 0.05 + Math.sin(Math.PI * turn) * 0.32;
+    flip.position.y = 0.068 + Math.sin(Math.PI * turn) * 0.28;
     const slide = span(t, 5.2, 6.6) - span(t, 11.4, 12.6);
     key.position.z = 0.72 + (1 - slide) * 2.4;
-    // the site on the phone scrolls down the page and back, as someone reads it
-    // held on its first view most of the loop, a short read of the rooms, then back up
-    const read = span(t, 6.5, 8.3) - span(t, 9.4, 10.8);
-    screenMap.offset.y = (1 - screenMap.repeat.y) * (1 - read);
     // the swatch book fans open, chip by chip, and closes again before the loop ends
     fanStrips.forEach((p, i) => {
       const open = span(t, 0.6 + i * 0.12, 2.2 + i * 0.12) - span(t, 11.2 - i * 0.08, 12.4 - i * 0.08);
-      p.rotation.y = open * i * 0.17;
+      p.rotation.y = open * i * 0.09;
     });
   };
   animate(0);
@@ -877,6 +1146,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
   place(0);
   let start = 0;
   const loop = () => {
+    // while another discipline is on view, it holds still and draws nothing
+    if (paused.current) return;
     const now = performance.now();
     if (!start) start = now;
     const s = (now - start) / 1000;
@@ -917,14 +1188,16 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
   };
 }
 
-const StationeryScene: React.FC<{ className?: string }> = ({ className = "" }) => {
+const StationeryScene: React.FC<{ className?: string; paused?: boolean }> = ({ className = "", paused = false }) => {
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
   const host = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   useEffect(() => {
     let dispose: (() => void) | null = null;
     let cancelled = false;
     if (!host.current) return;
-    build(host.current, () => setReady(true)).then((d) => {
+    build(host.current, () => setReady(true), pausedRef).then((d) => {
       if (cancelled) d();
       else dispose = d;
     });

@@ -106,7 +106,8 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
             animate={{ opacity: 1, scale: 1, transition: { duration: 0.9, ease: EASE_VEIL } }}
           >
             <Suspense fallback={null}>
-              <LogoSpace active={active ? SECTIONS.indexOf(active) : null} diving={walking} />
+              {/* the sculpture has three compositions: contact shares the studio's, the page it opens */}
+              <LogoSpace active={active ? Math.min(SECTIONS.indexOf(active), 2) : null} diving={walking} />
             </Suspense>
           </motion.div>
           {/* Arrival: as the camera steps back, light floods everything */}
@@ -186,12 +187,14 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
 /* ────────────────────────────────────────────────────────────────── */
 
-// Wide screens: the labels hang around the piece — left wall, right wall, low centre.
+// Wide screens: the labels hang around the piece — left wall, right wall, low centre, high centre.
 // Phones and tablets: they stack in one centred column under it (see the nav).
 const SPOTS = [
   "lg:absolute lg:left-8 lg:top-1/2 lg:-translate-y-1/2 lg:text-left",
   "lg:absolute lg:right-8 lg:top-1/2 lg:-translate-y-1/2 lg:text-right",
   "lg:absolute lg:left-1/2 lg:bottom-[18%] lg:-translate-x-1/2 lg:text-center",
+  // contact, at the top centre: the way out of the index, facing the studio below
+  "lg:absolute lg:left-1/2 lg:top-[17%] lg:-translate-x-1/2 lg:text-center",
 ] as const;
 
 type LabelProps = {

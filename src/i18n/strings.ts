@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Every visible string of the landing, the index, the header, the footer and
  * the contact menu, in the four site languages.
  *
@@ -31,7 +31,9 @@ const en = {
   "artwork.next": "next",
 
   "section.projects": "projects",
-  "section.artwork": "artwork",
+  "section.artwork": "lab",
+  "section.contact": "contact",
+  "section.contact.caption": "start a project",
   "section.studio": "studio",
   "section.projects.caption": "selected works — identity, web, video",
   "section.artwork.caption": "experiments, covers & rendered matter",
@@ -75,7 +77,9 @@ const es: Record<Key, string> = {
   "artwork.next": "siguiente",
 
   "section.projects": "proyectos",
-  "section.artwork": "obra",
+  "section.artwork": "laboratorio",
+  "section.contact": "contacto",
+  "section.contact.caption": "empezar un proyecto",
   "section.studio": "estudio",
   "section.projects.caption": "trabajos seleccionados — identidad, web, vídeo",
   "section.artwork.caption": "experimentos, portadas y materia renderizada",
@@ -117,7 +121,9 @@ const fr: Record<Key, string> = {
   "artwork.next": "suivante",
 
   "section.projects": "projets",
-  "section.artwork": "œuvres",
+  "section.artwork": "laboratoire",
+  "section.contact": "contact",
+  "section.contact.caption": "démarrer un projet",
   "section.studio": "studio",
   "section.projects.caption": "travaux choisis — identité, web, vidéo",
   "section.artwork.caption": "expériences, pochettes & matière rendue",
@@ -159,7 +165,9 @@ const de: Record<Key, string> = {
   "artwork.next": "weiter",
 
   "section.projects": "projekte",
-  "section.artwork": "arbeiten",
+  "section.artwork": "labor",
+  "section.contact": "kontakt",
+  "section.contact.caption": "ein projekt beginnen",
   "section.studio": "studio",
   "section.projects.caption": "ausgewählte arbeiten — identität, web, video",
   "section.artwork.caption": "experimente, cover & gerenderte materie",

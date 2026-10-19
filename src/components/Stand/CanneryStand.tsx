@@ -19,7 +19,7 @@ import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass.js";
 
 const NAVY = "#1f3550";
 const CREAM = "#f1e7d2";
-const BG_FAR = "#959da0";
+const BG_FAR = "#c9cdce";
 const BG = "#a9b8ba";
 const SERIF = '"Times New Roman", Georgia, serif';
 
@@ -36,7 +36,7 @@ const LABELS = [
 // Near eye level, as the photographed people were taken, so they stand on the floor with the camera
 const VIEW = { pos: [4.0, 2.1, 9.4] as [number, number, number], look: [0.1, 1.35, 0] as [number, number, number] };
 
-async function build(host: HTMLDivElement, onReady: () => void): Promise<() => void> {
+async function build(host: HTMLDivElement, onReady: () => void, paused: { current: boolean } = { current: false }): Promise<() => void> {
   document.fonts.load("300 100px Jura").catch(() => {});
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -351,7 +351,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
   const HW = HX * 2, HD = HZ1 - HZ0, HCZ = (HZ0 + HZ1) / 2;
   {
     const S = 512, [c, x] = canvas(S, S);
-    x.fillStyle = "#8f8a82";
+    x.fillStyle = "#b9bab8";
     x.fillRect(0, 0, S, S);
     const img = x.getImageData(0, 0, S, S), d = img.data;
     for (let k = 0; k < d.length; k += 4) {
@@ -398,7 +398,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     return tex(c);
   };
   const wall = (w: number, x: number, z: number, rotY: number) => {
-    const p = new THREE.Mesh(new THREE.PlaneGeometry(w, HH), new THREE.MeshStandardMaterial({ map: cladding(w), roughness: 0.9, color: "#a4a9ab" }));
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(w, HH), new THREE.MeshStandardMaterial({ map: cladding(w), roughness: 0.9, color: "#d3d6d7" }));
     p.position.set(x, HH / 2, z);
     p.rotation.y = rotY;
     scene.add(p);
@@ -407,7 +407,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
   wall(HW, 0, HZ1, Math.PI);
   wall(HD, -HX, HCZ, Math.PI / 2);
   wall(HD, HX, HCZ, -Math.PI / 2);
-  const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(HW, HD), new THREE.MeshStandardMaterial({ color: "#a6acae", roughness: 1 }));
+  const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(HW, HD), new THREE.MeshStandardMaterial({ color: "#d0d3d4", roughness: 1 }));
   ceiling.rotation.x = Math.PI / 2;
   ceiling.position.set(0, HH, HCZ);
   scene.add(ceiling);
@@ -680,7 +680,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
   /* ---------- the fair around it: an aisle and the neighbouring stands ---------- */
   // A charcoal runner down the aisle in front of the stand
   {
-    const runner = new THREE.Mesh(new THREE.PlaneGeometry(HW, 3.4), new THREE.MeshStandardMaterial({ color: "#7f8284", roughness: 1 }));
+    const runner = new THREE.Mesh(new THREE.PlaneGeometry(HW, 3.4), new THREE.MeshStandardMaterial({ color: "#a9abab", roughness: 1 }));
     runner.rotation.x = -Math.PI / 2;
     runner.position.set(0, 0.004, 4.1);
     runner.receiveShadow = true;
@@ -690,7 +690,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
   const neighbour = (x: number, z: number, rotY: number, wall: string, header: string, word: string) => {
     const g = new THREE.Group();
     // held a few shades down, so none of them competes with Brétema
-    const mat = (c: string, r = 0.8) => new THREE.MeshStandardMaterial({ color: new THREE.Color(c).multiplyScalar(0.7), roughness: r });
+    const mat = (c: string, r = 0.8) => new THREE.MeshStandardMaterial({ color: new THREE.Color(c).lerp(new THREE.Color("#d9dbdb"), 0.72), roughness: r });
     const part = (w: number, h: number, d: number, mt: THREE.Material, px: number, py: number, pz: number) => {
       const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mt);
       b.position.set(px, py, pz);
@@ -702,7 +702,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     part(1.8, 0.95, 0.55, mat("#f2f0eb", 0.5), 0.6, 0.57, 0.6);
     // the header board with their trade
     const [c, cx] = canvas(1024, 160);
-    cx.fillStyle = header;
+    cx.fillStyle = "#" + new THREE.Color(header).lerp(new THREE.Color("#d9dbdb"), 0.72).getHexString();
     cx.fillRect(0, 0, 1024, 160);
     cx.fillStyle = "#ffffff";
     cx.font = "400 78px Jura, sans-serif";
@@ -749,7 +749,19 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
       ["p13", -3.4, 3.6, 1.66, 0],
     ];
     cast.forEach(([name, x, z, h, floor]) => {
-      const mat = new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.35, side: THREE.DoubleSide, color: floor ? new THREE.Color(0.95, 0.9, 0.83) : new THREE.Color(0.7, 0.7, 0.71) });
+      const mat = new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.35, side: THREE.DoubleSide, color: new THREE.Color(1, 1, 1) });
+      // muted and lightened, so they read as life round the stand and never outweigh it: at the
+      // stand a little, along the aisle a good deal more
+      const mute = floor ? 0.2 : 0.4, lift = floor ? 0.04 : 0.14;
+      mat.onBeforeCompile = (sh) => {
+        sh.fragmentShader = sh.fragmentShader.replace(
+          "#include <map_fragment>",
+          `#include <map_fragment>
+          float lum = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
+          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(lum), ${mute.toFixed(2)});
+          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.86, 0.87, 0.87), ${lift.toFixed(2)});`,
+        );
+      };
       const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
       plane.position.set(x, floor + h / 2, z);
       plane.visible = false;
@@ -883,6 +895,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
   };
   let start = 0;
   const loop = () => {
+    // while another scene shares its frame, it holds still and draws nothing
+    if (paused.current) return;
     const now = performance.now();
     if (!start) start = now;
     const t = (now - start) / 1000;
@@ -928,14 +942,16 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
   };
 }
 
-const CanneryStand: React.FC<{ className?: string }> = ({ className = "" }) => {
+const CanneryStand: React.FC<{ className?: string; paused?: boolean }> = ({ className = "", paused = false }) => {
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
   const host = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   useEffect(() => {
     let dispose: (() => void) | null = null;
     let cancelled = false;
     if (!host.current) return;
-    build(host.current, () => setReady(true)).then((d) => {
+    build(host.current, () => setReady(true), pausedRef).then((d) => {
       if (cancelled) d();
       else dispose = d;
     });

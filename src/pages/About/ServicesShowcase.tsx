@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { EASE_HAUS } from "../../lib/motion";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
@@ -27,14 +27,15 @@ const SCENES = {
 type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; seen: string[] };
 
 // A 3D scene is built only once its frame nears the screen (never while hidden at this width)
-const SceneInView: React.FC<{ name: keyof typeof SCENES }> = ({ name }) => {
-  const Scene = SCENES[name];
+const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean }> = ({ name, paused = false }) => {
+  const Scene = SCENES[name] as React.ComponentType<{ className?: string; paused?: boolean }>;
   const box = useRef<HTMLDivElement>(null);
   const [load, setLoad] = useState(false);
   useEffect(() => {
     const el = box.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && setLoad(true), { rootMargin: "200px" });
+    // a whole screen ahead, so a scene is ready before its discipline is reached
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setLoad(true), { rootMargin: "100% 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -42,23 +43,23 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES }> = ({ name }) => {
     <div ref={box} className="pointer-events-none absolute inset-0">
       {load && (
         <Suspense fallback={null}>
-          <Scene className="h-full w-full" />
+          <Scene className="h-full w-full" paused={paused} />
         </Suspense>
       )}
     </div>
   );
 };
 
-// In the order of the disciplines: audiovisual, web and 3D, spaces and events, strategy and identity.
+// In the order of the disciplines: audiovisual, spaces and events, web and 3D, strategy and identity.
 // The 3D scenes run on their own; the pointer is left to the page so scrolling over them never sticks
 const EXAMPLES: Example[] = [
   { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
-  { frame: "/concepts/smarthc-devices/index.html?bare", seen: ["smarthc", "buendia", "sapphire"] },
   { scene: "stand", seen: ["smarthc"] },
+  { frame: "/concepts/smarthc-devices/index.html?bare", seen: ["smarthc", "buendia", "sapphire"] },
   { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
-const Frame: React.FC<{ ex: Example; note?: string }> = ({ ex, note }) => (
+const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean }> = ({ ex, note, paused }) => (
   <div className="relative h-full w-full overflow-hidden bg-[#dfe1e2]">
     {ex.img && <img src={ex.img} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />}
     {ex.video && (
@@ -68,7 +69,7 @@ const Frame: React.FC<{ ex: Example; note?: string }> = ({ ex, note }) => (
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.09] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
       </>
     )}
-    {ex.scene && <SceneInView name={ex.scene} />}
+    {ex.scene && <SceneInView name={ex.scene} paused={paused} />}
     {ex.frame && <DevicesFrame src={ex.frame} title="3D" className="pointer-events-none absolute inset-0 h-full w-full" />}
     {note && (
       <p className={`${SMALL} absolute bottom-3 left-4 normal-case text-white/85 [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]`}>{note}</p>
@@ -118,7 +119,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
       busy = true;
       lenis.scrollTo(y, {
         // eased in and out: it gathers from rest and settles to rest, never a jolt at either end
-        duration: 1.15,
+        duration: 0.8,
         easing: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
         lock: true,
         force: true,
@@ -167,17 +168,17 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
         <div className="sticky top-28">
           {/* the film's own shape, so no shot loses its top or bottom */}
           <div className="relative aspect-video w-full">
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={active}
-                className="absolute inset-0"
-                initial={{ opacity: 0, scale: 1.02 }}
-                animate={{ opacity: 1, scale: 1, transition: { duration: 1.1, ease: EASE_HAUS } }}
-                exit={{ opacity: 0, transition: { duration: 0.7, ease: EASE_HAUS } }}
+            {/* All four built once and kept: changing discipline is a quick dissolve between ready
+                pictures, never a scene rebuilt from nothing. Only the one on view draws */}
+            {EX.map((ex, i) => (
+              <div
+                key={i}
+                aria-hidden={i !== active}
+                className={`absolute inset-0 transition-opacity duration-300 ease-out ${i === active ? "opacity-100" : "opacity-0"}`}
               >
-                <Frame ex={EX[active]} note={noteFor(active)} />
-              </motion.div>
-            </AnimatePresence>
+                <Frame ex={ex} note={noteFor(i)} paused={i !== active} />
+              </div>
+            ))}
           </div>
           {/* The disciplines as tabs under the frame: where we are, and a way straight to any of them */}
           <div className="mt-5 flex items-start gap-3">
