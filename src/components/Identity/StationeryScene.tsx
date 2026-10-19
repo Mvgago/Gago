@@ -274,6 +274,44 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       card.position.set(0.12, BH - 0.035, 0.08);
       card.rotation.set(0.06, -0.18, 0.04);
       g.add(card);
+      // three beach pebbles from the ría, worn smooth, resting on the tissue beside the card
+      const stone = (base: [number, number, number], speck: string) => {
+        const [sc, sx] = canvas(256, 256);
+        const img = sx.createImageData(256, 256), d = img.data;
+        for (let k = 0; k < d.length; k += 4) {
+          const n = (Math.random() - 0.5) * 16;
+          d[k] = base[0] + n; d[k + 1] = base[1] + n; d[k + 2] = base[2] + n; d[k + 3] = 255;
+        }
+        sx.putImageData(img, 0, 0);
+        sx.fillStyle = speck;
+        for (let k = 0; k < 260; k++) sx.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 2, 1 + Math.random() * 2);
+        return new THREE.MeshStandardMaterial({ map: tex(sc), roughness: 0.62 });
+      };
+      const pebble = (r: number, sx: number, sz: number, mat: THREE.Material, x: number, z: number, rot: number, seed: number) => {
+        const geo = new THREE.SphereGeometry(r, 40, 24);
+        const p = geo.attributes.position;
+        for (let k = 0; k < p.count; k++) {
+          const vx = p.getX(k), vy = p.getY(k), vz = p.getZ(k);
+          // flattened like a beach stone, its outline a little uneven
+          const wob = 1 + Math.sin(vx * 18 + seed) * 0.03 + Math.sin(vz * 15 + seed * 2) * 0.03;
+          p.setXYZ(k, vx * sx * wob, vy * (vy < 0 ? 0.32 : 0.42), vz * sz * wob);
+        }
+        geo.computeVertexNormals();
+        const m = new THREE.Mesh(geo, mat);
+        // pressed a little into the tissue, so it rests rather than hovers
+        m.position.set(x, BH - 0.08 + r * 0.32 * 0.7, z);
+        m.rotation.y = rot;
+        g.add(m);
+        // its shadow: dark and tight right under it, the way a stone sits on paper
+        const sh = contact(r * 2 * sx * 0.8, r * 2 * sz * 0.8);
+        (sh.material as THREE.MeshBasicMaterial).opacity = 0.9;
+        sh.position.set(x + 0.01, BH - 0.08 + 0.004, z + 0.01);
+        sh.rotation.z = rot;
+        g.add(sh);
+      };
+      pebble(0.15, 1.25, 0.95, stone([150, 150, 146], "rgba(255,255,255,0.35)"), -0.38, -0.12, 0.4, 1);
+      pebble(0.12, 1.1, 0.9, stone([205, 199, 186], "rgba(90,85,78,0.4)"), -0.22, 0.2, -0.6, 2.3);
+      pebble(0.1, 1.3, 1.0, stone([86, 92, 94], "rgba(230,230,225,0.3)"), -0.47, 0.22, 1.1, 4.1);
     }
     g.add(contact(BW, BD));
     g.position.set(-2.55, 0, -0.55);
