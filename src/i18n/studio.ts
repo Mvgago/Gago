@@ -48,7 +48,7 @@ export const STUDIO: Record<Lang, Studio> = {
       },
       {
         title: "Spaces and events",
-        text: "The brand carried into physical space, where it is seen, walked through and remembered.",
+        text: "The brand carried into physical space, where it is seen, touched and walked through.",
         list: ["Stands for fairs and congresses", "Shops, venues and window displays", "Signage and point-of-sale material"],
       },
       {
@@ -99,7 +99,7 @@ export const STUDIO: Record<Lang, Studio> = {
       },
       {
         title: "Espacios y eventos",
-        text: "La marca llevada al espacio físico, donde se ve, se recorre y se recuerda.",
+        text: "La marca llevada al espacio físico, donde se ve, se toca y se recorre.",
         list: ["Stands para ferias y congresos", "Imagen de tiendas, locales y escaparates", "Señalética y material de punto de venta"],
       },
       {
@@ -150,7 +150,7 @@ export const STUDIO: Record<Lang, Studio> = {
       },
       {
         title: "Espaces et événements",
-        text: "La marque portée dans l'espace physique, là où on la voit, la parcourt et s'en souvient.",
+        text: "La marque portée dans l'espace physique, là où on la voit, la touche et la parcourt.",
         list: ["Stands pour salons et congrès", "Image de boutiques, de lieux et de vitrines", "Signalétique et PLV"],
       },
       {
@@ -201,7 +201,7 @@ export const STUDIO: Record<Lang, Studio> = {
       },
       {
         title: "Räume und Events",
-        text: "Die Marke im physischen Raum, wo man sie sieht, durchschreitet und sich an sie erinnert.",
+        text: "Die Marke im physischen Raum, wo man sie sieht, berührt und durchschreitet.",
         list: ["Messe- und Kongressstände", "Läden, Lokale und Schaufenster", "Beschilderung und Point-of-Sale-Material"],
       },
       {

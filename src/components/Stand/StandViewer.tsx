@@ -1064,7 +1064,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   return { api, dispose };
 }
 
-const StandViewer: React.FC<{ poster?: string; label?: string; className?: string }> = ({ poster, label, className = "" }) => {
+// bare: the model alone, turning, with no hint, label or views (as on the studio page)
+const StandViewer: React.FC<{ poster?: string; label?: string; className?: string; bare?: boolean }> = ({ poster, label, className = "", bare = false }) => {
   const host = useRef<HTMLDivElement>(null);
   const api = useRef<Api | null>(null);
   const [ready, setReady] = useState(false);
@@ -1121,7 +1122,7 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
       <div
         aria-hidden
         className={`${SMALL} pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-3 rounded-full bg-[#1c2124]/55 px-5 py-2.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
-          ready && !touched ? "opacity-100" : "opacity-0"
+          ready && !touched && !bare ? "opacity-100" : "opacity-0"
         }`}
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" style={{ animation: "stand-sway 1.8s ease-in-out infinite" }}>
@@ -1129,15 +1130,15 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
         </svg>
         arrastra para girar
       </div>
-      {label && <p className={`${SMALL} pointer-events-none absolute left-4 top-3 normal-case text-[#2f3a3d]/70`}>{label}</p>}
-      <nav aria-label="Vistas" // One line always: tighter on phones, scrolling sideways if it still doesn't fit
+      {label && !bare && <p className={`${SMALL} pointer-events-none absolute left-4 top-3 normal-case text-[#2f3a3d]/70`}>{label}</p>}
+      {!bare && <nav aria-label="Vistas" // One line always: tighter on phones, scrolling sideways if it still doesn't fit
         className={`${SMALL} absolute inset-x-0 bottom-0 flex gap-x-3 overflow-x-auto [&>*:first-child]:ml-auto px-3 pb-2.5 pt-8 [scrollbar-width:none] sm:gap-x-5 sm:px-4 sm:pb-3 [&::-webkit-scrollbar]:hidden`} style={{ background: "linear-gradient(to top, rgba(28,33,36,0.55), transparent)" }}>
         {(Object.keys(VIEWS) as View[]).map((v) => (
           <button key={v} type="button" onClick={() => go(v)} aria-pressed={view === v} className={button(view === v)}>
             {LABELS[v]}
           </button>
         ))}
-      </nav>
+      </nav>}
     </div>
   );
 };
