@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -16,10 +16,6 @@ import { Home } from "./pages/Home/Home";
 import { ProjectsSection } from "./pages/Projects/ProjectsSection";
 import { AboutPage } from "./pages/About/AboutPage";
 import { ArtworkPage } from "./pages/Artwork/ArtworkPage";
-import { NeedytPage } from "./pages/Needyt/Needyt";
-import { AmvreportPage } from "./pages/Amvreport/Amvreport";
-import { AnnetPage } from "./pages/Annet/Annet";
-import { AmorsacroPage } from "./pages/Amorsacro/Amorsacro";
 import { CaseStudyPage } from "./pages/Projects/CaseStudy";
 import { PrivacyPage } from "./pages/Privacy/PrivacyPage";
 
@@ -31,7 +27,6 @@ const page = (element: React.ReactNode, withFooter = true, still = false) => (
 );
 
 // Case-study pages predate the fixed header; give them clearance beneath it.
-const caseStudy = (element: React.ReactNode) => page(<div className="pt-16 sm:pt-20">{element}</div>);
 
 export const App: React.FC = () => {
   const location = useLocation();
@@ -93,12 +88,12 @@ const Pages: React.FC<{ location: ReturnType<typeof useLocation> }> = ({ locatio
           <Route path="/sapphire" element={<Navigate to="/projects/sapphire" replace />} />
           <Route path="/smarthc" element={<Navigate to="/projects/smarthc" replace />} />
           <Route path="/buendia" element={<Navigate to="/projects/buendia" replace />} />
-          <Route path="/needyt" element={caseStudy(<NeedytPage />)} />
+          <Route path="/needyt" element={<Navigate to="/projects" replace />} />
           <Route path="/santa" element={<Navigate to="/projects" replace />} />
           <Route path="/alea" element={<Navigate to="/projects" replace />} />
-          <Route path="/amvreport" element={caseStudy(<AmvreportPage />)} />
-          <Route path="/annet" element={caseStudy(<AnnetPage />)} />
-          <Route path="/amorsacro" element={caseStudy(<AmorsacroPage />)} />
+          <Route path="/amvreport" element={<Navigate to="/projects" replace />} />
+          <Route path="/annet" element={<Navigate to="/projects" replace />} />
+          <Route path="/amorsacro" element={<Navigate to="/projects" replace />} />
           <Route path="/projects/:slug" element={page(<CaseStudyPage />)} />
         </Routes>
       </AnimatePresence>
