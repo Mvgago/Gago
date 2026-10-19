@@ -28,7 +28,7 @@ export type Studio = {
   /** Shortcut under the statement, down to the contact chapter */
   cta: string;
   contactLead: string;
-  form: { name: string; email: string; message: string; send: string; note: string };
+  form: { name: string; email: string; message: string; send: string; note: string; sending: string; sent: string; error: string };
 };
 
 export const STUDIO: Record<Lang, Studio> = {
@@ -80,7 +80,10 @@ export const STUDIO: Record<Lang, Studio> = {
       email: "email",
       message: "message",
       send: "send",
-      note: "The form opens your mail app.",
+      note: "We usually reply within two working days.",
+      sending: "sending…",
+      sent: "Thank you. Your message has arrived; we'll be in touch soon.",
+      error: "It couldn't be sent. Try again, or write to hola@fugahaus.com.",
     },
   },
 
@@ -132,7 +135,10 @@ export const STUDIO: Record<Lang, Studio> = {
       email: "email",
       message: "mensaje",
       send: "enviar",
-      note: "El formulario abre tu aplicación de correo.",
+      note: "Solemos responder en dos días laborables.",
+      sending: "enviando…",
+      sent: "Gracias. Tu mensaje ha llegado; te escribimos pronto.",
+      error: "No se pudo enviar. Inténtalo de nuevo o escribe a hola@fugahaus.com.",
     },
   },
 
@@ -184,7 +190,10 @@ export const STUDIO: Record<Lang, Studio> = {
       email: "email",
       message: "message",
       send: "envoyer",
-      note: "Le formulaire ouvre votre messagerie.",
+      note: "Nous répondons en général sous deux jours ouvrés.",
+      sending: "envoi…",
+      sent: "Merci. Votre message est bien arrivé ; nous vous écrivons bientôt.",
+      error: "L'envoi a échoué. Réessayez ou écrivez à hola@fugahaus.com.",
     },
   },
 
@@ -236,7 +245,10 @@ export const STUDIO: Record<Lang, Studio> = {
       email: "e-mail",
       message: "nachricht",
       send: "senden",
-      note: "Das Formular öffnet Ihr E-Mail-Programm.",
+      note: "Wir antworten in der Regel innerhalb von zwei Werktagen.",
+      sending: "wird gesendet…",
+      sent: "Danke. Ihre Nachricht ist angekommen; wir melden uns bald.",
+      error: "Senden fehlgeschlagen. Versuchen Sie es erneut oder schreiben Sie an hola@fugahaus.com.",
     },
   },
 };

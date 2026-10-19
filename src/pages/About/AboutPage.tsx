@@ -89,7 +89,7 @@ const Field: React.FC<{
       {multiline ? (
         <textarea name={name} rows={4} required value={value} onChange={(e) => onChange(e.target.value)} className={`${shared} resize-none`} />
       ) : (
-        <input name={name} type={type} required value={value} onChange={(e) => onChange(e.target.value)} className={shared} />
+        <input name={name} type={type} required autoComplete={name === "email" ? "email" : name === "name" ? "name" : undefined} value={value} onChange={(e) => onChange(e.target.value)} className={shared} />
       )}
     </label>
   );
@@ -112,12 +112,32 @@ export const AboutPage: React.FC = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const set = (key: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [key]: v }));
 
-  // No backend: the message is composed in the visitor's mail app.
-  const onSubmit = (e: React.FormEvent) => {
+  // Sent from the page itself, through Web3Forms (its public access key, tied to the studio's inbox,
+  // is set as VITE_WEB3FORMS_KEY): the visitor never leaves the page. Without a key, the mail app
+  // composes it instead
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`${t("contact.subject")} — ${form.name}`);
-    const body = encodeURIComponent(`${form.message}\n\n${form.name}\n${form.email}`);
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined;
+    const subject = `${t("contact.subject")} — ${form.name}`;
+    if (!key) {
+      window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`${form.message}\n\n${form.name}\n${form.email}`)}`;
+      return;
+    }
+    setStatus("sending");
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ access_key: key, subject, from_name: "fugahaus.com", name: form.name, email: form.email, message: form.message, botcheck: "" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error("send");
+      setStatus("sent");
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setStatus("error");
+    }
   };
 
   // "{name}" becomes the link to the project, "{ep}" the EP's title
@@ -182,9 +202,6 @@ export const AboutPage: React.FC = () => {
                 <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
                 <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
               </span>
-              <span aria-hidden className="transition-transform duration-700 ease-haus group-hover:translate-y-0.5">
-                ↓
-              </span>
             </a>
             {/* Phones: the address wraps under the link, so the separator would dangle */}
             <span aria-hidden className="hidden text-graphite sm:inline">
@@ -231,18 +248,18 @@ export const AboutPage: React.FC = () => {
       {/* The process, in the showcase's grid: the steps under the frame's column, the title in
           the column the disciplines are read in */}
       <Section>
-        <div className="col-span-12 lg:order-2 lg:col-span-4">
+        <div className="col-span-12 lg:order-2 lg:col-span-5 xl:col-span-4">
           <p className={`${SMALL} text-graphite`}>{s.processLabel}</p>
           <h2 className={`${TITLE} mt-4 text-ink`}>{s.processTitle}</h2>
         </div>
-        <div className="col-span-12 mt-12 lg:order-1 lg:col-span-8 lg:mt-0">
+        <div className="col-span-12 mt-12 lg:order-1 lg:col-span-7 lg:mt-0 xl:col-span-8">
           <ProcessSteps steps={s.process} />
         </div>
       </Section>
 
       {/* The studio's own voice, set the same way: the record large on the left, its words on the right */}
       <Section>
-        <div className="col-span-12 lg:order-2 lg:col-span-4">
+        <div className="col-span-12 lg:order-2 lg:col-span-5 xl:col-span-4">
           <p className={`${SMALL} text-graphite`}>{s.voiceLabel}</p>
           <h2 className={`${TITLE} mt-4 text-ink`}>Fuga Sei</h2>
           <p className={`${BODY} mt-6 max-w-[42ch] text-graphite`}>
@@ -261,13 +278,13 @@ export const AboutPage: React.FC = () => {
             <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
           </a>
         </div>
-        <div className="col-span-12 mt-12 lg:order-1 lg:col-span-8 lg:mt-0">
+        <div className="col-span-12 mt-12 lg:order-1 lg:col-span-7 lg:mt-0 xl:col-span-8">
           <a
             href={FUGA_SEI_EP}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Fuga Sei — Grimaldi Lines"
-            className="group block w-full max-w-[22rem] overflow-hidden"
+            className="group -mx-4 block overflow-hidden sm:-mx-6 md:mx-0 md:w-full md:max-w-[22rem]"
           >
             <img
               src={grimaldi}
@@ -324,7 +341,7 @@ export const AboutPage: React.FC = () => {
                 {EMAIL}
               </PlainLink>
               <PlainLink href={INSTAGRAM} external dark>
-                instagram ↗
+                instagram
               </PlainLink>
             </div>
           </div>
@@ -340,16 +357,17 @@ export const AboutPage: React.FC = () => {
               <Field label={s.form.message} name="message" multiline value={form.message} onChange={set("message")} dark />
             </div>
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 sm:col-span-2">
-              <span className={`${SMALL} text-platinum/50`}>{s.form.note}</span>
+              {/* the note, or how the sending went, in the same place */}
+              <span role="status" aria-live="polite" className={`${SMALL} transition-colors duration-500 ${status === "sent" ? "text-platinum" : status === "error" ? "text-[#e3a99a]" : "text-platinum/50"}`}>
+                {status === "sent" ? s.form.sent : status === "error" ? s.form.error : s.form.note}
+              </span>
               <button
                 type="submit"
+                disabled={status === "sending"}
                 // The way out of the page: solid light, the one filled form in this room
-                className={`${ACTION} group inline-flex items-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-ink transition-colors duration-500 hover:bg-white`}
+                className={`${ACTION} group inline-flex items-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-ink transition-colors duration-500 hover:bg-white disabled:cursor-wait disabled:opacity-70`}
               >
-                {s.form.send}
-                <span aria-hidden className="transition-transform duration-500 ease-haus group-hover:translate-x-1">
-                  →
-                </span>
+                {status === "sending" ? s.form.sending : s.form.send}
               </button>
             </div>
           </form>

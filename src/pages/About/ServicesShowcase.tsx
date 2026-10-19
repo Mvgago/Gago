@@ -162,7 +162,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
       <h2 className="sr-only">{s.disciplinesLabel}</h2>
 
       {/* The frame, held while the disciplines pass (large screens) */}
-      <div className="col-span-8 hidden lg:block">
+      {/* a little wider for the text on small laptops, where four columns left the titles cramped */}
+      <div className="col-span-7 hidden lg:block xl:col-span-8">
         <div className="sticky top-28">
           {/* the film's own shape, so no shot loses its top or bottom */}
           <div className="relative aspect-video w-full">
@@ -207,7 +208,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
 
       {/* The disciplines, about half a screen each on large screens: room for the frame to change */}
       {/* the room below the last keeps the frame held until the last discipline has been read */}
-      <div className="col-span-12 lg:col-span-4">
+      <div className="col-span-12 lg:col-span-5 xl:col-span-4">
         {s.disciplines.map((d, i) => {
           return (
             <div
@@ -218,7 +219,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               className="flex flex-col justify-center pb-20 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:pb-0"
             >
               {/* phones and tablets: the example sits above its discipline */}
-              <div className="mb-8 aspect-video w-full lg:hidden">
+              {/* edge to edge, as the case pages show their work on phones */}
+              <div className="-mx-4 mb-8 aspect-video sm:-mx-6 md:-mx-8 lg:hidden">
                 {EX[i] && <Frame ex={EX[i]} note={noteFor(i)} />}
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
@@ -285,7 +287,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
  * view, one after another, so the page moves as it is read.
  */
 export const ProcessSteps: React.FC<{ steps: { title: string; text: string }[] }> = ({ steps }) => (
-  <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+  <div className="grid gap-12 sm:grid-cols-2 sm:gap-x-8 2xl:grid-cols-4">
     {steps.map((p, i) => (
       <motion.div
         key={p.title}

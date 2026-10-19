@@ -116,9 +116,10 @@ export const ArtworkPage: React.FC = () => {
           type="button"
           onClick={() => step(-1)}
           disabled={progress.start}
-          className={`${ACTION} transition-[color,opacity] duration-500 hover:text-ink disabled:opacity-30`}
+          // the words, not tiny arrows, and a fingertip's room round them
+          className={`${ACTION} -my-3 py-3 transition-[color,opacity] duration-500 hover:text-ink disabled:opacity-30`}
         >
-          ← <span className="hidden sm:inline">{t("artwork.prev")}</span>
+          {t("artwork.prev")}
         </button>
         <span className="relative h-px max-w-md flex-1 bg-ink/15">
           <span
@@ -130,9 +131,10 @@ export const ArtworkPage: React.FC = () => {
           type="button"
           onClick={() => step(1)}
           disabled={progress.end}
-          className={`${ACTION} transition-[color,opacity] duration-500 hover:text-ink disabled:opacity-30`}
+          // the words, not tiny arrows, and a fingertip's room round them
+          className={`${ACTION} -my-3 py-3 transition-[color,opacity] duration-500 hover:text-ink disabled:opacity-30`}
         >
-          <span className="hidden sm:inline">{t("artwork.next")}</span> →
+          {t("artwork.next")}
         </button>
       </motion.div>
 
@@ -264,7 +266,6 @@ const Caption: React.FC<{
         {t("artwork.listen")}
         <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover/l:scale-x-100" />
       </span>
-      <span aria-hidden>↗</span>
     </a>
   );
   const number = <span className={`${SMALL} tabular-nums text-graphite`}>{pad(index + 1)}</span>;
@@ -414,14 +415,14 @@ const Viewer: React.FC<{
 
           {/* Label and steps */}
           <div className="flex items-center justify-between gap-4 px-4 pb-6 sm:px-6 md:px-8 md:pb-8">
-            <button type="button" onClick={() => go(-1)} className={`${ACTION} text-graphite transition-colors hover:text-ink`}>
-              ← <span className="hidden sm:inline">{t("artwork.prev")}</span>
+            <button type="button" onClick={() => go(-1)} className={`${ACTION} -my-3 py-3 text-graphite transition-colors hover:text-ink`}>
+              {t("artwork.prev")}
             </button>
             <div className="min-w-0">
               <Caption index={index} title={plate.title} detail={plate.detail} href={plate.href} centred inline />
             </div>
-            <button type="button" onClick={() => go(1)} className={`${ACTION} text-graphite transition-colors hover:text-ink`}>
-              <span className="hidden sm:inline">{t("artwork.next")}</span> →
+            <button type="button" onClick={() => go(1)} className={`${ACTION} -my-3 py-3 text-graphite transition-colors hover:text-ink`}>
+              {t("artwork.next")}
             </button>
           </div>
         </motion.div>

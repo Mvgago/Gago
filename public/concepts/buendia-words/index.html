@@ -52,6 +52,8 @@ body { background: var(--paper); color: var(--ink); overflow: hidden; font-famil
 .label, .hint { position: fixed; top: 18px; font: 400 12px var(--mono); letter-spacing: .03em; color: var(--soft); pointer-events: none; }
 .label { left: 24px; }
 .hint { right: 24px; }
+/* mid widths: the hint drops to the bottom right, clear of the label it ran into */
+@media (max-width: 900px) and (min-width: 641px) { .hint { top: auto; bottom: 30px; right: 24px; } }
 @media (max-width: 640px) { .hint { display: none; } .label { left: 16px; top: 14px; } .caption { left: 16px; bottom: 16px; } }
 @media (prefers-reduced-motion: reduce) { .row { animation: none; } }
 </style>

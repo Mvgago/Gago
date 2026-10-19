@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
@@ -1121,7 +1121,7 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
       <style>{`@keyframes stand-sway { 0%,100% { transform: translateX(-14px) rotate(-8deg); } 50% { transform: translateX(14px) rotate(8deg); } }`}</style>
       <div
         aria-hidden
-        className={`${SMALL} pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-3 rounded-full bg-[#1c2124]/55 px-5 py-2.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
+        className={`${SMALL} pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-3 whitespace-nowrap rounded-full bg-[#1c2124]/55 px-5 py-2.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
           ready && !touched && !bare ? "opacity-100" : "opacity-0"
         }`}
       >

@@ -1,4 +1,4 @@
-﻿import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import SocialPhone from "../../components/Social/SocialPhone";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { Link, Navigate, useParams } from "react-router-dom";
@@ -70,7 +70,7 @@ const ProjectsMenu: React.FC<{ current: string; list: Case[]; lang: Lang }> = ({
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-2 whitespace-nowrap opacity-80 transition-opacity duration-500 hover:opacity-100"
+        className="-my-2 inline-flex items-center gap-2 whitespace-nowrap py-2 opacity-80 transition-opacity duration-500 hover:opacity-100"
       >
         <span className="hidden sm:inline">{CASE_UI.all[lang]}</span>
         <span className="sm:hidden">{CASE_UI.count[lang]}</span>
@@ -245,7 +245,6 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
               <span className="absolute -bottom-1 left-0 h-px w-full bg-ink/30" />
               <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
             </span>
-            <span aria-hidden>↗</span>
           </a>
         </dd>
       </>
@@ -328,6 +327,7 @@ export const CaseStudyPage: React.FC = () => {
 
         {side ? (
           <motion.figure
+            // edge to edge, on phones too
             className="-mx-4 overflow-hidden sm:-mx-6 md:-mx-8 lg:col-span-7 lg:ml-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.25, ease: EASE_HAUS } }}
@@ -442,7 +442,6 @@ export const CaseStudyPage: React.FC = () => {
                       {CASE_UI.view3d[lang]}
                       <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
                     </span>
-                    <span aria-hidden>↗</span>
                   </span>
                 </span>
               </a>

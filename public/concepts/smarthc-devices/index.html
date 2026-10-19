@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -44,6 +44,8 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 .step u { display: block; margin-top: 8px; height: 3px; border-radius: 1px; background: rgba(31,35,38,0.08); overflow: hidden; }
 .step s { display: block; height: 100%; background: var(--brand); transform-origin: left; transform: scaleX(0); }
 @media (max-width: 1100px) { .steps { display: none; } }
+/* mid widths: the hint drops to the bottom right, clear of the label it ran into */
+@media (max-width: 900px) and (min-width: 641px) { .hint { top: auto; bottom: 30px; right: 24px; } }
 @media (max-width: 640px) {
   .hint { display: none; }
   .label { left: 16px; top: 14px; }
