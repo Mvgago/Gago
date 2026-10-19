@@ -104,6 +104,59 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
     if (el) scrollToTarget(lenis, el, { offset: -112 }); // level with the held frame, under the header
   };
 
+  // A wheel of disciplines on large screens: within the four, each turn of the wheel, however
+  // small, moves the page a whole step, to the next or the previous discipline, level with the
+  // frame; the rest of the wheel's spin is held until it has arrived. Past the first or the last
+  // the page scrolls freely again
+  useEffect(() => {
+    if (!lenis) return;
+    const mq = window.matchMedia("(min-width: 1024px)");
+    let busy = false;
+    let quietTimer = 0;
+    const targets = () => items.current.filter(Boolean).map((el) => el!.getBoundingClientRect().top + window.scrollY - 112);
+    const go = (y: number) => {
+      busy = true;
+      lenis.scrollTo(y, {
+        // eased in and out: it gathers from rest and settles to rest, never a jolt at either end
+        duration: 1.15,
+        easing: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+        lock: true,
+        force: true,
+        onComplete: () => window.setTimeout(() => (busy = false), 120),
+      });
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (!mq.matches || Math.abs(e.deltaY) < 1) return;
+      const t = targets();
+      if (!t.length) return;
+      const y = window.scrollY, down = e.deltaY > 0;
+      const first = t[0], last = t[t.length - 1];
+      // outside the run, or leaving it at either end: the page's own scroll
+      if (y < first - 40 && !(down && y > first - window.innerHeight * 0.6)) return;
+      if (y > last + 40) return;
+      const i = t.reduce((best, v, k) => (Math.abs(v - y) < Math.abs(t[best] - y) ? k : best), 0);
+      if (down && i === t.length - 1 && Math.abs(y - last) < 40) return;
+      if (!down && i === 0 && Math.abs(y - first) < 40) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      // a trackpad's spin keeps sending: one step per gesture, the next once it has gone quiet
+      window.clearTimeout(quietTimer);
+      const wasQuiet = !busy;
+      quietTimer = window.setTimeout(() => (busy = false), 260);
+      if (!wasQuiet) return;
+      let next: number;
+      if (y < first - 40) next = 0;
+      else if (down) next = Math.abs(t[i] - y) > 40 && t[i] > y ? i : Math.min(i + 1, t.length - 1);
+      else next = Math.abs(t[i] - y) > 40 && t[i] < y ? i : Math.max(i - 1, 0);
+      go(t[next]);
+    };
+    window.addEventListener("wheel", onWheel, { capture: true, passive: false });
+    return () => {
+      window.clearTimeout(quietTimer);
+      window.removeEventListener("wheel", onWheel, { capture: true });
+    };
+  }, [lenis]);
+
   return (
     <section className="grid scroll-mt-24 grid-cols-12 gap-x-8">
       <h2 className="sr-only">{s.disciplinesLabel}</h2>
@@ -154,22 +207,46 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
 
       {/* The disciplines, about half a screen each on large screens: room for the frame to change */}
       {/* the room below the last keeps the frame held until the last discipline has been read */}
-      <div className="col-span-12 lg:col-span-4 lg:pb-[30vh]">
+      <div className="col-span-12 lg:col-span-4">
         {s.disciplines.map((d, i) => {
           return (
             <div
               key={d.title}
               data-i={i}
               ref={(el) => (items.current[i] = el)}
-              className="flex flex-col justify-center pb-20 lg:min-h-[60vh] lg:pb-0 lg:first:justify-start"
+              // a whole screen each on large screens, its title at the top, level with the frame
+              className="flex flex-col justify-center pb-20 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:pb-0"
             >
               {/* phones and tablets: the example sits above its discipline */}
               <div className="mb-8 aspect-video w-full lg:hidden">
                 {EX[i] && <Frame ex={EX[i]} note={noteFor(i)} />}
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
-                <p className={`${SMALL} text-graphite`}>{String(i + 1).padStart(2, "0")} / {String(s.disciplines.length).padStart(2, "0")}</p>
-                <h3 className={`${TITLE} mt-4 text-ink`}>{d.title}</h3>
+                {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
+                    four already read, drawing itself on as the discipline arrives */}
+                <div className="flex items-center gap-3" aria-label={`${i + 1} / ${s.disciplines.length}`}>
+                  <span aria-hidden className="relative grid h-11 w-11 place-items-center">
+                    <svg viewBox="0 0 44 44" className="absolute inset-0 -rotate-90">
+                      <circle cx="22" cy="22" r="20.5" fill="none" stroke="currentColor" strokeWidth="1" className="text-ink/15" />
+                      <circle
+                        cx="22"
+                        cy="22"
+                        r="20.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.25"
+                        strokeLinecap="round"
+                        pathLength={1}
+                        strokeDasharray="1 1"
+                        className="text-ink transition-[stroke-dashoffset] duration-[1100ms] ease-haus"
+                        style={{ strokeDashoffset: i === active ? 1 - (i + 1) / s.disciplines.length : 1, transitionDelay: i === active ? "200ms" : "0ms" }}
+                      />
+                    </svg>
+                    {/* the figure alone: both faces dot their zero, and in a ring a 0 read as an 8 */}
+                    <span className="font-geo text-[15px] font-normal leading-none text-ink">{i + 1}</span>
+                  </span>
+                </div>
+                <h3 className={`${TITLE} mt-5 text-ink`}>{d.title}</h3>
                 <p className={`${BODY} mt-6 max-w-[42ch] text-graphite`}>{d.text}</p>
                 {d.list && (
                   <ul className="ml-6 mt-7 max-w-[40ch] border-b border-ink/20 lg:ml-10">

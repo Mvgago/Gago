@@ -1,4 +1,4 @@
-﻿import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
@@ -6,7 +6,7 @@ import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { LightWall } from "../../components/Light/LightWall";
-import { ACTION, HEADING, LEAD, SMALL } from "../../lib/type";
+import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import { FUGA_SEI_EP } from "../../outils/artwork";
 import Footer from "../../components/Footer/Footer";
@@ -32,24 +32,16 @@ const GRAIN =
  * A chapter of the page: a hairline across, the label in the left column,
  * the content in the right, like the index of a well-set book.
  */
-const Chapter: React.FC<{
-  label: string;
-  id?: string;
-  children: React.ReactNode;
-}> = ({ label, id, children }) => (
+/** A part of the page after the showcase, on its 12-column grid */
+const Section: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <motion.section
-    id={id}
-    // scroll-mt: clears the fixed header when reached through a link
-    className="grid scroll-mt-24 grid-cols-12 gap-x-8 border-t border-ink/10 py-16 md:py-20"
+    className="grid grid-cols-12 gap-x-8 border-t border-ink/10 py-20 md:py-28"
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-10% 0px" }}
     transition={{ duration: 1.2, ease: EASE_HAUS }}
   >
-    <h2 className={`${SMALL} col-span-12 mb-10 text-graphite md:col-span-3 md:mb-0`}>
-      {label}
-    </h2>
-    <div className="col-span-12 md:col-span-9">{children}</div>
+    {children}
   </motion.section>
 );
 
@@ -236,56 +228,56 @@ export const AboutPage: React.FC = () => {
       {/* What the studio does, shown: an example for each discipline, held while it is read */}
       <ServicesShowcase s={s} />
 
-      <Chapter label={s.processLabel}>
-        <ProcessSteps steps={s.process} />
-      </Chapter>
+      {/* The process, in the showcase's grid: the steps under the frame's column, the title in
+          the column the disciplines are read in */}
+      <Section>
+        <div className="col-span-12 lg:order-2 lg:col-span-4">
+          <p className={`${SMALL} text-graphite`}>{s.processLabel}</p>
+          <h2 className={`${TITLE} mt-4 text-ink`}>{s.processTitle}</h2>
+        </div>
+        <div className="col-span-12 mt-12 lg:order-1 lg:col-span-8 lg:mt-0">
+          <ProcessSteps steps={s.process} />
+        </div>
+      </Section>
 
-      <Chapter label={s.voiceLabel}>
-        <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-10">
+      {/* The studio's own voice, set the same way: the record large on the left, its words on the right */}
+      <Section>
+        <div className="col-span-12 lg:order-2 lg:col-span-4">
+          <p className={`${SMALL} text-graphite`}>{s.voiceLabel}</p>
+          <h2 className={`${TITLE} mt-4 text-ink`}>Fuga Sei</h2>
+          <p className={`${BODY} mt-6 max-w-[42ch] text-graphite`}>
+            {beforeName}Fuga Sei{beforeEp}
+            <em className="not-italic text-ink">Grimaldi Lines</em>
+            {afterEp}
+          </p>
+          <a
+            href={FUGA_SEI_EP}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${ACTION} group relative mt-8 inline-block text-ink`}
+          >
+            {t("artwork.listen")}
+            <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
+            <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+          </a>
+        </div>
+        <div className="col-span-12 mt-12 lg:order-1 lg:col-span-8 lg:mt-0">
           <a
             href={FUGA_SEI_EP}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Fuga Sei — Grimaldi Lines"
-            className="group block w-32 shrink-0 overflow-hidden"
+            className="group block w-full max-w-[22rem] overflow-hidden"
           >
             <img
               src={grimaldi}
               alt=""
               draggable={false}
-              className="block aspect-square w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.04]"
+              className="block aspect-square w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]"
             />
           </a>
-          <div className="max-w-xl">
-            <p className={`${HEADING} text-ink`}>
-              {beforeName}
-              <a
-                href={FUGA_SEI_EP}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-ink/25 underline-offset-[5px] transition-colors duration-500 hover:decoration-ink"
-              >
-                Fuga Sei
-              </a>
-              {beforeEp}
-              <em className="not-italic text-graphite">Grimaldi Lines</em>
-              {afterEp}
-            </p>
-            <a
-              href={FUGA_SEI_EP}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${ACTION} group mt-5 inline-flex items-center gap-1.5 text-graphite transition-colors duration-500 hover:text-ink`}
-            >
-              <span className="relative">
-                {t("artwork.listen")}
-                <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-              </span>
-              <span aria-hidden>↗</span>
-            </a>
-          </div>
         </div>
-      </Chapter>
+      </Section>
 
       {/* Contact: the page closes in a dark room lit like the landing — its mauve,
           olive and pale bloom turned low — and the footer lives inside it */}

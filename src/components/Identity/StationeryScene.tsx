@@ -136,7 +136,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
 
   /* ---------- materials ---------- */
   const foilMat = (mask: THREE.Texture) =>
-    new THREE.MeshStandardMaterial({ color: "#d7dbde", metalness: 1, roughness: 0.22, alphaMap: mask, transparent: true, alphaTest: 0.4 });
+    // a bright silver: it has to read on graphite card as well as on white paper
+    new THREE.MeshStandardMaterial({ color: "#eef1f3", emissive: "#7c858a", metalness: 0.9, roughness: 0.28, alphaMap: mask, transparent: true, alphaTest: 0.4 });
   const add = <T extends THREE.Object3D>(o: T) => {
     o.traverse((c) => {
       if ((c as THREE.Mesh).isMesh && !c.userData.flat) {
@@ -503,7 +504,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     sign(x, 110, 120, 42, 5);
     word(x, 70, 450, 170, 3.2);
   });
-  for (let k = 0; k < 7; k++) sheet(0.85, 0.55, 0.006, PAPER, front, 2.025 + (k % 2) * 0.006, 0.18 - k * 0.002, (k % 3) * 0.008 - 0.008, k * 0.006);
+  for (let k = 0; k < 7; k++) sheet(0.85, 0.55, 0.006, PAPER, front, 2.025 + (k % 2) * 0.006, 0.025 - k * 0.002, (k % 3) * 0.008 - 0.008, k * 0.006);
   const back = face(850, 550, GRAPHITE, () => {}, (x) => {
     sign(x, 425, 210, 80, 6.5);
     word(x, 300, 335, 250, 4);
@@ -525,7 +526,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     f2.rotation.x = Math.PI / 2;
     f2.position.y = -t / 2 - 0.002;
     flip.add(f1, f2);
-    flip.position.set(2.025, 0.05, 0.18);
+    flip.position.set(2.025, 0.05, 0.025);
     add(flip);
   }
   // the room key: graphite card, the sign and the number in silver; it slides in beside the cards
@@ -538,7 +539,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     x.fillText("04", 360, 290);
     x.font = `26px ${SANS}`;
     x.fillText("H A B I T A C I Ó N", 366, 128);
-  }), 2.025, 0.975, 0);
+  }), 2.025, 0.72, 0);
 
   // The phone, lying beside the cards, with the house's site on its screen: the brand's digital side
   let screenMap: THREE.Texture;
@@ -631,8 +632,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     screen.rotation.x = -Math.PI / 2;
     screen.position.y = 0.081;
     phone.add(body, glass, screen, contact(0.76, 1.56));
-    phone.position.set(3.42, 0, 0.685);
-    phone.rotation.y = -0.06;
+    phone.position.set(2.98, 0, 0.53);
     add(phone);
   }
 
@@ -802,9 +802,10 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<() => v
     flip.rotation.x = Math.PI * turn;
     flip.position.y = 0.05 + Math.sin(Math.PI * turn) * 0.32;
     const slide = span(t, 5.2, 6.6) - span(t, 11.4, 12.6);
-    key.position.z = 0.975 + (1 - slide) * 2.4;
+    key.position.z = 0.72 + (1 - slide) * 2.4;
     // the site on the phone scrolls down the page and back, as someone reads it
-    const read = span(t, 3.0, 8.5) - span(t, 10.5, 12.5);
+    // held on its first view most of the loop, a short read of the rooms, then back up
+    const read = span(t, 6.5, 8.3) - span(t, 9.4, 10.8);
     screenMap.offset.y = (1 - screenMap.repeat.y) * (1 - read);
     // the swatch book fans open, chip by chip, and closes again before the loop ends
     fanStrips.forEach((p, i) => {

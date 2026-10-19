@@ -13,6 +13,7 @@ export type Studio = {
   disciplinesLabel: string;
   disciplines: Item[];
   processLabel: string;
+  processTitle: string;
   process: Item[];
   /** Under each discipline: the cases where it can be seen */
   seenIn: string;
@@ -61,6 +62,7 @@ export const STUDIO: Record<Lang, Studio> = {
     videoNote: "In-house production.",
     scrollHint: "scroll to see each discipline",
     processLabel: "process",
+    processTitle: "How we work",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -112,6 +114,7 @@ export const STUDIO: Record<Lang, Studio> = {
     videoNote: "Producción propia.",
     scrollHint: "desliza para ver cada disciplina",
     processLabel: "proceso",
+    processTitle: "Cómo trabajamos",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -163,6 +166,7 @@ export const STUDIO: Record<Lang, Studio> = {
     videoNote: "Production maison.",
     scrollHint: "faites défiler pour voir chaque discipline",
     processLabel: "processus",
+    processTitle: "Notre méthode",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -214,6 +218,7 @@ export const STUDIO: Record<Lang, Studio> = {
     videoNote: "Eigenproduktion.",
     scrollHint: "scrollen, um jede Disziplin zu sehen",
     processLabel: "prozess",
+    processTitle: "Wie wir arbeiten",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
