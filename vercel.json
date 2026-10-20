@@ -1,3 +1,21 @@
 {
-    "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+    "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+    "headers": [
+        {
+            "source": "/projects",
+            "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+        },
+        {
+            "source": "/projects/(.*)",
+            "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+        },
+        {
+            "source": "/assets/(.*)\\.(webp|jpg|jpeg|png|mp4)",
+            "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
+        },
+        {
+            "source": "/video/(.*)",
+            "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
+        }
+    ]
 }

@@ -6,7 +6,7 @@ import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { LightWall } from "../../components/Light/LightWall";
-import { ACTION, LEAD, SMALL, TITLE } from "../../lib/type";
+import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
 import buendiaCatalogue from "../../assets/peojects/buendia/buendia-catalogue-web.jpg.webp";
 import buendiaSocial from "../../assets/peojects/buendia/buendia-social-web.jpg.webp";
@@ -238,7 +238,8 @@ export const AboutPage: React.FC = () => {
         <h1>
           <span className="text-ink">{t("section.studio")}</span> — {t("section.studio.caption")}
         </h1>
-        {/* On the right, one line: open to new projects, and it is the way down to the contact form */}
+        {/* On the right, one line: open to new projects, and it is the way down to the contact form
+            (wide screens only: on a phone it only crowded the page's top) */}
         <a
           href="#contact"
           onClick={(e) => {
@@ -246,7 +247,7 @@ export const AboutPage: React.FC = () => {
             const target = document.getElementById("contact");
             if (target) scrollToTarget(lenis, target, { offset: -96 });
           }}
-          className="group relative inline-flex items-center gap-2 self-start text-ink sm:self-auto"
+          className="group relative hidden items-center gap-2 self-auto text-ink sm:inline-flex"
         >
           <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
           {t("availability")}
@@ -309,7 +310,8 @@ export const AboutPage: React.FC = () => {
           </div>
           {/* edge to edge, the three touching, out to the screen's left edge */}
           {/* phones: a strip to slide through with the finger, each case nearly the screen's width */}
-          <ul className="-mx-4 flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] sm:-mx-6 sm:grid sm:grid-cols-3 sm:overflow-visible md:-ml-8 md:mr-0 [&::-webkit-scrollbar]:hidden">
+          {/* the cases' names stay out of search results (data-nosnippet), as their pages do */}
+          <ul data-nosnippet className="-mx-4 flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] sm:-mx-6 sm:grid sm:grid-cols-3 sm:overflow-visible md:-ml-8 md:mr-0 [&::-webkit-scrollbar]:hidden">
             {cases
               .filter((c) => !c.hidden)
               .slice(0, 3)
@@ -319,7 +321,7 @@ export const AboutPage: React.FC = () => {
                     <span className="relative block aspect-[4/3] overflow-hidden bg-ink/5">
                       <img
                         src={PICK[c.slug] ?? c.thumb ?? c.cover}
-                        alt={`${c.title} — ${c.client[lang as "es"] ?? c.client.es}`}
+                        alt=""
                         loading="lazy"
                         className="h-full w-full object-cover opacity-90 transition-[transform,opacity] duration-[1400ms] ease-haus group-hover:scale-[1.04] group-hover:opacity-100"
                         style={{ objectPosition: c.coverFocus }}
@@ -345,6 +347,8 @@ export const AboutPage: React.FC = () => {
         </div>
         <div className="col-span-12 mt-16 flex flex-col justify-end lg:col-span-5 lg:mt-0 xl:col-span-4">
           <p className={`${TITLE} text-ink`}>{s.closing}</p>
+          {/* who you would be talking to: no face, just how it works */}
+          <p className={`${BODY} mt-5 max-w-[36ch] text-graphite`}>{s.closingNote}</p>
           <a
             href="#contact"
             onClick={(e) => {
