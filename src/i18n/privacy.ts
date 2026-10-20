@@ -24,7 +24,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
       {
         title: "What data is processed",
         body: [
-          "If you write to the studio by email or through the form: your address, your name if you include it, and whatever your message contains.",
+          "If you write to the studio by email or through the form: your address, your name and phone number if you include them, and whatever your message contains.",
           "When you visit the site, the hosting provider keeps standard technical logs (such as IP address and browser type) to serve pages and keep them secure. The studio does not use these logs to identify you.",
           "Your language choice is remembered in your own browser (local storage). It never leaves your device.",
         ],
@@ -72,7 +72,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
       {
         title: "Qué datos se tratan",
         body: [
-          "Si escribes al estudio por email o desde el formulario: tu dirección, tu nombre si lo incluyes y lo que contenga tu mensaje.",
+          "Si escribes al estudio por email o desde el formulario: tu dirección, tu nombre y tu teléfono si los incluyes y lo que contenga tu mensaje.",
           "Al visitar la web, el proveedor de alojamiento guarda registros técnicos habituales (como la IP y el tipo de navegador) para servir las páginas y mantenerlas seguras. El estudio no usa esos registros para identificarte.",
           "El idioma que eliges se recuerda en tu propio navegador (almacenamiento local). Nunca sale de tu dispositivo.",
         ],
@@ -120,7 +120,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
       {
         title: "Données traitées",
         body: [
-          "Si vous écrivez au studio par e-mail : votre adresse, votre nom si vous l'indiquez, et le contenu de votre message.",
+          "Si vous écrivez au studio par e-mail ou depuis le formulaire : votre adresse, votre nom et votre téléphone si vous les indiquez, et le contenu de votre message.",
           "Lors de votre visite, l'hébergeur conserve des journaux techniques courants (adresse IP, type de navigateur) pour afficher les pages et assurer leur sécurité. Le studio ne les utilise pas pour vous identifier.",
           "La langue choisie est mémorisée dans votre propre navigateur (stockage local). Elle ne quitte jamais votre appareil.",
         ],
@@ -168,7 +168,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
       {
         title: "Welche Daten verarbeitet werden",
         body: [
-          "Wenn Sie dem Studio eine E-Mail schreiben: Ihre Adresse, Ihr Name, falls angegeben, und der Inhalt Ihrer Nachricht.",
+          "Wenn Sie dem Studio eine E-Mail oder über das Formular schreiben: Ihre Adresse, Ihr Name und Ihre Telefonnummer, falls angegeben, und der Inhalt Ihrer Nachricht.",
           "Beim Besuch der Website speichert der Hosting-Anbieter übliche technische Protokolle (etwa IP-Adresse und Browsertyp), um die Seiten auszuliefern und abzusichern. Das Studio nutzt diese Protokolle nicht, um Sie zu identifizieren.",
           "Ihre Sprachwahl wird in Ihrem eigenen Browser gespeichert (Local Storage). Sie verlässt Ihr Gerät nie.",
         ],

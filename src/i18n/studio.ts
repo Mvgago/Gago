@@ -38,7 +38,7 @@ export type Studio = {
   /** Shortcut under the statement, down to the contact chapter */
   cta: string;
   contactLead: string;
-  form: { name: string; email: string; message: string; send: string; note: string; sending: string; sent: string; error: string; sentTitle: string; another: string; more: string; good: string; hooked: string };
+  form: { name: string; email: string; phone: string; message: string; send: string; note: string; sending: string; sent: string; error: string; sentTitle: string; another: string; more: string; good: string; hooked: string; errName: string; errEmail: string; errMessage: string };
 };
 
 export const STUDIO: Record<Lang, Studio> = {
@@ -97,6 +97,7 @@ export const STUDIO: Record<Lang, Studio> = {
     contactLead: "Have a project in mind? Let's talk.",
     form: {
       name: "name",
+      phone: "phone (optional)",
       email: "email",
       message: "message",
       send: "send",
@@ -104,6 +105,9 @@ export const STUDIO: Record<Lang, Studio> = {
       more: "tell us more…",
       good: "this is looking good.",
       hooked: "all right, now we're curious.",
+      errName: "your name is missing",
+      errEmail: "check your email",
+      errMessage: "write us a few words",
       sending: "sending…",
       sent: "We've received it and will reply within two working days.",
       sentTitle: "Message sent",
@@ -167,6 +171,7 @@ export const STUDIO: Record<Lang, Studio> = {
     contactLead: "¿Tienes un proyecto en mente? Hablemos.",
     form: {
       name: "nombre",
+      phone: "teléfono (opcional)",
       email: "email",
       message: "mensaje",
       send: "enviar",
@@ -174,6 +179,9 @@ export const STUDIO: Record<Lang, Studio> = {
       more: "cuéntanos más…",
       good: "esto pinta bien.",
       hooked: "vale, ya nos tienes intrigados.",
+      errName: "falta tu nombre",
+      errEmail: "revisa tu email",
+      errMessage: "escríbenos unas palabras",
       sending: "enviando…",
       sent: "Lo hemos recibido y te respondemos en dos días laborables.",
       sentTitle: "Mensaje enviado",
@@ -237,6 +245,7 @@ export const STUDIO: Record<Lang, Studio> = {
     contactLead: "Un projet en tête ? Parlons-en.",
     form: {
       name: "nom",
+      phone: "téléphone (facultatif)",
       email: "email",
       message: "message",
       send: "envoyer",
@@ -244,6 +253,9 @@ export const STUDIO: Record<Lang, Studio> = {
       more: "dites-nous-en plus…",
       good: "ça s'annonce bien.",
       hooked: "bon, là vous nous intriguez.",
+      errName: "il manque votre nom",
+      errEmail: "vérifiez votre e-mail",
+      errMessage: "écrivez-nous quelques mots",
       sending: "envoi…",
       sent: "Nous l'avons bien reçu et vous répondons sous deux jours ouvrés.",
       sentTitle: "Message envoyé",
@@ -307,6 +319,7 @@ export const STUDIO: Record<Lang, Studio> = {
     contactLead: "Ein Projekt im Kopf? Sprechen wir darüber.",
     form: {
       name: "name",
+      phone: "telefon (optional)",
       email: "e-mail",
       message: "nachricht",
       send: "senden",
@@ -314,6 +327,9 @@ export const STUDIO: Record<Lang, Studio> = {
       more: "erzählen Sie mehr…",
       good: "das klingt gut.",
       hooked: "okay, jetzt sind wir neugierig.",
+      errName: "Ihr Name fehlt",
+      errEmail: "E-Mail prüfen",
+      errMessage: "schreiben Sie uns ein paar Worte",
       sending: "wird gesendet…",
       sent: "Wir haben sie erhalten und antworten innerhalb von zwei Werktagen.",
       sentTitle: "Nachricht gesendet",

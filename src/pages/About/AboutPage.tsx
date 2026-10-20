@@ -87,20 +87,49 @@ const Field: React.FC<{
   value: string;
   onChange: (v: string) => void;
   dark?: boolean;
-}> = ({ label, name, type = "text", multiline, value, onChange, dark }) => {
+  /** every field must be filled in, except one marked optional */
+  optional?: boolean;
+  /** what is missing, said in the site's own voice under the field (the browser's bubble is never shown) */
+  error?: string;
+}> = ({ label, name, type = "text", multiline, value, onChange, dark, optional = false, error }) => {
   const shared = `w-full border-0 border-b bg-transparent pb-3 pt-2 font-geo text-base font-normal tracking-[0.02em] outline-none transition-colors duration-500 ${
-    dark
-      ? "border-platinum/25 text-platinum caret-platinum focus:border-platinum"
-      : "border-ink/20 text-ink focus:border-ink"
+    error
+      ? "border-[#e3a99a] text-platinum caret-platinum"
+      : dark
+        ? "border-platinum/25 text-platinum caret-platinum focus:border-platinum"
+        : "border-ink/20 text-ink focus:border-ink"
   }`;
+  const common = {
+    name,
+    required: !optional,
+    value,
+    "aria-invalid": !!error || undefined,
+    "aria-describedby": error ? `${name}-error` : undefined,
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange(e.target.value),
+  };
   return (
-    <label className="block">
+    <label className="relative block">
       <span className={`${SMALL} ${dark ? "text-platinum/60" : "text-graphite"}`}>{label}</span>
       {multiline ? (
-        <textarea name={name} rows={4} required value={value} onChange={(e) => onChange(e.target.value)} className={`${shared} resize-none`} />
+        <textarea rows={4} {...common} className={`${shared} resize-none`} />
       ) : (
-        <input name={name} type={type} required autoComplete={name === "email" ? "email" : name === "name" ? "name" : undefined} value={value} onChange={(e) => onChange(e.target.value)} className={shared} />
+        <input type={type} autoComplete={name === "email" ? "email" : name === "name" ? "name" : name === "phone" ? "tel" : undefined} {...common} className={shared} />
       )}
+      {/* the note, small, in a soft red, rising in under the line and gone as soon as it is put right */}
+      <AnimatePresence>
+        {error && (
+          <motion.span
+            id={`${name}-error`}
+            className={`${SMALL} absolute left-0 top-full mt-2 text-[#e3a99a]`}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -2 }}
+            transition={{ duration: 0.35, ease: EASE_HAUS }}
+          >
+            {error}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </label>
   );
 };
@@ -119,8 +148,13 @@ export const AboutPage: React.FC = () => {
     }, 700);
     return () => window.clearTimeout(id);
   }, [hash, key, lenis]); // the key: a second click on the same link glides down again
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const set = (key: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [key]: v }));
+  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  // what is missing, field by field; each clears itself as soon as that field is written in
+  const [errors, setErrors] = useState<Partial<Record<keyof typeof form, string>>>({});
+  const set = (key: keyof typeof form) => (v: string) => {
+    setForm((f) => ({ ...f, [key]: v }));
+    setErrors((er) => (er[key] ? { ...er, [key]: undefined } : er));
+  };
 
   // Sent from the page itself, through Web3Forms (its public access key, tied to the studio's inbox,
   // is set as VITE_WEB3FORMS_KEY): the visitor never leaves the page. Without a key, the mail app
@@ -131,10 +165,23 @@ export const AboutPage: React.FC = () => {
   const hint = written >= 160 ? s.form.hooked : written >= 50 ? s.form.good : written > 0 ? s.form.more : s.form.note;
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // checked here, not by the browser: what is missing is said under each field, and the first
+    // one left is where the cursor goes
+    const missing: Partial<Record<keyof typeof form, string>> = {
+      name: form.name.trim() ? undefined : s.form.errName,
+      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim()) ? undefined : s.form.errEmail,
+      message: form.message.trim() ? undefined : s.form.errMessage,
+    };
+    const first = (["name", "email", "message"] as const).find((k) => missing[k]);
+    if (first) {
+      setErrors(missing);
+      document.querySelector<HTMLElement>(`#contact [name="${first}"]`)?.focus();
+      return;
+    }
     const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined;
     const subject = `${t("contact.subject")} — ${form.name}`;
     if (!key) {
-      window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`${form.message}\n\n${form.name}\n${form.email}`)}`;
+      window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`${form.message}\n\n${form.name}\n${form.email}${form.phone ? `\n${form.phone}` : ""}`)}`;
       return;
     }
     setStatus("sending");
@@ -142,12 +189,12 @@ export const AboutPage: React.FC = () => {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ access_key: key, subject, from_name: "fugahaus.com", name: form.name, email: form.email, message: form.message, botcheck: "" }),
+        body: JSON.stringify({ access_key: key, subject, from_name: "fugahaus.com", name: form.name, email: form.email, phone: form.phone || "—", message: form.message, botcheck: "" }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.success) throw new Error("send");
       setStatus("sent");
-      setForm({ name: "", email: "", message: "" });
+      setForm({ name: "", email: "", phone: "", message: "" });
     } catch {
       setStatus("error");
     }
@@ -430,14 +477,19 @@ export const AboutPage: React.FC = () => {
             animate={{ opacity: 1, rotateY: 0, transition: { duration: 0.6, ease: [0.2, 0.7, 0.2, 1] } }}
             exit={{ opacity: 0, rotateY: -90, transition: { duration: 0.35, ease: [0.6, 0, 0.8, 0.3] } }}
             onSubmit={onSubmit}
-            className="grid gap-9 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10"
+            noValidate
+            className="grid gap-9 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10 xl:grid-cols-3"
           >
-            <Field label={s.form.name} name="name" value={form.name} onChange={set("name")} dark />
-            <Field label={s.form.email} name="email" type="email" value={form.email} onChange={set("email")} dark />
-            <div className="sm:col-span-2">
-              <Field label={s.form.message} name="message" multiline value={form.message} onChange={set("message")} dark />
+            <Field label={s.form.name} name="name" value={form.name} onChange={set("name")} dark error={errors.name} />
+            <Field label={s.form.email} name="email" type="email" value={form.email} onChange={set("email")} dark error={errors.email} />
+            {/* optional, for those who would rather talk: on wide screens the three share one row */}
+            <div className="sm:col-span-2 xl:col-span-1">
+              <Field label={s.form.phone} name="phone" type="tel" value={form.phone} onChange={set("phone")} dark optional />
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 sm:col-span-2">
+            <div className="sm:col-span-2 xl:col-span-3">
+              <Field label={s.form.message} name="message" multiline value={form.message} onChange={set("message")} dark error={errors.message} />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 sm:col-span-2 xl:col-span-3">
               {/* the note, or how the sending went, in the same place */}
               <span role="status" aria-live="polite" className={`${SMALL} transition-colors duration-500 ${status === "error" ? "text-[#e3a99a]" : "text-platinum/50"}`}>
                 {status === "error" ? (
