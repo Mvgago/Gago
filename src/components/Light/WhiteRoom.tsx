@@ -107,9 +107,10 @@ const WhiteRoom: React.FC<{ className?: string }> = ({ className = "" }) => {
     ceiling.position.y = HEIGHT;
     scene.add(ceiling);
 
-    // Lines of light set into the wall: one at eye level, one at the skirting (a cove)
-    const bands = [lightBand(R - 0.02, 3.6, 0.035, ARC * 0.96), lightBand(R - 0.02, 0.05, 0.04, ARC * 0.98)];
-    const glows = [glowBand(R, 3.6, 0.9, ARC * 0.96, 0.32), glowBand(R, 0.25, 0.7, ARC * 0.98, 0.4)];
+    // Two lines of light set into the wall, both above the eye, so seen from the camera they curve
+    // the same way, one over the other (one below the eye bent the opposite way)
+    const bands = [lightBand(R - 0.02, 4.1, 0.035, ARC * 0.96), lightBand(R - 0.02, 2.55, 0.04, ARC * 0.98)];
+    const glows = [glowBand(R, 4.1, 0.9, ARC * 0.96, 0.32), glowBand(R, 2.55, 0.7, ARC * 0.98, 0.36)];
     [...bands, ...glows].forEach((m) => scene.add(m));
 
     // The floor: a true mirror, under a veil of white so it reads as polished resin

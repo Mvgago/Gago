@@ -1,16 +1,19 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { LightWall } from "../../components/Light/LightWall";
-import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
+import { ACTION, LEAD, SMALL, TITLE } from "../../lib/type";
+import { cases } from "../../outils/cases";
+import buendiaCatalogue from "../../assets/peojects/buendia/buendia-catalogue-web.jpg";
+
+// The picture each case shows here, where its own cover would not read at this size
+const PICK: Record<string, string> = { buendia: buendiaCatalogue };
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
-import { FUGA_SEI_EP } from "../../outils/artwork";
 import Footer from "../../components/Footer/Footer";
-import grimaldi from "../../assets/gallery/grimaldi-lines.jpg";
 import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
 
 // three.js loads only on this page, after the text
@@ -140,9 +143,6 @@ export const AboutPage: React.FC = () => {
     }
   };
 
-  // "{name}" becomes the link to the project, "{ep}" the EP's title
-  const [beforeName, afterName] = s.voice.split("{name}");
-  const [beforeEp, afterEp] = afterName.split("{ep}");
 
   return (
     // No bottom padding: the dark contact block closes the page, the footer follows it
@@ -173,43 +173,20 @@ export const AboutPage: React.FC = () => {
         <h1>
           <span className="text-ink">{t("section.studio")}</span> — {t("section.studio.caption")}
         </h1>
-        {/* On the right: open to new projects, and under it the way in: down to the contact chapter, or straight to the address */}
-        <div className="flex flex-col gap-5 sm:items-end">
-          <p className="flex items-center gap-2">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
-            {t("availability")}
-          </p>
-          <motion.div
-            variants={rise}
-            initial="hidden"
-            animate="shown"
-            custom={4}
-            // One line, one voice: the shortcut and the address in the same small type
-            className={`${ACTION} flex flex-wrap items-center gap-x-4 gap-y-3 text-ink`}
-          >
-            <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                const target = document.getElementById("contact");
-                if (target) scrollToTarget(lenis, target, { offset: -96 });
-              }}
-              // A link, not a button: the index control stays the page's one solid form
-              className="group inline-flex items-center gap-2.5"
-            >
-              <span className="relative">
-                {s.cta}
-                <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
-                <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-              </span>
-            </a>
-            {/* Phones: the address wraps under the link, so the separator would dangle */}
-            <span aria-hidden className="hidden text-graphite sm:inline">
-              ·
-            </span>
-            <PlainLink href={`mailto:${EMAIL}`}>{EMAIL}</PlainLink>
-          </motion.div>
-        </div>
+        {/* On the right, one line: open to new projects, and it is the way down to the contact form */}
+        <a
+          href="#contact"
+          onClick={(e) => {
+            e.preventDefault();
+            const target = document.getElementById("contact");
+            if (target) scrollToTarget(lenis, target, { offset: -96 });
+          }}
+          className="group relative inline-flex items-center gap-2 self-start text-ink sm:self-auto"
+        >
+          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
+          {t("availability")}
+          <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+        </a>
       </motion.header>
 
       {/* Statement and way in */}
@@ -257,41 +234,50 @@ export const AboutPage: React.FC = () => {
         </div>
       </Section>
 
-      {/* The studio's own voice, set the same way: the record large on the left, its words on the right */}
+      {/* The work, quietly: three small cases on the left; on the right, the invitation to talk */}
       <Section>
-        <div className="col-span-12 lg:order-2 lg:col-span-5 xl:col-span-4">
-          <p className={`${SMALL} text-graphite`}>{s.voiceLabel}</p>
-          <h2 className={`${TITLE} mt-4 text-ink`}>Fuga Sei</h2>
-          <p className={`${BODY} mt-6 max-w-[42ch] text-graphite`}>
-            {beforeName}Fuga Sei{beforeEp}
-            <em className="not-italic text-ink">Grimaldi Lines</em>
-            {afterEp}
-          </p>
+        <div className="col-span-12 lg:col-span-7 xl:col-span-8">
+          <div className="mb-6 flex justify-end">
+            <Link to="/projects" className={`${SMALL} text-graphite transition-colors duration-500 hover:text-ink`}>
+              {s.workAll}
+            </Link>
+          </div>
+          {/* edge to edge, the three touching, out to the screen's left edge */}
+          <ul className="-mx-4 grid grid-cols-3 sm:-mx-6 md:-ml-8 md:mr-0">
+            {cases
+              .filter((c) => !c.hidden)
+              .slice(0, 3)
+              .map((c) => (
+                <li key={c.slug}>
+                  <Link to={`/projects/${c.slug}`} aria-label={c.title} className="group block">
+                    <span className="block aspect-[4/3] overflow-hidden bg-ink/5">
+                      <img
+                        src={PICK[c.slug] ?? c.thumb ?? c.cover}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover opacity-90 transition-[transform,opacity] duration-[1400ms] ease-haus group-hover:scale-[1.04] group-hover:opacity-100"
+                        style={{ objectPosition: c.coverFocus }}
+                      />
+                    </span>
+                  </Link>
+                </li>
+              ))}
+          </ul>
+        </div>
+        <div className="col-span-12 mt-16 flex flex-col justify-end lg:col-span-5 lg:mt-0 xl:col-span-4">
+          <p className={`${TITLE} text-ink`}>{s.closing}</p>
           <a
-            href={FUGA_SEI_EP}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${ACTION} group relative mt-8 inline-block text-ink`}
+            href="#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              const target = document.getElementById("contact");
+              if (target) scrollToTarget(lenis, target, { offset: -96 });
+            }}
+            className={`${ACTION} group relative mt-8 self-start text-ink`}
           >
-            {t("artwork.listen")}
+            {s.cta}
             <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
             <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-          </a>
-        </div>
-        <div className="col-span-12 mt-12 lg:order-1 lg:col-span-7 lg:mt-0 xl:col-span-8">
-          <a
-            href={FUGA_SEI_EP}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Fuga Sei — Grimaldi Lines"
-            className="group -mx-4 block overflow-hidden sm:-mx-6 md:mx-0 md:w-full md:max-w-[22rem]"
-          >
-            <img
-              src={grimaldi}
-              alt=""
-              draggable={false}
-              className="block aspect-square w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]"
-            />
           </a>
         </div>
       </Section>
@@ -328,15 +314,8 @@ export const AboutPage: React.FC = () => {
             <p className={`${LEAD} mt-8 max-w-[18ch] text-platinum`}>
               {s.contactLead}
             </p>
-            {/* Availability, then the direct ways in */}
+            {/* The direct ways in */}
             <div className={`${ACTION} mt-12 flex flex-col items-start gap-4`}>
-              <span className="flex items-center gap-2.5 text-platinum/70">
-                <span aria-hidden className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inset-0 animate-ping rounded-full bg-current opacity-40 [animation-duration:2.8s]" />
-                  <span className="relative h-1.5 w-1.5 rounded-full bg-current" />
-                </span>
-                {t("availability")}
-              </span>
               <PlainLink href={`mailto:${EMAIL}`} dark>
                 {EMAIL}
               </PlainLink>

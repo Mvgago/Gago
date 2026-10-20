@@ -28,7 +28,7 @@ export const SECTIONS: Section[] = [
     num: "02",
     label: "artwork",
     path: "/artwork",
-    caption: "experiments, covers & rendered matter",
+    caption: "art and sound",
     atmosphere: artwork.find((a) => a.id === "a03")?.url ?? "",
     tint: "#c8663a", // terracotta
   },

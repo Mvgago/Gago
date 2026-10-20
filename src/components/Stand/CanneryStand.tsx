@@ -39,7 +39,7 @@ const VIEW = { pos: [4.0, 2.1, 9.4] as [number, number, number], look: [0.1, 1.3
 async function build(host: HTMLDivElement, onReady: () => void, paused: { current: boolean } = { current: false }): Promise<() => void> {
   document.fonts.load("300 100px Jura").catch(() => {});
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -815,7 +815,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   const key = new THREE.DirectionalLight("#fff4e8", 0.34);
   key.position.set(5, 11, 8);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(1024, 1024);
   Object.assign(key.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7 });
   key.shadow.bias = -0.0003;
   key.shadow.radius = 6;

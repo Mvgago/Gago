@@ -1,6 +1,6 @@
 import single3 from "../assets/gallery/single3.png";
 import single4 from "../assets/gallery/single4.png";
-import lerele from "../assets/gallery/lerele1.jpg";
+import amorsacro from "../assets/img/amorsacro.jpg";
 import otono from "../assets/gallery/Otoño.jpg";
 import portada from "../assets/gallery/portada.png";
 import untitled from "../assets/gallery/untitlezdfdsd.png";
@@ -18,18 +18,20 @@ type Plate = {
   title?: string;
   detail?: string;
   href?: string;
+  /** A grade applied where it is shown, for a plate that reads flat on the dark */
+  grade?: string;
 };
 
 // Fuga Sei leads: it is the studio's own work and stays first, whatever else hangs here.
 // The two rose pieces close the series, as a pair.
 export const artwork: Plate[] = [
   { id: "a10", url: grimaldi, title: "Grimaldi Lines", detail: "fuga sei · ep · 2026", href: FUGA_SEI_EP },
-  { id: "a02", url: lerele },
+  { id: "a11", url: amorsacro, title: "Amorsacro" },
   { id: "a03", url: otono },
-  { id: "a04", url: portada },
-  { id: "a05", url: untitled },
   { id: "a08", url: summer },
+  { id: "a05", url: untitled },
+  { id: "a01", url: single3 },
   { id: "a09", url: acne },
   { id: "a06", url: single4 },
-  { id: "a01", url: single3 },
+  { id: "a04", url: portada, grade: "contrast(1.22) brightness(0.8) saturate(0.82)" },
 ];

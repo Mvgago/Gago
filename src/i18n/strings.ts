@@ -36,7 +36,7 @@ const en = {
   "section.contact.caption": "start a project",
   "section.studio": "studio",
   "section.projects.caption": "selected works — identity, web, video",
-  "section.artwork.caption": "experiments, covers & rendered matter",
+  "section.artwork.caption": "art and sound",
   "section.studio.caption": "services, process & contact",
 
   "availability": "open to new projects",
@@ -82,7 +82,7 @@ const es: Record<Key, string> = {
   "section.contact.caption": "empezar un proyecto",
   "section.studio": "estudio",
   "section.projects.caption": "trabajos seleccionados — identidad, web, vídeo",
-  "section.artwork.caption": "experimentos, portadas y materia renderizada",
+  "section.artwork.caption": "arte y sonido",
   "section.studio.caption": "servicios, proceso y contacto",
 
   "availability": "abierto a nuevos proyectos",
@@ -126,7 +126,7 @@ const fr: Record<Key, string> = {
   "section.contact.caption": "démarrer un projet",
   "section.studio": "studio",
   "section.projects.caption": "travaux choisis — identité, web, vidéo",
-  "section.artwork.caption": "expériences, pochettes & matière rendue",
+  "section.artwork.caption": "art et son",
   "section.studio.caption": "services, processus & contact",
 
   "availability": "ouvert aux nouveaux projets",
@@ -170,7 +170,7 @@ const de: Record<Key, string> = {
   "section.contact.caption": "ein projekt beginnen",
   "section.studio": "studio",
   "section.projects.caption": "ausgewählte arbeiten — identität, web, video",
-  "section.artwork.caption": "experimente, cover & gerenderte materie",
+  "section.artwork.caption": "kunst und klang",
   "section.studio.caption": "leistungen, prozess & kontakt",
 
   "availability": "offen für neue projekte",

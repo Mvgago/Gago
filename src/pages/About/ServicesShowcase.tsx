@@ -24,10 +24,20 @@ const SCENES = {
   stationery: lazy(() => import("../../components/Identity/StationeryScene")),
 };
 
+// The scenes' code is fetched as soon as the page is idle, so by the time a discipline is reached
+// only the building is left, not the download
+if (typeof window !== "undefined") {
+  const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
+  window.setTimeout(() => idle(() => {
+    void import("../../components/Stand/CanneryStand");
+    void import("../../components/Identity/StationeryScene");
+  }), 3000);
+}
+
 type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; seen: string[] };
 
 // A 3D scene is built only once its frame nears the screen (never while hidden at this width)
-const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean }> = ({ name, paused = false }) => {
+const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allowed?: boolean }> = ({ name, paused = false, allowed = true }) => {
   const Scene = SCENES[name] as React.ComponentType<{ className?: string; paused?: boolean }>;
   const box = useRef<HTMLDivElement>(null);
   const [load, setLoad] = useState(false);
@@ -41,7 +51,7 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean }> = (
   }, []);
   return (
     <div ref={box} className="pointer-events-none absolute inset-0">
-      {load && (
+      {load && allowed && (
         <Suspense fallback={null}>
           <Scene className="h-full w-full" paused={paused} />
         </Suspense>
@@ -49,6 +59,7 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean }> = (
     </div>
   );
 };
+
 
 // In the order of the disciplines: audiovisual, spaces and events, web and 3D, strategy and identity.
 // The 3D scenes run on their own; the pointer is left to the page so scrolling over them never sticks
@@ -59,18 +70,19 @@ const EXAMPLES: Example[] = [
   { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
-const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean }> = ({ ex, note, paused }) => (
+const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: boolean }> = ({ ex, note, paused, allowed = true }) => (
   <div className="relative h-full w-full overflow-hidden bg-[#dfe1e2]">
     {ex.img && <img src={ex.img} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />}
     {ex.video && (
       <>
-        <video src={ex.video} muted loop playsInline autoPlay preload="auto" className="absolute inset-0 h-full w-full object-cover" />
+        <video src={ex.video} poster="/video/audiovisual-poster.jpg" muted loop playsInline autoPlay preload="auto" className="absolute inset-0 h-full w-full object-cover" />
         {/* a fine film grain over the footage, as on the projects page: one texture for every shot */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.09] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
+        {/* plain, not blended: a blend over a playing film costs the browser a full repaint every frame */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.035]" style={{ backgroundImage: GRAIN }} />
       </>
     )}
-    {ex.scene && <SceneInView name={ex.scene} paused={paused} />}
-    {ex.frame && <DevicesFrame src={ex.frame} title="3D" className="pointer-events-none absolute inset-0 h-full w-full" />}
+    {ex.scene && <SceneInView name={ex.scene} paused={paused} allowed={allowed} />}
+    {ex.frame && <DevicesFrame src={ex.frame} title="3D" paused={paused} allowed={allowed} className="pointer-events-none absolute inset-0 h-full w-full" />}
     {note && (
       <p className={`${SMALL} absolute bottom-3 left-4 normal-case text-white/85 [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]`}>{note}</p>
     )}
@@ -95,6 +107,45 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
     );
     items.current.forEach((el) => el && io.observe(el));
     return () => io.disconnect();
+  }, []);
+
+  // The tabs' hint plays once, the first time they come into view
+  const tabs = useRef<HTMLDivElement>(null);
+  const [hint, setHint] = useState(false);
+  useEffect(() => {
+    const el = tabs.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let timer = 0;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      timer = window.setTimeout(() => {
+        setHint(true);
+        timer = window.setTimeout(() => setHint(false), 4800);
+      }, 900);
+    }, { threshold: 1 });
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  // Loading in turn: on arrival only the film plays, with nothing else building beside it. The 3D
+  // examples are built one ahead of the reader, once they have begun to scroll through the disciplines
+  const [reached, setReached] = useState(0);
+  const [moved, setMoved] = useState(false);
+  useEffect(() => setReached((r) => Math.max(r, active)), [active]);
+  useEffect(() => {
+    const go = () => setMoved(true);
+    window.addEventListener("wheel", go, { once: true, passive: true });
+    window.addEventListener("touchmove", go, { once: true, passive: true });
+    window.addEventListener("keydown", go, { once: true });
+    return () => {
+      window.removeEventListener("wheel", go);
+      window.removeEventListener("touchmove", go);
+      window.removeEventListener("keydown", go);
+    };
   }, []);
 
   const noteFor = (i: number) => (EX[i].video ? s.videoNote : undefined);
@@ -167,7 +218,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
       <div className="col-span-7 hidden lg:block xl:col-span-8">
         <div className="sticky top-28">
           {/* the film's own shape, so no shot loses its top or bottom */}
-          <div className="relative aspect-video w-full">
+          {/* out to the screen's left edge, as the work bleeds on the case pages */}
+          <div className="relative -ml-8 aspect-video w-[calc(100%+2rem)]">
             {/* All four built once and kept: changing discipline is a quick dissolve between ready
                 pictures, never a scene rebuilt from nothing. Only the one on view draws */}
             {EX.map((ex, i) => (
@@ -176,12 +228,13 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                 aria-hidden={i !== active}
                 className={`absolute inset-0 transition-opacity duration-300 ease-out ${i === active ? "opacity-100" : "opacity-0"}`}
               >
-                <Frame ex={ex} note={noteFor(i)} paused={i !== active} />
+                <Frame ex={ex} note={noteFor(i)} paused={i !== active} allowed={i <= reached + 1 && (i === 0 || moved)} />
               </div>
             ))}
           </div>
           {/* The disciplines as tabs under the frame: where we are, and a way straight to any of them */}
-          <div className="mt-5 flex items-start gap-3">
+          <style>{`@keyframes fh-tabhint{0%{transform:scaleX(0);opacity:1}45%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}@keyframes fh-tablift{0%,100%{color:inherit}45%{color:var(--color-ink)}}`}</style>
+          <div ref={tabs} className="mt-5 flex items-start gap-3">
             <div className="grid flex-1 grid-cols-4 gap-3">
               {s.disciplines.map((d, i) => (
                 <button
@@ -191,13 +244,25 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   className={`group -mx-2 cursor-pointer rounded-sm px-2 pb-2 text-left outline-none transition-colors duration-500 hover:bg-ink/[0.045] focus-visible:bg-ink/[0.06] ${i === active ? "text-ink" : "text-ink/45 hover:text-ink"}`}
                 >
                   <span className="relative block h-px w-full bg-ink/15">
+                    {/* the first time the tabs come into view, a light runs along each of the others
+                        in turn, twice, and the label lifts with it: a hint that they can be pressed */}
+                    {hint && i !== active && (
+                      <span
+                        aria-hidden
+                        className="absolute inset-y-0 left-0 w-full origin-left bg-ink/45"
+                        style={{ animation: `fh-tabhint 1.6s cubic-bezier(.65,0,.35,1) ${0.35 * i}s 2 both` }}
+                      />
+                    )}
                     <span
                       className={`absolute inset-y-0 left-0 bg-ink transition-[width] duration-700 ease-haus ${
                         i <= active ? "w-full" : "w-0 group-hover:w-full group-hover:bg-ink/50"
                       }`}
                     />
                   </span>
-                  <span className={`${SMALL} mt-3 block`}>
+                  <span
+                    className={`${SMALL} mt-3 block`}
+                    style={hint && i !== active ? { animation: `fh-tablift 1.6s cubic-bezier(.65,0,.35,1) ${0.35 * i}s 2 both` } : undefined}
+                  >
                     {String(i + 1).padStart(2, "0")} {d.title.toLowerCase()}
                   </span>
                 </button>
@@ -207,8 +272,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
         </div>
       </div>
 
-      {/* The disciplines, about half a screen each on large screens: room for the frame to change */}
-      {/* the room below the last keeps the frame held until the last discipline has been read */}
+      {/* The disciplines, a screen each on large screens, a hairline between one and the next */}
       <div className="col-span-12 lg:col-span-5 xl:col-span-4">
         {s.disciplines.map((d, i) => {
           return (
@@ -216,18 +280,18 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               key={d.title}
               data-i={i}
               ref={(el) => (items.current[i] = el)}
-              // a whole screen each on large screens, its title at the top, level with the frame
-              className="flex flex-col justify-center pb-20 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:pb-0"
+              // a whole screen each on large screens, its title at the top, level with the frame; a line
+              // above each after the first, so it is clear where one ends and the next begins
+              className={`flex flex-col justify-center pb-20 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:pb-0 lg:pt-8 ${i > 0 ? "border-t border-ink/20 pt-12" : ""}`}
             >
-              {/* phones and tablets: the example sits above its discipline */}
-              {/* edge to edge, as the case pages show their work on phones */}
+              {/* phones and tablets: the example sits above its discipline, edge to edge */}
               <div className="-mx-4 mb-8 aspect-video sm:-mx-6 md:-mx-8 lg:hidden">
                 {EX[i] && <Frame ex={EX[i]} note={noteFor(i)} />}
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
                     four already read, drawing itself on as the discipline arrives */}
-                <div className="flex items-center gap-3" aria-label={`${i + 1} / ${s.disciplines.length}`}>
+                <div className="flex items-center gap-3 lg:mt-0" aria-label={`${i + 1} / ${s.disciplines.length}`}>
                   <span aria-hidden className="relative grid h-11 w-11 place-items-center">
                     <svg viewBox="0 0 44 44" className="absolute inset-0 -rotate-90">
                       <circle cx="22" cy="22" r="20.5" fill="none" stroke="currentColor" strokeWidth="1" className="text-ink/15" />
@@ -250,11 +314,11 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   </span>
                 </div>
                 <h3 className={`${TITLE} mt-5 text-ink`}>{d.title}</h3>
-                <p className={`${BODY} mt-6 max-w-[42ch] text-graphite`}>{d.text}</p>
+                <p className={`${BODY} mt-6 max-w-[42ch] text-ink/80`}>{d.text}</p>
                 {d.list && (
                   <ul className="ml-6 mt-7 max-w-[40ch] border-b border-ink/20 lg:ml-10">
                     {d.list.map((item) => (
-                      <li key={item} className={`${BODY} border-t border-ink/20 py-3 text-ink`}>
+                      <li key={item} className={`${BODY} border-t border-ink/20 py-3 text-ink/80`}>
                         {item}
                       </li>
                     ))}
@@ -271,15 +335,14 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     <span aria-hidden className="relative h-12 w-px overflow-hidden bg-ink/10">
                       <span className="absolute inset-0 bg-ink/60" style={{ animation: "fh-draw 2.4s cubic-bezier(.65,0,.35,1) infinite" }} />
                     </span>
-                    <span className={`${SMALL} text-graphite`}>{s.scrollHint}</span>
+                    <span className={`${SMALL} text-ink/80`}>{s.scrollHint}</span>
                   </div>
                 )}
               </div>
             </div>
           );
         })}
-      </div>
-    </section>
+      </div>    </section>
   );
 };
 

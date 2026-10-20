@@ -14,6 +14,13 @@ export type Studio = {
   disciplines: Item[];
   processLabel: string;
   processTitle: string;
+  workLabel: string;
+  labArtLabel: string;
+  labArtText: string;
+  labSoundLabel: string;
+  workTitle: string;
+  workAll: string;
+  closing: string;
   process: Item[];
   /** Under each discipline: the cases where it can be seen */
   seenIn: string;
@@ -63,6 +70,13 @@ export const STUDIO: Record<Lang, Studio> = {
     scrollHint: "scroll to see each discipline",
     processLabel: "process",
     processTitle: "How we work",
+    labSoundLabel: "sound",
+    labArtLabel: "illustration",
+    labArtText: "Illustrations and covers, between painting and the digital.",
+    workLabel: "projects",
+    workTitle: "Recent work",
+    workAll: "see all projects",
+    closing: "It all starts with a conversation.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -118,6 +132,13 @@ export const STUDIO: Record<Lang, Studio> = {
     scrollHint: "desliza para ver cada disciplina",
     processLabel: "proceso",
     processTitle: "Cómo trabajamos",
+    labSoundLabel: "sonido",
+    labArtLabel: "ilustración",
+    labArtText: "Ilustraciones y portadas, entre lo pictórico y lo digital.",
+    workLabel: "proyectos",
+    workTitle: "Trabajo reciente",
+    workAll: "ver todos los proyectos",
+    closing: "Todo empieza con una conversación.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -173,6 +194,13 @@ export const STUDIO: Record<Lang, Studio> = {
     scrollHint: "faites défiler pour voir chaque discipline",
     processLabel: "processus",
     processTitle: "Notre méthode",
+    labSoundLabel: "son",
+    labArtLabel: "illustration",
+    labArtText: "Illustrations et pochettes, entre la peinture et le numérique.",
+    workLabel: "projets",
+    workTitle: "Travaux récents",
+    workAll: "voir tous les projets",
+    closing: "Tout commence par une conversation.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -228,6 +256,13 @@ export const STUDIO: Record<Lang, Studio> = {
     scrollHint: "scrollen, um jede Disziplin zu sehen",
     processLabel: "prozess",
     processTitle: "Wie wir arbeiten",
+    labSoundLabel: "klang",
+    labArtLabel: "illustration",
+    labArtText: "Illustrationen und Cover, zwischen Malerei und Digitalem.",
+    workLabel: "projekte",
+    workTitle: "Aktuelle Arbeiten",
+    workAll: "alle projekte ansehen",
+    closing: "Alles beginnt mit einem Gespräch.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },

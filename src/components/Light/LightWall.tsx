@@ -4,7 +4,7 @@ import React from "react";
 export const WALL = "#efeef0";
 /** The pages on this light wall, rather than the studio colours of the landing. */
 export const isLightRoom = (pathname: string) =>
-  pathname === "/about" || pathname === "/artwork" || pathname === "/projects" || pathname.startsWith("/projects/");
+  pathname === "/about" || pathname === "/projects" || pathname.startsWith("/projects/");
 
 /** The one dark room's wall (projects, and the contact block on info): warm graphite. */
 export const DARK_WALL = "#2f2b2a";

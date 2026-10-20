@@ -78,7 +78,7 @@ const Pages: React.FC<{ location: ReturnType<typeof useLocation> }> = ({ locatio
           <Route path="/" element={page(<Home />, false)} />
           {/* Info closes in its own dark room, with the footer inside it */}
           <Route path="/about" element={page(<AboutPage />, false)} />
-          <Route path="/artwork" element={page(<ArtworkPage />)} />
+          <Route path="/artwork" element={page(<ArtworkPage />, false)} />
           {/* Trial: the new technical index. The previous one is ProjectsPage in pages/Projects/Projects.tsx */}
           {/* Exactly one screen: no footer under it (it made the page scroll, and the scrollbar
               narrowed the film), and a fade only, so the frame never moves on arrival */}

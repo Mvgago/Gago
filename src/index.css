@@ -37,6 +37,27 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Images and films are looked at, not taken: no dragging them out, no long-press menu on phones,
+     no selecting them */
+  img,
+  video,
+  canvas,
+  picture,
+  svg image {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  @media print {
+    img,
+    video,
+    canvas {
+      visibility: hidden !important;
+    }
+  }
+
   ::selection {
     background: var(--color-ink);
     color: var(--color-platinum);

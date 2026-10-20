@@ -5,18 +5,28 @@ import React, { useEffect, useRef, useState } from "react";
  * It loads only as it nears the screen, and is told to pause whenever it scrolls out of view,
  * so a heavy scene never runs in the background.
  */
-const DevicesFrame: React.FC<{ src: string; title: string; className?: string }> = ({ src, title, className = "" }) => {
+const DevicesFrame: React.FC<{ src: string; title: string; className?: string; paused?: boolean; allowed?: boolean }> = ({ src, title, className = "", paused = false, allowed = true }) => {
   const box = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
-  const [load, setLoad] = useState(false);
+  const [near, setNear] = useState(false);
+  // built only once it is both near the screen and allowed (a page may hold it back while it loads other things)
+  const load = near && allowed;
+  const inView = useRef(false);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+  // held still while another example shares its frame, so it never competes with the one on view
+  useEffect(() => {
+    frame.current?.contentWindow?.postMessage({ fhVisible: inView.current && !paused }, window.location.origin);
+  }, [paused]);
 
   useEffect(() => {
     const el = box.current;
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setLoad(true);
-        frame.current?.contentWindow?.postMessage({ fhVisible: entry.isIntersecting }, window.location.origin);
+        if (entry.isIntersecting) setNear(true);
+        inView.current = entry.isIntersecting;
+        frame.current?.contentWindow?.postMessage({ fhVisible: entry.isIntersecting && !pausedRef.current }, window.location.origin);
       },
       { rootMargin: "200px" },
     );

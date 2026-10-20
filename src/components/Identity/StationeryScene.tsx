@@ -46,7 +46,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   const photos = { beach, facade };
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   // drawn at least at 1.5× even on ordinary screens: the small print and the foil stay crisp
-  renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 1.5), 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.52;
@@ -1128,7 +1128,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   sun.position.set(-13, 15, -5);
   sun.target.position.set(0.3, 0, 0.2);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(1536, 1536);
   sun.shadow.radius = 9;
   sun.shadow.bias = -0.0002;
   sun.shadow.normalBias = 0.01;
