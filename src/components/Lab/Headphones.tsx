@@ -152,16 +152,21 @@ const SPAN = CX / Math.cos(OVER); // the arch's half width at its widest
 const LEAN = (H: number) => Math.atan((SPAN * Math.sin(OVER)) / (H * Math.cos(OVER)));
 
 // A strip swept along the band's arc, its section a rounded rectangle
-function strip(a: number, b: number, inset: number, base: number, h: number) {
+function strip(a: number, b: number, inset: number, base: number, h: number, fade = false) {
   const NA = 160, NC = 48, P = 5;
   const pos: number[] = [];
   for (let i = 0; i <= NA; i++) {
     const t = -OVER + ((Math.PI + 2 * OVER) * i) / NA;
     const px = SPAN * Math.cos(t), py = base + h * Math.sin(t);
     const nx = h * Math.cos(t), ny = SPAN * Math.sin(t), nl = Math.hypot(nx, ny);
+    // the padding thins to nothing towards each end and sinks into the band, short of the housing
+    const e = Math.min(i, NA - i) / NA;
+    const k = fade ? Math.min(1, Math.max(0, (e - 0.04) / 0.12)) : 1;
+    const f = k * k * (3 - 2 * k);
+    const aa = a * (0.05 + 0.95 * f), off = BAND - 0.01 + (inset - BAND + 0.01) * f;
     for (let j = 0; j < NC; j++) {
-      const s = sup(a, b, P, (2 * Math.PI * j) / NC);
-      const u = s.x - inset;
+      const s = sup(aa, b, P, (2 * Math.PI * j) / NC);
+      const u = s.x - (fade ? off : inset);
       pos.push(px + (nx / nl) * u, py + (ny / nl) * u, s.y);
     }
   }
@@ -198,7 +203,7 @@ function headphones() {
 
   // the band, silver, and its grey padding underneath; both run down into the housings
   g.add(new THREE.Mesh(strip(BAND, ARM, 0, BASE, H), SILVER));
-  g.add(new THREE.Mesh(strip(0.065, ARM - 0.015, BAND + 0.06, BASE, H), PAD));
+  g.add(new THREE.Mesh(strip(0.065, ARM - 0.015, BAND + 0.06, BASE, H, true), PAD));
 
   const shell = housing();
   const RA = 0.18, RV = 0.15; // the cushion's half breadth and half thickness
