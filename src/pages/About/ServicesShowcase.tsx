@@ -316,7 +316,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
               <div className="-mx-4 mb-8 aspect-video sm:-mx-6 md:-mx-8 lg:hidden">
-                {EX[i] && <Frame ex={EX[i]} note={noteFor(i)} />}
+                {/* no note over the film here: on a phone it only crowded the picture */}
+                {EX[i] && <Frame ex={EX[i]} />}
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the

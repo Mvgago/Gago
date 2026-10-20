@@ -143,9 +143,10 @@ export const ProjectsSection: React.FC = () => {
             animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_HAUS } }}
             exit={{ opacity: 0, y: -6, transition: { duration: 0.25 } }}
           >
-            {/* The title moves most */}
-            <Layer mx={mx} my={my} depth={130}>
-              <p className={`${CAPTION} lowercase text-platinum/70`}>
+            {/* The words hold still: only the picture behind them follows the pointer */}
+            <Layer mx={mx} my={my} depth={0}>
+              {/* phones: the name alone over the film; the sector and the work wait for wider screens */}
+              <p className={`${CAPTION} hidden lowercase text-platinum/70 sm:block`}>
                 {scopeOf(active.slug, lang)}
               </p>
               <Link
@@ -159,10 +160,11 @@ export const ProjectsSection: React.FC = () => {
         </AnimatePresence>
 
         {/* The index: point at a project to bring it on screen, click to open */}
-        <Layer mx={mx} my={my} depth={50} className="shrink-0">
-          <nav aria-label={t("section.projects")} className="pointer-events-auto border-t border-platinum/15 pt-4 md:border-0 md:pt-0">
-            <p className={`${SMALL} mb-3 text-platinum/50 md:text-right`}>{t("section.projects")}</p>
-            <ul className={`${CAPTION} flex flex-wrap gap-x-8 gap-y-2 md:flex-col md:items-end md:gap-y-2.5`}>
+        <Layer mx={mx} my={my} depth={0} className="shrink-0">
+          {/* phones: the list alone, no rule and no heading over it */}
+          <nav aria-label={t("section.projects")} className="pointer-events-auto">
+            <p className={`${SMALL} mb-3 hidden text-platinum/50 md:block md:text-right`}>{t("section.projects")}</p>
+            <ul className={`${CAPTION} flex flex-col gap-y-2.5 md:items-end`}>
               {WORKS.map((w, i) => (
                 <li key={w.slug}>
                   <Link

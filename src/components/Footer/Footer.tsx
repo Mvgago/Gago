@@ -23,7 +23,9 @@ const Footer: React.FC<{ dark?: boolean }> = ({ dark }) => {
   return (
     <footer className={dark ? "relative" : "relative z-10 mt-24 px-4 pb-10 sm:px-6 md:px-8"}>
       <div
-        className={`${SMALL} grid gap-5 border-t pt-6 sm:grid-cols-3 sm:items-center ${
+        // phones: two short lines on one left edge, the rooms above and the email with the small
+        // print below; wider screens: three parts across one line
+        className={`${SMALL} flex flex-col gap-3 border-t pt-6 sm:grid sm:grid-cols-3 sm:items-center sm:gap-5 ${
           dark ? "border-platinum/10 text-platinum/55" : "border-ink/10 text-graphite"
         }`}
       >
@@ -32,19 +34,21 @@ const Footer: React.FC<{ dark?: boolean }> = ({ dark }) => {
           <Link to="/artwork" className={link}>{t("section.artwork")}</Link>
           <Link to="/about" className={link}>{t("section.studio")}</Link>
         </nav>
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:contents">
         <span className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-center">
           {dark ? (
             "designing atmospheres."
           ) : (
             <>
-              {t("availability")}
-              <span aria-hidden>·</span>
+              <span className="hidden sm:inline">{t("availability")}</span>
+              <span aria-hidden className="hidden sm:inline">·</span>
               <ContactMenu />
             </>
           )}
         </span>
         <span className="sm:text-right">
-          fuga haus © {year} ·{" "}
+          <span aria-hidden className="sm:hidden">· </span>
+          <span className="hidden sm:inline">fuga haus © {year} · </span>
           <Link to="/privacy" className={link}>{t("privacy")}</Link>
           {/* the legal notice, once the owner's details are in */}
           {hasLegal() && (
@@ -53,6 +57,7 @@ const Footer: React.FC<{ dark?: boolean }> = ({ dark }) => {
               <Link to="/legal" className={link}>{LEGAL[lang as keyof typeof LEGAL] ?? LEGAL.es}</Link>
             </>
           )}
+        </span>
         </span>
       </div>
     </footer>

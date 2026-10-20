@@ -92,7 +92,7 @@ export const Home: React.FC = () => {
 
       {/* Availability and contact: one quiet line, bottom right */}
       <motion.p
-        className={`${SMALL} flex flex-col items-start gap-1 text-graphite [text-shadow:none] sm:flex-row sm:items-center sm:gap-3`}
+        className={`${SMALL} relative flex w-full flex-col items-start gap-1 text-graphite [text-shadow:none] sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2.4, delay: 1.8 }}
@@ -101,7 +101,10 @@ export const Home: React.FC = () => {
         <span aria-hidden className="hidden sm:inline">·</span>
         <ContactMenu />
         <span aria-hidden className="hidden sm:inline">·</span>
-        <SocialLinks className="hover:text-ink" />
+        {/* phones: Instagram in the bottom right corner, apart from the lines on the left */}
+        <span className="absolute bottom-0 right-0 sm:static">
+          <SocialLinks className="hover:text-ink" />
+        </span>
       </motion.p>
     </section>
   </main>

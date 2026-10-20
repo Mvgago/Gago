@@ -19,24 +19,6 @@ const protect = {
   onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
 };
 
-/** A long hairline arrow, drawn: it stretches a little towards where it leads on hover */
-const Arrow: React.FC<{ back?: boolean }> = ({ back }) => (
-  <svg
-    aria-hidden
-    viewBox="0 0 28 12"
-    className={`h-3 w-7 overflow-visible transition-transform duration-500 ease-haus ${
-      back ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1"
-    }`}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={1.1}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M0 6h27M22 1.5l5 4.5-5 4.5" />
-  </svg>
-);
-
 /**
  * "All projects" opens the list right there: any other case is one click away, and the
  * projects page stays at the foot of the list. Opens on hover with a mouse, on tap on phones.
@@ -70,14 +52,16 @@ const ProjectsMenu: React.FC<{ current: string; list: Case[]; lang: Lang }> = ({
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="-my-2 inline-flex items-center gap-2 whitespace-nowrap py-2 opacity-80 transition-opacity duration-500 hover:opacity-100"
+        className="group relative -my-2 inline-flex items-center whitespace-nowrap py-2 opacity-80 transition-opacity duration-500 hover:opacity-100"
       >
         <span className="hidden sm:inline">{CASE_UI.all[lang]}</span>
         <span className="sm:hidden">{CASE_UI.count[lang]}</span>
-        {/* It opens a list, as the language switch does: the same small caret */}
-        <span aria-hidden className={`inline-block text-ink/75 transition-transform duration-500 ease-haus ${open ? "rotate-180" : ""}`}>
-          ▾
-        </span>
+        {/* no caret: a hairline under the word, drawn in on hover and kept while the list is open */}
+        <span aria-hidden className="absolute bottom-0.5 left-0 h-px w-full bg-ink/25" />
+        <span
+          aria-hidden
+          className={`absolute bottom-0.5 left-0 h-px w-full origin-left bg-ink transition-transform duration-700 ease-haus ${open ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
+        />
       </button>
       <div
         className={`absolute left-0 top-full z-30 pt-3 transition-all duration-300 ease-haus ${
@@ -198,14 +182,27 @@ function rows(images: CaseImage[]): CaseImage[][] {
  */
 /** Who it was for, when, what was done, and any outbound link */
 const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang, className = "" }) => (
+  <>
+  {/* Phones: no labels, one quiet line (the sector, then what was done), and the link if any */}
+  <motion.div variants={rise} initial="hidden" animate="shown" custom={3} className={`${SMALL} text-graphite sm:hidden ${className}`}>
+    <p>
+      {(c.sector ?? c.client)[lang]}
+      {" — "}
+      {(c.services ? c.services.map((s) => DISCIPLINE[s.d][lang]) : c.disciplines.map((d) => DISCIPLINE[d][lang])).join(" · ")}
+    </p>
+    {c.link && (
+      <a href={c.link.href} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-ink underline decoration-ink/30 underline-offset-4">
+        {c.link.label[lang]}
+      </a>
+    )}
+  </motion.div>
   <motion.dl
     variants={rise}
     initial="hidden"
     animate="shown"
     custom={3}
-    // Phones: each label above its value, so the services get the full width;
-    // wider screens: labels in their own column
-    className={`${SMALL} grid grid-cols-1 gap-y-1 text-graphite sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-3 [&>dd]:mb-3 sm:[&>dd]:mb-0 ${className}`}
+    // Wider screens: labels in their own column
+    className={`${SMALL} hidden text-graphite sm:grid sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-3 ${className}`}
   >
     <dt>{c.sector ? CASE_UI.sector[lang] : CASE_UI.client[lang]}</dt>
     <dd className="text-ink">{(c.sector ?? c.client)[lang]}</dd>
@@ -219,10 +216,7 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
     {c.services ? (
       // Each service on its own line, with what was delivered beside it
       <dd>
-        {/* Phones: only the services, on one line, so the case gets to its pictures sooner */}
-        <p className="text-ink sm:hidden">{c.services.map((s) => DISCIPLINE[s.d][lang]).join(" · ")}</p>
-        {/* Wider screens: each service on its own line, with what was delivered beside it */}
-        <ul className="hidden flex-col gap-1.5 sm:flex">
+        <ul className="flex flex-col gap-1.5">
           {c.services.map((s) => (
             <li key={s.d}>
               <span className="text-ink">{DISCIPLINE[s.d][lang]}</span>
@@ -251,6 +245,7 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
       </>
     )}
   </motion.dl>
+  </>
 );
 
 export const CaseStudyPage: React.FC = () => {
@@ -282,13 +277,8 @@ export const CaseStudyPage: React.FC = () => {
         animate="shown"
         className={`${ACTION} mb-12 flex items-center justify-between gap-6 text-ink md:mb-16`}
       >
-        {/* Phones: one short word each side, on one line */}
+        {/* Only the list of projects up here: the way on to the next case is at the foot of the page */}
         <ProjectsMenu key={c.slug} current={c.slug} list={shown} lang={lang} />
-        <Link to={`/projects/${next.slug}`} className="group inline-flex items-center gap-3 whitespace-nowrap justify-self-end opacity-80 transition-opacity duration-500 hover:opacity-100">
-          <span className="hidden sm:inline">{next.title.toLowerCase()}</span>
-          <span className="sm:hidden">{CASE_UI.nextShort[lang]}</span>
-          <Arrow />
-        </Link>
       </motion.nav>
       {/* Side by side, the first screen holds everything, whole and still: the words and
           the services on the left, the film or the cover on the right, framed, small enough
@@ -385,7 +375,8 @@ export const CaseStudyPage: React.FC = () => {
           <p className={`${BODY} text-graphite md:col-span-6 md:col-start-7`}>{c.body[lang]}</p>
         </section>
       ) : (
-        <div className={side ? "h-20 md:h-32" : "h-4 md:h-6"} />
+        // phones: the same gap after the opening picture as between all the others, so they read as one strip
+        <div className={side ? "h-4 md:h-32" : "h-4 md:h-6"} />
       )}
 
       {/* The work, large */}

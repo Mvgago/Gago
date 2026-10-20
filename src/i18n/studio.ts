@@ -17,6 +17,9 @@ export type Studio = {
   workLabel: string;
   labArtLabel: string;
   labArtText: string;
+  /** that the pieces are original and can be had: for a space, on commission, in limited editions */
+  labArtOffer: string;
+  labArtCta: string;
   labSoundLabel: string;
   labPlaying: string;
   workTitle: string;
@@ -50,7 +53,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Audiovisual",
         text: "Spaces and brands told in motion, for campaigns and social media, from footage or from renders.",
-        list: ["Concept, filming and editing", "Motion and graphics", "Original music and sound design"],
+        list: ["Concept, filming and editing", "Motion and graphics", "Music production and sound design"],
       },
       {
         title: "Spaces and events",
@@ -78,11 +81,13 @@ export const STUDIO: Record<Lang, Studio> = {
     labSoundLabel: "sound",
     labPlaying: "in the headphones",
     labArtLabel: "illustration and photography",
-    labArtText: "Illustrations, covers and photographs, between painting and the digital.",
+    labArtText: "Illustration, covers and photography. A space to explore a visual language of its own.",
+    labArtOffer: "Original work. Also on commission, made for a particular space.",
+    labArtCta: "Write to us.",
     workLabel: "projects",
     workTitle: "Recent work",
     workAll: "see all projects",
-    closing: "It all starts with a conversation.", closingNote: "A small studio: you talk directly to the person designing, from start to finish.",
+    closing: "It all starts with a conversation.", closingNote: "A small studio, no go-betweens: the idea, the design and the conversation, in the same hands.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -91,7 +96,7 @@ export const STUDIO: Record<Lang, Studio> = {
     ],
     voiceLabel: "own voice",
     voice:
-      "The studio also composes: original music and sound design for brands, spaces and films. {name} is its own project, minimal, spatial, instrumental electronic music.",
+      "The studio also produces music: original scores and sound design for brands, spaces and films. {name} is its own project, minimal, spatial, instrumental electronic music.",
     contactLabel: "contact",
     cta: "start a project",
     contactLead: "Have a project in mind? Let's talk.",
@@ -126,7 +131,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Audiovisual",
         text: "Espacios y marcas contados en movimiento, para campañas y redes, a partir de rodaje o de renders.",
-        list: ["Concepto, grabación y montaje", "Motion y grafismo", "Música y diseño sonoro original"],
+        list: ["Concepto, grabación y montaje", "Motion y grafismo", "Producción musical y diseño sonoro"],
       },
       {
         title: "Espacios y eventos",
@@ -154,11 +159,13 @@ export const STUDIO: Record<Lang, Studio> = {
     labSoundLabel: "sonido",
     labPlaying: "en los cascos",
     labArtLabel: "ilustración y fotografía",
-    labArtText: "Ilustraciones, portadas y fotografía, entre lo pictórico y lo digital.",
+    labArtText: "Ilustración, portadas y fotografía. Un espacio para explorar un lenguaje visual propio.",
+    labArtOffer: "Obra original. También por encargo, pensada para un espacio concreto.",
+    labArtCta: "Escríbenos.",
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
-    closing: "Todo empieza con una conversación.", closingNote: "Un estudio pequeño: hablas directamente con quien diseña, de principio a fin.",
+    closing: "Todo empieza con una conversación.", closingNote: "Un estudio pequeño, sin intermediarios: la idea, el diseño y la conversación, en las mismas manos.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -167,7 +174,7 @@ export const STUDIO: Record<Lang, Studio> = {
     ],
     voiceLabel: "voz propia",
     voice:
-      "El estudio también compone: música original y diseño sonoro para marcas, espacios y piezas audiovisuales. {name} es su proyecto propio, electrónica minimal, espacial e instrumental.",
+      "El estudio también produce música: bandas sonoras originales y diseño sonoro para marcas, espacios y piezas audiovisuales. {name} es su proyecto propio, electrónica minimal, espacial e instrumental.",
     contactLabel: "contacto",
     cta: "empezar un proyecto",
     contactLead: "¿Tienes un proyecto en mente? Hablemos.",
@@ -202,7 +209,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Audiovisuel",
         text: "Des lieux et des marques racontés en mouvement, pour campagnes et réseaux, à partir de tournages ou de rendus.",
-        list: ["Concept, tournage et montage", "Motion et graphisme", "Musique et design sonore originaux"],
+        list: ["Concept, tournage et montage", "Motion et graphisme", "Production musicale et design sonore"],
       },
       {
         title: "Espaces et événements",
@@ -230,11 +237,13 @@ export const STUDIO: Record<Lang, Studio> = {
     labSoundLabel: "son",
     labPlaying: "dans le casque",
     labArtLabel: "illustration et photographie",
-    labArtText: "Illustrations, pochettes et photographies, entre la peinture et le numérique.",
+    labArtText: "Illustration, pochettes et photographie. Un espace pour explorer un langage visuel propre.",
+    labArtOffer: "Œuvres originales. Aussi sur commande, pensées pour un espace précis.",
+    labArtCta: "Écrivez-nous.",
     workLabel: "projets",
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
-    closing: "Tout commence par une conversation.", closingNote: "Un petit studio : vous parlez directement avec qui dessine, du début à la fin.",
+    closing: "Tout commence par une conversation.", closingNote: "Un petit studio, sans intermédiaires : l'idée, le design et la conversation, entre les mêmes mains.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -243,7 +252,7 @@ export const STUDIO: Record<Lang, Studio> = {
     ],
     voiceLabel: "voix propre",
     voice:
-      "Le studio compose aussi : musique originale et design sonore pour des marques, des espaces et des films. {name} est son projet propre, une électronique minimale, spatiale et instrumentale.",
+      "Le studio produit aussi de la musique : bandes originales et design sonore pour des marques, des espaces et des films. {name} est son projet propre, une électronique minimale, spatiale et instrumentale.",
     contactLabel: "contact",
     cta: "démarrer un projet",
     contactLead: "Un projet en tête ? Parlons-en.",
@@ -278,7 +287,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Audiovisuell",
         text: "Räume und Marken in Bewegung erzählt, für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
-        list: ["Konzept, Dreh und Schnitt", "Motion und Grafik", "Eigene Musik und Sounddesign"],
+        list: ["Konzept, Dreh und Schnitt", "Motion und Grafik", "Musikproduktion und Sounddesign"],
       },
       {
         title: "Räume und Events",
@@ -306,11 +315,13 @@ export const STUDIO: Record<Lang, Studio> = {
     labSoundLabel: "klang",
     labPlaying: "im kopfhörer",
     labArtLabel: "Illustration und Fotografie",
-    labArtText: "Illustrationen, Cover und Fotografie, zwischen Malerei und Digitalem.",
+    labArtText: "Illustration, Cover und Fotografie. Ein Raum, um eine eigene Bildsprache zu erkunden.",
+    labArtOffer: "Originale Arbeiten. Auch als Auftrag, gedacht für einen bestimmten Raum.",
+    labArtCta: "Schreiben Sie uns.",
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
-    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Ein kleines Studio: Sie sprechen direkt mit der Person, die gestaltet, von Anfang bis Ende.",
+    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Ein kleines Studio, ohne Umwege: Idee, Gestaltung und Gespräch, in denselben Händen.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
@@ -319,7 +330,7 @@ export const STUDIO: Record<Lang, Studio> = {
     ],
     voiceLabel: "eigene stimme",
     voice:
-      "Das Studio komponiert auch: eigene Musik und Sounddesign für Marken, Räume und Filme. {name} ist sein eigenes Projekt, minimale, räumliche, instrumentale Elektronik.",
+      "Das Studio produziert auch Musik: eigene Soundtracks und Sounddesign für Marken, Räume und Filme. {name} ist sein eigenes Projekt, minimale, räumliche, instrumentale Elektronik.",
     contactLabel: "kontakt",
     cta: "projekt starten",
     contactLead: "Ein Projekt im Kopf? Sprechen wir darüber.",

@@ -1,7 +1,8 @@
 import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { artwork, FUGA_SEI_EP } from "../../outils/artwork";
+import { artwork, FUGA_SEI_EP, TECH } from "../../outils/artwork";
 import { EASE_HAUS, EASE_VEIL, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import Footer from "../../components/Footer/Footer";
@@ -85,15 +86,27 @@ export const ArtworkPage: React.FC = () => {
         className={`${SMALL} mb-12 text-platinum/50 md:mb-16`}
       >
         <h1>
-          <span className="text-platinum">{t("section.artwork")}</span> — {t("section.artwork.caption")}
+          {/* phones: the name of the room alone */}
+          <span className="text-platinum">{t("section.artwork")}</span>
+          <span className="hidden sm:inline"> — {t("section.artwork.caption")}</span>
         </h1>
       </motion.header>
 
       {/* A few pieces, and a line on what they are */}
       <section>
         <div className="mb-10 grid grid-cols-12 gap-x-8 md:mb-12">
-          <p className={`${SMALL} col-span-12 text-platinum/50 md:col-span-3`}>{s.labArtLabel}</p>
-          <p className={`${BODY} col-span-12 mt-3 max-w-[52ch] text-platinum/75 md:col-span-6 md:mt-0`}>{s.labArtText}</p>
+          {/* no label over it: the line itself says what the pieces are; it keeps the label's
+              column empty, so it lines up with the sound below */}
+          <div className="col-span-12 md:col-span-6 md:col-start-4">
+            <p className={`${BODY} max-w-[52ch] text-platinum/75`}>{s.labArtText}</p>
+            {/* that they are original and can be had, quietly, with the way to ask */}
+            <p className={`${BODY} mt-3 max-w-[52ch] text-platinum/50`}>
+              {s.labArtOffer}{" "}
+              <Link to="/about#contact" className="text-platinum/80 underline decoration-platinum/30 underline-offset-4 transition-colors duration-300 hover:text-platinum">
+                {s.labArtCta}
+              </Link>
+            </p>
+          </div>
         </div>
         {/* edge to edge, the pieces touching, as one strip */}
         <ul className="-mx-4 grid grid-cols-2 sm:-mx-6 md:-mx-8 md:grid-cols-4">
@@ -115,7 +128,7 @@ export const ArtworkPage: React.FC = () => {
                 className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden"
                 style={{ background: "#1a181b" }}
               >
-                <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
+                <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade, transform: plate.crop ? `scale(${plate.crop})` : undefined, transformOrigin: plate.cropAt }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
               </button>
             </motion.li>
           ))}
@@ -242,15 +255,23 @@ const Caption: React.FC<{
       {title ?? " "}
     </span>
   );
-  const more = detail && <span className={`${SMALL} text-platinum/50`}>{detail}</span>;
+  // the detail, quieter than the name: smaller and fainter, as the small print of a gallery label
+  const more = detail && <span className="font-mono text-[11px] lowercase tracking-[0.12em] text-platinum/35">{detail}</span>;
 
   if (inline) {
+    // A label in two lines: the number and the name, and under them, quieter, how it was made
     return (
-      <div className={`flex flex-wrap items-baseline gap-x-5 gap-y-1 ${centred ? "justify-center text-center" : ""}`}>
-        {number}
-        {name}
-        {more}
-        {listen}
+      <div className={`flex flex-col gap-1.5 ${centred ? "items-center text-center" : ""}`}>
+        <div className="flex items-baseline gap-x-4">
+          {number}
+          {name}
+        </div>
+        {(more || listen) && (
+          <div className="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1">
+            {more}
+            {listen}
+          </div>
+        )}
       </div>
     );
   }
@@ -276,7 +297,7 @@ const Viewer: React.FC<{
   onClose: () => void;
   onMove: (i: number) => void;
 }> = ({ plates, index, onClose, onMove }) => {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const total = plates.length;
   const [direction, setDirection] = useState(0);
   const dialog = useRef<HTMLDivElement>(null);
@@ -388,7 +409,7 @@ const Viewer: React.FC<{
               {t("artwork.prev")}
             </button>
             <div className="min-w-0">
-              <Caption index={index} title={plate.title} detail={plate.detail} href={plate.href} centred inline />
+              <Caption index={index} title={plate.title} detail={plate.detail ?? (plate.tech && (TECH[plate.tech][lang] ?? TECH[plate.tech].es))} href={plate.href} centred inline />
             </div>
             <button type="button" onClick={() => go(1)} className={`${ACTION} -my-3 py-3 text-platinum/50 transition-colors hover:text-platinum`}>
               {t("artwork.next")}

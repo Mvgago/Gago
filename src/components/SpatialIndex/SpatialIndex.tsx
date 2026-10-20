@@ -161,12 +161,12 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: walking ? 0 : 1, transition: { delay: walking ? 0 : 1.05, duration: walking ? 0.4 : 0.6 } }}
           >
-            <span className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span>{t("availability")} — {new Date().getFullYear()}</span>
+            {/* phones: one clean line, the email on the left, Instagram and privacy on the right */}
+            <span className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-start">
+              <span className="hidden sm:inline">{t("availability")} — {new Date().getFullYear()}</span>
               <span aria-hidden className="hidden sm:inline">·</span>
               <ContactMenu />
               <span aria-hidden className="hidden sm:inline">·</span>
-              {/* One line even on phones, so the stacked footer stays short */}
               <span className="flex items-center gap-3">
                 <SocialLinks className="hover:text-[#3b3842]" />
                 <span aria-hidden>·</span>

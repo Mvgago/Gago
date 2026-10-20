@@ -92,7 +92,7 @@ const Field: React.FC<{
   /** what is missing, said in the site's own voice under the field (the browser's bubble is never shown) */
   error?: string;
 }> = ({ label, name, type = "text", multiline, value, onChange, dark, optional = false, error }) => {
-  const shared = `w-full border-0 border-b bg-transparent pb-3 pt-2 font-geo text-base font-normal tracking-[0.02em] outline-none transition-colors duration-500 ${
+  const shared = `w-full border-0 border-b bg-transparent pb-1.5 pt-0 sm:pb-3 sm:pt-2 font-geo text-base font-normal tracking-[0.02em] outline-none transition-colors duration-500 ${
     error
       ? "border-[#e3a99a] text-platinum caret-platinum"
       : dark
@@ -111,7 +111,7 @@ const Field: React.FC<{
     <label className="relative block">
       <span className={`${SMALL} ${dark ? "text-platinum/60" : "text-graphite"}`}>{label}</span>
       {multiline ? (
-        <textarea rows={4} {...common} className={`${shared} resize-none`} />
+        <textarea rows={4} {...common} className={`${shared} h-14 resize-none sm:h-auto`} />
       ) : (
         <input type={type} autoComplete={name === "email" ? "email" : name === "name" ? "name" : name === "phone" ? "tel" : undefined} {...common} className={shared} />
       )}
@@ -139,13 +139,36 @@ export const AboutPage: React.FC = () => {
   const s = STUDIO[lang];
   const lenis = useLenis();
   const { hash, key } = useLocation();
-  // Arriving from a "let's talk" link: glide down to the contact once the page has come in
+  // Arriving from a "let's talk" link on another page: the page comes in already at the contact,
+  // never passing by the top on the way (set at once, then set again as the pictures above settle).
+  // Already on the page, a second click on such a link glides down instead
+  const arrived = useRef(false);
   useEffect(() => {
     if (hash !== "#contact") return;
-    const id = window.setTimeout(() => {
+    const toContact = (immediate: boolean) => {
       const target = document.getElementById("contact");
-      if (target) scrollToTarget(lenis, target, { offset: -96 });
-    }, 700);
+      if (target) scrollToTarget(lenis, target, { offset: -96, immediate });
+    };
+    if (!arrived.current) {
+      const raf = requestAnimationFrame(() => toContact(true));
+      const ids = [250, 700, 1400].map((ms) => window.setTimeout(() => toContact(true), ms));
+      const done = window.setTimeout(() => (arrived.current = true), 1500);
+      // the visitor scrolls on their own: stop setting the page back
+      const stop = () => {
+        ids.forEach(window.clearTimeout);
+        arrived.current = true;
+      };
+      window.addEventListener("wheel", stop, { once: true, passive: true });
+      window.addEventListener("touchmove", stop, { once: true, passive: true });
+      return () => {
+        cancelAnimationFrame(raf);
+        ids.forEach(window.clearTimeout);
+        window.clearTimeout(done);
+        window.removeEventListener("wheel", stop);
+        window.removeEventListener("touchmove", stop);
+      };
+    }
+    const id = window.setTimeout(() => toContact(false), 100);
     return () => window.clearTimeout(id);
   }, [hash, key, lenis]); // the key: a second click on the same link glides down again
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
@@ -236,7 +259,9 @@ export const AboutPage: React.FC = () => {
         className={`${SMALL} flex flex-col gap-2 text-graphite sm:flex-row sm:items-baseline sm:justify-between`}
       >
         <h1>
-          <span className="text-ink">{t("section.studio")}</span> — {t("section.studio.caption")}
+          {/* phones: the name of the room alone */}
+          <span className="text-ink">{t("section.studio")}</span>
+          <span className="hidden sm:inline"> — {t("section.studio.caption")}</span>
         </h1>
         {/* On the right, one line: open to new projects, and it is the way down to the contact form
             (wide screens only: on a phone it only crowded the page's top) */}
@@ -369,7 +394,7 @@ export const AboutPage: React.FC = () => {
           olive and pale bloom turned low — and the footer lives inside it */}
       <motion.section
         id="contact"
-        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden bg-[#2f2b2a] px-4 pb-10 pt-24 text-platinum sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 md:pt-32"
+        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden bg-[#2f2b2a] px-4 pb-10 pt-16 text-platinum sm:-mx-6 sm:px-6 sm:pt-24 md:-mx-8 md:px-8 md:pt-32"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-10% 0px" }}
@@ -397,7 +422,7 @@ export const AboutPage: React.FC = () => {
           animate={status === "sent" ? { opacity: [0, 1, 0.45], transition: { duration: 2.2, times: [0, 0.3, 1], ease: "easeOut" } } : { opacity: 0, transition: { duration: 0.8 } }}
         />
 
-        <div className="relative grid grid-cols-12 gap-x-8 gap-y-16">
+        <div className="relative grid grid-cols-12 gap-x-8 gap-y-10 sm:gap-y-16">
           <div className="col-span-12 lg:col-span-6">
             <h2 className={`${SMALL} text-platinum/55`}>
               {s.contactLabel}
@@ -406,7 +431,7 @@ export const AboutPage: React.FC = () => {
               {s.contactLead}
             </p>
             {/* The direct ways in */}
-            <div className={`${ACTION} mt-12 flex flex-col items-start gap-4`}>
+            <div className={`${ACTION} mt-8 flex flex-col items-start gap-2 sm:mt-12 sm:gap-4`}>
               <PlainLink href={`mailto:${EMAIL}`} dark>
                 {EMAIL}
               </PlainLink>
@@ -491,7 +516,8 @@ export const AboutPage: React.FC = () => {
             exit={{ opacity: 0, rotateY: -90, transition: { duration: 0.35, ease: [0.6, 0, 0.8, 0.3] } }}
             onSubmit={onSubmit}
             noValidate
-            className="relative grid gap-9 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10 xl:grid-cols-3"
+            // phones: tighter, so the whole form fits in about one screen
+            className="relative grid gap-4 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-5 backdrop-blur-sm sm:grid-cols-2 sm:gap-9 sm:p-8 md:p-10 xl:grid-cols-3"
           >
             {/* the trap: out of sight, out of the tab order, and left empty by anyone real */}
             <input ref={trap} type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute -left-[9999px] top-0 h-px w-px opacity-0" />
@@ -504,7 +530,10 @@ export const AboutPage: React.FC = () => {
             <div className="sm:col-span-2 xl:col-span-3">
               <Field label={s.form.message} name="message" multiline value={form.message} onChange={set("message")} dark error={errors.message} />
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 sm:col-span-2 xl:col-span-3">
+            {/* the two notes together, then the button: on phones the button closes the form at full
+                width; on wider screens it sits to the right of the notes */}
+            <div className="mt-1 flex flex-col gap-4 sm:col-span-2 sm:mt-0 sm:flex-row sm:items-end sm:justify-between sm:gap-8 xl:col-span-3">
+              <div className="flex flex-col gap-2">
               {/* the note, or how the sending went, in the same place */}
               <span role="status" aria-live="polite" className={`${SMALL} transition-colors duration-500 ${status === "error" ? "text-[#e3a99a]" : "text-platinum/50"}`}>
                 {status === "error" ? (
@@ -516,23 +545,24 @@ export const AboutPage: React.FC = () => {
                   </motion.span>
                 )}
               </span>
+              {/* what is done with the details, said where they are given, as the law asks */}
+              <p className={`${SMALL} normal-case text-platinum/40`}>
+                {s.form.privacy}
+                <Link to="/privacy" className="text-platinum/65 underline decoration-platinum/30 underline-offset-4 transition-colors duration-300 hover:text-platinum">
+                  {s.form.privacyLink}
+                </Link>
+                .
+              </p>
+              </div>
               <button
                 type="submit"
                 disabled={status === "sending"}
                 // The way out of the page: solid light, the one filled form in this room
-                className={`${ACTION} group inline-flex items-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-ink transition-colors duration-500 hover:bg-white disabled:cursor-wait disabled:opacity-70`}
+                className={`${ACTION} group inline-flex shrink-0 items-center justify-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-ink transition-colors duration-500 hover:bg-white disabled:cursor-wait disabled:opacity-70`}
               >
                 {status === "sending" ? s.form.sending : s.form.send}
               </button>
             </div>
-            {/* what is done with the details, said where they are given, as the law asks */}
-            <p className={`${SMALL} -mt-3 normal-case text-platinum/40 sm:col-span-2 xl:col-span-3`}>
-              {s.form.privacy}
-              <Link to="/privacy" className="text-platinum/65 underline decoration-platinum/30 underline-offset-4 transition-colors duration-300 hover:text-platinum">
-                {s.form.privacyLink}
-              </Link>
-              .
-            </p>
           </motion.form>
           )}
           </AnimatePresence>
