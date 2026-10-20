@@ -461,10 +461,33 @@ export const ProcessSteps: React.FC<{ steps: { title: string; text: string }[] }
     {steps.map((p, i) => (
       <motion.div
         key={p.title}
+        className="relative isolate"
         initial="off"
         whileInView="on"
         viewport={{ once: true, margin: "-12% 0px" }}
       >
+        {/* On arrival the four light up one after another, quickly, like the keys of a lit
+            keyboard: a soft glow comes up behind each and fades as the next takes it */}
+        {/* each time the steps come into view: a pale plate lifts behind the step, its shadow soft,
+            and its line lights up in ink, then both settle as the next one lights */}
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute -inset-x-5 -bottom-6 -top-5 -z-10 rounded-xl"
+          style={{
+            background: "radial-gradient(120% 90% at 50% 30%, #ffffff 0%, #fbfbfd 55%, #f3f3f6 100%)",
+            boxShadow: "0 22px 50px -14px rgba(40,38,48,0.32), 0 0 0 1px rgba(40,38,48,0.08), 0 0 60px 6px rgba(255,255,255,0.95)",
+          }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: [0, 1, 1, 0], transition: { duration: 1.3, delay: 0.15 + i * 0.2, times: [0, 0.18, 0.55, 1], ease: "easeInOut" } }}
+          viewport={{ once: false, margin: "-20% 0px" }}
+        />
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-ink"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: [0, 1, 1, 0], transition: { duration: 1.3, delay: 0.15 + i * 0.2, times: [0, 0.18, 0.55, 1], ease: "easeInOut" } }}
+          viewport={{ once: false, margin: "-20% 0px" }}
+        />
         <motion.span
           aria-hidden
           className="block h-px origin-left bg-ink/60"

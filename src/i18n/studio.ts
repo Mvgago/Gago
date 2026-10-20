@@ -38,7 +38,7 @@ export type Studio = {
   /** Shortcut under the statement, down to the contact chapter */
   cta: string;
   contactLead: string;
-  form: { name: string; email: string; message: string; send: string; note: string; sending: string; sent: string; error: string; sentTitle: string; another: string };
+  form: { name: string; email: string; message: string; send: string; note: string; sending: string; sent: string; error: string; sentTitle: string; another: string; more: string; good: string; hooked: string };
 };
 
 export const STUDIO: Record<Lang, Studio> = {
@@ -101,6 +101,9 @@ export const STUDIO: Record<Lang, Studio> = {
       message: "message",
       send: "send",
       note: "We usually reply within two working days.",
+      more: "tell us more…",
+      good: "this is looking good.",
+      hooked: "all right, now we're curious.",
       sending: "sending…",
       sent: "We've received it and will reply within two working days.",
       sentTitle: "Message sent",
@@ -168,6 +171,9 @@ export const STUDIO: Record<Lang, Studio> = {
       message: "mensaje",
       send: "enviar",
       note: "Solemos responder en dos días laborables.",
+      more: "cuéntanos más…",
+      good: "esto pinta bien.",
+      hooked: "vale, ya nos tienes intrigados.",
       sending: "enviando…",
       sent: "Lo hemos recibido y te respondemos en dos días laborables.",
       sentTitle: "Mensaje enviado",
@@ -235,6 +241,9 @@ export const STUDIO: Record<Lang, Studio> = {
       message: "message",
       send: "envoyer",
       note: "Nous répondons en général sous deux jours ouvrés.",
+      more: "dites-nous-en plus…",
+      good: "ça s'annonce bien.",
+      hooked: "bon, là vous nous intriguez.",
       sending: "envoi…",
       sent: "Nous l'avons bien reçu et vous répondons sous deux jours ouvrés.",
       sentTitle: "Message envoyé",
@@ -302,6 +311,9 @@ export const STUDIO: Record<Lang, Studio> = {
       message: "nachricht",
       send: "senden",
       note: "Wir antworten in der Regel innerhalb von zwei Werktagen.",
+      more: "erzählen Sie mehr…",
+      good: "das klingt gut.",
+      hooked: "okay, jetzt sind wir neugierig.",
       sending: "wird gesendet…",
       sent: "Wir haben sie erhalten und antworten innerhalb von zwei Werktagen.",
       sentTitle: "Nachricht gesendet",

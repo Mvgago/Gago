@@ -21,7 +21,7 @@ const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb,
 const ZOOM: Record<string, [number, string]> = {};
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import Footer from "../../components/Footer/Footer";
-import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
+import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
 
 // three.js loads only on this page, after the text
 const WhiteRoom = lazy(() => import("../../components/Light/WhiteRoom"));
@@ -126,6 +126,9 @@ export const AboutPage: React.FC = () => {
   // is set as VITE_WEB3FORMS_KEY): the visitor never leaves the page. Without a key, the mail app
   // composes it instead
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  // What the note says back as the message grows: a few words that keep up with how much has been written
+  const written = form.message.trim().length;
+  const hint = written >= 160 ? s.form.hooked : written >= 50 ? s.form.good : written > 0 ? s.form.more : s.form.note;
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined;
@@ -343,9 +346,11 @@ export const AboutPage: React.FC = () => {
                 instagram
               </PlainLink>
             </div>
+
           </div>
 
           {/* The form, on a pane of smoked glass */}
+          <GlassPane className="col-span-12 self-start lg:col-span-6">
           {status === "sent" ? (
             // Sent: the pane itself turns into the confirmation, unmistakable, with a way to write again
             <motion.div
@@ -354,7 +359,7 @@ export const AboutPage: React.FC = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: EASE_HAUS }}
-              className="col-span-12 flex min-h-[22rem] flex-col items-start justify-center self-start rounded-sm border border-platinum/20 bg-platinum/[0.07] p-8 backdrop-blur-sm md:p-10 lg:col-span-6"
+              className="flex min-h-[22rem] flex-col items-start justify-center rounded-sm border border-platinum/20 bg-platinum/[0.07] p-8 backdrop-blur-sm md:p-10"
             >
               <svg viewBox="0 0 48 48" className="h-14 w-14 text-platinum" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <motion.circle cx="24" cy="24" r="22" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, ease: EASE_HAUS }} />
@@ -375,7 +380,7 @@ export const AboutPage: React.FC = () => {
           ) : (
           <form
             onSubmit={onSubmit}
-            className="col-span-12 grid gap-9 self-start rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10 lg:col-span-6"
+            className="grid gap-9 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10"
           >
             <Field label={s.form.name} name="name" value={form.name} onChange={set("name")} dark />
             <Field label={s.form.email} name="email" type="email" value={form.email} onChange={set("email")} dark />
@@ -385,7 +390,14 @@ export const AboutPage: React.FC = () => {
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 sm:col-span-2">
               {/* the note, or how the sending went, in the same place */}
               <span role="status" aria-live="polite" className={`${SMALL} transition-colors duration-500 ${status === "error" ? "text-[#e3a99a]" : "text-platinum/50"}`}>
-                {status === "error" ? s.form.error : s.form.note}
+                {status === "error" ? (
+                  s.form.error
+                ) : (
+                  // the note answers back as the message is written
+                  <motion.span key={hint} className="inline-block" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: EASE_HAUS }}>
+                    {hint}
+                  </motion.span>
+                )}
               </span>
               <button
                 type="submit"
@@ -398,6 +410,7 @@ export const AboutPage: React.FC = () => {
             </div>
           </form>
           )}
+          </GlassPane>
         </div>
 
         {/* The footer, inside the room */}
