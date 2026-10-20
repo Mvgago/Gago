@@ -39,6 +39,9 @@ const STEEL = [
 export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
   const [active, setActive] = useState<Section | null>(null);
   const [walking, setWalking] = useState(false);
+  // where the visitor chose to go: kept apart from the one lit, which the pointer can clear on its
+  // way out while the light floods in (that sent a click on the studio or contact to the projects)
+  const target = useRef<Section | null>(null);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { t } = useI18n();
@@ -77,10 +80,9 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
     if (!open) {
       setActive(null);
       setWalking(false);
+      target.current = null;
     }
   }, [open]);
-
-  const shown = active ?? SECTIONS[0];
 
 
   return (
@@ -117,8 +119,8 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: walking ? 1 : 0, transition: { duration: 0.55, delay: walking ? 1.1 : 0 } }}
             onAnimationComplete={() => {
-              if (!walking) return;
-              navigate(shown.path);
+              if (!walking || !target.current) return;
+              navigate(target.current.path);
               onClose();
             }}
           />
@@ -127,7 +129,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
           <nav
             // phones: the four stacked tight under the sculpture, all clear above the footer
             className="pointer-events-none absolute inset-x-0 top-[44%] flex flex-col items-center gap-5 px-4 sm:top-[48%] sm:gap-8 lg:inset-0 lg:top-0 lg:block lg:px-0"
-            onMouseLeave={() => setActive(null)}
+            onMouseLeave={() => !walking && setActive(null)}
             aria-label="Sections"
           >
             {SECTIONS.map((s, i) => (
@@ -140,6 +142,8 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
                 current={pathname === s.path}
                 onHover={() => !walking && setActive(s)}
                 onGo={() => {
+                  if (walking) return;
+                  target.current = s;
                   setActive(s);
                   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
                     navigate(s.path);
