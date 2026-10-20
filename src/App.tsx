@@ -18,6 +18,8 @@ import { AboutPage } from "./pages/About/AboutPage";
 import { ArtworkPage } from "./pages/Artwork/ArtworkPage";
 import { CaseStudyPage } from "./pages/Projects/CaseStudy";
 import { PrivacyPage } from "./pages/Privacy/PrivacyPage";
+import { LegalPage } from "./pages/Privacy/LegalPage";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 const page = (element: React.ReactNode, withFooter = true, still = false) => (
   <PageTransition still={still} className="relative z-10 flex min-h-screen flex-col">
@@ -28,6 +30,12 @@ const page = (element: React.ReactNode, withFooter = true, still = false) => (
 
 // Case-study pages predate the fixed header; give them clearance beneath it.
 
+// Inside the language provider, so the titles follow the chosen language
+const PageMeta: React.FC<{ pathname: string }> = ({ pathname }) => {
+  usePageMeta(pathname);
+  return null;
+};
+
 export const App: React.FC = () => {
   const location = useLocation();
   // The light rooms' wall changes as soon as the route does, under the page
@@ -37,6 +45,7 @@ export const App: React.FC = () => {
 
   return (
     <I18nProvider>
+    <PageMeta pathname={location.pathname} />
     {/* Smooth, inertial scroll for the whole site */}
     <SmoothScroll>
     <PointerLightProvider>
@@ -84,6 +93,7 @@ const Pages: React.FC<{ location: ReturnType<typeof useLocation> }> = ({ locatio
               narrowed the film), and a fade only, so the frame never moves on arrival */}
           <Route path="/projects" element={page(<ProjectsSection />, false, true)} />
           <Route path="/privacy" element={page(<PrivacyPage />)} />
+          <Route path="/legal" element={page(<LegalPage />)} />
           {/* The selected cases now live under /projects/<slug> */}
           <Route path="/sapphire" element={<Navigate to="/projects/sapphire" replace />} />
           <Route path="/smarthc" element={<Navigate to="/projects/smarthc" replace />} />

@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { useI18n } from "../../i18n/I18n";
 import { ContactMenu } from "../Contact/ContactMenu";
 import { SMALL } from "../Light/LightWall";
+import { hasLegal } from "../../outils/legal";
+
+const LEGAL = { es: "aviso legal", en: "legal notice", fr: "mentions légales", de: "impressum" };
 
 /**
  * The inner pages' footer: one quiet line under a hairline — the rooms, the
@@ -14,7 +17,7 @@ import { SMALL } from "../Light/LightWall";
  * which the block above already holds.
  */
 const Footer: React.FC<{ dark?: boolean }> = ({ dark }) => {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const year = new Date().getFullYear();
   const link = `transition-colors duration-500 ${dark ? "hover:text-platinum" : "hover:text-ink"}`;
   return (
@@ -43,6 +46,13 @@ const Footer: React.FC<{ dark?: boolean }> = ({ dark }) => {
         <span className="sm:text-right">
           fuga haus © {year} ·{" "}
           <Link to="/privacy" className={link}>{t("privacy")}</Link>
+          {/* the legal notice, once the owner's details are in */}
+          {hasLegal() && (
+            <>
+              {" · "}
+              <Link to="/legal" className={link}>{LEGAL[lang as keyof typeof LEGAL] ?? LEGAL.es}</Link>
+            </>
+          )}
         </span>
       </div>
     </footer>

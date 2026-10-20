@@ -36,7 +36,16 @@ const DevicesFrame: React.FC<{ src: string; title: string; className?: string; p
 
   return (
     <div ref={box} className={`relative overflow-hidden bg-[#d5dcdf] ${className}`}>
-      {load && <iframe ref={frame} src={src} title={title} className="absolute inset-0 h-full w-full border-0" />}
+      {load && (
+        <iframe
+          ref={frame}
+          src={src}
+          title={title}
+          // once its page is up, it is told at once whether it is on view (the earlier word came before it existed)
+          onLoad={() => frame.current?.contentWindow?.postMessage({ fhVisible: inView.current && !pausedRef.current }, window.location.origin)}
+          className="absolute inset-0 h-full w-full border-0"
+        />
+      )}
     </div>
   );
 };

@@ -9,13 +9,13 @@ import type { Lang } from "./strings";
 export type PrivacySection = { title: string; body: string[] };
 export type Privacy = { title: string; updated: string; intro: string; sections: PrivacySection[] };
 
-const UPDATED = "2026-09";
+const UPDATED = "2026-10";
 
 export const PRIVACY: Record<Lang, Privacy> = {
   en: {
     title: "Privacy",
     updated: `Last updated ${UPDATED}`,
-    intro: "This website is a portfolio. It does not use cookies, analytics or advertising, and it does not track you.",
+    intro: "This is the website of Fuga Haus, a design studio. It uses no cookies and no advertising, and it does not track you; it only counts visits anonymously.",
     sections: [
       {
         title: "Who is responsible",
@@ -24,7 +24,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
       {
         title: "What data is processed",
         body: [
-          "If you write to the studio by email: your address, your name if you include it, and whatever your message contains.",
+          "If you write to the studio by email or through the form: your address, your name if you include it, and whatever your message contains.",
           "When you visit the site, the hosting provider keeps standard technical logs (such as IP address and browser type) to serve pages and keep them secure. The studio does not use these logs to identify you.",
           "Your language choice is remembered in your own browser (local storage). It never leaves your device.",
         ],
@@ -45,6 +45,8 @@ export const PRIVACY: Record<Lang, Privacy> = {
         title: "Who else sees it",
         body: [
           "Nobody. Your data is not sold or shared. Email is handled by the studio's mail provider; if it stores data outside the EU, it does so under the European Commission's standard contractual clauses.",
+          "Messages sent through the contact form pass through Web3Forms, which delivers them to the studio's inbox and keeps them only as long as needed to do so.",
+          "Visits are counted with Vercel Web Analytics, without cookies and without identifying you: it only records pages seen, the country and the type of device, in aggregate.",
           "The fonts are served from this site itself, so no request is made to third-party font services.",
         ],
       },
@@ -61,7 +63,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
   es: {
     title: "Privacidad",
     updated: `Última actualización ${UPDATED}`,
-    intro: "Esta web es un portfolio. No usa cookies, analítica ni publicidad, y no te rastrea.",
+    intro: "Esta es la web de Fuga Haus, estudio de diseño. No usa cookies ni publicidad, y no te rastrea; solo cuenta las visitas de forma anónima.",
     sections: [
       {
         title: "Responsable",
@@ -70,7 +72,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
       {
         title: "Qué datos se tratan",
         body: [
-          "Si escribes al estudio por email: tu dirección, tu nombre si lo incluyes y lo que contenga tu mensaje.",
+          "Si escribes al estudio por email o desde el formulario: tu dirección, tu nombre si lo incluyes y lo que contenga tu mensaje.",
           "Al visitar la web, el proveedor de alojamiento guarda registros técnicos habituales (como la IP y el tipo de navegador) para servir las páginas y mantenerlas seguras. El estudio no usa esos registros para identificarte.",
           "El idioma que eliges se recuerda en tu propio navegador (almacenamiento local). Nunca sale de tu dispositivo.",
         ],
@@ -91,6 +93,8 @@ export const PRIVACY: Record<Lang, Privacy> = {
         title: "Quién más los ve",
         body: [
           "Nadie. Tus datos no se venden ni se ceden. El correo se gestiona con el proveedor de email del estudio; si almacena datos fuera de la UE, lo hace bajo las cláusulas contractuales tipo de la Comisión Europea.",
+          "Los mensajes que envías desde el formulario de contacto pasan por Web3Forms, que los entrega en el correo del estudio y solo los conserva el tiempo necesario para hacerlo.",
+          "Las visitas se cuentan con Vercel Web Analytics, sin cookies y sin identificarte: solo registra, de forma agregada, las páginas vistas, el país y el tipo de dispositivo.",
           "Las fuentes tipográficas se sirven desde esta misma web, sin peticiones a servicios de terceros.",
         ],
       },
@@ -107,7 +111,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
   fr: {
     title: "Confidentialité",
     updated: `Dernière mise à jour ${UPDATED}`,
-    intro: "Ce site est un portfolio. Il n'utilise ni cookies, ni outils de mesure d'audience, ni publicité, et ne vous suit pas.",
+    intro: "Ce site est celui de Fuga Haus, studio de design. Il n'utilise ni cookies ni publicité, et ne vous suit pas ; il compte seulement les visites de façon anonyme.",
     sections: [
       {
         title: "Responsable",
@@ -137,6 +141,8 @@ export const PRIVACY: Record<Lang, Privacy> = {
         title: "Destinataires",
         body: [
           "Personne. Vos données ne sont ni vendues ni cédées. La messagerie est gérée par le fournisseur e-mail du studio ; s'il stocke des données hors de l'UE, c'est dans le cadre des clauses contractuelles types de la Commission européenne.",
+          "Les messages envoyés depuis le formulaire de contact passent par Web3Forms, qui les transmet à la messagerie du studio et ne les conserve que le temps nécessaire.",
+          "Les visites sont comptées avec Vercel Web Analytics, sans cookies et sans vous identifier : seules les pages vues, le pays et le type d'appareil sont enregistrés, de façon agrégée.",
           "Les polices sont servies depuis ce site, sans requête vers des services tiers.",
         ],
       },
@@ -153,7 +159,7 @@ export const PRIVACY: Record<Lang, Privacy> = {
   de: {
     title: "Datenschutz",
     updated: `Zuletzt aktualisiert ${UPDATED}`,
-    intro: "Diese Website ist ein Portfolio. Sie verwendet keine Cookies, keine Analyse- oder Werbedienste und verfolgt Sie nicht.",
+    intro: "Dies ist die Website von Fuga Haus, einem Designstudio. Sie verwendet keine Cookies und keine Werbung und verfolgt Sie nicht; sie zählt Besuche nur anonym.",
     sections: [
       {
         title: "Verantwortlich",
@@ -183,6 +189,8 @@ export const PRIVACY: Record<Lang, Privacy> = {
         title: "Empfänger",
         body: [
           "Niemand. Ihre Daten werden weder verkauft noch weitergegeben. E-Mails werden über den E-Mail-Anbieter des Studios verwaltet; speichert er Daten ausserhalb der EU, geschieht dies auf Grundlage der Standardvertragsklauseln der EU-Kommission.",
+          "Nachrichten aus dem Kontaktformular laufen über Web3Forms, das sie an das Postfach des Studios zustellt und nur so lange speichert, wie dafür nötig.",
+          "Besuche werden mit Vercel Web Analytics gezählt, ohne Cookies und ohne Sie zu identifizieren: erfasst werden nur, zusammengefasst, aufgerufene Seiten, Land und Gerätetyp.",
           "Die Schriften werden von dieser Website selbst geladen, ohne Anfragen an Drittanbieter.",
         ],
       },

@@ -31,7 +31,7 @@ if (typeof window !== "undefined") {
   window.setTimeout(() => idle(() => {
     void import("../../components/Stand/CanneryStand");
     void import("../../components/Identity/StationeryScene");
-  }), 3000);
+  }), 1500);
 }
 
 type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; seen: string[] };
@@ -133,18 +133,20 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
 
   // Loading in turn: on arrival only the film plays, with nothing else building beside it. The 3D
   // examples are built one ahead of the reader, once they have begun to scroll through the disciplines
-  const [reached, setReached] = useState(0);
   const [moved, setMoved] = useState(false);
-  useEffect(() => setReached((r) => Math.max(r, active)), [active]);
   useEffect(() => {
     const go = () => setMoved(true);
-    window.addEventListener("wheel", go, { once: true, passive: true });
-    window.addEventListener("touchmove", go, { once: true, passive: true });
-    window.addEventListener("keydown", go, { once: true });
+    // the film gets a short head start on its own; then the scenes are built, scrolled or not
+    const head = window.setTimeout(go, 2500);
+    // listened for in the capture phase: the wheel of disciplines stops the wheel before it bubbles
+    window.addEventListener("wheel", go, { once: true, passive: true, capture: true });
+    window.addEventListener("touchmove", go, { once: true, passive: true, capture: true });
+    window.addEventListener("keydown", go, { once: true, capture: true });
     return () => {
-      window.removeEventListener("wheel", go);
-      window.removeEventListener("touchmove", go);
-      window.removeEventListener("keydown", go);
+      window.clearTimeout(head);
+      window.removeEventListener("wheel", go, { capture: true });
+      window.removeEventListener("touchmove", go, { capture: true });
+      window.removeEventListener("keydown", go, { capture: true });
     };
   }, []);
 
@@ -228,7 +230,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                 aria-hidden={i !== active}
                 className={`absolute inset-0 transition-opacity duration-300 ease-out ${i === active ? "opacity-100" : "opacity-0"}`}
               >
-                <Frame ex={ex} note={noteFor(i)} paused={i !== active} allowed={i <= reached + 1 && (i === 0 || moved)} />
+                <Frame ex={ex} note={noteFor(i)} paused={i !== active} allowed={i === 0 || moved} />
               </div>
             ))}
           </div>
@@ -241,9 +243,10 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   key={d.title}
                   type="button"
                   onClick={() => goTo(i)}
-                  className={`group -mx-2 cursor-pointer rounded-sm px-2 pb-2 text-left outline-none transition-colors duration-500 hover:bg-ink/[0.045] focus-visible:bg-ink/[0.06] ${i === active ? "text-ink" : "text-ink/45 hover:text-ink"}`}
+                  className={`group -mx-2 cursor-pointer rounded-sm px-2 pb-2.5 text-left outline-none transition-colors duration-300 focus-visible:bg-ink/[0.06] ${i === active ? "text-ink" : "text-ink/45 hover:bg-ink/[0.06] hover:text-ink"}`}
                 >
-                  <span className="relative block h-px w-full bg-ink/15">
+                  {/* the one on view: a thicker line, fully drawn; the others thin, drawing on hover */}
+                  <span className={`relative block w-full transition-[height] duration-300 ${i === active ? "h-[2px] bg-ink/15" : "h-px bg-ink/15 group-hover:h-[2px]"}`}>
                     {/* the first time the tabs come into view, a light runs along each of the others
                         in turn, twice, and the label lifts with it: a hint that they can be pressed */}
                     {hint && i !== active && (
@@ -254,16 +257,21 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                       />
                     )}
                     <span
-                      className={`absolute inset-y-0 left-0 bg-ink transition-[width] duration-700 ease-haus ${
-                        i <= active ? "w-full" : "w-0 group-hover:w-full group-hover:bg-ink/50"
+                      // only the one on view is drawn dark; those already read keep a paler line
+                      className={`absolute inset-y-0 left-0 transition-[width,background-color] duration-700 ease-haus ${
+                        i === active ? "w-full bg-ink" : i < active ? "w-full bg-ink/30" : "w-0 bg-ink/50 group-hover:w-full"
                       }`}
                     />
                   </span>
                   <span
-                    className={`${SMALL} mt-3 block`}
+                    className={`${SMALL} mt-3 flex items-center gap-2`}
                     style={hint && i !== active ? { animation: `fh-tablift 1.6s cubic-bezier(.65,0,.35,1) ${0.35 * i}s 2 both` } : undefined}
                   >
-                    {String(i + 1).padStart(2, "0")} {d.title.toLowerCase()}
+                    {/* a small dot marks the one on view */}
+                    <span aria-hidden className={`h-1.5 w-1.5 shrink-0 rounded-full bg-ink transition-[opacity,transform,width] duration-500 ${i === active ? "scale-100 opacity-100" : "-mr-2 w-0 scale-0 opacity-0"}`} />
+                    <span>
+                      {String(i + 1).padStart(2, "0")} {d.title.toLowerCase()}
+                    </span>
                   </span>
                 </button>
               ))}
@@ -361,15 +369,15 @@ export const ProcessSteps: React.FC<{ steps: { title: string; text: string }[] }
       >
         <motion.span
           aria-hidden
-          className="block h-px origin-left bg-ink/40"
+          className="block h-px origin-left bg-ink/60"
           variants={{ off: { scaleX: 0 }, on: { scaleX: 1, transition: { duration: 1.1, delay: i * 0.18, ease: EASE_HAUS } } }}
         />
         <motion.div
           variants={{ off: { opacity: 0, y: 12 }, on: { opacity: 1, y: 0, transition: { duration: 0.9, delay: 0.3 + i * 0.18, ease: EASE_HAUS } } }}
         >
           <p className={`${SMALL} mt-5 text-graphite`}>{String(i + 1).padStart(2, "0")}</p>
-          <h3 className="mt-3 font-geo text-[1.1rem] font-light leading-snug tracking-[0.02em] text-ink">{p.title}</h3>
-          <p className={`${BODY} mt-3 text-graphite`}>{p.text}</p>
+          <h3 className="mt-3 font-geo text-[1.2rem] font-normal leading-snug tracking-[0.02em] text-ink">{p.title}</h3>
+          <p className={`${BODY} mt-3 text-ink/80`}>{p.text}</p>
         </motion.div>
       </motion.div>
     ))}

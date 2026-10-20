@@ -57,12 +57,12 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Web and interactive 3D",
         text: "Bespoke websites and experiences you can explore: fast, finished to the last detail and made to tell.",
-        list: ["Bespoke web design and development", "Spaces and products in 3D to explore", "Ongoing care and improvements"],
+        list: ["Bespoke web design and development", "Spaces and products in 3D to explore", "Maintenance and technical SEO"],
       },
       {
         title: "Strategy and identity",
         text: "What a brand is, who it speaks to and how it looks: one clear idea behind everything it does.",
-        list: ["Positioning and brand story", "Name, logo and visual system", "Brand guidelines and applications"],
+        list: ["Positioning and brand story", "Bespoke visual identity", "Brand guidelines and applications"],
       },
     ],
     seenIn: "in projects",
@@ -119,12 +119,12 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Web y 3D interactivo",
         text: "Webs a medida y experiencias que se recorren: rápidas, cuidadas hasta el último detalle y hechas para contar.",
-        list: ["Diseño y desarrollo web a medida", "Espacios y productos en 3D que se pueden explorar", "Mantenimiento y mejoras continuas"],
+        list: ["Diseño y desarrollo web a medida", "Espacios y productos en 3D que se pueden explorar", "Mantenimiento y SEO técnico"],
       },
       {
         title: "Estrategia e identidad",
         text: "Qué es una marca, a quién habla y cómo se ve: una idea clara detrás de todo lo que hace.",
-        list: ["Posicionamiento y relato de marca", "Nombre, logotipo y sistema visual", "Guía de marca y aplicaciones"],
+        list: ["Posicionamiento y relato de marca", "Identidad visual a medida", "Guía de marca y aplicaciones"],
       },
     ],
     seenIn: "en proyectos",
@@ -181,12 +181,12 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Web et 3D interactive",
         text: "Des sites sur mesure et des expériences à parcourir : rapides, soignés jusqu'au moindre détail et faits pour raconter.",
-        list: ["Conception et développement web sur mesure", "Espaces et produits en 3D à explorer", "Maintenance et améliorations continues"],
+        list: ["Conception et développement web sur mesure", "Espaces et produits en 3D à explorer", "Maintenance et SEO technique"],
       },
       {
         title: "Stratégie et identité",
         text: "Ce qu'est une marque, à qui elle parle et à quoi elle ressemble : une idée claire derrière tout ce qu'elle fait.",
-        list: ["Positionnement et récit de marque", "Nom, logo et système visuel", "Charte de marque et déclinaisons"],
+        list: ["Positionnement et récit de marque", "Identité visuelle sur mesure", "Charte de marque et déclinaisons"],
       },
     ],
     seenIn: "dans les projets",
@@ -243,12 +243,12 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Web und interaktives 3D",
         text: "Maßgeschneiderte Websites und Erlebnisse zum Erkunden: schnell, bis ins Detail ausgearbeitet und gemacht, um zu erzählen.",
-        list: ["Webdesign und -entwicklung nach Maß", "Räume und Produkte in 3D zum Erkunden", "Laufende Pflege und Verbesserungen"],
+        list: ["Webdesign und -entwicklung nach Maß", "Räume und Produkte in 3D zum Erkunden", "Wartung und technisches SEO"],
       },
       {
         title: "Strategie und Identität",
         text: "Was eine Marke ist, wen sie anspricht und wie sie aussieht: eine klare Idee hinter allem, was sie tut.",
-        list: ["Positionierung und Markengeschichte", "Name, Logo und visuelles System", "Markenrichtlinien und Anwendungen"],
+        list: ["Positionierung und Markengeschichte", "Visuelle Identität nach Maß", "Markenrichtlinien und Anwendungen"],
       },
     ],
     seenIn: "in projekten",

@@ -52,6 +52,17 @@ export const ArtworkPage: React.FC = () => {
   const [beforeName, afterName] = s.voice.split("{name}");
   const [beforeEp, afterEp] = afterName.split("{ep}");
 
+  // the page's own ground under everything, so a phone's overscroll never shows the light wall
+  useEffect(() => {
+    const prev = document.documentElement.style.background;
+    document.documentElement.style.background = NIGHT;
+    document.body.style.background = NIGHT;
+    return () => {
+      document.documentElement.style.background = prev;
+      document.body.style.background = "";
+    };
+  }, []);
+
   const close = useCallback(() => {
     setOpen((i) => {
       if (i !== null) requestAnimationFrame(() => plates.current[i]?.focus({ preventScroll: true }));
