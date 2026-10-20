@@ -125,7 +125,8 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
           {/* Gallery labels: flat, sharp, far apart */}
           <nav
-            className="pointer-events-none absolute inset-x-0 top-[47%] flex flex-col items-center gap-7 px-4 sm:top-[50%] sm:gap-9 lg:inset-0 lg:top-0 lg:block lg:px-0"
+            // phones: the four stacked tight under the sculpture, all clear above the footer
+            className="pointer-events-none absolute inset-x-0 top-[44%] flex flex-col items-center gap-5 px-4 sm:top-[48%] sm:gap-8 lg:inset-0 lg:top-0 lg:block lg:px-0"
             onMouseLeave={() => setActive(null)}
             aria-label="Sections"
           >
@@ -231,12 +232,8 @@ const Label: React.FC<LabelProps> = ({ section, index, on, dimmed, current, onHo
     }}
     onAnimationComplete={() => setEntered(true)}
   >
-    {/* No numbers: only "here", on the page you are on (the line keeps its height either way) */}
-    <span className="block font-mono text-[13px] font-normal lowercase tracking-[0.2em]" style={{ color: NAVE.label }}>
-      {current ? t("index.here") : " "}
-    </span>
     <span
-      className="mt-1.5 block font-geo text-[1.85rem] font-light lowercase leading-none tracking-[0.16em] transition-colors duration-700 sm:text-4xl lg:mt-2 lg:text-[1.9vw] lg:tracking-[0.18em]"
+      className="block font-geo text-[1.6rem] font-light lowercase leading-none tracking-[0.16em] transition-colors duration-700 sm:text-4xl lg:mt-2 lg:text-[1.9vw] lg:tracking-[0.18em]"
       style={{ color: on ? NAVE.labelOn : NAVE.label }}
     >
       {t(key)}

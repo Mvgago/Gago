@@ -326,6 +326,33 @@ export const AboutPage: React.FC = () => {
           </div>
 
           {/* The form, on a pane of smoked glass */}
+          {status === "sent" ? (
+            // Sent: the pane itself turns into the confirmation, unmistakable, with a way to write again
+            <motion.div
+              role="status"
+              aria-live="polite"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: EASE_HAUS }}
+              className="col-span-12 flex min-h-[22rem] flex-col items-start justify-center self-start rounded-sm border border-platinum/20 bg-platinum/[0.07] p-8 backdrop-blur-sm md:p-10 lg:col-span-6"
+            >
+              <svg viewBox="0 0 48 48" className="h-14 w-14 text-platinum" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <motion.circle cx="24" cy="24" r="22" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, ease: EASE_HAUS }} />
+                <motion.path d="M15 24.5l6 6 12-13" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.6, delay: 0.7, ease: EASE_HAUS }} />
+              </svg>
+              <p className={`${LEAD} mt-8 text-platinum`}>{s.form.sentTitle}</p>
+              <p className="mt-3 max-w-[36ch] font-geo text-[15px] leading-relaxed tracking-[0.02em] text-platinum/75">{s.form.sent}</p>
+              <button
+                type="button"
+                onClick={() => setStatus("idle")}
+                className={`${ACTION} group relative mt-10 text-platinum`}
+              >
+                {s.form.another}
+                <span className="absolute -bottom-1.5 left-0 h-px w-full bg-platinum/30" />
+                <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-platinum transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+              </button>
+            </motion.div>
+          ) : (
           <form
             onSubmit={onSubmit}
             className="col-span-12 grid gap-9 self-start rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10 lg:col-span-6"
@@ -337,8 +364,8 @@ export const AboutPage: React.FC = () => {
             </div>
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 sm:col-span-2">
               {/* the note, or how the sending went, in the same place */}
-              <span role="status" aria-live="polite" className={`${SMALL} transition-colors duration-500 ${status === "sent" ? "text-platinum" : status === "error" ? "text-[#e3a99a]" : "text-platinum/50"}`}>
-                {status === "sent" ? s.form.sent : status === "error" ? s.form.error : s.form.note}
+              <span role="status" aria-live="polite" className={`${SMALL} transition-colors duration-500 ${status === "error" ? "text-[#e3a99a]" : "text-platinum/50"}`}>
+                {status === "error" ? s.form.error : s.form.note}
               </span>
               <button
                 type="submit"
@@ -350,6 +377,7 @@ export const AboutPage: React.FC = () => {
               </button>
             </div>
           </form>
+          )}
         </div>
 
         {/* The footer, inside the room */}

@@ -35,7 +35,7 @@ export type Studio = {
   /** Shortcut under the statement, down to the contact chapter */
   cta: string;
   contactLead: string;
-  form: { name: string; email: string; message: string; send: string; note: string; sending: string; sent: string; error: string };
+  form: { name: string; email: string; message: string; send: string; note: string; sending: string; sent: string; error: string; sentTitle: string; another: string };
 };
 
 export const STUDIO: Record<Lang, Studio> = {
@@ -96,7 +96,9 @@ export const STUDIO: Record<Lang, Studio> = {
       send: "send",
       note: "We usually reply within two working days.",
       sending: "sending…",
-      sent: "Thank you. Your message has arrived; we'll be in touch soon.",
+      sent: "We've received it and will reply within two working days.",
+      sentTitle: "Message sent",
+      another: "write another message",
       error: "It couldn't be sent. Try again, or write to hola@fugahaus.com.",
     },
   },
@@ -158,7 +160,9 @@ export const STUDIO: Record<Lang, Studio> = {
       send: "enviar",
       note: "Solemos responder en dos días laborables.",
       sending: "enviando…",
-      sent: "Gracias. Tu mensaje ha llegado; te escribimos pronto.",
+      sent: "Lo hemos recibido y te respondemos en dos días laborables.",
+      sentTitle: "Mensaje enviado",
+      another: "escribir otro mensaje",
       error: "No se pudo enviar. Inténtalo de nuevo o escribe a hola@fugahaus.com.",
     },
   },
@@ -220,7 +224,9 @@ export const STUDIO: Record<Lang, Studio> = {
       send: "envoyer",
       note: "Nous répondons en général sous deux jours ouvrés.",
       sending: "envoi…",
-      sent: "Merci. Votre message est bien arrivé ; nous vous écrivons bientôt.",
+      sent: "Nous l'avons bien reçu et vous répondons sous deux jours ouvrés.",
+      sentTitle: "Message envoyé",
+      another: "écrire un autre message",
       error: "L'envoi a échoué. Réessayez ou écrivez à hola@fugahaus.com.",
     },
   },
@@ -282,7 +288,9 @@ export const STUDIO: Record<Lang, Studio> = {
       send: "senden",
       note: "Wir antworten in der Regel innerhalb von zwei Werktagen.",
       sending: "wird gesendet…",
-      sent: "Danke. Ihre Nachricht ist angekommen; wir melden uns bald.",
+      sent: "Wir haben sie erhalten und antworten innerhalb von zwei Werktagen.",
+      sentTitle: "Nachricht gesendet",
+      another: "eine weitere Nachricht schreiben",
       error: "Senden fehlgeschlagen. Versuchen Sie es erneut oder schreiben Sie an hola@fugahaus.com.",
     },
   },

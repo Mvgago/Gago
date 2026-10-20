@@ -281,7 +281,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
       </div>
 
       {/* The disciplines, a screen each on large screens, a hairline between one and the next */}
-      <div className="col-span-12 lg:col-span-5 xl:col-span-4">
+      {/* on a clean ground of its own, out to the screen's right edge: the room's light stays behind the frame */}
+      <div className="relative z-10 col-span-12 lg:col-span-5 lg:-ml-8 lg:-mr-8 lg:bg-[#efeef0] lg:pl-16 lg:pr-8 xl:col-span-4">
         {s.disciplines.map((d, i) => {
           return (
             <div
@@ -321,15 +322,52 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     <span className="font-geo text-[15px] font-normal leading-none text-ink">{i + 1}</span>
                   </span>
                 </div>
-                <h3 className={`${TITLE} mt-5 text-ink`}>{d.title}</h3>
+                {/* as the discipline arrives its title rises word by word out of an unseen mask */}
+                <h3 className={`${TITLE} mt-5 text-ink`} aria-label={d.title}>
+                  {d.title.split(" ").map((w, k) => (
+                    <React.Fragment key={k}>
+                      {k > 0 && " "}
+                      <span aria-hidden className="inline-block overflow-hidden pb-[0.12em] align-bottom">
+                        <span
+                          className={`inline-block transition-transform duration-[900ms] ease-haus ${i === active ? "translate-y-0" : "lg:translate-y-[110%]"}`}
+                          style={{ transitionDelay: i === active ? `${120 + k * 90}ms` : "0ms" }}
+                        >
+                          {w}
+                        </span>
+                      </span>
+                    </React.Fragment>
+                  ))}
+                </h3>
                 <p className={`${BODY} mt-6 max-w-[42ch] text-ink/80`}>{d.text}</p>
                 {d.list && (
-                  <ul className="ml-6 mt-7 max-w-[40ch] border-b border-ink/20 lg:ml-10">
-                    {d.list.map((item) => (
-                      <li key={item} className={`${BODY} border-t border-ink/20 py-3 text-ink/80`}>
-                        {item}
-                      </li>
-                    ))}
+                  // what is delivered, the part to read: larger, in full ink, each with its number
+                  // As the discipline arrives its services come in one after another, each line drawing
+                  // itself across; on hover a line fills in ink and its words step a touch to the right
+                  <ul className="mt-9 max-w-[44ch]">
+                    {d.list.map((item, k) => {
+                      const on = i === active;
+                      const delay = on ? `${250 + k * 130}ms` : "0ms";
+                      return (
+                        <li key={item} className="group/svc relative py-4">
+                          <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-ink/15" />
+                          <span
+                            aria-hidden
+                            className={`absolute left-0 top-0 h-px origin-left bg-ink/45 transition-transform duration-[900ms] ease-haus group-hover/svc:bg-ink ${on ? "scale-x-100" : "lg:scale-x-0"}`}
+                            style={{ transitionDelay: delay, width: "100%" }}
+                          />
+                          <span
+                            className={`flex items-baseline gap-5 transition-[opacity,transform] duration-700 ease-haus ${on ? "translate-y-0 opacity-100" : "lg:translate-y-2 lg:opacity-0"}`}
+                            style={{ transitionDelay: delay }}
+                          >
+                            <span className={`${SMALL} w-6 shrink-0 text-graphite transition-colors duration-300 group-hover/svc:text-ink`}>{String(k + 1).padStart(2, "0")}</span>
+                            <span className="font-geo text-[1.12rem] font-normal leading-snug tracking-[0.01em] text-ink transition-transform duration-500 ease-haus group-hover/svc:translate-x-1.5">
+                              {item}
+                            </span>
+                          </span>
+                          {k === d.list!.length - 1 && <span aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-ink/15" />}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
                 {/* on arrival, a plain word that the others follow below */}
