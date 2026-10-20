@@ -18,6 +18,7 @@ export type Studio = {
   labArtLabel: string;
   labArtText: string;
   labSoundLabel: string;
+  labPlaying: string;
   workTitle: string;
   workAll: string;
   closing: string;
@@ -28,8 +29,10 @@ export type Studio = {
   videoNote: string;
   /** Under the disciplines' tabs: an invitation to keep scrolling */
   scrollHint: string;
+  endTitle: string;
+  endTalk: string;
   voiceLabel: string;
-  /** `{name}` is replaced with the project's name, as a link; `{ep}` with the EP's title. */
+  /** `{name}` is replaced with the project's name. */
   voice: string;
   contactLabel: string;
   /** Shortcut under the statement, down to the contact chapter */
@@ -68,11 +71,14 @@ export const STUDIO: Record<Lang, Studio> = {
     seenIn: "in projects",
     videoNote: "In-house production.",
     scrollHint: "scroll to see each discipline",
+    endTitle: "Shall we make something together?",
+    endTalk: "let's talk",
     processLabel: "process",
     processTitle: "How we work",
     labSoundLabel: "sound",
-    labArtLabel: "illustration",
-    labArtText: "Illustrations and covers, between painting and the digital.",
+    labPlaying: "in the headphones",
+    labArtLabel: "illustration and photography",
+    labArtText: "Illustrations, covers and photographs, between painting and the digital.",
     workLabel: "projects",
     workTitle: "Recent work",
     workAll: "see all projects",
@@ -85,7 +91,7 @@ export const STUDIO: Record<Lang, Studio> = {
     ],
     voiceLabel: "own voice",
     voice:
-      "The studio also has a sound of its own: {name}, minimal, spatial, instrumental electronic music. Its first EP, {ep}, is out now.",
+      "The studio also composes: original music and sound design for brands, spaces and films. {name} is its own project, minimal, spatial, instrumental electronic music.",
     contactLabel: "contact",
     cta: "start a project",
     contactLead: "Have a project in mind? Let's talk.",
@@ -132,11 +138,14 @@ export const STUDIO: Record<Lang, Studio> = {
     seenIn: "en proyectos",
     videoNote: "Producción propia.",
     scrollHint: "desliza para ver cada disciplina",
+    endTitle: "¿Hacemos algo juntos?",
+    endTalk: "hablemos",
     processLabel: "proceso",
     processTitle: "Cómo trabajamos",
     labSoundLabel: "sonido",
-    labArtLabel: "ilustración",
-    labArtText: "Ilustraciones y portadas, entre lo pictórico y lo digital.",
+    labPlaying: "en los cascos",
+    labArtLabel: "ilustración y fotografía",
+    labArtText: "Ilustraciones, portadas y fotografía, entre lo pictórico y lo digital.",
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
@@ -149,7 +158,7 @@ export const STUDIO: Record<Lang, Studio> = {
     ],
     voiceLabel: "voz propia",
     voice:
-      "El estudio también tiene su propio sonido: {name}, música electrónica minimal, espacial e instrumental. Su primer EP, {ep}, ya está publicado.",
+      "El estudio también compone: música original y diseño sonoro para marcas, espacios y piezas audiovisuales. {name} es su proyecto propio, electrónica minimal, espacial e instrumental.",
     contactLabel: "contacto",
     cta: "empezar un proyecto",
     contactLead: "¿Tienes un proyecto en mente? Hablemos.",
@@ -196,11 +205,14 @@ export const STUDIO: Record<Lang, Studio> = {
     seenIn: "dans les projets",
     videoNote: "Production maison.",
     scrollHint: "faites défiler pour voir chaque discipline",
+    endTitle: "On fait quelque chose ensemble ?",
+    endTalk: "parlons-en",
     processLabel: "processus",
     processTitle: "Notre méthode",
     labSoundLabel: "son",
-    labArtLabel: "illustration",
-    labArtText: "Illustrations et pochettes, entre la peinture et le numérique.",
+    labPlaying: "dans le casque",
+    labArtLabel: "illustration et photographie",
+    labArtText: "Illustrations, pochettes et photographies, entre la peinture et le numérique.",
     workLabel: "projets",
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
@@ -213,7 +225,7 @@ export const STUDIO: Record<Lang, Studio> = {
     ],
     voiceLabel: "voix propre",
     voice:
-      "Le studio a aussi son propre son : {name}, musique électronique minimale, spatiale et instrumentale. Son premier EP, {ep}, est disponible.",
+      "Le studio compose aussi : musique originale et design sonore pour des marques, des espaces et des films. {name} est son projet propre, une électronique minimale, spatiale et instrumentale.",
     contactLabel: "contact",
     cta: "démarrer un projet",
     contactLead: "Un projet en tête ? Parlons-en.",
@@ -260,11 +272,14 @@ export const STUDIO: Record<Lang, Studio> = {
     seenIn: "in projekten",
     videoNote: "Eigenproduktion.",
     scrollHint: "scrollen, um jede Disziplin zu sehen",
+    endTitle: "Machen wir etwas zusammen?",
+    endTalk: "sprechen wir",
     processLabel: "prozess",
     processTitle: "Wie wir arbeiten",
     labSoundLabel: "klang",
-    labArtLabel: "illustration",
-    labArtText: "Illustrationen und Cover, zwischen Malerei und Digitalem.",
+    labPlaying: "im kopfhörer",
+    labArtLabel: "Illustration und Fotografie",
+    labArtText: "Illustrationen, Cover und Fotografie, zwischen Malerei und Digitalem.",
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
@@ -277,7 +292,7 @@ export const STUDIO: Record<Lang, Studio> = {
     ],
     voiceLabel: "eigene stimme",
     voice:
-      "Das Studio hat auch einen eigenen Klang: {name}, minimale, räumliche, instrumentale elektronische Musik. Die erste EP, {ep}, ist erschienen.",
+      "Das Studio komponiert auch: eigene Musik und Sounddesign für Marken, Räume und Filme. {name} ist sein eigenes Projekt, minimale, räumliche, instrumentale Elektronik.",
     contactLabel: "kontakt",
     cta: "projekt starten",
     contactLead: "Ein Projekt im Kopf? Sprechen wir darüber.",

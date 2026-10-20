@@ -188,14 +188,14 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
 
 /* ────────────────────────────────────────────────────────────────── */
 
-// Wide screens: the labels hang around the piece — left wall, right wall, low centre, high centre.
-// Phones and tablets: they stack in one centred column under it (see the nav).
+// Wide screens: the labels hang around the piece, read as a page is: projects high centre, then
+// the studio on the left wall, the lab on the right, and contact low centre, closing the round.
+// Phones and tablets: they stack in one centred column under it, in that same order (see the nav).
 const SPOTS = [
-  "lg:absolute lg:left-8 lg:top-1/2 lg:-translate-y-1/2 lg:text-left",
-  "lg:absolute lg:right-8 lg:top-1/2 lg:-translate-y-1/2 lg:text-right",
-  "lg:absolute lg:left-1/2 lg:bottom-[18%] lg:-translate-x-1/2 lg:text-center",
-  // contact, at the top centre: the way out of the index, facing the studio below
-  "lg:absolute lg:left-1/2 lg:top-[17%] lg:-translate-x-1/2 lg:text-center",
+  "order-1 lg:absolute lg:left-1/2 lg:top-[17%] lg:-translate-x-1/2 lg:text-center",
+  "order-3 lg:absolute lg:right-8 lg:top-1/2 lg:-translate-y-1/2 lg:text-right",
+  "order-2 lg:absolute lg:left-8 lg:top-1/2 lg:-translate-y-1/2 lg:text-left",
+  "order-4 lg:absolute lg:left-1/2 lg:bottom-[18%] lg:-translate-x-1/2 lg:text-center",
 ] as const;
 
 type LabelProps = {

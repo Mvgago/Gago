@@ -9,9 +9,16 @@ import { LightWall } from "../../components/Light/LightWall";
 import { ACTION, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
 import buendiaCatalogue from "../../assets/peojects/buendia/buendia-catalogue-web.jpg";
+import buendiaSocial from "../../assets/peojects/buendia/buendia-social-web.jpg";
+import sapWeb from "../../assets/peojects/saphire/saphire.jpg";
+import smCards from "../../assets/peojects/smart/smart-cards-web.jpg";
 
 // The picture each case shows here, where its own cover would not read at this size
 const PICK: Record<string, string> = { buendia: buendiaCatalogue };
+// A second picture of each, that the tile turns to and back from, each in its own time
+const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb, smarthc: smCards };
+// Drawn in close where the picture has a wide margin: the complex fills the tile, cut at its ends
+const ZOOM: Record<string, [number, string]> = {};
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import Footer from "../../components/Footer/Footer";
 import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
@@ -247,10 +254,10 @@ export const AboutPage: React.FC = () => {
             {cases
               .filter((c) => !c.hidden)
               .slice(0, 3)
-              .map((c) => (
+              .map((c, k) => (
                 <li key={c.slug}>
                   <Link to={`/projects/${c.slug}`} aria-label={c.title} className="group block">
-                    <span className="block aspect-[4/3] overflow-hidden bg-ink/5">
+                    <span className="relative block aspect-[4/3] overflow-hidden bg-ink/5">
                       <img
                         src={PICK[c.slug] ?? c.thumb ?? c.cover}
                         alt=""
@@ -258,6 +265,19 @@ export const AboutPage: React.FC = () => {
                         className="h-full w-full object-cover opacity-90 transition-[transform,opacity] duration-[1400ms] ease-haus group-hover:scale-[1.04] group-hover:opacity-100"
                         style={{ objectPosition: c.coverFocus }}
                       />
+                      {/* the second picture dissolves in over the first, settling from a touch closer,
+                          and away again: the three take turns, so one is always changing */}
+                      {NEXT[c.slug] && (
+                        <span className="absolute inset-0 opacity-0 motion-safe:animate-[fh-turn_12s_ease-in-out_infinite]" style={{ animationDelay: `${2 + k * 4}s` }}>
+                          <img
+                            src={NEXT[c.slug]}
+                            alt=""
+                            loading="lazy"
+                            className="h-full w-full object-cover"
+                            style={ZOOM[c.slug] && { transform: `scale(${ZOOM[c.slug][0]})`, transformOrigin: ZOOM[c.slug][1] }}
+                          />
+                        </span>
+                      )}
                     </span>
                   </Link>
                 </li>

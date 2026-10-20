@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { artwork, FUGA_SEI_EP } from "../../outils/artwork";
@@ -9,6 +9,9 @@ import { ACTION, BODY, HEADING, SMALL } from "../../lib/type";
 import { STUDIO } from "../../i18n/studio";
 
 const pad = (n: number) => String(n).padStart(2, "0");
+
+// three.js comes only with the sound, after the page's own pictures
+const Headphones = lazy(() => import("../../components/Lab/Headphones"));
 
 /**
  * The lab is a room apart from the rest of the site: near black, lit low from one side in a cold
@@ -45,12 +48,12 @@ export const ArtworkPage: React.FC = () => {
   const { t, lang } = useI18n();
   const s = STUDIO[lang];
   const [open, setOpen] = useState<number | null>(null);
+  const [listening, setListening] = useState(false);
   const plates = useRef<(HTMLButtonElement | null)[]>([]);
   // A small sample for now: the studio's own record first, then four pieces
   const record = artwork[0];
   const sample = artwork.slice(1, 5);
   const [beforeName, afterName] = s.voice.split("{name}");
-  const [beforeEp, afterEp] = afterName.split("{ep}");
 
   // the page's own ground under everything, so a phone's overscroll never shows the light wall
   useEffect(() => {
@@ -124,35 +127,76 @@ export const ArtworkPage: React.FC = () => {
         <div className="mb-10 grid grid-cols-12 gap-x-8 md:mb-12">
           <p className={`${SMALL} col-span-12 text-platinum/50 md:col-span-3`}>{s.labSoundLabel}</p>
           <div className="col-span-12 mt-3 md:col-span-6 md:mt-0">
+            {/* what the studio does in sound; the record itself, and the way to listen, are with the headphones */}
             <p className={`${BODY} max-w-[52ch] text-platinum/75`}>
               {beforeName}
               <span className="text-platinum">Fuga Sei</span>
-              {beforeEp}
-              <em className="not-italic text-platinum">Grimaldi Lines</em>
-              {afterEp}
+              {afterName}
             </p>
-            <a href={FUGA_SEI_EP} target="_blank" rel="noopener noreferrer" className={`${ACTION} group relative mt-6 inline-block text-platinum`}>
-              {t("artwork.listen")}
-              <span className="absolute -bottom-1.5 left-0 h-px w-full bg-platinum/30" />
-              <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-platinum transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-            </a>
           </div>
         </div>
-        <a
-          href={FUGA_SEI_EP}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Fuga Sei — Grimaldi Lines"
-          // edge to edge, as the illustrations above, one wide square of the record
-          className="group -mx-4 block overflow-hidden sm:-mx-6 md:-mx-8 md:w-1/2"
-        >
-          <img
-            src={record.url}
-            alt=""
-            {...protect}
-            className="block aspect-square w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]"
-          />
-        </a>
+        {/* the record, and beside it, leaning in over its edge, a pair of silver headphones in 3D */}
+        <div className="relative md:flex md:items-center">
+          <a
+            href={FUGA_SEI_EP}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Fuga Sei — Grimaldi Lines"
+            // edge to edge, as the illustrations above, one wide square of the record
+            className="group -mx-4 block shrink-0 overflow-hidden sm:-mx-6 md:-ml-8 md:mr-0 md:w-1/2"
+          >
+            <img
+              src={record.url}
+              alt=""
+              {...protect}
+              className="block aspect-square w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]"
+            />
+          </a>
+          {/* pointed at, the headphones lift and turn to the visitor, and beside them comes in what
+              is playing in them, with a way to listen */}
+          <div
+            className="group/hp relative z-10 -mt-[30%] ml-[18%] w-[82%] md:-ml-[16%] md:mt-0 md:w-[50%]"
+            onPointerEnter={(e) => e.pointerType === "mouse" && setListening(true)}
+            onPointerLeave={() => setListening(false)}
+          >
+            <Suspense fallback={null}>
+              <Headphones active={listening} className="aspect-square w-full" />
+            </Suspense>
+            <style>{`@keyframes fh-eq{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}`}</style>
+            <div
+              className={`-mt-6 pb-2 transition-[opacity,transform] duration-700 ease-haus md:absolute md:left-[90%] md:top-1/2 md:mt-0 md:w-[15rem] md:-translate-y-1/2 md:pb-0 ${
+                listening ? "md:translate-x-0 md:opacity-100" : "md:pointer-events-none md:-translate-x-3 md:opacity-0"
+              }`}
+            >
+              <p className={`${SMALL} text-platinum/50`}>{s.labPlaying}</p>
+              <div className="mt-4 flex items-end gap-4">
+                {/* a small level meter, moving while the headphones are pointed at */}
+                <span aria-hidden className="flex h-7 items-end gap-[3px]">
+                  {[0.9, 0.55, 1, 0.7, 0.85].map((h, k) => (
+                    <span
+                      key={k}
+                      className="block w-[3px] origin-bottom rounded-full bg-platinum/80"
+                      style={{
+                        height: `${h * 100}%`,
+                        animation: `fh-eq ${0.7 + k * 0.13}s ease-in-out ${k * 0.09}s infinite`,
+                        animationPlayState: listening ? "running" : "paused",
+                      }}
+                    />
+                  ))}
+                </span>
+                <span>
+                  <span className="block font-geo text-[1.35rem] font-normal leading-tight text-platinum">Grimaldi Lines</span>
+                  <span className={`${SMALL} mt-1 block text-platinum/60`}>Fuga Sei — EP</span>
+                </span>
+              </div>
+              <a href={FUGA_SEI_EP} target="_blank" rel="noopener noreferrer" className={`${ACTION} group relative mt-6 inline-block text-platinum`}>
+                {t("artwork.listen")}
+                <span className="absolute -bottom-1.5 left-0 h-px w-full bg-platinum/30" />
+                <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-platinum transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+              </a>
+            </div>
+          </div>
+        </div>
       </section>
 
       <Viewer plates={sample} index={open} onClose={close} onMove={setOpen} />

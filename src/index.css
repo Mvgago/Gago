@@ -157,3 +157,12 @@
 @media (prefers-reduced-motion: reduce) {
   @keyframes strip-in { from, to { clip-path: none; } }
 }
+
+/* The studio page's project tiles: a second picture dissolving in, settling from a touch closer, and away */
+@keyframes fh-turn {
+  0% { opacity: 0; transform: scale(1.06); }
+  10% { opacity: 1; }
+  42% { opacity: 1; transform: scale(1); }
+  52% { opacity: 0; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}

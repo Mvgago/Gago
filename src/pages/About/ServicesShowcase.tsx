@@ -150,6 +150,24 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
     };
   }, []);
 
+  // Phones and tablets: each sheet is held under the header, or, if taller than the screen, once
+  // its foot is reached, so all of it is read before the next covers it
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const place = () =>
+      items.current.forEach((el) => {
+        if (el) el.style.top = mq.matches ? "" : `${Math.min(64, window.innerHeight - el.offsetHeight)}px`;
+      });
+    place();
+    const ro = new ResizeObserver(place);
+    items.current.forEach((el) => el && ro.observe(el));
+    window.addEventListener("resize", place);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", place);
+    };
+  }, []);
+
   const noteFor = (i: number) => (EX[i].video ? s.videoNote : undefined);
   const lenis = useLenis();
   // A tab brings its discipline to the middle of the screen
@@ -291,7 +309,10 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               ref={(el) => (items.current[i] = el)}
               // a whole screen each on large screens, its title at the top, level with the frame; a line
               // above each after the first, so it is clear where one ends and the next begins
-              className={`flex flex-col justify-center pb-20 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:pb-0 lg:pt-8 ${i > 0 ? "border-t border-ink/20 pt-12" : ""}`}
+              // On phones and tablets each is a sheet of its own, a screen tall: held in place once read
+              // through, while the next slides up over it, so two disciplines never run together
+              className={`sticky -mx-4 flex min-h-[calc(100svh-64px)] flex-col bg-[#efeef0] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              style={{ zIndex: i + 1 }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
               <div className="-mx-4 mb-8 aspect-video sm:-mx-6 md:-mx-8 lg:hidden">
@@ -300,7 +321,11 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
                     four already read, drawing itself on as the discipline arrives */}
-                <div className="flex items-center gap-3 lg:mt-0" aria-label={`${i + 1} / ${s.disciplines.length}`}>
+                {/* phones: the place in the four as a plain figure, the ring took too much room */}
+                <p className={`${SMALL} text-graphite lg:hidden`}>
+                  {String(i + 1).padStart(2, "0")} / {String(s.disciplines.length).padStart(2, "0")}
+                </p>
+                <div className="hidden items-center gap-3 lg:flex" aria-label={`${i + 1} / ${s.disciplines.length}`}>
                   <span aria-hidden className="relative grid h-11 w-11 place-items-center">
                     <svg viewBox="0 0 44 44" className="absolute inset-0 -rotate-90">
                       <circle cx="22" cy="22" r="20.5" fill="none" stroke="currentColor" strokeWidth="1" className="text-ink/15" />
@@ -369,6 +394,41 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                       );
                     })}
                   </ul>
+                )}
+                {/* at the end of the four, an invitation that comes in once the last is reached */}
+                {i === s.disciplines.length - 1 && (
+                  <div className="mt-14">
+                    <p className="font-geo text-[1.5rem] font-normal leading-snug text-ink">
+                      {s.endTitle.split(" ").map((w, k) => (
+                        <React.Fragment key={k}>
+                          {k > 0 && " "}
+                          <span className="inline-block overflow-hidden pb-[0.12em] align-bottom">
+                            <span
+                              className={`inline-block transition-transform duration-[900ms] ease-haus ${i === active ? "translate-y-0" : "lg:translate-y-[110%]"}`}
+                              style={{ transitionDelay: i === active ? `${700 + k * 90}ms` : "0ms" }}
+                            >
+                              {w}
+                            </span>
+                          </span>
+                        </React.Fragment>
+                      ))}
+                    </p>
+                    <div
+                      className={`mt-6 flex items-center gap-6 transition-[opacity,transform] duration-700 ease-haus ${i === active ? "translate-y-0 opacity-100" : "lg:pointer-events-none lg:translate-y-2 lg:opacity-0"}`}
+                      style={{ transitionDelay: i === active ? "1150ms" : "0ms" }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const el = document.getElementById("contact");
+                          if (el) scrollToTarget(lenis, el);
+                        }}
+                        className={`${SMALL} cursor-pointer rounded-full border border-ink/25 px-5 py-2.5 text-ink transition-[background-color,border-color] duration-300 hover:border-ink/40 hover:bg-ink/[0.05]`}
+                      >
+                        {s.endTalk}
+                      </button>
+                    </div>
+                  </div>
                 )}
                 {/* on arrival, a plain word that the others follow below */}
                 {i === 0 && (
