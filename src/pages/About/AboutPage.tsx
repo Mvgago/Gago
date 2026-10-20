@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
@@ -328,6 +328,14 @@ export const AboutPage: React.FC = () => {
           }}
         />
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
+        {/* sent: the room lights up from behind the pane, warm, and stays a little brighter */}
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "radial-gradient(45% 60% at 74% 42%, rgba(255, 238, 222, 0.32) 0%, rgba(214, 180, 196, 0.12) 45%, transparent 75%)" }}
+          initial={false}
+          animate={status === "sent" ? { opacity: [0, 1, 0.45], transition: { duration: 2.2, times: [0, 0.3, 1], ease: "easeOut" } } : { opacity: 0, transition: { duration: 0.8 } }}
+        />
 
         <div className="relative grid grid-cols-12 gap-x-8 gap-y-16">
           <div className="col-span-12 lg:col-span-6">
@@ -347,38 +355,80 @@ export const AboutPage: React.FC = () => {
               </PlainLink>
             </div>
 
+
           </div>
 
           {/* The form, on a pane of smoked glass */}
           <GlassPane className="col-span-12 self-start lg:col-span-6">
+          <AnimatePresence mode="wait" initial={false}>
           {status === "sent" ? (
-            // Sent: the pane itself turns into the confirmation, unmistakable, with a way to write again
+            // Sent: the pane turns over, like a card, and on its back is the confirmation, with a way to write again
             <motion.div
+              key="sent"
               role="status"
               aria-live="polite"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: EASE_HAUS }}
+              initial={{ opacity: 0, rotateY: 90 }}
+              animate={{ opacity: 1, rotateY: 0, transition: { duration: 0.6, ease: [0.2, 0.7, 0.2, 1] } }}
+              exit={{ opacity: 0, rotateY: -90, transition: { duration: 0.35, ease: [0.6, 0, 0.8, 0.3] } }}
               className="flex min-h-[22rem] flex-col items-start justify-center rounded-sm border border-platinum/20 bg-platinum/[0.07] p-8 backdrop-blur-sm md:p-10"
             >
-              <svg viewBox="0 0 48 48" className="h-14 w-14 text-platinum" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <motion.circle cx="24" cy="24" r="22" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, ease: EASE_HAUS }} />
-                <motion.path d="M15 24.5l6 6 12-13" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.6, delay: 0.7, ease: EASE_HAUS }} />
-              </svg>
-              <p className={`${LEAD} mt-8 text-platinum`}>{s.form.sentTitle}</p>
-              <p className="mt-3 max-w-[36ch] font-geo text-[15px] leading-relaxed tracking-[0.02em] text-platinum/75">{s.form.sent}</p>
-              <button
+              {/* the check draws itself, and two rings of light spread out from it and fade */}
+              <span className="relative block h-14 w-14">
+                {[0, 1].map((k) => (
+                  <motion.span
+                    key={k}
+                    aria-hidden
+                    className="absolute inset-0 rounded-full border border-platinum/50"
+                    initial={{ scale: 1, opacity: 0 }}
+                    animate={{ scale: [1, 2.6], opacity: [0.7, 0] }}
+                    transition={{ duration: 1.4, delay: 1.05 + k * 0.3, ease: "easeOut" }}
+                  />
+                ))}
+                <svg viewBox="0 0 48 48" className="relative h-14 w-14 text-platinum" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <motion.circle cx="24" cy="24" r="22" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: 0.3, ease: EASE_HAUS }} />
+                  <motion.path d="M15 24.5l6 6 12-13" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5, delay: 0.95, ease: EASE_HAUS }} />
+                </svg>
+              </span>
+              {/* the title rises word by word, as the site's titles do */}
+              <p className={`${LEAD} mt-8 text-platinum`} aria-label={s.form.sentTitle}>
+                {s.form.sentTitle.split(" ").map((w, k) => (
+                  <React.Fragment key={k}>
+                    {k > 0 && " "}
+                    <span aria-hidden className="inline-block overflow-hidden pb-[0.12em] align-bottom">
+                      <motion.span className="inline-block" initial={{ y: "110%" }} animate={{ y: "0%" }} transition={{ duration: 0.8, delay: 1.1 + k * 0.09, ease: EASE_HAUS }}>
+                        {w}
+                      </motion.span>
+                    </span>
+                  </React.Fragment>
+                ))}
+              </p>
+              <motion.p
+                className="mt-3 max-w-[36ch] font-geo text-[15px] leading-relaxed tracking-[0.02em] text-platinum/75"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.5, ease: EASE_HAUS }}
+              >
+                {s.form.sent}
+              </motion.p>
+              <motion.button
                 type="button"
                 onClick={() => setStatus("idle")}
                 className={`${ACTION} group relative mt-10 text-platinum`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.9 }}
               >
                 {s.form.another}
                 <span className="absolute -bottom-1.5 left-0 h-px w-full bg-platinum/30" />
                 <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-platinum transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-              </button>
+              </motion.button>
             </motion.div>
           ) : (
-          <form
+          <motion.form
+            key="form"
+            initial={{ opacity: 0, rotateY: 90 }}
+            animate={{ opacity: 1, rotateY: 0, transition: { duration: 0.6, ease: [0.2, 0.7, 0.2, 1] } }}
+            exit={{ opacity: 0, rotateY: -90, transition: { duration: 0.35, ease: [0.6, 0, 0.8, 0.3] } }}
             onSubmit={onSubmit}
             className="grid gap-9 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10"
           >
@@ -408,8 +458,9 @@ export const AboutPage: React.FC = () => {
                 {status === "sending" ? s.form.sending : s.form.send}
               </button>
             </div>
-          </form>
+          </motion.form>
           )}
+          </AnimatePresence>
           </GlassPane>
         </div>
 
