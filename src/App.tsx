@@ -19,6 +19,7 @@ import { ArtworkPage } from "./pages/Artwork/ArtworkPage";
 import { CaseStudyPage } from "./pages/Projects/CaseStudy";
 import { PrivacyPage } from "./pages/Privacy/PrivacyPage";
 import { LegalPage } from "./pages/Privacy/LegalPage";
+import { NotFoundPage } from "./pages/NotFound/NotFoundPage";
 import { usePageMeta } from "./hooks/usePageMeta";
 
 const page = (element: React.ReactNode, withFooter = true, still = false) => (
@@ -105,6 +106,8 @@ const Pages: React.FC<{ location: ReturnType<typeof useLocation> }> = ({ locatio
           <Route path="/annet" element={<Navigate to="/projects" replace />} />
           <Route path="/amorsacro" element={<Navigate to="/projects" replace />} />
           <Route path="/projects/:slug" element={page(<CaseStudyPage />)} />
+          {/* anything else: a page that says so, with the ways back */}
+          <Route path="*" element={page(<NotFoundPage />)} />
         </Routes>
       </AnimatePresence>
   );

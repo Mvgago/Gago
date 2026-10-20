@@ -280,7 +280,8 @@ export const Headphones: React.FC<{ className?: string; active?: boolean }> = ({
     scene.add(red, violet, key);
 
     const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
-    camera.position.set(0, 0.2, 8.6);
+    // drawn back a little: the headphones sit beside the record, not over its whole height
+    camera.position.set(0, 0.2, 10.8);
     camera.lookAt(0, 0, 0);
 
     const phones = headphones();

@@ -38,7 +38,7 @@ export type Studio = {
   /** Shortcut under the statement, down to the contact chapter */
   cta: string;
   contactLead: string;
-  form: { name: string; email: string; phone: string; message: string; send: string; note: string; sending: string; sent: string; error: string; sentTitle: string; another: string; more: string; good: string; hooked: string; errName: string; errEmail: string; errMessage: string };
+  form: { name: string; email: string; phone: string; message: string; send: string; note: string; sending: string; sent: string; error: string; sentTitle: string; another: string; more: string; good: string; hooked: string; errName: string; errEmail: string; errMessage: string; privacy: string; privacyLink: string };
 };
 
 export const STUDIO: Record<Lang, Studio> = {
@@ -108,6 +108,8 @@ export const STUDIO: Record<Lang, Studio> = {
       errName: "your name is missing",
       errEmail: "check your email",
       errMessage: "write us a few words",
+      privacy: "We use your details only to reply to you. More in ",
+      privacyLink: "privacy",
       sending: "sending…",
       sent: "We've received it and will reply within two working days.",
       sentTitle: "Message sent",
@@ -182,6 +184,8 @@ export const STUDIO: Record<Lang, Studio> = {
       errName: "falta tu nombre",
       errEmail: "revisa tu email",
       errMessage: "escríbenos unas palabras",
+      privacy: "Usamos tus datos solo para responderte. Más información en ",
+      privacyLink: "privacidad",
       sending: "enviando…",
       sent: "Lo hemos recibido y te respondemos en dos días laborables.",
       sentTitle: "Mensaje enviado",
@@ -256,6 +260,8 @@ export const STUDIO: Record<Lang, Studio> = {
       errName: "il manque votre nom",
       errEmail: "vérifiez votre e-mail",
       errMessage: "écrivez-nous quelques mots",
+      privacy: "Nous utilisons vos données uniquement pour vous répondre. En savoir plus : ",
+      privacyLink: "confidentialité",
       sending: "envoi…",
       sent: "Nous l'avons bien reçu et vous répondons sous deux jours ouvrés.",
       sentTitle: "Message envoyé",
@@ -330,6 +336,8 @@ export const STUDIO: Record<Lang, Studio> = {
       errName: "Ihr Name fehlt",
       errEmail: "E-Mail prüfen",
       errMessage: "schreiben Sie uns ein paar Worte",
+      privacy: "Wir verwenden Ihre Daten nur, um Ihnen zu antworten. Mehr dazu unter ",
+      privacyLink: "Datenschutz",
       sending: "wird gesendet…",
       sent: "Wir haben sie erhalten und antworten innerhalb von zwei Werktagen.",
       sentTitle: "Nachricht gesendet",

@@ -510,6 +510,14 @@ export const AboutPage: React.FC = () => {
                 {status === "sending" ? s.form.sending : s.form.send}
               </button>
             </div>
+            {/* what is done with the details, said where they are given, as the law asks */}
+            <p className={`${SMALL} -mt-3 normal-case text-platinum/40 sm:col-span-2 xl:col-span-3`}>
+              {s.form.privacy}
+              <Link to="/privacy" className="text-platinum/65 underline decoration-platinum/30 underline-offset-4 transition-colors duration-300 hover:text-platinum">
+                {s.form.privacyLink}
+              </Link>
+              .
+            </p>
           </motion.form>
           )}
           </AnimatePresence>
