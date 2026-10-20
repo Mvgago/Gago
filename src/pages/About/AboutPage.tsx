@@ -102,7 +102,7 @@ export const AboutPage: React.FC = () => {
   const { t, lang } = useI18n();
   const s = STUDIO[lang];
   const lenis = useLenis();
-  const { hash } = useLocation();
+  const { hash, key } = useLocation();
   // Arriving from a "let's talk" link: glide down to the contact once the page has come in
   useEffect(() => {
     if (hash !== "#contact") return;
@@ -111,7 +111,7 @@ export const AboutPage: React.FC = () => {
       if (target) scrollToTarget(lenis, target, { offset: -96 });
     }, 700);
     return () => window.clearTimeout(id);
-  }, [hash, lenis]);
+  }, [hash, key, lenis]); // the key: a second click on the same link glides down again
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const set = (key: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [key]: v }));
 
