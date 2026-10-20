@@ -811,15 +811,15 @@ function fit() {
   camera.fov = w / h < .9 ? 48 : 30;
   wideView = w / h > 1.25;
   // wide screens: closer, and the tablet drawn up beside the step column
-  const wasWide = HOME.z < 5;
-  if (wideView !== wasWide) {
-    // ?bare (the studio page): the tablet up close, filling its frame
-    const BARE = new URLSearchParams(location.search).has('bare');
-    const dx = wideView ? (BARE ? -.25 : -.12) : 0, dz = (wideView ? 4.25 : 5.1) * (BARE ? .86 : 1);
-    camera.position.x += (dx + .2) - HOME.x; camera.position.z += dz - HOME.z;
-    HOME.set(dx + .2, 1.6, dz); controls.target.set(dx + .05, 1.2, 0);
-    if (BARE) camera.position.copy(HOME);
-  }
+  // ?bare (the studio page): the tablet up close, filling its frame
+  // tall frames (phones): the camera comes in, so the tablet fills the width instead of floating small
+  const BARE = new URLSearchParams(location.search).has('bare');
+  const tall = w / h < .9;
+  const dx = wideView ? (BARE ? -.25 : -.12) : 0;
+  const dz = (wideView ? 4.25 : 5.1) * (BARE ? .86 : 1) * (tall ? Math.max(.76, (w / h) * .96) : 1);
+  camera.position.x += (dx + .2) - HOME.x; camera.position.z += dz - HOME.z;
+  HOME.set(dx + .2, 1.6, dz); controls.target.set(dx + .05, 1.2, 0);
+  if (BARE) camera.position.copy(HOME);
   camera.updateProjectionMatrix();
   const visH = 2 * CODE_DIST * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), visW = visH * camera.aspect;
   const bandH = visH, bandW = bandH * (CODE_W / CODE_H);

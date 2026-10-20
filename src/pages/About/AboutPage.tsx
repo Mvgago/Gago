@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
@@ -8,10 +8,10 @@ import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothSc
 import { LightWall } from "../../components/Light/LightWall";
 import { ACTION, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
-import buendiaCatalogue from "../../assets/peojects/buendia/buendia-catalogue-web.jpg";
-import buendiaSocial from "../../assets/peojects/buendia/buendia-social-web.jpg";
-import sapWeb from "../../assets/peojects/saphire/saphire.jpg";
-import smCards from "../../assets/peojects/smart/smart-cards-web.jpg";
+import buendiaCatalogue from "../../assets/peojects/buendia/buendia-catalogue-web.jpg.webp";
+import buendiaSocial from "../../assets/peojects/buendia/buendia-social-web.jpg.webp";
+import sapWeb from "../../assets/peojects/saphire/saphire.jpg.webp";
+import smCards from "../../assets/peojects/smart/smart-cards-web.jpg.webp";
 
 // The picture each case shows here, where its own cover would not read at this size
 const PICK: Record<string, string> = { buendia: buendiaCatalogue };
@@ -149,6 +149,8 @@ export const AboutPage: React.FC = () => {
     return () => window.clearTimeout(id);
   }, [hash, key, lenis]); // the key: a second click on the same link glides down again
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  // a field no person sees, a trap for robots
+  const trap = useRef<HTMLInputElement>(null);
   // what is missing, field by field; each clears itself as soon as that field is written in
   const [errors, setErrors] = useState<Partial<Record<keyof typeof form, string>>>({});
   const set = (key: keyof typeof form) => (v: string) => {
@@ -165,6 +167,12 @@ export const AboutPage: React.FC = () => {
   const hint = written >= 160 ? s.form.hooked : written >= 50 ? s.form.good : written > 0 ? s.form.more : s.form.note;
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // a robot fills in every field it finds, the hidden one too: it is shown the confirmation, and
+    // nothing is sent
+    if (trap.current?.value) {
+      setStatus("sent");
+      return;
+    }
     // checked here, not by the browser: what is missing is said under each field, and the first
     // one left is where the cursor goes
     const missing: Partial<Record<keyof typeof form, string>> = {
@@ -300,17 +308,18 @@ export const AboutPage: React.FC = () => {
             </Link>
           </div>
           {/* edge to edge, the three touching, out to the screen's left edge */}
-          <ul className="-mx-4 grid grid-cols-3 sm:-mx-6 md:-ml-8 md:mr-0">
+          {/* phones: a strip to slide through with the finger, each case nearly the screen's width */}
+          <ul className="-mx-4 flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] sm:-mx-6 sm:grid sm:grid-cols-3 sm:overflow-visible md:-ml-8 md:mr-0 [&::-webkit-scrollbar]:hidden">
             {cases
               .filter((c) => !c.hidden)
               .slice(0, 3)
               .map((c, k) => (
-                <li key={c.slug}>
+                <li key={c.slug} className="w-[84%] shrink-0 snap-start sm:w-auto">
                   <Link to={`/projects/${c.slug}`} aria-label={c.title} className="group block">
                     <span className="relative block aspect-[4/3] overflow-hidden bg-ink/5">
                       <img
                         src={PICK[c.slug] ?? c.thumb ?? c.cover}
-                        alt=""
+                        alt={`${c.title} — ${c.client[lang as "es"] ?? c.client.es}`}
                         loading="lazy"
                         className="h-full w-full object-cover opacity-90 transition-[transform,opacity] duration-[1400ms] ease-haus group-hover:scale-[1.04] group-hover:opacity-100"
                         style={{ objectPosition: c.coverFocus }}
@@ -478,8 +487,10 @@ export const AboutPage: React.FC = () => {
             exit={{ opacity: 0, rotateY: -90, transition: { duration: 0.35, ease: [0.6, 0, 0.8, 0.3] } }}
             onSubmit={onSubmit}
             noValidate
-            className="grid gap-9 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10 xl:grid-cols-3"
+            className="relative grid gap-9 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-8 backdrop-blur-sm sm:grid-cols-2 md:p-10 xl:grid-cols-3"
           >
+            {/* the trap: out of sight, out of the tab order, and left empty by anyone real */}
+            <input ref={trap} type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute -left-[9999px] top-0 h-px w-px opacity-0" />
             <Field label={s.form.name} name="name" value={form.name} onChange={set("name")} dark error={errors.name} />
             <Field label={s.form.email} name="email" type="email" value={form.email} onChange={set("email")} dark error={errors.email} />
             {/* optional, for those who would rather talk: on wide screens the three share one row */}

@@ -1,15 +1,15 @@
-import portada from "../assets/peojects/saphire/saphire.jpg";
-import portada2 from "../assets/peojects/smart/smart (1).png";
-import portada3 from "../assets/peojects/buendia/buendia (3).jpg";
-import portada4 from "../assets/img/cicuta.png";
-import amorsacro from "../assets/img/portada4.jpg";
-import annet from "../assets/img/annet.jpg";
-import reliquia from "../assets/img/reliquia.jpg";
-import needyt from "../assets/peojects/needyt/needyt.jpg";
-import activa from "../assets/peojects/activa/activa (1).jpg";
-import santa from "../assets/peojects/santa/santa (1).jpg";
-import alea from "../assets/peojects/alea/alea (3).png";
-import report from "../assets/peojects/amvreport/report.png";
+import portada from "../assets/peojects/saphire/saphire.jpg.webp";
+import portada2 from "../assets/peojects/smart/smart (1).png.webp";
+import portada3 from "../assets/peojects/buendia/buendia (3).jpg.webp";
+import portada4 from "../assets/img/cicuta.png.webp";
+import amorsacro from "../assets/img/portada4.jpg.webp";
+import annet from "../assets/img/annet.jpg.webp";
+import reliquia from "../assets/img/reliquia.jpg.webp";
+import needyt from "../assets/peojects/needyt/needyt.jpg.webp";
+import activa from "../assets/peojects/activa/activa (1).jpg.webp";
+import santa from "../assets/peojects/santa/santa (1).jpg.webp";
+import alea from "../assets/peojects/alea/alea (3).png.webp";
+import report from "../assets/peojects/amvreport/report.png.webp";
 
 
 export const projectRoutes = [

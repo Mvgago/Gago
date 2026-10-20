@@ -25,15 +25,23 @@
     <meta property="og:image:alt" content="The Fuga Haus wordmark in polished metal, in a soft white studio." />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Tells search engines the site and the Instagram account are the same studio -->
+    <!-- Tells search engines what the studio is, where it works, what it does, and that the site
+         and the Instagram account are the same studio -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Organization",
+        "@type": ["Organization", "ProfessionalService"],
         "name": "Fuga Haus",
+        "alternateName": "Fuga Haus Studio",
+        "description": "Estudio de diseño independiente en Galicia: estrategia e identidad, web y 3D interactivo, espacios y eventos, y audiovisual.",
+        "slogan": "Designing atmospheres",
         "url": "https://fugahaus.com/",
-        "logo": "https://fugahaus.com/og.jpg",
+        "logo": "https://fugahaus.com/apple-touch-icon.png",
+        "image": "https://fugahaus.com/og.jpg",
         "email": "hola@fugahaus.com",
+        "address": { "@type": "PostalAddress", "addressRegion": "Galicia", "addressCountry": "ES" },
+        "areaServed": [{ "@type": "AdministrativeArea", "name": "Galicia" }, { "@type": "Country", "name": "España" }],
+        "knowsAbout": ["Identidad visual", "Estrategia de marca", "Diseño web", "3D interactivo", "Diseño de espacios y stands", "Audiovisual", "Diseño sonoro"],
         "sameAs": ["https://www.instagram.com/fugahaus/"]
       }
     </script>

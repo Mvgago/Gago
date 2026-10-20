@@ -128,7 +128,7 @@ export const SpatialIndex: React.FC<Props> = ({ open, onClose }) => {
           {/* Gallery labels: flat, sharp, far apart */}
           <nav
             // phones: the four stacked tight under the sculpture, all clear above the footer
-            className="pointer-events-none absolute inset-x-0 top-[44%] flex flex-col items-center gap-5 px-4 sm:top-[48%] sm:gap-8 lg:inset-0 lg:top-0 lg:block lg:px-0"
+            className="pointer-events-none absolute inset-x-0 top-[calc(50%+3rem)] flex flex-col items-center gap-5 px-4 sm:top-[48%] sm:gap-8 lg:inset-0 lg:top-0 lg:block lg:px-0"
             onMouseLeave={() => !walking && setActive(null)}
             aria-label="Sections"
           >

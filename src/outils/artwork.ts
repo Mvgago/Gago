@@ -1,12 +1,12 @@
-import single3 from "../assets/gallery/single3.png";
-import single4 from "../assets/gallery/single4.png";
-import amorsacro from "../assets/img/amorsacro.jpg";
-import otono from "../assets/gallery/Otoño.jpg";
-import portada from "../assets/gallery/portada.png";
-import untitled from "../assets/gallery/untitlezdfdsd.png";
-import summer from "../assets/gallery/summer2003.png";
-import acne from "../assets/gallery/acne2.png";
-import grimaldi from "../assets/gallery/grimaldi-lines.jpg";
+import single3 from "../assets/gallery/single3.png.webp";
+import single4 from "../assets/gallery/single4.png.webp";
+import amorsacro from "../assets/img/amorsacro.jpg.webp";
+import otono from "../assets/gallery/Otoño.jpg.webp";
+import portada from "../assets/gallery/portada.png.webp";
+import untitled from "../assets/gallery/untitlezdfdsd.png.webp";
+import summer from "../assets/gallery/summer2003.png.webp";
+import acne from "../assets/gallery/acne2.png.webp";
+import grimaldi from "../assets/gallery/grimaldi-lines.jpg.webp";
 
 /** The studio's own music project. */
 export const FUGA_SEI_EP = "https://open.spotify.com/album/7EdGwidKh2TS1HsV3j67tf";

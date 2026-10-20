@@ -115,7 +115,7 @@ export const ArtworkPage: React.FC = () => {
                 className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden"
                 style={{ background: "#1a181b" }}
               >
-                <img src={plate.url} alt="" loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
+                <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
               </button>
             </motion.li>
           ))}
@@ -147,7 +147,7 @@ export const ArtworkPage: React.FC = () => {
           >
             <img
               src={record.url}
-              alt=""
+              alt="Fuga Sei — Grimaldi Lines (EP)"
               {...protect}
               className="block aspect-square w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]"
             />

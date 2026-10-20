@@ -164,10 +164,10 @@ const Film: React.FC<{ src: string; title: string; ratio?: string; speed?: numbe
   );
 };
 
-const Plate: React.FC<{ src: string; className?: string }> = ({ src, className = "" }) => (
+const Plate: React.FC<{ src: string; className?: string; alt?: string }> = ({ src, className = "", alt = "" }) => (
   <motion.img
     src={src}
-    alt=""
+    alt={alt}
     loading="lazy"
     decoding="async"
     {...protect}
@@ -219,15 +219,16 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
     {c.services ? (
       // Each service on its own line, with what was delivered beside it
       <dd>
-        {/* Phones: the service on its own line, what was delivered beneath it in grey;
-            wider screens: both on one line, joined by a dash */}
-        <ul className="flex flex-col gap-3 sm:gap-1.5">
+        {/* Phones: only the services, on one line, so the case gets to its pictures sooner */}
+        <p className="text-ink sm:hidden">{c.services.map((s) => DISCIPLINE[s.d][lang]).join(" · ")}</p>
+        {/* Wider screens: each service on its own line, with what was delivered beside it */}
+        <ul className="hidden flex-col gap-1.5 sm:flex">
           {c.services.map((s) => (
             <li key={s.d}>
-              <span className="block text-ink sm:inline">{DISCIPLINE[s.d][lang]}</span>
-              <span className="hidden text-graphite/80 sm:inline"> — </span>
+              <span className="text-ink">{DISCIPLINE[s.d][lang]}</span>
+              <span className="text-graphite/80"> — </span>
               {/* As written: the details are lowercase already, and "3D" keeps its capitals */}
-              <span className="mt-0.5 block normal-case text-graphite/75 sm:mt-0 sm:inline sm:text-graphite/80">{s.detail[lang]}</span>
+              <span className="normal-case text-graphite/80">{s.detail[lang]}</span>
             </li>
           ))}
         </ul>
@@ -265,6 +266,8 @@ export const CaseStudyPage: React.FC = () => {
 
   const c = shown[index];
   const next = shown[(index + 1) % shown.length];
+  // what each picture of the case is, for those who can't see it and for search engines
+  const altText = `${c.title} — ${c.client[lang as "es"] ?? c.client.es}`;
   // Cases told the new way (a film, or services in detail) open side by side
   const side = Boolean(c.video || c.services || c.headerViewer || c.headerFrame);
 
@@ -404,6 +407,7 @@ export const CaseStudyPage: React.FC = () => {
                     <Plate
                       key={img.src}
                       src={img.src}
+                      alt={altText}
                       className={`aspect-[16/10] ${img.fit === "contain" ? "bg-white object-contain" : "object-cover"}`}
                     />
                   ),
@@ -434,7 +438,7 @@ export const CaseStudyPage: React.FC = () => {
             ) : row[0].href ? (
               // A piece with an interactive version: the still opens it, with a quiet caption
               <a key={r} href={row[0].href} target="_blank" rel="noopener noreferrer" className="group block">
-                <Plate src={row[0].src} />
+                <Plate src={row[0].src} alt={altText} />
                 <span className={`${SMALL} mt-3 flex items-center justify-between gap-4 px-4 text-graphite sm:px-6 md:px-8`}>
                   <span>{CASE_UI.recreation[lang]}</span>
                   <span className="inline-flex items-center gap-1.5 text-ink">
@@ -446,7 +450,7 @@ export const CaseStudyPage: React.FC = () => {
                 </span>
               </a>
             ) : (
-              <Plate key={r} src={row[0].src} />
+              <Plate key={r} src={row[0].src} alt={altText} />
             ),
           )}
         </div>
@@ -463,7 +467,6 @@ export const CaseStudyPage: React.FC = () => {
             <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
             <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
           </span>
-          <Arrow />
         </Link>
       )}
 
