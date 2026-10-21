@@ -147,7 +147,9 @@ export const AboutPage: React.FC = () => {
     if (hash !== "#contact") return;
     const toContact = (immediate: boolean) => {
       const target = document.getElementById("contact");
-      if (target) scrollToTarget(lenis, target, { offset: -96, immediate });
+      // the section already keeps the header's height above it (scroll-margin); on phones that is
+      // all it needs, so the whole form fits in one screen
+      if (target) scrollToTarget(lenis, target, { offset: window.innerWidth < 640 ? 0 : -96, immediate });
     };
     if (!arrived.current) {
       const raf = requestAnimationFrame(() => toContact(true));
@@ -395,7 +397,7 @@ export const AboutPage: React.FC = () => {
           olive and pale bloom turned low — and the footer lives inside it */}
       <motion.section
         id="contact"
-        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden bg-[#2f2b2a] px-4 pb-10 pt-16 text-platinum sm:-mx-6 sm:px-6 sm:pt-24 md:-mx-8 md:px-8 md:pt-32"
+        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden bg-[#2f2b2a] px-4 pb-10 pt-8 text-platinum sm:-mx-6 sm:px-6 sm:pt-24 md:-mx-8 md:px-8 md:pt-32"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-10% 0px" }}
@@ -423,16 +425,16 @@ export const AboutPage: React.FC = () => {
           animate={status === "sent" ? { opacity: [0, 1, 0.45], transition: { duration: 2.2, times: [0, 0.3, 1], ease: "easeOut" } } : { opacity: 0, transition: { duration: 0.8 } }}
         />
 
-        <div className="relative grid grid-cols-12 gap-x-8 gap-y-10 sm:gap-y-16">
+        <div className="relative grid grid-cols-12 gap-x-8 gap-y-6 sm:gap-y-16">
           <div className="col-span-12 lg:col-span-6">
             <h2 className={`${SMALL} text-platinum/55`}>
               {s.contactLabel}
             </h2>
-            <p className={`${LEAD} mt-8 max-w-[18ch] text-platinum`}>
+            <p className={`${LEAD} mt-3 max-w-[18ch] text-platinum sm:mt-8`}>
               {s.contactLead}
             </p>
-            {/* The direct ways in */}
-            <div className={`${ACTION} mt-8 flex flex-col items-start gap-2 sm:mt-12 sm:gap-4`}>
+            {/* The direct ways in (on phones they come after the form, so the form fits in one screen) */}
+            <div className={`${ACTION} mt-8 hidden flex-col items-start gap-2 sm:mt-12 sm:flex sm:gap-4`}>
               <PlainLink href={`mailto:${EMAIL}`} dark>
                 {EMAIL}
               </PlainLink>
@@ -518,22 +520,27 @@ export const AboutPage: React.FC = () => {
             onSubmit={onSubmit}
             noValidate
             // phones: tighter, so the whole form fits in about one screen
-            className="relative grid gap-4 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-5 backdrop-blur-sm sm:grid-cols-2 sm:gap-9 sm:p-8 md:p-10 xl:grid-cols-3"
+            className="relative grid grid-cols-2 gap-x-4 gap-y-4 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-4 backdrop-blur-sm sm:gap-9 sm:p-8 md:p-10 xl:grid-cols-3"
           >
             {/* the trap: out of sight, out of the tab order, and left empty by anyone real */}
             <input ref={trap} type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute -left-[9999px] top-0 h-px w-px opacity-0" />
-            <Field label={s.form.name} name="name" value={form.name} onChange={set("name")} dark error={errors.name} />
-            <Field label={s.form.email} name="email" type="email" value={form.email} onChange={set("email")} dark error={errors.email} />
+            {/* phones: the name across, then email and phone side by side, so the form fits in one screen */}
+            <div className="col-span-2 sm:col-span-1">
+              <Field label={s.form.name} name="name" value={form.name} onChange={set("name")} dark error={errors.name} />
+            </div>
+            <div className="col-span-1">
+              <Field label={s.form.email} name="email" type="email" value={form.email} onChange={set("email")} dark error={errors.email} />
+            </div>
             {/* optional, for those who would rather talk: on wide screens the three share one row */}
-            <div className="sm:col-span-2 xl:col-span-1">
+            <div className="col-span-1 sm:col-span-2 xl:col-span-1">
               <Field label={s.form.phone} name="phone" type="tel" value={form.phone} onChange={set("phone")} dark optional />
             </div>
-            <div className="sm:col-span-2 xl:col-span-3">
+            <div className="col-span-2 xl:col-span-3">
               <Field label={s.form.message} name="message" multiline value={form.message} onChange={set("message")} dark error={errors.message} />
             </div>
             {/* the two notes together, then the button: on phones the button closes the form at full
                 width; on wider screens it sits to the right of the notes */}
-            <div className="mt-1 flex flex-col gap-4 sm:col-span-2 sm:mt-0 sm:flex-row sm:items-end sm:justify-between sm:gap-8 xl:col-span-3">
+            <div className="col-span-2 mt-1 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-end sm:justify-between sm:gap-8 xl:col-span-3">
               <div className="flex flex-col gap-2">
               {/* the note, or how the sending went, in the same place */}
               <span role="status" aria-live="polite" className={`${SMALL} transition-colors duration-500 ${status === "error" ? "text-[#e3a99a]" : "text-platinum/50"}`}>
@@ -568,6 +575,15 @@ export const AboutPage: React.FC = () => {
           )}
           </AnimatePresence>
           </GlassPane>
+          {/* phones: the direct ways in, under the form */}
+          <div className={`${ACTION} col-span-12 flex flex-wrap items-center gap-x-6 gap-y-2 sm:hidden`}>
+            <PlainLink href={`mailto:${EMAIL}`} dark>
+              {EMAIL}
+            </PlainLink>
+            <PlainLink href={INSTAGRAM} external dark>
+              instagram
+            </PlainLink>
+          </div>
         </div>
 
         {/* The footer, inside the room */}

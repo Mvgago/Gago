@@ -166,7 +166,7 @@ const Plate: React.FC<{ src: string; className?: string; alt?: string }> = ({ sr
 
 /**
  * Pieces laid out in slanted rows (cards, sheets): the picture drifts slowly along its own
- * diagonal and back, as if the rows were sliding past. Starts once seen; still for reduced motion.
+ * diagonal and back, briskly, breathing in a little as it crosses the middle. Starts once seen; still for reduced motion.
  */
 const Drift: React.FC<{ src: string; alt?: string; className?: string }> = ({ src, alt = "", className = "" }) => {
   const box = useRef<HTMLDivElement>(null);
@@ -180,7 +180,7 @@ const Drift: React.FC<{ src: string; alt?: string; className?: string }> = ({ sr
   }, []);
   return (
     <div ref={box} className={`relative overflow-hidden ${className}`}>
-      <style>{`@keyframes case-drift { from { transform: scale(1.14) translate(-3.2%, 1.8%); } to { transform: scale(1.14) translate(3.2%, -1.8%); } }`}</style>
+      <style>{`@keyframes case-drift { 0% { transform: scale(1.22) translate(-5%, 2.8%) rotate(-0.6deg); } 50% { transform: scale(1.16) translate(0%, 0%) rotate(0deg); } 100% { transform: scale(1.22) translate(5%, -2.8%) rotate(0.6deg); } }`}</style>
       <img
         src={src}
         alt={alt}
@@ -189,8 +189,8 @@ const Drift: React.FC<{ src: string; alt?: string; className?: string }> = ({ sr
         {...protect}
         className="absolute inset-0 h-full w-full object-cover"
         style={{
-          transform: "scale(1.14)",
-          animation: "case-drift 16s ease-in-out infinite alternate",
+          transform: "scale(1.22)",
+          animation: "case-drift 5s cubic-bezier(.45,0,.25,1) infinite alternate",
           animationPlayState: on ? "running" : "paused",
         }}
       />
