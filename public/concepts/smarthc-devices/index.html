@@ -756,7 +756,8 @@ composer.addPass(new OutputPass());
 const finish = new ShaderPass({
   uniforms: { tDiffuse: { value: null }, time: { value: 0 }, res: { value: new THREE.Vector2(1, 1) } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-  fragmentShader: `uniform sampler2D tDiffuse; uniform float time; uniform vec2 res; varying vec2 vUv;
+  // highp: on phones the default precision breaks the grain's hash into coloured streaks
+  fragmentShader: `precision highp float; uniform sampler2D tDiffuse; uniform float time; uniform vec2 res; varying vec2 vUv;
     float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453); }
     void main(){
       vec4 c = texture2D(tDiffuse, vUv);
@@ -816,7 +817,7 @@ function fit() {
   const BARE = new URLSearchParams(location.search).has('bare');
   const tall = w / h < .9;
   const dx = wideView ? (BARE ? -.25 : -.12) : 0;
-  const dz = (wideView ? 4.25 : 5.1) * (BARE ? .86 : 1) * (tall ? Math.max(.76, (w / h) * .96) : 1);
+  const dz = (wideView ? 4.25 : 5.1) * (BARE ? .86 : 1) * (tall ? Math.max(.7, (w / h) * .88) : 1);
   camera.position.x += (dx + .2) - HOME.x; camera.position.z += dz - HOME.z;
   HOME.set(dx + .2, 1.6, dz); controls.target.set(dx + .05, 1.2, 0);
   if (BARE) camera.position.copy(HOME);
@@ -831,7 +832,7 @@ addEventListener('resize', fit); fit();
 /* ================= loop ================= */
 const clock = new THREE.Clock();
 const clockNow = () => clock.getElapsedTime();
-let prev = 0, introT = 0, frameN = 0, codeLast = 0;
+let prev = 0, introT = 0, frameN = 0, codeLast = 0, landed = false, seen = false;
 const sph = new THREE.Spherical(), tmp = new THREE.Vector3();
 
 function frame() {
@@ -849,6 +850,8 @@ function frame() {
 
   const it = eInOut((T - introT) / 3.2);
   if (it < 1) camera.position.lerpVectors(START, HOME, it);
+  // the flight may have been cut short while off screen: always land at home
+  else if (!landed) { camera.position.copy(HOME); landed = true; }
   else if (T > idleUntil && !reduced) {
     tmp.copy(camera.position).sub(controls.target); sph.setFromVector3(tmp);
     sph.theta += (.02 + Math.sin(T * .12) * .16 - sph.theta) * .01;
@@ -870,12 +873,17 @@ function frame() {
   composer.render();
 }
 
+const BARE_VIEW = new URLSearchParams(location.search).has('bare');
 /* Run only while the page holding it says it is on screen */
 addEventListener('message', (e) => {
-  if (e.data && typeof e.data.fhVisible === 'boolean') renderer.setAnimationLoop(e.data.fhVisible ? frame : null);
+  if (e.data && typeof e.data.fhVisible === 'boolean') {
+    // the flight in plays the first time the scene is actually seen, not while it waits below
+    if (e.data.fhVisible && !seen && !BARE_VIEW) { seen = true; introT = clockNow(); landed = false; }
+    renderer.setAnimationLoop(e.data.fhVisible ? frame : null);
+  }
 });
 // ?bare: no flight in, the camera is already where it settles
-if (new URLSearchParams(location.search).has('bare')) { introT = -10; camera.position.copy(HOME); }
+if (BARE_VIEW) { introT = -10; camera.position.copy(HOME); }
 else introT = clockNow();
 frameN = 1;
 frame();
