@@ -165,8 +165,9 @@ const Plate: React.FC<{ src: string; className?: string; alt?: string }> = ({ sr
 );
 
 /**
- * Pieces laid out in slanted rows (cards, sheets): the picture drifts slowly along its own
- * diagonal and back, briskly, breathing in a little as it crosses the middle. Starts once seen; still for reduced motion.
+ * Pieces laid out in slanted rows (cards, sheets): the picture travels along its own
+ * diagonal, always to the right, briskly; at the end of each pass it dips into the
+ * backdrop's own colour and starts again, so the loop never jumps. Starts once seen; still for reduced motion.
  */
 const Drift: React.FC<{ src: string; alt?: string; className?: string }> = ({ src, alt = "", className = "" }) => {
   const box = useRef<HTMLDivElement>(null);
@@ -179,8 +180,8 @@ const Drift: React.FC<{ src: string; alt?: string; className?: string }> = ({ sr
     return () => io.disconnect();
   }, []);
   return (
-    <div ref={box} className={`relative overflow-hidden ${className}`}>
-      <style>{`@keyframes case-drift { 0% { transform: scale(1.22) translate(-5%, 2.8%) rotate(-0.6deg); } 50% { transform: scale(1.16) translate(0%, 0%) rotate(0deg); } 100% { transform: scale(1.22) translate(5%, -2.8%) rotate(0.6deg); } }`}</style>
+    <div ref={box} className={`relative overflow-hidden bg-[#8fa7af] ${className}`}>
+      <style>{`@keyframes case-drift { 0% { transform: scale(1.22) translate(-5%, 2.8%); opacity: 0; } 8% { opacity: 1; } 88% { opacity: 1; } 100% { transform: scale(1.22) translate(5%, -2.8%); opacity: 0; } }`}</style>
       <img
         src={src}
         alt={alt}
@@ -190,7 +191,7 @@ const Drift: React.FC<{ src: string; alt?: string; className?: string }> = ({ sr
         className="absolute inset-0 h-full w-full object-cover"
         style={{
           transform: "scale(1.22)",
-          animation: "case-drift 5s cubic-bezier(.45,0,.25,1) infinite alternate",
+          animation: "case-drift 6s cubic-bezier(.3,0,.35,1) infinite",
           animationPlayState: on ? "running" : "paused",
         }}
       />
