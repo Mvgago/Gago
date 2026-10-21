@@ -93,9 +93,6 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // which way the modelled sofa's front faces, turned to match the drawn ones (back to -z)
 const SOFA_FACE = 0;
-// and the modelled bed's, so its headboard sits where the drawn beds' does
-const BED_FACE = -Math.PI / 2;
-
 /* ================= words ================= */
 const LANG = (() => { try { const l = localStorage.getItem('fugahaus.lang'); if (l) return l; } catch (e) {} return (navigator.language || 'es').slice(0, 2); })();
 const DICT = {
@@ -331,16 +328,30 @@ const floors = { inside: floor(INSIDE, M.stone, 0.004) };
 floor(ENVELOPE, M.deck, 0, 1.0);
 slab(ENVELOPE, 0.5);
 
-// the walls, raised from the plan's own outlines (holes and all), cut at the model's height
-{
-  const geo = [];
-  PLAN_WALLS.forEach(({ o, h }) => {
-    const sh = new THREE.Shape(o.map(([x, z]) => new THREE.Vector2(x, -z)));
-    h.forEach((hole) => sh.holes.push(new THREE.Path(hole.map(([x, z]) => new THREE.Vector2(x, -z)))));
-    const g = new THREE.ExtrudeGeometry(sh, { depth: WALL_H, bevelEnabled: false, curveSegments: 1 }); g.rotateX(-Math.PI / 2);
-    const m = new THREE.Mesh(g, [M.wallTop, M.wall]); add(m);
-  });
-}
+// the walls, drawn as straight runs over the sales plan: plain flat partitions, the rooms closed,
+// open only where the plan has a door. [x1, z1, x2, z2, thickness]
+const WALLS = [
+  // the facade: kitchen and laundry, the entrance bay, the bedroom wing's two outer walls
+  [-6.4, -0.22, 2.3, -3.72, 0.3], [-6.4, -0.22, -6.94, -0.76, 0.3], [-6.94, -0.76, -7.55, -0.15, 0.3],
+  [-8.22, 0.5, -15.82, 8.0, 0.3], [-15.82, 8.0, -10.12, 13.7, 0.3],
+  // laundry: its wall to the hall (door in the middle), its walls to the facade and the kitchen
+  [-3.95, -1.2, -3.09, 0.51, 0.14], [-3.94, 0.51, -1.63, 0.51, 0.12], [-0.6, 0.51, 0.06, 0.51, 0.12],
+  [-1.38, -2.25, -0.99, -1.24, 0.12], [-0.73, -0.43, -0.34, 0.51, 0.12],
+  // guest WC, bath 1 and its WC, the corridor between them and the hall
+  [-8.1, 0.55, -7.43, 1.36, 0.12], [-6.86, 1.93, -10.04, 5.14, 0.14], [-9.3, 1.55, -7.9, 2.95, 0.12],
+  [-12.7, 4.94, -11.86, 5.78, 0.12], [-13.3, 5.6, -11.95, 7.2, 0.12], [-11.95, 7.2, -11.2, 6.45, 0.12],
+  // dorm 2's wall to the hall, and the partition between dorms 1 and 2, out to the glass
+  [-8.32, 5.18, -10.85, 7.68, 0.14], [-10.29, 7.21, -7.35, 10.25, 0.14],
+  // the corridor's south side and bath 2
+  [-7.05, 3.99, -3.44, 3.99, 0.14], [-7.05, 3.99, -7.4, 4.4, 0.12], [-7.4, 4.4, -6.9, 5.14, 0.12],
+  [-6.35, 5.68, -6.15, 5.96, 0.12], [-6.15, 5.96, -4.18, 5.96, 0.12],
+  // dorm 2's and dorm 3's walls, out to the glass, the wardrobes between them
+  [-4.18, 3.99, -4.18, 8.62, 0.12], [-3.44, 3.99, -3.44, 8.62, 0.14],
+  // the wardrobes off the hall, bath 3, dorm 3's wall to the living room
+  [-5.44, 2.05, 0.06, 2.05, 0.12], [-5.4, 2.05, -5.4, 2.83, 0.12], [-3.65, 2.05, -3.65, 2.97, 0.14],
+  [-2.38, 2.05, -2.38, 3.07, 0.12], [-2.42, 3.97, 0.06, 3.97, 0.14], [0.05, 2.05, 0.05, 8.62, 0.14],
+];
+WALLS.forEach(([x1, z1, x2, z2, th]) => wall([x1, z1], [x2, z2], th));
 // the round columns: in the living room's line and on the terrace, and one in the hall
 [[1.7, 0.99], [6.43, 0.99], [1.7, 4.0], [6.43, 4.0], [1.7, 7.9], [6.43, 7.9], [-6.73, 3.42]].forEach(([x, z]) => column(x, z));
 // the home's glass: the kitchen and the living room to the terraces, the bedrooms to theirs
@@ -495,20 +506,41 @@ const kitchenFronts = [];
   bed(-1.05, 5.75, 0.95, 2.0, 0); bed(-1.05, 7.15, 0.95, 2.0, 0); // dorm 3, two singles
   // the real double beds, once loaded, each in a drawn one's place: its length along the drawn one's,
   // headboard at its -x end, fitted within its length and width; a different bed in each room.
-  // "Dark Modern Bed" by Ren Viro Store, CC BY 4.0
-  const realBed = (g, w, l, url, face) => new GLTFLoader().load(url, (gltf) => {
+  // "Dark Modern Bed" by Ren Viro Store, and "Bed" by rickmaolly, CC BY 4.0
+  // the headboard found on its own: of the two ends of its length, the one that rises highest
+  const tallerAtPlusX = (obj) => {
+    obj.updateMatrixWorld(true);
+    const b = new THREE.Box3().setFromObject(obj), span = b.max.x - b.min.x, v = new THREE.Vector3();
+    let lo = -Infinity, hi = -Infinity;
+    obj.traverse((o) => {
+      if (!o.isMesh) return;
+      const p = o.geometry.attributes.position;
+      for (let i = 0; i < p.count; i += 3) {
+        v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld);
+        if (v.x < b.min.x + span * 0.15) lo = Math.max(lo, v.y);
+        else if (v.x > b.max.x - span * 0.15) hi = Math.max(hi, v.y);
+      }
+    });
+    return hi > lo;
+  };
+  const realBed = (g, w, l, url) => new GLTFLoader().load(url, (gltf) => {
     const src = gltf.scene;
     src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     const turn = new THREE.Group(); turn.add(src);
-    let b = new THREE.Box3().setFromObject(turn), s = b.getSize(new THREE.Vector3());
-    turn.rotation.y = face + (s.z > s.x ? 0 : -Math.PI / 2); // its length along x, headboard to -x
-    b = new THREE.Box3().setFromObject(turn); s = b.getSize(new THREE.Vector3());
+    // measured on its vertices, not its boxes, so it stands on the floor exactly
+    let b = new THREE.Box3().setFromObject(turn, true), s = b.getSize(new THREE.Vector3());
+    if (s.z > s.x) turn.rotation.y = Math.PI / 2; // its length along x
+    if (tallerAtPlusX(turn)) turn.rotation.y += Math.PI; // and its headboard to -x, as the drawn bed's
+    b = new THREE.Box3().setFromObject(turn, true); s = b.getSize(new THREE.Vector3());
     const k = Math.min(l / s.x, w / s.z), c = b.getCenter(new THREE.Vector3());
-    turn.scale.setScalar(k); turn.position.set(-c.x * k, -b.min.y * k, -c.z * k);
+    // its headboard on the drawn bed's head line (-l/2, at the wall), centred across, on the floor
+    turn.scale.setScalar(k); turn.position.set(-l / 2 - b.min.x * k, -b.min.y * k, -c.z * k);
     g.clear(); g.add(turn);
   }, undefined, () => {});
-  realBed(bed(-8.3, 7.6, 1.6, 2.05, -Math.PI / 4), 1.6, 2.05, '/models/sapphire/bed.glb', BED_FACE); // dorm 2
-  bed(-11.0, 10.7, 1.8, 2.1, -Math.PI / 4); // dorm 1, the drawn bed
+  // as on the sales plan: both headboards against the diagonal partition between dorms 1 and 2
+  // (the line x - z = -17.6), each from its own side
+  realBed(bed(-8.255, 7.755, 1.6, 2.05, Math.PI / 4), 1.6, 2.05, '/models/sapphire/bed.glb'); // dorm 2
+  realBed(bed(-9.77, 9.45, 1.8, 2.1, -3 * Math.PI / 4), 1.8, 2.1, '/models/sapphire/bed3.glb'); // dorm 1
 }
 // --- rubber plants in woven baskets: one by the living room's sofa, in full view, one in the hall.
 // "Rubber Plant (fig)" by jamieirvin, CC BY 4.0
