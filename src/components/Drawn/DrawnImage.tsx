@@ -17,8 +17,8 @@ export type Drawing = {
   keepOut?: [number, number, number, number][];
   /** from this wave on, lines are drawn over the keep-out areas, with a finer stroke */
   overFrom?: number;
-  /** on phones, the sheet shown as these crops, one under the other, so the drawing reads large */
-  phone?: [number, number, number, number][];
+  /** on phones, the window of the sheet to show: its margins trimmed, so the drawing reads larger in the same space */
+  phone?: [number, number, number, number];
 };
 
 // The Sapphire's construction sheet (saphire (4)), in the image's own pixels
@@ -46,11 +46,8 @@ export const SAPPHIRE_MARK: Drawing = {
     [1222 * k, 652 * k, 262 * k, 80 * k],
   ],
   overFrom: 4,
-  // the reserve-area sheet, then the minimum sizes
-  phone: [
-    [170 * k, 160 * k, 830 * k, 635 * k],
-    [1200 * k, 240 * k, 600 * k, 510 * k],
-  ],
+  // the drawing without the white margin around it
+  phone: [170 * k, 160 * k, 1630 * k, 640 * k],
 };
 
 export const DrawnImage: React.FC<{ src: string; alt?: string; drawing: Drawing; className?: string }> = ({ src, alt = "", drawing, className = "" }) => {
@@ -131,13 +128,10 @@ export const DrawnImage: React.FC<{ src: string; alt?: string; drawing: Drawing;
         @keyframes ${id}-line { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
         @keyframes ${id}-in { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
-      {/* phones: the sheet in large crops, one under the other */}
+      {/* the same space as any picture in the row: on phones the sheet's margins are trimmed so it reads larger */}
       {drawing.phone && (
-        <div className="flex flex-col gap-6 py-6 md:hidden">
-          {drawing.phone.map((v, i) => sheet(v, `p${i}`, "block h-auto w-full", { aspectRatio: `${v[2]} / ${v[3]}` }))}
-        </div>
+        <div className="relative aspect-[16/10] w-full md:hidden">{sheet(drawing.phone, "phone", "absolute inset-0 h-full w-full")}</div>
       )}
-      {/* larger screens: the whole sheet, on white, at the shape of the row it sits in */}
       <div className={`relative aspect-[16/10] w-full ${drawing.phone ? "hidden md:block" : ""}`}>
         {sheet([0, 0, drawing.w, drawing.h], "all", "absolute inset-0 h-full w-full")}
       </div>
