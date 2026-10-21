@@ -1,123 +1,131 @@
 import React, { useEffect, useRef, useState } from "react";
 
 /**
- * A construction drawing that draws itself once, the first time it comes into view.
- * Nothing is redrawn: the picture's own guide lines are uncovered along their length, one
- * after another, through a mask; then the rest of the picture (the mark, the lettering, the
- * measures) fades in over them. When it ends, what is on screen is the original image, untouched.
+ * A construction sheet that draws itself once, the first time it comes into view: fine,
+ * crisp lines are traced in sequence (the grid, the rows, the measures, the guides of the
+ * lettering, the outline of the stone, the diagonals), then the original image fades in over
+ * them as they fade away. When it ends, what is on screen is the original image, untouched.
  */
 
-type Seg = [number, number, number, number];
+type Pt = [number, number];
+type Stroke = { pts: Pt[]; dark?: boolean };
 export type Drawing = {
   w: number;
   h: number;
-  /** the guides, in the order they are drawn, grouped in waves */
-  waves: Seg[][];
-  /** areas the guides are not uncovered in (the mark and its lettering): they arrive with the rest */
-  keepOut?: [number, number, number, number][];
-  /** from this wave on, lines are drawn over the keep-out areas, with a finer stroke */
-  overFrom?: number;
-  /** on phones, the window of the sheet to show: its margins trimmed, so the drawing reads larger in the same space */
+  /** the strokes, in the order they are drawn, grouped in waves */
+  waves: Stroke[][];
+  /** on phones, the window of the sheet to show: its margins trimmed, so it reads larger in the same space */
   phone?: [number, number, number, number];
 };
 
-// The Sapphire's construction sheet (saphire (4)), in the image's own pixels
-const k = 2047 / 2000; // measured on the sheet shown at 2000 px wide
-const S = (x1: number, y1: number, x2: number, y2: number): Seg => [x1 * k, y1 * k, x2 * k, y2 * k];
+// The Sapphire's construction sheet (saphire (4)), measured on the sheet shown 2000 px wide
+const k = 2047 / 2000;
+const L = (x1: number, y1: number, x2: number, y2: number, dark = false): Stroke => ({ pts: [[x1 * k, y1 * k], [x2 * k, y2 * k]], dark });
+const P = (pts: Pt[], dark = false): Stroke => ({ pts: pts.map(([x, y]) => [x * k, y * k] as Pt), dark });
 export const SAPPHIRE_MARK: Drawing = {
   w: 2047,
   h: 989,
   waves: [
-    // the grid: the four columns, then the rows of the reserve area
-    [S(313, 222, 313, 770), S(405, 222, 405, 770), S(760, 222, 760, 770), S(852, 222, 852, 770)],
-    [S(248, 264, 925, 264), S(248, 311, 925, 311), S(545, 355, 908, 355), S(650, 448, 925, 448), S(248, 493, 455, 493), S(690, 540, 925, 540), S(555, 633, 908, 633), S(248, 676, 565, 676), S(248, 725, 925, 725)],
-    // the measures: arrows down the sides and across the top
-    [S(248, 262, 248, 727), S(920, 266, 920, 727), S(312, 214, 408, 214), S(757, 214, 855, 214)],
-    // the second sheet: the reserve lines and their heights
-    [S(1335, 268, 1635, 268), S(1335, 516, 1635, 516), S(1365, 662, 1635, 662), S(1325, 725, 1635, 725), S(1630, 266, 1630, 518), S(1630, 660, 1630, 727)],
-    // the two diagonals that cut the stone, on both sheets
-    [S(455, 453, 762, 311), S(425, 528, 664, 676), S(1262, 366, 1470, 270), S(1242, 415, 1405, 516)],
+    // the grid: the four columns
+    [L(313, 222, 313, 770), L(405, 222, 405, 770), L(760, 222, 760, 770), L(852, 222, 852, 770)],
+    // the rows of the reserve area
+    [L(248, 264, 925, 264), L(248, 311, 925, 311), L(545, 355, 908, 355), L(650, 448, 925, 448), L(248, 493, 455, 493), L(690, 540, 925, 540), L(555, 633, 908, 633), L(248, 676, 565, 676), L(248, 725, 925, 725)],
+    // the measures: down the sides, across the top
+    [L(248, 264, 248, 725), L(920, 264, 920, 725), L(313, 214, 405, 214), L(760, 214, 852, 214)],
+    // the second sheet: its reserve lines and heights
+    [L(1335, 268, 1635, 268), L(1335, 516, 1635, 516), L(1630, 268, 1630, 516), L(1365, 662, 1635, 662), L(1325, 725, 1635, 725), L(1630, 662, 1630, 725)],
+    // the lettering's guides: cap height and baseline of each line, on both sheets
+    [
+      L(395, 476, 775, 476), L(395, 511, 775, 511), L(540, 447, 625, 447), L(540, 461, 625, 461), L(480, 531, 690, 531), L(480, 542, 690, 542),
+      L(1222, 379, 1480, 379), L(1222, 404, 1480, 404), L(1222, 680, 1480, 680), L(1222, 703, 1480, 703),
+    ],
+    // the stone, sketched in its facets
+    [
+      P([[575, 309], [546, 326], [500, 372], [486, 452], [492, 560], [538, 640], [566, 676], [600, 672], [640, 632], [662, 590], [681, 420], [662, 352], [622, 326], [575, 309]]),
+      P([[546, 326], [590, 385], [622, 326]]),
+      P([[590, 385], [596, 560], [640, 632]]),
+      P([[1330, 272], [1296, 300], [1286, 380], [1300, 470], [1340, 515], [1385, 500], [1414, 430], [1410, 330], [1380, 285], [1330, 272]]),
+    ],
+    // the two diagonals that cut the stone
+    [L(455, 453, 762, 311, true), L(425, 528, 664, 676, true), L(1262, 366, 1470, 270, true), L(1242, 415, 1405, 516, true)],
   ],
-  keepOut: [
-    [478 * k, 300 * k, 214 * k, 384 * k],
-    [396 * k, 438 * k, 378 * k, 112 * k],
-    [1272 * k, 265 * k, 150 * k, 258 * k],
-    [1222 * k, 352 * k, 262 * k, 80 * k],
-    [1222 * k, 652 * k, 262 * k, 80 * k],
-  ],
-  overFrom: 4,
-  // the drawing without the white margin around it
   phone: [170 * k, 160 * k, 1630 * k, 640 * k],
 };
+
+// timing, in seconds
+const WAVE = 0.55; // between waves
+const LINE = 0.06; // between the lines of one wave
+const DRAW = 0.9; // to trace one line
+const FADE = 1.4; // the image coming in, the lines going
 
 export const DrawnImage: React.FC<{ src: string; alt?: string; drawing: Drawing; className?: string }> = ({ src, alt = "", drawing, className = "" }) => {
   const box = useRef<HTMLDivElement>(null);
   const [go, setGo] = useState(false);
+  const [width, setWidth] = useState(0);
   const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const id = useRef(`draw-${Math.random().toString(36).slice(2, 8)}`).current;
 
   useEffect(() => {
     const el = box.current;
-    if (!el || still) return;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setWidth(e.contentRect.width));
+    ro.observe(el);
+    if (still) return () => ro.disconnect();
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) {
         setGo(true);
         io.disconnect();
       }
-    }, { threshold: 0.3 });
+    }, { threshold: 0.35 });
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      ro.disconnect();
+      io.disconnect();
+    };
   }, [still]);
 
-  // timing: each wave starts a little after the last; within a wave the lines follow closely
-  const WAVE = 0.42;
-  const LINE = 0.07;
-  const DRAW = 0.75;
-  const end = (drawing.waves.length - 1) * WAVE + DRAW;
+  const last = drawing.waves.length - 1;
+  const end = last * WAVE + (drawing.waves[last].length - 1) * LINE + DRAW + 0.2;
+
   // One drawing, seen through a window of the sheet (the whole of it, or a crop on phones)
-  const sheet = (view: [number, number, number, number], key: string, cls: string, style?: React.CSSProperties) => {
-    const mid = `${id}-${key}`;
+  const sheet = (view: [number, number, number, number], key: string, cls: string) => {
+    // about one screen pixel, whatever the size the sheet is shown at
+    const px = width ? view[2] / width : 2;
     return (
-      <svg key={key} viewBox={view.join(" ")} preserveAspectRatio="xMidYMid meet" className={cls} style={style} role="img" aria-label={alt}>
-        <defs>
-          <mask id={mid} maskUnits="userSpaceOnUse" x="0" y="0" width={drawing.w} height={drawing.h}>
-            {drawing.waves.map((wave, w) => [
-              // the keep-out areas, laid in black just before the lines allowed over them
-              w === drawing.overFrom &&
-                (drawing.keepOut ?? []).map(([x, y, rw, rh], j) => <rect key={`k${j}`} x={x} y={y} width={rw} height={rh} fill="black" />),
-              ...wave.map(([x1, y1, x2, y2], i) => (
-                <line
-                  key={`${w}-${i}`}
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
-                  stroke="white"
-                  strokeWidth={drawing.overFrom !== undefined && w >= drawing.overFrom ? 6 : 14}
-                  strokeLinecap="round"
-                  pathLength={1}
-                  strokeDasharray={1}
-                  style={{
-                    strokeDashoffset: go ? undefined : 1,
-                    animation: go ? `${id}-line ${DRAW}s cubic-bezier(.6,0,.2,1) ${w * WAVE + i * LINE}s both` : undefined,
-                  }}
-                />
-              )),
-            ])}
-            {/* keep-out areas with no lines drawn over them stay covered to the end */}
-            {drawing.overFrom === undefined &&
-              (drawing.keepOut ?? []).map(([x, y, rw, rh], j) => <rect key={`k${j}`} x={x} y={y} width={rw} height={rh} fill="black" />)}
-          </mask>
-        </defs>
-        {/* the guides, uncovered as they are drawn */}
-        <image href={src} width={drawing.w} height={drawing.h} mask={`url(#${mid})`} />
-        {/* then everything else: the stone, the lettering, the measures */}
+      <svg key={key} viewBox={view.join(" ")} preserveAspectRatio="xMidYMid meet" className={cls} role="img" aria-label={alt}>
+        {/* the original, fading in once the lines are drawn */}
         <image
           href={src}
           width={drawing.w}
           height={drawing.h}
-          style={{ opacity: still ? 1 : 0, animation: go ? `${id}-in 1.1s ease-out ${end - 0.2}s both` : undefined }}
+          style={{ opacity: still ? 1 : 0, animation: go ? `${id}-in ${FADE}s ease-in-out ${end}s both` : undefined }}
         />
+        {/* the lines, crisp, traced one after another, then gone as the image arrives */}
+        {!still && (
+          <g
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ animation: go ? `${id}-out ${FADE}s ease-in-out ${end}s both` : undefined }}
+          >
+            {drawing.waves.map((wave, w) =>
+              wave.map((st, i) => (
+                <polyline
+                  key={`${w}-${i}`}
+                  points={st.pts.map((p) => p.join(",")).join(" ")}
+                  stroke={st.dark ? "#3a3a3a" : "#9a9a9a"}
+                  strokeWidth={(st.dark ? 1.3 : 1) * px}
+                  pathLength={1}
+                  strokeDasharray={1}
+                  style={{
+                    strokeDashoffset: 1,
+                    animation: go ? `${id}-line ${DRAW}s cubic-bezier(.55,0,.25,1) ${w * WAVE + i * LINE}s forwards` : undefined,
+                  }}
+                />
+              )),
+            )}
+          </g>
+        )}
       </svg>
     );
   };
@@ -127,6 +135,7 @@ export const DrawnImage: React.FC<{ src: string; alt?: string; drawing: Drawing;
       <style>{`
         @keyframes ${id}-line { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
         @keyframes ${id}-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes ${id}-out { from { opacity: 1; } to { opacity: 0; } }
       `}</style>
       {/* the same space as any picture in the row: on phones the sheet's margins are trimmed so it reads larger */}
       {drawing.phone && (
