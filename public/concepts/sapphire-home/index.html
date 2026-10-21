@@ -225,9 +225,10 @@ const M = {
   travertine: new THREE.MeshStandardMaterial({ map: stoneTex, color: '#fbf3e6', roughness: .42 }),
   bronze: new THREE.MeshStandardMaterial({ color: '#8a6d4c', roughness: .35, metalness: .75 }),
   black: new THREE.MeshStandardMaterial({ color: '#232323', roughness: .4, metalness: .3 }),
-  frame: new THREE.MeshStandardMaterial({ color: '#7d7468', roughness: .45, metalness: .55 }),
-  glass: new THREE.MeshStandardMaterial({ color: '#dceef3', roughness: .05, transparent: true, opacity: .14, depthWrite: false }),
-  rail: new THREE.MeshStandardMaterial({ color: '#e1f0f3', roughness: .05, transparent: true, opacity: .24, depthWrite: false }),
+  frame: new THREE.MeshStandardMaterial({ color: '#4b4038', roughness: .4, metalness: .6 }),
+  sill: new THREE.MeshStandardMaterial({ color: '#ddd4c6', roughness: .7 }),
+  glass: new THREE.MeshStandardMaterial({ color: '#a9c7c4', roughness: .04, metalness: .1, transparent: true, opacity: .26, depthWrite: false }),
+  rail: new THREE.MeshStandardMaterial({ color: '#eef8f9', roughness: .02, transparent: true, opacity: .13, depthWrite: false }),
   front: new THREE.MeshStandardMaterial({ color: '#f1ede6', roughness: .45 }),
   steel: new THREE.MeshStandardMaterial({ color: '#cfd1d2', roughness: .25, metalness: .9 }),
   rug: new THREE.MeshStandardMaterial({ map: rugTex, roughness: 1 }),
@@ -275,23 +276,31 @@ const slab = (pts, depth) => {
 };
 // walls are cut at a little over a metre, as in a sectioned architectural model
 const WALL_H = 1.25;
-const wall = (a, b, th = 0.2, h = WALL_H) => {
+const wall = (a, b, th = 0.24, h = WALL_H) => {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz);
   const m = new THREE.Mesh(new THREE.BoxGeometry(len + th, h, th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
   m.position.set((a[0] + b[0]) / 2, h / 2, (a[1] + b[1]) / 2); m.rotation.y = -Math.atan2(dz, dx);
   return add(m);
 };
+// the home's own glass: sliding windows from floor to (cut) ceiling, in dark bronze frames on a stone sill,
+// the glass with the faint grey-green tint of real glazing
 const glazing = (a, b, panes = 3, h = WALL_H) => {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz);
   const g = new THREE.Group(); g.position.set((a[0] + b[0]) / 2, 0, (a[1] + b[1]) / 2); g.rotation.y = -Math.atan2(dz, dx); house.add(g);
-  const pane = new THREE.Mesh(new THREE.BoxGeometry(len, h - 0.05, 0.02), M.glass); pane.position.y = h / 2; g.add(pane);
-  for (let i = 0; i <= panes; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(0.03, h, 0.05), M.frame); f.position.set(-len / 2 + (len * i) / panes, h / 2, 0); f.castShadow = true; g.add(f); }
-  [0.015, h - 0.015].forEach((y) => { const f = new THREE.Mesh(new THREE.BoxGeometry(len, 0.03, 0.05), M.frame); f.position.y = y; g.add(f); });
+  const sill = new THREE.Mesh(new THREE.BoxGeometry(len + 0.1, 0.03, 0.18), M.sill); sill.position.y = 0.015; sill.receiveShadow = true; g.add(sill);
+  const pane = new THREE.Mesh(new THREE.BoxGeometry(len, h - 0.08, 0.025), M.glass); pane.position.y = h / 2; g.add(pane);
+  for (let i = 0; i <= panes; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(0.06, h, 0.09), M.frame); f.position.set(-len / 2 + (len * i) / panes, h / 2, 0); f.castShadow = true; g.add(f); }
+  [0.04, h - 0.03].forEach((y) => { const f = new THREE.Mesh(new THREE.BoxGeometry(len + 0.06, 0.06, 0.09), M.frame); f.position.y = y; f.castShadow = true; g.add(f); });
 };
-const rail = (a, b, h = 1.05) => {
+// the terrace's balustrade: lower, frameless clear glass in panels with fine joints, a slim steel handrail on top
+// and a stone channel at its foot — nothing like the windows of the house
+const rail = (a, b, h = 1.0) => {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz), ry = -Math.atan2(dz, dx);
-  const m = new THREE.Mesh(new THREE.BoxGeometry(len, h, 0.02), M.rail); m.position.set((a[0] + b[0]) / 2, h / 2, (a[1] + b[1]) / 2); m.rotation.y = ry; house.add(m);
-  const top = new THREE.Mesh(new THREE.BoxGeometry(len, 0.025, 0.045), M.frame); top.position.set(m.position.x, h, m.position.z); top.rotation.y = ry; house.add(top);
+  const g = new THREE.Group(); g.position.set((a[0] + b[0]) / 2, 0, (a[1] + b[1]) / 2); g.rotation.y = ry; house.add(g);
+  const n = Math.max(1, Math.round(len / 1.4)), pw = len / n;
+  for (let i = 0; i < n; i++) { const p = new THREE.Mesh(new THREE.BoxGeometry(pw - 0.015, h - 0.08, 0.016), M.rail); p.position.set(-len / 2 + pw * (i + 0.5), 0.08 + (h - 0.08) / 2, 0); g.add(p); }
+  const base = new THREE.Mesh(new THREE.BoxGeometry(len, 0.09, 0.12), M.sill); base.position.y = 0.045; base.castShadow = true; base.receiveShadow = true; g.add(base);
+  const top = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, len, 12), M.steel); top.rotation.z = Math.PI / 2; top.position.y = h + 0.02; top.castShadow = true; g.add(top);
 };
 const column = (x, z) => cyl(0.2, 0.2, WALL_H, M.wall, x, WALL_H / 2, z, 32);
 
@@ -334,36 +343,15 @@ const sofa = (g, w, d, mat, back = true, arms = [true, true]) => {
 };
 const cushion = (g, x, z, mat, ry = 0, s = 0.45) => { const c = box(s, s * 0.9, 0.14, mat, x, 0.56, z, 0.06, ry, g); c.rotation.x = -0.25; return c; };
 
-// --- living: a long sofa facing the sea's light, a daybed, low travertine tables, a wool rug
+// --- living: one long linen sofa along the window, a single travertine table; the room left to breathe
 {
-  const [rx0, rz0] = P(470, 381), [rx1, rz1] = P(621, 552);
-  box(rx1 - rx0, 0.015, rz1 - rz0, M.rug, (rx0 + rx1) / 2, 0.008, (rz0 + rz1) / 2, 0);
-  // the long sofa along the window, its chaise to the right
   const [sx0, sz0] = P(500, 531), [sx1, sz1] = P(625, 565);
   const s1 = group((sx0 + sx1) / 2, (sz0 + sz1) / 2, Math.PI); sofa(s1, sx1 - sx0, sz1 - sz0 + 0.1, M.sofa);
-  const [cx0, cz0] = P(590, 514);
-  const ch = group(cx0 + 0.3, (cz0 + sz1) / 2 - 0.05, 0); box(0.62, 0.2, sz1 - cz0, M.walnut, 0, 0.1, 0, 0.02, 0, ch); box(0.6, 0.2, sz1 - cz0 - 0.04, M.sofa, 0, 0.3, 0, 0.06, 0, ch);
-  [[-0.9, M.terracotta], [-0.35, M.ochre], [0.25, M.sand], [0.75, M.olive]].forEach(([x, m]) => cushion(s1, x, -0.2, m));
-  // the daybed on the left, facing in
-  const [dx0, dz0] = P(437, 402), [dx1, dz1] = P(479, 525);
-  const db = group((dx0 + dx1) / 2, (dz0 + dz1) / 2, Math.PI / 2); sofa(db, dz1 - dz0, dx1 - dx0 + 0.05, M.sand, true, [false, false]);
-  [[-0.8, M.cream], [0, M.rust], [0.8, M.cream]].forEach(([x, m]) => cushion(db, x, -0.25, m));
-  // two travertine tables, one stepping over the other
-  const [t1x0, t1z0] = P(548, 459), [t1x1, t1z1] = P(591, 485); box(t1x1 - t1x0, 0.36, t1z1 - t1z0, M.travertine, (t1x0 + t1x1) / 2, 0.18, (t1z0 + t1z1) / 2, 0.04);
-  const [t2x0, t2z0] = P(527, 472), [t2x1, t2z1] = P(570, 498); box(t2x1 - t2x0, 0.28, t2z1 - t2z0, M.walnut, (t2x0 + t2x1) / 2, 0.14, (t2z0 + t2z1) / 2, 0.03);
-  // on them: books, a bowl, a small vase
-  [[0, M.book[0]], [0.05, M.book[2]]].forEach(([y, m], i) => box(0.32 - i * 0.04, 0.045, 0.24, m, (t1x0 + t1x1) / 2 - 0.2, 0.385 + y, (t1z0 + t1z1) / 2, 0.005, 0.2));
-  cyl(0.13, 0.08, 0.07, M.ceramicBlue, (t1x0 + t1x1) / 2 + 0.25, 0.395, (t1z0 + t1z1) / 2, 28);
-  // a low walnut console at the head of the rug, a screen on it
-  const [kx0, kz0] = P(520, 386), [kx1] = P(587, 0); box(kx1 - kx0, 0.42, 0.42, M.walnut, (kx0 + kx1) / 2, 0.21, kz0 + 0.18, 0.02);
-  box(1.4, 0.8, 0.04, M.screen, (kx0 + kx1) / 2, 0.82, kz0 + 0.14, 0.01);
-  cyl(0.08, 0.1, 0.3, M.terracottaPot, kx0 + 0.2, 0.57, kz0 + 0.18, 24);
-  // an armchair in rust by the window
-  const ar = group(P(615, 430)[0], P(0, 430)[1], -Math.PI * 0.62); sofa(ar, 0.82, 0.8, M.rust);
+  [[-0.7, M.sand], [0.7, M.sand]].forEach(([x, m]) => cushion(s1, x, -0.2, m));
+  const [t1x0, t1z0] = P(540, 470), [t1x1, t1z1] = P(590, 495); box(t1x1 - t1x0, 0.34, t1z1 - t1z0, M.travertine, (t1x0 + t1x1) / 2, 0.17, (t1z0 + t1z1) / 2, 0.04);
 }
 // --- dining: an oak table for six, rattan chairs, a vase of olive branches, pendants
 const lamps = [];
-let diningVase = null; // its olive branches are added with the plants
 const pendant = (x, z, y = 1.65) => { const l = new THREE.PointLight('#ffc983', 0, 6, 1.5); l.position.set(x, y, z); house.add(l); lamps.push(l); };
 {
   const [x0, z0] = P(572, 225), [x1, z1] = P(610, 330); const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, L = z1 - z0, W = x1 - x0 + 0.1;
@@ -373,8 +361,6 @@ const pendant = (x, z, y = 1.65) => { const l = new THREE.PointLight('#ffc983', 
     box(0.48, 0.06, 0.48, M.rattan, 0, 0.45, 0, 0.03, 0, g); box(0.44, 0.07, 0.42, M.cream, 0, 0.5, 0.01, 0.03, 0, g); box(0.48, 0.42, 0.05, M.rattan, 0, 0.72, -0.22, 0.03, 0, g);
     [[-0.2, -0.2], [0.2, -0.2], [-0.2, 0.2], [0.2, 0.2]].forEach(([a, b]) => box(0.035, 0.44, 0.035, M.walnut, a, 0.22, b, 0.01, 0, g)); };
   [-0.75, 0, 0.75].forEach((dz) => { chair(cx - W / 2 - 0.32, cz + dz, Math.PI / 2); chair(cx + W / 2 + 0.32, cz + dz, -Math.PI / 2); });
-  cyl(0.09, 0.07, 0.3, M.ceramic, cx, 0.92, cz - 0.15, 24); cyl(0.17, 0.1, 0.06, M.ceramicBlue, cx, 0.8, cz + 0.45, 28);
-  diningVase = [cx, 1.05, cz - 0.15];
   [-0.6, 0, 0.6].forEach((dz) => pendant(cx, cz + dz));
 }
 // --- kitchen: a run under the facade, a tall column at its end, an island in marble with three stools
@@ -399,18 +385,11 @@ const kitchenFronts = [];
   kitchenFronts.push(box(2.6, 0.88, 0.95, M.front, ic.x, 0.44, ic.y, 0.015, iang));
   box(2.7, 0.04, 1.05, M.marble, ic.x, 0.9, ic.y, 0.006, iang);
   box(0.5, 0.012, 0.42, M.steel, ic.x + 0.1, 0.925, ic.y - 0.05, 0.004, iang);
-  cyl(0.16, 0.1, 0.07, M.ceramic, ic.x - 0.7, 0.955, ic.y, 28);
   [P(422, 202), P(447, 191), P(472, 181)].forEach(([x, z]) => { cyl(0.19, 0.19, 0.06, M.leather, x, 0.72, z, 28); cyl(0.018, 0.018, 0.7, M.bronze, x, 0.36, z, 8); cyl(0.16, 0.16, 0.012, M.bronze, x, 0.25, z, 24); });
   [-0.6, 0.6].forEach((s) => pendant(ic.x + Math.cos(iang) * s, ic.y - Math.sin(iang) * s, 1.75));
 }
-// --- laundry: a washer and dryer under a worktop
-{ const z = extZ(LAV_X0 + 0.9) + 0.45; box(1.3, 0.85, 0.6, M.front, LAV_X0 + 0.85, 0.425, z, 0.01, Math.atan2(EXT_B[1] - EXT_A[1], EXT_B[0] - EXT_A[0]) * -1); }
-// --- hall: a walnut console, a round mirror, a bench
-{ box(1.6, 0.06, 0.4, M.walnut, -2.4, 0.8, HALL_Z - 0.32, 0.02); box(1.5, 0.74, 0.36, M.walnut, -2.4, 0.38, HALL_Z - 0.32, 0.01);
-  const mir = new THREE.Mesh(new THREE.CircleGeometry(0.34, 48), new THREE.MeshStandardMaterial({ color: '#e7ecee', roughness: .04, metalness: .95 })); mir.position.set(-2.4, 1.14, HALL_Z - 0.11); mir.rotation.y = Math.PI; house.add(mir);
-  cyl(0.11, 0.13, 0.42, M.ceramic, -1.9, 1.04, HALL_Z - 0.32, 24); }
-// --- a floor lamp by the sofa
-{ const [x, z] = P(492, 548); cyl(0.012, 0.012, 1.0, M.bronze, x, 0.5, z, 8); const s = cyl(0.17, 0.2, 0.22, M.lamp, x, 1.05, z, 28); s.castShadow = false;
+// --- a warm light by the sofa, for the evening
+{ const [x, z] = P(492, 548);
   const l = new THREE.PointLight('#ffc983', 0, 5, 1.6); l.position.set(x, 0.95, z); house.add(l); lamps.push(l); }
 
 // --- terrace: a round teak table for six, an outdoor lounge, two loungers with a parasol
@@ -422,17 +401,16 @@ const kitchenFronts = [];
   // the lounge: a three-seater, two armchairs, a low table
   const [ax0, az0] = P(700, 118), [ax1, az1] = P(790, 150);
   const so = group((ax0 + ax1) / 2, (az0 + az1) / 2, 0); sofa(so, ax1 - ax0, az1 - az0 + 0.1, M.cream);
-  [[-0.65, M.navy], [0, M.sky], [0.65, M.navy]].forEach(([x, m]) => cushion(so, x, -0.15, m));
+  [[-0.6, M.sky], [0.6, M.sky]].forEach(([x, m]) => cushion(so, x, -0.15, m));
   const [bx0, bz0] = P(720, 205), [bx1, bz1] = P(780, 235);
   const so2 = group((bx0 + bx1) / 2, (bz0 + bz1) / 2, Math.PI); sofa(so2, bx1 - bx0, bz1 - bz0 + 0.1, M.cream);
-  [[-0.4, M.sky], [0.4, M.ochre]].forEach(([x, m]) => cushion(so2, x, -0.15, m));
+  [[0, M.sand]].forEach(([x, m]) => cushion(so2, x, -0.15, m));
   const [lx0, lz0] = P(720, 160), [lx1, lz1] = P(770, 195); box(lx1 - lx0, 0.3, lz1 - lz0, M.teak, (lx0 + lx1) / 2, 0.15, (lz0 + lz1) / 2, 0.02);
-  cyl(0.12, 0.09, 0.09, M.ceramicBlue, (lx0 + lx1) / 2, 0.345, (lz0 + lz1) / 2, 24);
   // loungers, side by side, with towels, and a parasol between them
   const lounger = (z0, z1) => { const [x0] = P(715, 0), [x1] = P(790, 0); const g = group((x0 + x1) / 2, (z0 + z1) / 2, Math.PI / 2);
     box(z1 - z0 + 0.05, 0.22, x1 - x0, M.teak, 0, 0.17, 0, 0.03, 0, g); box(z1 - z0 - 0.05, 0.1, x1 - x0 - 0.5, M.cream, 0, 0.32, 0.2, 0.04, 0, g);
     const back = box(z1 - z0 - 0.05, 0.1, 0.62, M.cream, 0, 0.5, -(x1 - x0) / 2 + 0.38, 0.04, 0, g); back.rotation.x = -0.75;
-    box(z1 - z0 - 0.15, 0.015, 0.7, M.navy, 0, 0.38, 0.35, 0.005, 0, g); };
+  };
   lounger(P(0, 447)[1], P(0, 470)[1]); lounger(P(0, 510)[1], P(0, 538)[1]);
   const [px, pz] = P(722, 492); cyl(0.025, 0.025, 2.3, M.teak, px, 1.15, pz, 10); cyl(0.22, 0.26, 0.06, M.planter, px, 0.03, pz, 24);
   const um = new THREE.Mesh(new THREE.ConeGeometry(1.25, 0.42, 8, 1, true), M.cream); um.position.set(px, 2.1, pz); um.material = fabric('#efe7da'); um.material.side = THREE.DoubleSide; add(um);
@@ -522,13 +500,8 @@ function fig(x, z, s = 1) {
   cyl(0.015, 0.02, 1.4 * s, M.bark, x, 0.38 * s + 0.6 * s, z, 6);
 }
 
-branches(...diningVase);
-// indoors: a kentia by the glass, a fig in the corner, a small one in the hall
-kentia(...P(632, 205), 1); fig(...P(400, 560), 0.95); kentia(...P(125, 262), 0.7);
-// the terrace: palms and an olive at its corners, shrubs along the rail, as the plan draws them
-palm(...P(676, 120), 1.1); palm(...P(695, 572), 1.0); oliveTree(...P(530, 588), 0.9);
-shrub(...P(764, 262), 0.42, 0.55); shrub(...P(800, 262), 0.35, 0.5); shrub(...P(615, 22), 0.4, 0.6, 0.45, LEAF.fig, M.terracottaPot, false);
-shrub(...P(805, 555), 0.38, 0.6);
+// a single olive tree on the terrace, by the living room's corner: the one plant
+oliveTree(...P(530, 588), 0.9);
 
 /* ================= the setting: a calm studio ground, not a painted sea ================= */
 // a soft, warm backdrop that takes the colour of the hour, and a ground that only catches shadow
@@ -664,7 +637,7 @@ addEventListener('resize', fit); fit();
 
 /* ================= loop ================= */
 const v3 = new THREE.Vector3();
-let introAt = null;
+let introAt = null, lastT = null, landed = false;
 const ease = (x) => (x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x));
 function frame() {
   const T = clock.getElapsedTime();
@@ -673,12 +646,16 @@ function frame() {
   if (mixT < 1) { if (mixFrom < 0) mixFrom = T; mixT = Math.min(1, (T - mixFrom) / 1.3); applyHour(); }
 
   const it = reduced ? 1 : ease((T - introAt) / 2.8);
-  if (it < 1) { flying = 0; setSph(HOME.az - 0.9 * (1 - it), 0.55 + (HOME.pol - 0.55) * it, HOME.r * (1.9 - 0.9 * it)); }
+  // easing per frame, by elapsed time: the same glide on a slow phone as on a fast screen
+  const dt = Math.min(0.25, T - (lastT ?? T)); lastT = T; const k = 1 - Math.pow(0.02, dt);
+  if (it < 1) { flying = 0; landed = false; setSph(HOME.az - 0.9 * (1 - it), 0.55 + (HOME.pol - 0.55) * it, HOME.r * (1.9 - 0.9 * it)); }
+  // the flight in always lands where it should, however few frames it had
+  else if (!landed) { landed = true; setSph(HOME.az, HOME.pol, HOME.r); }
   else if (flying) {
-    controls.target.lerp(goal.look, 0.06);
+    controls.target.lerp(goal.look, k);
     sph.setFromVector3(v3.copy(camera.position).sub(controls.target));
     let dAz = goal.az - sph.theta; dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
-    sph.theta += dAz * 0.06; sph.phi += (goal.pol - sph.phi) * 0.06; sph.radius += (goal.r - sph.radius) * 0.06;
+    sph.theta += dAz * k; sph.phi += (goal.pol - sph.phi) * k; sph.radius += (goal.r - sph.radius) * k;
     camera.position.setFromSpherical(sph).add(controls.target);
     if (Math.abs(dAz) < 0.002 && Math.abs(goal.r - sph.radius) < 0.02 && controls.target.distanceTo(goal.look) < 0.01) flying = 0;
   } else if (!reduced && !focus && T > idleAt) {
