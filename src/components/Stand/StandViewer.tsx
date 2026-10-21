@@ -8,6 +8,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { SMALL } from "../../lib/type";
+import { useI18n } from "../../i18n/I18n";
 
 /**
  * The smart hc congress stand, rebuilt in 3D from the original design, in a
@@ -1071,6 +1072,22 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
   const [ready, setReady] = useState(false);
   const [view, setView] = useState<View>("general");
   const [touched, setTouched] = useState(false);
+  const { lang } = useI18n();
+  // On touch screens the gesture is a swipe; elsewhere, a drag
+  const touch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+  const HINT: Record<string, [string, string]> = {
+    es: ["arrastra para girar", "desliza para girar"],
+    en: ["drag to rotate", "swipe to rotate"],
+    fr: ["faites glisser pour tourner", "glissez pour tourner"],
+    de: ["ziehen zum Drehen", "wischen zum Drehen"],
+  };
+  const hint = (HINT[lang] ?? HINT.es)[touch ? 1 : 0];
+  // The hint leaves by itself a few seconds after the model is up, or at the first touch
+  useEffect(() => {
+    if (!ready || touched) return;
+    const t = window.setTimeout(() => setTouched(true), 4000);
+    return () => window.clearTimeout(t);
+  }, [ready, touched]);
 
   useEffect(() => {
     let dispose: (() => void) | null = null;
@@ -1118,17 +1135,18 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
         className={`absolute inset-0 cursor-grab transition-opacity duration-700 active:cursor-grabbing ${ready ? "opacity-100" : "opacity-0"}`}
       />
       {/* An invitation to touch it, gone at the first drag: a hand swaying from side to side */}
-      <style>{`@keyframes stand-sway { 0%,100% { transform: translateX(-14px) rotate(-8deg); } 50% { transform: translateX(14px) rotate(8deg); } }`}</style>
+      <style>{`@keyframes stand-sway { 0%,100% { transform: translateX(-4px) rotate(-8deg); } 50% { transform: translateX(4px) rotate(8deg); } }`}</style>
       <div
         aria-hidden
-        className={`${SMALL} pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-3 whitespace-nowrap rounded-full bg-[#1c2124]/55 px-5 py-2.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
+        // small, in the top corner, so it never covers the stand
+        className={`${SMALL} pointer-events-none absolute right-3 top-3 flex items-center gap-2 whitespace-nowrap rounded-full bg-[#1c2124]/45 px-3 py-1.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 sm:right-4 ${
           ready && !touched && !bare ? "opacity-100" : "opacity-0"
         }`}
       >
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" style={{ animation: "stand-sway 1.8s ease-in-out infinite" }}>
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" style={{ animation: "stand-sway 1.8s ease-in-out infinite" }}>
           <path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.3 15.6a1.5 1.5 0 0 1 2.2-2l2.5 2.4" />
         </svg>
-        arrastra para girar
+        {hint}
       </div>
       {label && !bare && <p className={`${SMALL} pointer-events-none absolute left-4 top-3 normal-case text-[#2f3a3d]/70`}>{label}</p>}
       {!bare && <nav aria-label="Vistas" // One line always: tighter on phones, scrolling sideways if it still doesn't fit
