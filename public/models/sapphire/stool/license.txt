@@ -1,0 +1,11 @@
+Model Information:
+* title:	JAMAICA STOOL
+* source:	https://sketchfab.com/3d-models/jamaica-stool-acc5711fb4734bdcbeccc3c3753e1412
+* author:	jldaureil (https://sketchfab.com/jldaureil)
+
+Model License:
+* license type:	CC-BY-ND-4.0 (http://creativecommons.org/licenses/by-nd/4.0/)
+* requirements:	Author must be credited. Modified versions can not be distributed. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "JAMAICA STOOL" (https://sketchfab.com/3d-models/jamaica-stool-acc5711fb4734bdcbeccc3c3753e1412) by jldaureil (https://sketchfab.com/jldaureil) licensed under CC-BY-ND-4.0 (http://creativecommons.org/licenses/by-nd/4.0/)

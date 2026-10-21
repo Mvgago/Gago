@@ -90,6 +90,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+// which way the modelled sofa's front faces, turned to match the drawn ones (back to -z)
+const SOFA_FACE = 0;
+// and the modelled bed's, so its headboard sits where the drawn beds' does
+const BED_FACE = -Math.PI / 2;
 
 /* ================= words ================= */
 const LANG = (() => { try { const l = localStorage.getItem('fugahaus.lang'); if (l) return l; } catch (e) {} return (navigator.language || 'es').slice(0, 2); })();
@@ -170,14 +175,15 @@ const oakTex = tex(1024, 1024, (x, w, h) => {
   for (let i = 0; i < n; i++) {
     let y = -rnd() * 400;
     while (y < h) {
-      const len = 380 + rnd() * 420, hue = 30 + rnd() * 5, lig = 56 + rnd() * 9;
-      x.fillStyle = `hsl(${hue}, ${36 + rnd() * 8}%, ${lig}%)`; x.fillRect(i * pw, y, pw, len);
-      for (let g = 0; g < 22; g++) { x.strokeStyle = `rgba(105,68,38,${.04 + rnd() * .08})`; x.lineWidth = 1 + rnd(); const gx = i * pw + rnd() * pw; x.beginPath(); x.moveTo(gx, y); x.bezierCurveTo(gx + rnd() * 8 - 4, y + len / 3, gx + rnd() * 8 - 4, y + len * .66, gx + rnd() * 6 - 3, y + len); x.stroke(); }
+      // a pale natural oak, more grey than yellow
+      const len = 380 + rnd() * 420, hue = 28 + rnd() * 4, lig = 60 + rnd() * 8;
+      x.fillStyle = `hsl(${hue}, ${17 + rnd() * 6}%, ${lig}%)`; x.fillRect(i * pw, y, pw, len);
+      for (let g = 0; g < 22; g++) { x.strokeStyle = `rgba(112,96,80,${.04 + rnd() * .08})`; x.lineWidth = 1 + rnd(); const gx = i * pw + rnd() * pw; x.beginPath(); x.moveTo(gx, y); x.bezierCurveTo(gx + rnd() * 8 - 4, y + len / 3, gx + rnd() * 8 - 4, y + len * .66, gx + rnd() * 6 - 3, y + len); x.stroke(); }
       if (rnd() < .5) { x.strokeStyle = 'rgba(95,60,35,.18)'; x.lineWidth = 2; x.beginPath(); x.ellipse(i * pw + rnd() * pw, y + rnd() * len, 6, 14, 0, 0, 7); x.stroke(); }
-      x.fillStyle = 'rgba(80,52,30,.35)'; x.fillRect(i * pw, y, pw, 2);
+      x.fillStyle = 'rgba(94,82,70,.32)'; x.fillRect(i * pw, y, pw, 2);
       y += len;
     }
-    x.fillStyle = 'rgba(80,52,30,.32)'; x.fillRect(i * pw, 0, 2, h);
+    x.fillStyle = 'rgba(94,82,70,.3)'; x.fillRect(i * pw, 0, 2, h);
   }
 });
 // outdoor porcelain: big pale slabs, open joints
@@ -281,8 +287,8 @@ const slab = (pts, depth) => {
   const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: false }); g.rotateX(-Math.PI / 2); g.translate(0, -depth - 0.003, 0);
   return add(new THREE.Mesh(g, [M.slabSide, M.slabSide]), true, true);
 };
-// walls are cut at a little over a metre, as in a sectioned architectural model
-const WALL_H = 1.25;
+// walls, columns and glass all cut at one height, as in a sectioned architectural model
+const WALL_H = 2.1;
 const wall = (a, b, th = 0.24, h = WALL_H) => {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz);
   const m = new THREE.Mesh(new THREE.BoxGeometry(len + th, h, th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
@@ -291,7 +297,9 @@ const wall = (a, b, th = 0.24, h = WALL_H) => {
 };
 // the home's own glass: sliding windows from floor to (cut) ceiling, in dark bronze frames on a stone sill,
 // the glass with the faint grey-green tint of real glazing
-const glazing = (a, b, panes = 3, h = WALL_H) => {
+// the glass as tall as the walls it runs between, well above the terrace's balustrade
+const GLASS_H = WALL_H;
+const glazing = (a, b, panes = 3, h = GLASS_H) => {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz);
   const g = new THREE.Group(); g.position.set((a[0] + b[0]) / 2, 0, (a[1] + b[1]) / 2); g.rotation.y = -Math.atan2(dz, dx); house.add(g);
   const sill = new THREE.Mesh(new THREE.BoxGeometry(len + 0.1, 0.03, 0.18), M.sill); sill.position.y = 0.015; sill.receiveShadow = true; g.add(sill);
@@ -352,18 +360,42 @@ const sofa = (g, w, d, mat, back = true, arms = [true, true]) => {
   if (arms[1]) box(0.18, 0.32, d, mat, w / 2 - 0.09, 0.42, 0, 0.07, 0, g);
 };
 const cushion = (g, x, z, mat, ry = 0, s = 0.45) => { const c = box(s, s * 0.9, 0.14, mat, x, 0.56, z, 0.06, ry, g); c.rotation.x = -0.25; return c; };
+// a modelled sofa in place of a drawn one: its length fitted to `w`, standing on the floor, its back
+// to the group's -z (as the drawn one's), swapped in only once it has arrived
+const realSofa = (g, w, d) => {
+  new GLTFLoader().load('/models/sapphire/sofa.glb', (gltf) => {
+    const m = gltf.scene;
+    m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    let box3 = new THREE.Box3().setFromObject(m), size = box3.getSize(new THREE.Vector3());
+    if (size.z > size.x) m.rotation.y = Math.PI / 2; // its length along x
+    box3 = new THREE.Box3().setFromObject(m); size = box3.getSize(new THREE.Vector3());
+    // at its real size, as the dining set is (the model is in inches: 2.26 m long), unless longer
+    // than the drawn one; its back stays on the drawn one's line, its depth goes into the room
+    m.scale.setScalar(Math.min(0.0254, w / size.x));
+    box3 = new THREE.Box3().setFromObject(m); const c = box3.getCenter(new THREE.Vector3()), dz = box3.getSize(new THREE.Vector3()).z;
+    // centred along its length, its back where the drawn one's was
+    m.position.set(-c.x, -box3.min.y, -c.z - d / 2 + dz / 2 + 0.04);
+    const holder = new THREE.Group(); holder.add(m); holder.rotation.y = SOFA_FACE;
+    g.clear(); g.add(holder);
+  }, undefined, () => {});
+};
 
 // --- living: one long linen sofa along the window, a single travertine table; the room left to breathe
 {
   const [sx0, sz0] = P(500, 531), [sx1, sz1] = P(625, 565);
   const s1 = group((sx0 + sx1) / 2, (sz0 + sz1) / 2, Math.PI); sofa(s1, sx1 - sx0, sz1 - sz0 + 0.1, M.sofa);
   [[-0.7, M.sand], [0.7, M.sand]].forEach(([x, m]) => cushion(s1, x, -0.2, m));
+  // the real sofa, once it has loaded, in the drawn one's place and at its length; the drawn one
+  // stays if it never comes. "Tan Modern Livingroom sofa with Wood support" by Marc Sawyer
+  // (Whitewash Studio), CC BY 4.0
+  realSofa(s1, sx1 - sx0, sz1 - sz0);
   const [t1x0, t1z0] = P(540, 470), [t1x1, t1z1] = P(590, 495); box(t1x1 - t1x0, 0.34, t1z1 - t1z0, M.travertine, (t1x0 + t1x1) / 2, 0.17, (t1z0 + t1z1) / 2, 0.04);
 }
 // --- dining: an oak table for six, rattan chairs, a vase of olive branches, pendants
 const lamps = [];
 const pendant = (x, z, y = 1.65) => { const l = new THREE.PointLight('#ffc983', 0, 6, 1.5); l.position.set(x, y, z); house.add(l); lamps.push(l); };
 {
+  const houseBefore = house.children.length; // what is drawn from here on is the table and chairs
   const [x0, z0] = P(572, 225), [x1, z1] = P(610, 330); const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, L = z1 - z0, W = x1 - x0 + 0.1;
   box(W, 0.05, L, M.wood, cx, 0.74, cz, 0.02);
   [[-L / 2 + 0.35], [L / 2 - 0.35]].forEach(([dz]) => box(W - 0.2, 0.7, 0.08, M.wood, cx, 0.36, cz + dz, 0.02));
@@ -371,6 +403,25 @@ const pendant = (x, z, y = 1.65) => { const l = new THREE.PointLight('#ffc983', 
     box(0.48, 0.06, 0.48, M.rattan, 0, 0.45, 0, 0.03, 0, g); box(0.44, 0.07, 0.42, M.cream, 0, 0.5, 0.01, 0.03, 0, g); box(0.48, 0.42, 0.05, M.rattan, 0, 0.72, -0.22, 0.03, 0, g);
     [[-0.2, -0.2], [0.2, -0.2], [-0.2, 0.2], [0.2, 0.2]].forEach(([a, b]) => box(0.035, 0.44, 0.035, M.walnut, a, 0.22, b, 0.01, 0, g)); };
   [-0.75, 0, 0.75].forEach((dz) => { chair(cx - W / 2 - 0.32, cz + dz, Math.PI / 2); chair(cx + W / 2 + 0.32, cz + dz, -Math.PI / 2); });
+  // the real table and chairs, once loaded, in the drawn ones' place: its length along the room's,
+  // at its own size (it is modelled in metres) unless that would overrun the space. "Sleek Modern
+  // Dining Table Set" by Spectrality Studios, CC BY 4.0
+  const drawn = house.children.slice(houseBefore);
+  new GLTFLoader().load('/models/sapphire/dining.glb', (gltf) => {
+    const m = gltf.scene;
+    m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    let b = new THREE.Box3().setFromObject(m), sz = b.getSize(new THREE.Vector3());
+    if (sz.x > sz.z) m.rotation.y = Math.PI / 2; // its length along z, as the room's
+    b = new THREE.Box3().setFromObject(m); sz = b.getSize(new THREE.Vector3());
+    m.scale.setScalar(Math.min(1, (L + 0.4) / sz.z, (W + 1.3) / sz.x));
+    b = new THREE.Box3().setFromObject(m); const c = b.getCenter(new THREE.Vector3());
+    m.position.set(cx - c.x, -b.min.y, cz - c.z);
+    // kept clear of the glass along the living room (x = 6.11), with room to pass behind the chairs
+    const over = cx + (b.max.x - c.x) - (6.11 - 0.35);
+    if (over > 0) m.position.x -= over;
+    drawn.forEach((o) => house.remove(o));
+    house.add(m);
+  }, undefined, () => {});
   [-0.6, 0, 0.6].forEach((dz) => pendant(cx, cz + dz));
 }
 // --- kitchen: a run under the facade, a tall column at its end, an island in marble with three stools
@@ -398,7 +449,23 @@ const kitchenFronts = [];
   box(2.86, 0.04, 0.96, M.marble, ic.x, 0.9, ic.y, 0.006, iang);
   { const sk = ic.clone().addScaledVector(across, -0.15); box(0.62, 0.012, 0.5, M.steel, sk.x, 0.925, sk.y, 0.004, iang); }
   // the three stools, where the plan draws them
-  [[0.94, 0.32], [1.5, 0.07], [2.06, -0.18]].forEach(([x, z]) => { cyl(0.19, 0.19, 0.06, M.leather, x, 0.72, z, 28); cyl(0.018, 0.018, 0.7, M.bronze, x, 0.36, z, 8); cyl(0.16, 0.16, 0.012, M.bronze, x, 0.25, z, 24); });
+  const STOOLS = [[0.94, 0.32], [1.5, 0.07], [2.06, -0.18]];
+  const drawnStools = [];
+  STOOLS.forEach(([x, z]) => drawnStools.push(cyl(0.19, 0.19, 0.06, M.leather, x, 0.72, z, 28), cyl(0.018, 0.018, 0.7, M.bronze, x, 0.36, z, 8), cyl(0.16, 0.16, 0.012, M.bronze, x, 0.25, z, 24)));
+  // the real stools, once loaded, in the drawn ones' places, 0.75 m tall. Used as published, not
+  // modified (its licence allows no altered copies): "JAMAICA STOOL" by jldaureil, CC BY-ND 4.0
+  new GLTFLoader().load('/models/sapphire/stool/scene.gltf', (gltf) => {
+    const src = gltf.scene;
+    src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    const b = new THREE.Box3().setFromObject(src), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
+    const k = 0.75 / s.y;
+    drawnStools.forEach((o) => house.remove(o));
+    STOOLS.forEach(([x, z]) => {
+      const st = src.clone(); st.scale.setScalar(k);
+      st.position.set(x - c.x * k, -b.min.y * k, z - c.z * k);
+      house.add(st);
+    });
+  }, undefined, () => {});
   [-0.6, 0.6].forEach((t) => { const q = ic.clone().addScaledVector(along, t); pendant(q.x, q.y, 1.75); });
 }
 // --- the bathrooms: their own floor of pale grey porcelain, a white bath and a WC, so they read as such
@@ -424,11 +491,37 @@ const kitchenFronts = [];
   const bed = (x, z, w, l, ry) => { const g = group(x, z, ry);
     box(l, 0.28, w, M.walnut, 0, 0.14, 0, 0.03, 0, g); box(l - 0.08, 0.22, w - 0.06, M.cream, 0.04, 0.39, 0, 0.06, 0, g);
     box(0.12, 0.7, w + 0.1, M.sand, -l / 2 - 0.02, 0.45, 0, 0.04, 0, g);
-    box(l * 0.42, 0.06, w - 0.02, M.sky, l * 0.22, 0.52, 0, 0.03, 0, g); };
+    box(l * 0.42, 0.06, w - 0.02, M.sky, l * 0.22, 0.52, 0, 0.03, 0, g); return g; };
   bed(-1.05, 5.75, 0.95, 2.0, 0); bed(-1.05, 7.15, 0.95, 2.0, 0); // dorm 3, two singles
-  bed(-8.3, 7.6, 1.6, 2.05, -Math.PI / 4); // dorm 2
-  bed(-11.0, 10.7, 1.8, 2.1, -Math.PI / 4); // dorm 1
+  // the real double beds, once loaded, each in a drawn one's place: its length along the drawn one's,
+  // headboard at its -x end, fitted within its length and width; a different bed in each room.
+  // "Dark Modern Bed" by Ren Viro Store, CC BY 4.0
+  const realBed = (g, w, l, url, face) => new GLTFLoader().load(url, (gltf) => {
+    const src = gltf.scene;
+    src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    const turn = new THREE.Group(); turn.add(src);
+    let b = new THREE.Box3().setFromObject(turn), s = b.getSize(new THREE.Vector3());
+    turn.rotation.y = face + (s.z > s.x ? 0 : -Math.PI / 2); // its length along x, headboard to -x
+    b = new THREE.Box3().setFromObject(turn); s = b.getSize(new THREE.Vector3());
+    const k = Math.min(l / s.x, w / s.z), c = b.getCenter(new THREE.Vector3());
+    turn.scale.setScalar(k); turn.position.set(-c.x * k, -b.min.y * k, -c.z * k);
+    g.clear(); g.add(turn);
+  }, undefined, () => {});
+  realBed(bed(-8.3, 7.6, 1.6, 2.05, -Math.PI / 4), 1.6, 2.05, '/models/sapphire/bed.glb', BED_FACE); // dorm 2
+  bed(-11.0, 10.7, 1.8, 2.1, -Math.PI / 4); // dorm 1, the drawn bed
 }
+// --- rubber plants in woven baskets: one by the living room's sofa, in full view, one in the hall.
+// "Rubber Plant (fig)" by jamieirvin, CC BY 4.0
+new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
+  const src = gltf.scene;
+  src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  const b = new THREE.Box3().setFromObject(src), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
+  [[5.55, 7.15, 1.35, 0.4], [-4.9, 2.35, 1.1, 2.1]].forEach(([x, z, tall, ry]) => {
+    const k = tall / s.y, one = src.clone();
+    const holder = new THREE.Group(); holder.position.set(x, 0, z); holder.rotation.y = ry; house.add(holder);
+    one.scale.setScalar(k); one.position.set(-c.x * k, -b.min.y * k, -c.z * k); holder.add(one);
+  });
+}, undefined, () => {});
 // --- a warm light by the sofa, for the evening
 { const [x, z] = P(492, 548);
   const l = new THREE.PointLight('#ffc983', 0, 5, 1.6); l.position.set(x, 0.95, z); house.add(l); lamps.push(l); }
@@ -603,7 +696,7 @@ const OPTIONS = {
   floor: [['stone', '#e8ddcb'], ['oak', '#c49a6c']],
   kitchen: [['white', '#f1ede6'], ['sapphire', '#1c2a4a'], ['oak', '#c9a27a']],
 };
-const STATE = { light: 'morning', floor: 'stone', kitchen: 'white' };
+const STATE = { light: 'morning', floor: 'stone', kitchen: 'sapphire' };
 const ACT = { light: setHour, floor: setFloor, kitchen: setKitchen };
 const panelEl = document.getElementById('panel');
 const cycles = {};
@@ -724,7 +817,7 @@ addEventListener('message', (e) => {
     renderer.setAnimationLoop(e.data.fhVisible ? frame : null);
   }
 });
-applyHour(); setFloor('stone'); setKitchen('white');
+applyHour(); setFloor(STATE.floor); setKitchen(STATE.kitchen);
 stage.classList.add('on');
 renderer.setAnimationLoop(frame);
 </script>
