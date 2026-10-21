@@ -96,16 +96,16 @@ const LANG = (() => { try { const l = localStorage.getItem('fugahaus.lang'); if 
 const DICT = {
   es: { cap: 'Concepto · Planta 2C, la vivienda en 3D', drag: 'arrastra para girar', swipe: 'desliza para girar', light: 'luz', floor: 'suelo', kitchen: 'cocina',
         morning: 'mañana', sunset: 'atardecer', night: 'noche', stone: 'travertino', oak: 'roble', white: 'blanco', sapphire: 'zafiro',
-        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero' },
+        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1' },
   en: { cap: 'Concept · Floor 2C, the home in 3D', drag: 'drag to rotate', swipe: 'swipe to rotate', light: 'light', floor: 'floor', kitchen: 'kitchen',
         morning: 'morning', sunset: 'sunset', night: 'night', stone: 'travertine', oak: 'oak', white: 'white', sapphire: 'sapphire',
-        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry' },
+        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom' },
   fr: { cap: 'Concept · Étage 2C, le logement en 3D', drag: 'faites glisser pour tourner', swipe: 'glissez pour tourner', light: 'lumière', floor: 'sol', kitchen: 'cuisine',
         morning: 'matin', sunset: 'couchant', night: 'nuit', stone: 'travertin', oak: 'chêne', white: 'blanc', sapphire: 'saphir',
-        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie' },
+        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1' },
   de: { cap: 'Konzept · Etage 2C, die Wohnung in 3D', drag: 'ziehen zum Drehen', swipe: 'wischen zum Drehen', light: 'licht', floor: 'boden', kitchen: 'küche',
         morning: 'morgen', sunset: 'abend', night: 'nacht', stone: 'travertin', oak: 'eiche', white: 'weiß', sapphire: 'saphir',
-        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum' },
+        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1' },
 };
 const TX = DICT[LANG] || DICT.es;
 const t = (k) => TX[k] ?? DICT.es[k] ?? k;
@@ -304,33 +304,36 @@ const rail = (a, b, h = 1.0) => {
 };
 const column = (x, z) => cyl(0.2, 0.2, WALL_H, M.wall, x, WALL_H / 2, z, 32);
 
-/* ================= the plan: day zone of Floor 2C, traced from the sales plan, in metres ================= */
-// 1 m = 45 px on the plan; origin at the living room's back corner (where the hall meets it)
+/* ================= the plan: the whole of Floor 2C, traced from the sales plan itself ================= */
+// Walls, columns and outline were taken from the drawing's own lines (45 px to the metre), so every
+// wall sits where the plan puts it. Origin: the living room's back corner; x to the sea, z down the plan.
 const P = (px, py) => [(px - 380) / 45, (py - 188) / 45];
-const EXT_A = P(60, 197), EXT_B = P(490, 18); // the long angled facade: hall, laundry, kitchen
-const KG_B = P(545, 188); // the kitchen's glass, running down to the living room
-const LIV = { x0: 0, x1: P(651, 0)[0], z0: 0, z1: P(0, 577)[1] };
-const HALL_Z = P(0, 282)[1], HALL_X0 = P(100, 0)[0], LAV_X0 = P(205, 0)[0], LAV_X1 = P(345, 0)[0], LAV_Z = P(0, 213)[1];
-// where the facade line is at a given x
-const extZ = (x) => EXT_A[1] + ((x - EXT_A[0]) / (EXT_B[0] - EXT_A[0])) * (EXT_B[1] - EXT_A[1]);
+const PLAN_WALLS = [{"o":[[-4.267,6.222],[-4.244,6.356],[-4.044,6.356],[-3.911,6.444],[-3.911,6.644],[-3.733,6.644],[-3.6,6.733],[-3.6,8.4],[-3.733,8.489],[-4.222,8.467],[-4.267,8.489],[-4.267,8.622],[-4.111,8.489],[-3.622,8.489],[-3.489,8.622],[-3.489,6.222]],"h":[[[-3.844,6.244],[-3.622,6.222],[-3.489,6.311],[-3.489,6.556],[-3.556,6.622],[-3.778,6.644],[-3.911,6.556],[-3.911,6.311]]]},{"o":[[-13.289,5.444],[-15.844,8.022],[-13.444,10.444],[-13.267,10.267],[-13.133,10.267],[-10.711,12.689],[-13.2,10.2],[-13.356,10.356],[-13.444,10.378],[-13.778,10.089],[-13.778,10.0],[-13.644,9.911],[-13.533,9.978],[-13.244,9.689],[-13.111,9.689],[-12.956,9.844],[-13.0,10.0],[-10.356,12.644],[-10.267,12.6],[-10.111,12.689],[-10.267,12.556],[-10.422,12.578],[-12.956,10.044],[-12.956,9.956],[-12.889,9.889],[-13.022,9.756],[-13.0,9.6],[-13.067,9.511],[-13.467,9.911],[-13.6,9.911],[-15.422,8.089],[-15.422,7.978],[-13.444,6.0],[-13.289,6.0],[-12.044,7.244],[-10.978,6.178],[-11.067,6.067],[-11.2,6.2],[-11.311,6.222],[-11.533,6.533],[-11.844,6.822],[-11.978,6.822],[-12.156,6.667],[-12.311,6.733],[-13.222,5.867],[-13.222,5.778],[-13.089,5.622]],"h":[[[-12.222,6.733],[-12.089,6.733],[-11.867,6.956],[-11.867,7.044],[-11.978,7.178],[-12.111,7.178],[-12.333,6.956],[-12.333,6.844]],[[-13.222,5.511],[-13.156,5.578],[-13.156,5.689],[-13.267,5.844],[-15.467,8.0],[-15.467,8.133],[-15.533,8.2],[-15.667,8.2],[-15.8,8.067],[-15.8,7.956],[-13.356,5.511]]]},{"o":[[-8.6,5.089],[-8.689,5.178],[-8.689,5.289],[-11.0,7.622],[-10.911,7.711],[-10.511,7.311],[-10.378,7.311],[-9.6,8.089],[-9.6,8.178],[-9.756,8.356],[-9.444,8.667],[-9.311,8.533],[-9.156,8.533],[-7.8,9.889],[-7.8,9.978],[-8.222,10.4],[-8.111,10.511],[-7.578,9.956],[-10.311,7.2],[-10.311,7.111],[-8.378,5.156],[-8.467,5.089]],"h":[[[-9.489,8.111],[-9.4,8.133],[-9.2,8.333],[-9.2,8.422],[-9.422,8.6],[-9.511,8.578],[-9.711,8.378],[-9.711,8.289]]]},{"o":[[-3.489,3.778],[-3.6,3.778],[-3.733,3.889],[-7.289,3.889],[-7.867,4.489],[-7.778,4.578],[-7.644,4.578],[-7.044,5.156],[-6.956,5.044],[-7.444,4.556],[-7.444,4.467],[-7.022,4.044],[-6.222,4.0],[-4.356,4.044],[-4.289,4.111],[-4.289,5.756],[-4.356,5.822],[-5.222,5.867],[-6.111,5.844],[-6.4,5.6],[-6.489,5.711],[-6.222,6.0],[-4.267,6.022],[-4.156,6.0],[-4.156,5.867],[-4.289,5.778],[-4.289,4.067],[-4.156,3.978],[-3.489,4.022]],"h":[[[-7.133,3.911],[-7.067,3.978],[-7.067,4.067],[-7.533,4.533],[-7.667,4.533],[-7.733,4.467],[-7.733,4.356],[-7.289,3.911]]]},{"o":[[-5.467,2.0],[-5.467,2.778],[-5.356,2.778],[-5.356,2.222],[-5.289,2.156],[-4.044,2.133],[-3.911,2.222],[-3.911,2.089],[-3.844,2.022],[-3.556,2.022],[-3.489,2.089],[-3.489,2.689],[-3.622,2.778],[-3.911,2.733],[-3.911,2.778],[-3.667,2.8],[-3.6,2.933],[-3.489,2.933],[-3.489,2.222],[-3.422,2.156],[-2.556,2.156],[-2.489,2.222],[-2.467,3.067],[-2.333,3.067],[-2.333,2.089],[-2.267,2.022],[-0.244,2.0],[-0.111,2.089],[-0.111,2.956],[-0.267,3.067],[-0.444,3.044],[-0.444,3.756],[-0.511,3.822],[-2.222,3.844],[-2.333,3.778],[-2.467,3.844],[-2.489,3.978],[-0.2,4.0],[-0.067,4.089],[-0.067,8.622],[0.044,8.622],[0.044,2.0]],"h":[[[-0.178,3.044],[-0.022,3.067],[0.044,3.133],[0.044,3.911],[-0.089,4.0],[-0.311,4.0],[-0.444,3.911],[-0.444,3.156],[-0.378,3.089]]]},{"o":[[-6.8,1.956],[-6.933,1.844],[-7.022,2.0],[-7.911,2.844],[-8.467,2.333],[-8.422,2.178],[-8.978,1.622],[-8.933,1.467],[-8.356,0.933],[-8.222,1.0],[-8.089,0.933],[-8.022,0.956],[-7.578,1.4],[-7.467,1.311],[-8.289,0.422],[-12.978,5.133],[-12.8,5.311],[-12.6,5.2],[-12.511,5.222],[-11.911,5.8],[-11.822,5.667],[-12.422,5.067],[-12.422,4.978],[-9.378,1.911],[-9.244,1.844],[-8.089,2.956],[-8.089,3.067],[-10.2,5.178],[-10.089,5.289],[-9.4,4.6],[-9.289,4.578],[-9.2,4.489],[-9.2,4.4],[-6.911,2.111],[-6.778,2.067]],"h":[[[-8.2,0.511],[-8.044,0.733],[-8.044,0.822],[-8.222,0.956],[-8.356,0.889],[-9.022,1.556],[-8.467,2.156],[-8.467,2.244],[-8.556,2.333],[-8.689,2.333],[-9.267,1.8],[-12.556,5.133],[-12.711,5.244],[-12.844,5.244],[-12.911,5.178],[-12.911,5.067],[-8.356,0.511]]]},{"o":[[-0.778,-0.422],[-0.467,0.311],[-0.467,0.4],[-0.533,0.467],[-0.622,0.467],[-0.622,0.6],[0.044,0.6],[0.022,0.444],[-0.156,0.444],[-0.311,0.333],[-0.622,-0.444]],"h":[]},{"o":[[-7.578,-0.289],[-7.4,-0.111],[-7.089,-0.422],[-6.956,-0.422],[-6.022,0.511],[-5.867,0.489],[-6.0,0.156],[-6.0,0.244],[-6.067,0.311],[-6.2,0.311],[-6.622,-0.111],[-6.622,-0.2],[-6.556,-0.267],[-5.844,-0.533],[-6.444,-0.289],[-7.044,-0.822]],"h":[[[-7.2,-0.644],[-7.022,-0.778],[-6.844,-0.644],[-6.844,-0.556],[-6.911,-0.489],[-7.067,-0.467],[-7.2,-0.556]]]},{"o":[[-1.644,0.6],[-1.644,0.467],[-3.111,0.422],[-3.2,0.333],[-3.733,-0.956],[-3.733,-1.044],[-3.667,-1.111],[-2.844,-1.422],[-2.711,-1.333],[-2.489,-0.756],[-1.8,-1.022],[-2.0,-1.556],[-1.822,-1.044],[-2.4,-0.778],[-2.533,-0.867],[-2.756,-1.444],[-2.822,-1.467],[-3.8,-1.022],[-3.956,-1.022],[-6.111,-0.111],[-6.022,0.111],[-6.067,-0.089],[-5.978,-0.178],[-3.978,-0.978],[-3.822,-0.844],[-3.378,0.244],[-3.378,0.356],[-3.511,0.444],[-4.0,0.444],[-3.933,0.6]],"h":[]},{"o":[[-0.178,-2.556],[-2.067,-1.778],[-2.022,-1.6],[-2.044,-1.733],[-1.956,-1.822],[-1.533,-2.0],[-1.4,-1.911],[-1.156,-1.311],[-1.0,-1.356],[-1.244,-1.889],[-1.267,-2.067],[-1.156,-2.156]],"h":[]}];
+// the whole floor with its terraces, and the line of glass that closes the home against them
+const ENVELOPE = [[9.53, -2.18], [6.56, -2.02], [5.96, -2.09], [4.71, -4.8], [2.56, -3.89], [2.2, -3.89], [-6.22, -0.38], [-6.6, -0.42], [-7.02, -0.84], [-7.6, -0.27], [-7.89, -0.22], [-8.16, 0.04], [-8.2, 0.33], [-15.87, 8.02], [-13.44, 10.44], [-13.2, 10.36], [-13.0, 10.42], [-8.02, 15.4], [-2.24, 9.67], [2.82, 9.64], [4.47, 9.53], [7.27, 9.18], [10.04, 8.58]];
+const INSIDE = [[2.2, -3.89], [-6.22, -0.38], [-6.6, -0.42], [-7.02, -0.84], [-7.6, -0.27], [-7.89, -0.22], [-8.16, 0.04], [-8.2, 0.33], [-15.87, 8.02], [-13.44, 10.44], [-13.2, 10.36], [-13.0, 10.42], [-9.78, 13.64], [-7.6, 10.6], [-6.22, 8.71], [6.11, 8.71], [6.11, 0], [3.67, 0]];
+const floors = { inside: floor(INSIDE, M.stone, 0.004) };
+floor(ENVELOPE, M.deck, 0, 1.0);
+slab(ENVELOPE, 0.5);
 
-const INSIDE = [[HALL_X0, extZ(HALL_X0)], EXT_B, KG_B, [LIV.x1, 0], [LIV.x1, LIV.z1], [LIV.x0, LIV.z1], [LIV.x0, HALL_Z], [HALL_X0, HALL_Z]];
-const TERRACE = [EXT_B, P(600, 0), P(650, 95), P(808, 88), P(830, 575), P(680, 598), P(385, 600), [0.1, LIV.z1], [LIV.x1, LIV.z1], [LIV.x1, 0], KG_B];
-const floors = { inside: floor(INSIDE, M.stone) };
-floor(TERRACE, M.deck, 0, 1.0);
-slab([[HALL_X0, extZ(HALL_X0)], EXT_B, P(600, 0), P(650, 95), P(808, 88), P(830, 575), P(680, 598), P(385, 600), [LIV.x0 - 0.1, P(0, 600)[1]], [LIV.x0 - 0.1, HALL_Z], [HALL_X0, HALL_Z]], 0.5);
-
-// facade, partitions and glass
-wall([HALL_X0, extZ(HALL_X0)], EXT_B, 0.28);
-wall([HALL_X0, extZ(HALL_X0)], [HALL_X0, HALL_Z]); // the cut, towards the bedrooms' wing
-wall([HALL_X0, HALL_Z], [LIV.x0, HALL_Z]); // hall / bath and bedroom 3
-wall([LIV.x0, HALL_Z], [LIV.x0, LIV.z1]); // living / bedroom 3
-wall([LAV_X0, extZ(LAV_X0)], [LAV_X0, LAV_Z]); // laundry, its two sides and its front with a door
-wall([LAV_X1, extZ(LAV_X1)], [LAV_X1, LAV_Z]);
-wall([LAV_X0, LAV_Z], [P(300, 0)[0], LAV_Z], 0.12); wall([P(350, 0)[0], LAV_Z], [LIV.x0 + 0.04, LAV_Z], 0.12);
-glazing(EXT_B, KG_B, 3); glazing(KG_B, [LIV.x1, 0], 2); glazing([LIV.x1, 0], [LIV.x1, LIV.z1], 4); glazing([0.1, LIV.z1], [LIV.x1, LIV.z1], 4);
-[P(458, 233), P(458, 368), P(458, 545), P(670, 233), P(670, 368), P(670, 545)].forEach(([x, z]) => column(x, z));
-const TR = TERRACE; for (let i = 0; i < 6; i++) rail(TR[i], TR[i + 1]);
+// the walls, raised from the plan's own outlines (holes and all), cut at the model's height
+{
+  const geo = [];
+  PLAN_WALLS.forEach(({ o, h }) => {
+    const sh = new THREE.Shape(o.map(([x, z]) => new THREE.Vector2(x, -z)));
+    h.forEach((hole) => sh.holes.push(new THREE.Path(hole.map(([x, z]) => new THREE.Vector2(x, -z)))));
+    const g = new THREE.ExtrudeGeometry(sh, { depth: WALL_H, bevelEnabled: false, curveSegments: 1 }); g.rotateX(-Math.PI / 2);
+    const m = new THREE.Mesh(g, [M.wallTop, M.wall]); add(m);
+  });
+}
+// the round columns: in the living room's line and on the terrace, and one in the hall
+[[1.7, 0.99], [6.43, 0.99], [1.7, 4.0], [6.43, 4.0], [1.7, 7.9], [6.43, 7.9], [-6.73, 3.42]].forEach(([x, z]) => column(x, z));
+// the home's glass: the kitchen and the living room to the terraces, the bedrooms to theirs
+glazing([3.67, 0], [2.33, -3.73], 3); glazing([3.67, 0], [6.11, 0], 2); glazing([6.11, 0], [6.11, 8.71], 5);
+glazing([6.11, 8.71], [0.05, 8.71], 4); glazing([-0.05, 8.71], [-6.22, 8.71], 3); glazing([-6.22, 8.71], [-7.6, 10.6], 2); glazing([-7.6, 10.6], [-9.78, 13.64], 2);
+// the balustrade, along every open edge of the terraces
+[[2.56, -3.89], [4.71, -4.8], [5.96, -2.09], [6.56, -2.02], [9.53, -2.18], [10.04, 8.58], [7.27, 9.18], [4.47, 9.53], [2.82, 9.64], [-2.24, 9.67], [-8.02, 15.4], [-9.78, 13.64]]
+  .forEach((pt, i, a) => { if (i < a.length - 1) rail(pt, a[i + 1]); });
 
 /* ================= furniture ================= */
 // a sofa module: seat, back, and loose cushions
@@ -388,6 +391,16 @@ const kitchenFronts = [];
   [P(422, 202), P(447, 191), P(472, 181)].forEach(([x, z]) => { cyl(0.19, 0.19, 0.06, M.leather, x, 0.72, z, 28); cyl(0.018, 0.018, 0.7, M.bronze, x, 0.36, z, 8); cyl(0.16, 0.16, 0.012, M.bronze, x, 0.25, z, 24); });
   [-0.6, 0.6].forEach((s) => pendant(ic.x + Math.cos(iang) * s, ic.y - Math.sin(iang) * s, 1.75));
 }
+// --- the bedrooms: a bed in each, nothing more, so the rooms read
+{
+  const bed = (x, z, w, l, ry) => { const g = group(x, z, ry);
+    box(l, 0.28, w, M.walnut, 0, 0.14, 0, 0.03, 0, g); box(l - 0.08, 0.22, w - 0.06, M.cream, 0.04, 0.39, 0, 0.06, 0, g);
+    box(0.12, 0.7, w + 0.1, M.sand, -l / 2 - 0.02, 0.45, 0, 0.04, 0, g);
+    box(l * 0.42, 0.06, w - 0.02, M.sky, l * 0.22, 0.52, 0, 0.03, 0, g); };
+  bed(-1.05, 5.75, 0.95, 2.0, 0); bed(-1.05, 7.15, 0.95, 2.0, 0); // dorm 3, two singles
+  bed(-8.3, 7.6, 1.6, 2.05, -Math.PI / 4); // dorm 2
+  bed(-11.0, 10.7, 1.8, 2.1, -Math.PI / 4); // dorm 1
+}
 // --- a warm light by the sofa, for the evening
 { const [x, z] = P(492, 548);
   const l = new THREE.PointLight('#ffc983', 0, 5, 1.6); l.position.set(x, 0.95, z); house.add(l); lamps.push(l); }
@@ -412,8 +425,6 @@ const kitchenFronts = [];
     const back = box(z1 - z0 - 0.05, 0.1, 0.62, M.cream, 0, 0.5, -(x1 - x0) / 2 + 0.38, 0.04, 0, g); back.rotation.x = -0.75;
   };
   lounger(P(0, 447)[1], P(0, 470)[1]); lounger(P(0, 510)[1], P(0, 538)[1]);
-  const [px, pz] = P(722, 492); cyl(0.025, 0.025, 2.3, M.teak, px, 1.15, pz, 10); cyl(0.22, 0.26, 0.06, M.planter, px, 0.03, pz, 24);
-  const um = new THREE.Mesh(new THREE.ConeGeometry(1.25, 0.42, 8, 1, true), M.cream); um.position.set(px, 2.1, pz); um.material = fabric('#efe7da'); um.material.side = THREE.DoubleSide; add(um);
   cyl(0.22, 0.22, 0.42, M.travertine, P(752, 492)[0], 0.21, P(0, 492)[1], 28);
 }
 
@@ -520,9 +531,9 @@ ground.rotation.x = -Math.PI / 2; ground.position.y = -0.52; ground.receiveShado
 /* ================= light ================= */
 const sun = new THREE.DirectionalLight('#fff4e6', 2.6);
 sun.castShadow = true; sun.shadow.mapSize.set(phone ? 1536 : 2048, phone ? 1536 : 2048);
-const sc = sun.shadow.camera; sc.left = -12; sc.right = 12; sc.top = 12; sc.bottom = -12; sc.near = 1; sc.far = 70;
+const sc = sun.shadow.camera; sc.left = -16; sc.right = 16; sc.top = 16; sc.bottom = -16; sc.near = 1; sc.far = 90;
 sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 5;
-sun.target.position.set(2.5, 0, 2.5); scene.add(sun, sun.target);
+sun.target.position.set(-2.8, 0, 5.3); scene.add(sun, sun.target);
 const hemi = new THREE.HemisphereLight('#dfe8ef', '#e6dacb', 0.9); scene.add(hemi);
 
 // three hours, lit as the renders are: clear morning, golden sunset, a warm-lit night
@@ -591,12 +602,13 @@ Object.keys(OPTIONS).forEach((k) => choose(k, STATE[k], true));
 
 /* ================= rooms: tags with the plan's own areas, and the camera going to each ================= */
 const ROOMS = [
-  { k: 'living', m2: '48,70', at: [3.3, 1.1, 5.5], look: [3.2, 0.3, 4.4], az: -0.7, pol: 0.86, r: 13 },
-  { k: 'kitchenR', m2: '13,10', at: [1.0, 1.1, -1.4], look: [1.0, 0.3, -1.2], az: -0.25, pol: 0.8, r: 9.5 },
-  { k: 'hall', m2: '14,60', at: [-3.0, 1.1, 1.3], look: [-2.6, 0.3, 1.2], az: -0.95, pol: 0.8, r: 9.5 },
-  { k: 'terrace', m2: '84,20', at: [8.4, 1.1, 2.6], look: [7.6, 0.3, 2.8], az: -1.45, pol: 0.92, r: 14 },
+  { k: 'living', m2: '48,70', at: [3.3, 1.1, 5.5], look: [3.2, 0.3, 4.4], az: 0.55, pol: 0.86, r: 13 },
+  { k: 'kitchenR', m2: '13,10', at: [0.8, 1.1, -1.7], look: [1.0, 0.3, -1.2], az: 0.35, pol: 0.8, r: 9.5 },
+  { k: 'hall', m2: '14,60', at: [-5.6, 1.1, 1.3], look: [-5.4, 0.3, 1.6], az: 0.6, pol: 0.82, r: 11 },
+  { k: 'bedroom', m2: '18,90', at: [-11.2, 1.1, 9.6], look: [-10.6, 0.3, 9.8], az: 0.75, pol: 0.82, r: 12 },
+  { k: 'terrace', m2: '84,20', at: [8.4, 1.1, 2.6], look: [7.6, 0.3, 2.8], az: 0.9, pol: 0.92, r: 14 },
 ];
-const HOME = { look: [2.6, 0.2, 2.6], az: -0.72, pol: 0.98, r: 20 };
+const HOME = { look: [-2.6, 0.2, 5.0], az: 0.62, pol: 0.9, r: 32 };
 const tagsEl = document.getElementById('tags');
 let focus = null;
 ROOMS.filter((room) => !(phone && room.k === 'hall')).forEach((room) => {
@@ -628,7 +640,7 @@ function fit() {
   const tall = w / h < 0.9;
   camera.fov = tall ? 44 : 32;
   camera.updateProjectionMatrix();
-  HOME.r = tall ? 16.5 : w / h < 1.3 ? 24 : 22.5;
+  HOME.r = tall ? 33 : w / h < 1.3 ? 34 : 30;
   // tall frames: aimed a little above the floor, so it sits in the space over the controls
   HOME.look[1] = tall ? 1.6 : 0.2;
   if (!focus) { goal.look.set(...HOME.look); controls.target.set(...HOME.look); goal.r = HOME.r; }
