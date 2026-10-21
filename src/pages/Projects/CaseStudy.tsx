@@ -184,14 +184,15 @@ function rows(images: CaseImage[]): CaseImage[][] {
 const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang, className = "" }) => (
   <>
   {/* Phones: no labels, one quiet line (the sector, then what was done), and the link if any */}
-  <motion.div variants={rise} initial="hidden" animate="shown" custom={3} // in the same typeface as the story above it, a step smaller, so the two read as one piece
-    className={`font-geo text-[14px] font-normal leading-relaxed tracking-[0.02em] text-graphite sm:hidden ${className}`}>
+  <motion.div variants={rise} initial="hidden" animate="shown" custom={3} // the label typeface, a step up so it sits closer in size to the story above it
+    className={`${SMALL} text-[14px] leading-relaxed text-graphite sm:hidden ${className}`}>
     <p>
       {/* the sector in full ink, the disciplines after it in grey: told apart without taking more room */}
       <span className="text-ink">{(c.sector ?? c.client)[lang]}</span>
       <span className="text-graphite/75">
-        {" — "}
-        {(c.services ? c.services.map((s) => DISCIPLINE[s.d][lang]) : c.disciplines.map((d) => DISCIPLINE[d][lang])).join(" · ")}
+        {"\u00a0— "}
+        {/* the dot holds on to the word before it, so no line ever starts with one */}
+        {(c.services ? c.services.map((s) => DISCIPLINE[s.d][lang]) : c.disciplines.map((d) => DISCIPLINE[d][lang])).join("\u00a0· ")}
       </span>
     </p>
     {c.link && (
