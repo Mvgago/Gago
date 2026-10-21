@@ -51,7 +51,7 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disciplines",
     disciplines: [
       {
-        title: "Audiovisual",
+        title: "Film and motion",
         text: "Spaces and brands told in motion, for campaigns and social media, from footage or from renders.",
         list: ["Concept, filming and editing", "Motion and graphics", "Music production and sound design"],
       },
@@ -129,7 +129,7 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
-        title: "Audiovisual",
+        title: "Vídeo y motion",
         text: "Espacios y marcas contados en movimiento, para campañas y redes, a partir de rodaje o de renders.",
         list: ["Concepto, grabación y montaje", "Motion y grafismo", "Producción musical y diseño sonoro"],
       },
@@ -207,7 +207,7 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disciplines",
     disciplines: [
       {
-        title: "Audiovisuel",
+        title: "Vidéo et motion design",
         text: "Des lieux et des marques racontés en mouvement, pour campagnes et réseaux, à partir de tournages ou de rendus.",
         list: ["Concept, tournage et montage", "Motion et graphisme", "Production musicale et design sonore"],
       },
@@ -285,7 +285,7 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
-        title: "Audiovisuell",
+        title: "Film und Motion",
         text: "Räume und Marken in Bewegung erzählt, für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
         list: ["Konzept, Dreh und Schnitt", "Motion und Grafik", "Musikproduktion und Sounddesign"],
       },
