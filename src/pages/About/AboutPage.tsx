@@ -300,7 +300,8 @@ export const AboutPage: React.FC = () => {
             <>
               {/* held to a width that sets it in two lines, the principle making the third */}
               <span className="block max-w-[66ch]">{s.statement.slice(0, cut + 1)}</span>
-              <span className="block text-graphite">{s.statement.slice(cut + 2)}</span>
+              {/* the principle stays whole on one line, also on phones */}
+              <span className="block whitespace-nowrap text-graphite">{s.statement.slice(cut + 2)}</span>
             </>
           );
         })()}
