@@ -24,7 +24,7 @@ export const CardsConveyor: React.FC<{
   className?: string;
   /** seconds for one card to pass its own width */
   pace?: number;
-}> = ({ cards, backdrop = "#8fa7af", alt = "", className = "", pace = 3.2 }) => {
+}> = ({ cards, backdrop = "#8fa7af", alt = "", className = "", pace = 5 }) => {
   const box = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
