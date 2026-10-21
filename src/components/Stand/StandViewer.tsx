@@ -1138,8 +1138,8 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
       <style>{`@keyframes stand-sway { 0%,100% { transform: translateX(-4px) rotate(-8deg); } 50% { transform: translateX(4px) rotate(8deg); } }`}</style>
       <div
         aria-hidden
-        // small, top left: on phones in the caption's place (the caption is hidden there), otherwise just under it
-        className={`${SMALL} pointer-events-none absolute ${label ? "top-3 sm:top-11" : "top-3"} left-2.5 flex items-center gap-2 whitespace-nowrap rounded-full bg-[#1c2124]/45 px-3 py-1.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
+        // small, in the top right corner: the caption keeps the top left (and is hidden on phones)
+        className={`${SMALL} pointer-events-none absolute right-2.5 top-3 sm:right-4 flex items-center gap-2 whitespace-nowrap rounded-full bg-[#1c2124]/45 px-3 py-1.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
           ready && !touched && !bare ? "opacity-100" : "opacity-0"
         }`}
       >
