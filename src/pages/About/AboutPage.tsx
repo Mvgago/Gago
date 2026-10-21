@@ -299,9 +299,9 @@ export const AboutPage: React.FC = () => {
           return (
             <>
               {/* held to a width that sets it in two lines, the principle making the third */}
-              <span className="block max-w-[66ch]">{s.statement.slice(0, cut + 1)}</span>
-              {/* the principle stays whole on one line, also on phones */}
-              <span className="block whitespace-nowrap text-graphite">{s.statement.slice(cut + 2)}</span>
+              {/* on phones the principle runs on right after the statement; on large screens it takes its own line */}
+              <span className="lg:block lg:max-w-[66ch]">{s.statement.slice(0, cut + 1)}</span>{" "}
+              <span className="text-graphite lg:block">{s.statement.slice(cut + 2)}</span>
             </>
           );
         })()}
