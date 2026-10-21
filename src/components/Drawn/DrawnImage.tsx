@@ -17,6 +17,8 @@ export type Drawing = {
   waves: Stroke[][];
   /** on phones, the window of the sheet to show: its margins trimmed, so it reads larger in the same space */
   phone?: [number, number, number, number];
+  /** waves before this one are dashed guides (as on the sheet); from it on, solid strokes */
+  solidFrom?: number;
 };
 
 // The Sapphire's construction sheet (saphire (4)), measured on the sheet shown 2000 px wide
@@ -51,6 +53,8 @@ export const SAPPHIRE_MARK: Drawing = {
     [L(455, 453, 762, 311), L(425, 528, 664, 676), L(1262, 366, 1470, 270), L(1242, 415, 1405, 516)],
   ],
   phone: [170 * k, 160 * k, 1630 * k, 640 * k],
+  // the guides dashed, as the sheet draws them; the stone and the diagonals in one stroke
+  solidFrom: 5,
 };
 
 // timing, in seconds
@@ -79,20 +83,22 @@ function pencil([a, b]: [Pt, Pt], r: () => number): string {
   return `M${s[0].toFixed(1)},${s[1].toFixed(1)} C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${e[0].toFixed(1)},${e[1].toFixed(1)}`;
 }
 
-type Mark = { d: string; delay: number; dur: number; faint: boolean };
+type Mark = { d: string; delay: number; dur: number; faint: boolean; dashed: boolean };
 // The whole sketch, line after line; about a third are gone over a second time, more lightly
 function sketch(drawing: Drawing): { marks: Mark[]; end: number } {
   const r = rand(7);
   const marks: Mark[] = [];
   let t = 0;
-  drawing.waves.forEach((wave) => {
+  drawing.waves.forEach((wave, w) => {
+    const dashed = drawing.solidFrom !== undefined && w < drawing.solidFrom;
     wave.forEach((st) => {
       const segs = st.pts.slice(1).map((p, i) => [st.pts[i], p] as [Pt, Pt]);
       // a shape (the stone) is drawn as one continuous gesture, a line as one stroke
       const d = segs.map((sg) => pencil(sg, r)).join(" ");
       const dur = DRAW * (0.8 + r() * 0.5) * (segs.length > 1 ? 2.2 : 1);
-      marks.push({ d, delay: t, dur, faint: false });
-      if (r() < 0.35) marks.push({ d: segs.map((sg) => pencil(sg, r)).join(" "), delay: t + dur * 0.6, dur: dur * 0.9, faint: true });
+      marks.push({ d, delay: t, dur, faint: false, dashed });
+      // gone over again, more lightly (solid strokes only: two dashed lines read as noise)
+      if (!dashed && r() < 0.4) marks.push({ d: segs.map((sg) => pencil(sg, r)).join(" "), delay: t + dur * 0.6, dur: dur * 0.9, faint: true, dashed });
       t += STEP * (0.7 + r() * 0.6) * (segs.length > 1 ? 3 : 1);
     });
     t += STEP * 2; // a breath between one part of the drawing and the next
@@ -150,20 +156,24 @@ export const DrawnImage: React.FC<{ src: string; alt?: string; drawing: Drawing;
             strokeLinejoin="round"
             style={{ animation: go ? `${id}-out ${FADE}s ease-in-out ${end - 0.2}s both` : undefined }}
           >
-            {marks.map((m, i) => (
-              <path
-                key={i}
-                d={m.d}
-                stroke={m.faint ? "#d6d6d6" : "#bdbdbd"}
-                strokeWidth={(m.faint ? 0.8 : 1.05) * px}
-                pathLength={1}
-                strokeDasharray={1}
-                style={{
-                  strokeDashoffset: 1,
-                  animation: go ? `${id}-line ${m.dur.toFixed(2)}s cubic-bezier(.4,0,.3,1) ${m.delay.toFixed(2)}s forwards` : undefined,
-                }}
-              />
-            ))}
+            {marks.map((m, i) => {
+              const draw = go ? `${id}-line ${m.dur.toFixed(2)}s cubic-bezier(.4,0,.3,1) ${m.delay.toFixed(2)}s forwards` : undefined;
+              const stroke = m.faint ? "#d6d6d6" : "#bdbdbd";
+              const sw = (m.faint ? 0.8 : 1.05) * px;
+              if (!m.dashed)
+                return <path key={i} d={m.d} stroke={stroke} strokeWidth={sw} pathLength={1} strokeDasharray={1} style={{ strokeDashoffset: 1, animation: draw }} />;
+              // a dashed line can't also be drawn by its own dashes: it is uncovered along its
+              // length through a mask that is drawn instead
+              const mid = `${id}-${key}-m${i}`;
+              return (
+                <g key={i}>
+                  <mask id={mid} maskUnits="userSpaceOnUse" x="0" y="0" width={drawing.w} height={drawing.h}>
+                    <path d={m.d} stroke="white" strokeWidth={sw * 6} pathLength={1} strokeDasharray={1} style={{ strokeDashoffset: 1, animation: draw }} />
+                  </mask>
+                  <path d={m.d} stroke={stroke} strokeWidth={sw} strokeLinecap="butt" strokeDasharray={`${(5 * px).toFixed(2)} ${(3.5 * px).toFixed(2)}`} mask={`url(#${mid})`} />
+                </g>
+              );
+            })}
           </g>
         )}
       </svg>
