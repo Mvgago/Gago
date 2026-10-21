@@ -61,7 +61,7 @@ export const STUDIO: Record<Lang, Studio> = {
         list: ["Stands for fairs and congresses", "Shops, venues and window displays", "Signage and point-of-sale material"],
       },
       {
-        title: "Web and interactive 3D",
+        title: "Web architecture and interactive 3D",
         text: "Bespoke websites and experiences you can explore: fast, finished to the last detail and made to tell.",
         list: ["Bespoke web design and development", "Spaces and products in 3D to explore", "Maintenance and technical SEO"],
       },
@@ -139,7 +139,7 @@ export const STUDIO: Record<Lang, Studio> = {
         list: ["Stands para ferias y congresos", "Imagen de tiendas, locales y escaparates", "Señalética y material de punto de venta"],
       },
       {
-        title: "Web y 3D interactivo",
+        title: "Arquitectura web y 3D interactivo",
         text: "Webs a medida y experiencias que se recorren: rápidas, cuidadas hasta el último detalle y hechas para contar.",
         list: ["Diseño y desarrollo web a medida", "Espacios y productos en 3D que se pueden explorar", "Mantenimiento y SEO técnico"],
       },
@@ -217,7 +217,7 @@ export const STUDIO: Record<Lang, Studio> = {
         list: ["Stands pour salons et congrès", "Image de boutiques, de lieux et de vitrines", "Signalétique et PLV"],
       },
       {
-        title: "Web et 3D interactive",
+        title: "Architecture web et 3D interactive",
         text: "Des sites sur mesure et des expériences à parcourir : rapides, soignés jusqu'au moindre détail et faits pour raconter.",
         list: ["Conception et développement web sur mesure", "Espaces et produits en 3D à explorer", "Maintenance et SEO technique"],
       },
@@ -295,7 +295,7 @@ export const STUDIO: Record<Lang, Studio> = {
         list: ["Messe- und Kongressstände", "Läden, Lokale und Schaufenster", "Beschilderung und Point-of-Sale-Material"],
       },
       {
-        title: "Web und interaktives 3D",
+        title: "Webarchitektur und interaktives 3D",
         text: "Maßgeschneiderte Websites und Erlebnisse zum Erkunden: schnell, bis ins Detail ausgearbeitet und gemacht, um zu erzählen.",
         list: ["Webdesign und -entwicklung nach Maß", "Räume und Produkte in 3D zum Erkunden", "Wartung und technisches SEO"],
       },
