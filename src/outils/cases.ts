@@ -74,6 +74,8 @@ export type CaseImage = {
   href?: string;
   /** A construction sheet whose guide lines draw themselves the first time it is seen */
   draw?: "sapphire-mark";
+  /** A slow drift along the picture's own diagonal, for pieces laid out in rows on a slant */
+  drift?: boolean;
 };
 
 export type Case = {
@@ -394,7 +396,7 @@ export const cases: Case[] = [
       { src: "", video: "/video/smarthc.mp4", videoSpeed: 1 },
       { src: smBrochure, pair: true },
       { src: smDetailLogo },
-      { src: smPrint, pair: true },
+      { src: smPrint, pair: true, drift: true },
       { src: smDetailGuides },
     ],
 
