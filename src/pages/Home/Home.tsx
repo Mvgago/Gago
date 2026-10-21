@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { rise } from "../../lib/motion";
@@ -14,8 +14,23 @@ import { ACTION, DISPLAY, SMALL, SUBTITLE } from "../../lib/type";
  */
 export const Home: React.FC = () => {
   const { t } = useI18n();
+  // The landing is one screen and nothing more: the page does not scroll here, nor bounce past
+  // its edges on phones (which showed the end of the light behind it)
+  useEffect(() => {
+    const html = document.documentElement;
+    const before = { overflow: html.style.overflow, overscroll: html.style.overscrollBehavior, body: document.body.style.overscrollBehavior };
+    html.style.overflow = "hidden";
+    html.style.overscrollBehavior = "none";
+    document.body.style.overscrollBehavior = "none";
+    window.scrollTo(0, 0);
+    return () => {
+      html.style.overflow = before.overflow;
+      html.style.overscrollBehavior = before.overscroll;
+      document.body.style.overscrollBehavior = before.body;
+    };
+  }, []);
   return (
-  <main className="relative flex h-[100svh] min-h-[600px] w-full select-none flex-col overflow-hidden text-silver">
+  <main className="relative flex h-[100svh] w-full select-none flex-col overflow-hidden text-silver sm:min-h-[600px]">
     {/* Portrait screens: the light bloom falls right behind the manifesto, so a soft
         shade gathers under the type to keep the silver legible. */}
     <div
