@@ -97,9 +97,12 @@ export const Home: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 2.4, delay: 1.8 }}
       >
-        <span>{t("availability")} — {new Date().getFullYear()}</span>
-        <span aria-hidden className="hidden sm:inline">·</span>
+        {/* the address first; the availability under it leads to the contact form as well */}
         <ContactMenu />
+        <span aria-hidden className="hidden sm:inline">·</span>
+        <Link to="/about#contact" className="transition-colors duration-300 hover:text-ink">
+          {t("availability")} — {new Date().getFullYear()}
+        </Link>
         <span aria-hidden className="hidden sm:inline">·</span>
         {/* phones: Instagram in the bottom right corner, apart from the lines on the left */}
         <span className="absolute bottom-0 right-0 sm:static">

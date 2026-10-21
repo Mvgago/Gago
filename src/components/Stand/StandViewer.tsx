@@ -1138,8 +1138,8 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
       <style>{`@keyframes stand-sway { 0%,100% { transform: translateX(-4px) rotate(-8deg); } 50% { transform: translateX(4px) rotate(8deg); } }`}</style>
       <div
         aria-hidden
-        // small, just under the caption in the top-left corner: never over the stand, never over the caption
-        className={`${SMALL} pointer-events-none absolute ${label ? "top-10 sm:top-11" : "top-3"} left-2.5 flex items-center gap-2 whitespace-nowrap rounded-full bg-[#1c2124]/45 px-3 py-1.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
+        // small, top left: on phones in the caption's place (the caption is hidden there), otherwise just under it
+        className={`${SMALL} pointer-events-none absolute ${label ? "top-3 sm:top-11" : "top-3"} left-2.5 flex items-center gap-2 whitespace-nowrap rounded-full bg-[#1c2124]/45 px-3 py-1.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
           ready && !touched && !bare ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -1148,7 +1148,8 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
         </svg>
         {hint}
       </div>
-      {label && !bare && <p className={`${SMALL} pointer-events-none absolute left-4 top-3 normal-case text-[#2f3a3d]/70`}>{label}</p>}
+      {/* the caption, from tablets up: on phones the picture stays clear of words */}
+      {label && !bare && <p className={`${SMALL} pointer-events-none absolute left-4 top-3 hidden normal-case sm:block text-[#2f3a3d]/70`}>{label}</p>}
       {!bare && <nav aria-label="Vistas" // One line always: tighter on phones, scrolling sideways if it still doesn't fit
         className={`${SMALL} absolute inset-x-0 bottom-0 flex gap-x-3 overflow-x-auto [&>*:first-child]:ml-auto px-3 pb-2.5 pt-8 [scrollbar-width:none] sm:gap-x-5 sm:px-4 sm:pb-3 [&::-webkit-scrollbar]:hidden`} style={{ background: "linear-gradient(to top, rgba(28,33,36,0.55), transparent)" }}>
         {(Object.keys(VIEWS) as View[]).map((v) => (
