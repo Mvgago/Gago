@@ -554,7 +554,7 @@ export const AboutPage: React.FC = () => {
                 )}
               </span>
               {/* what is done with the details, said where they are given, as the law asks */}
-              <p className={`${SMALL} text-[9px] normal-case leading-snug tracking-[0.02em] text-platinum/40`}>
+              <p className={`${SMALL} text-[8px] normal-case leading-snug tracking-[0.02em] text-platinum/40 sm:text-[9px]`}>
                 {s.form.privacy}
                 <Link to="/privacy" className="text-platinum/65 underline decoration-platinum/30 underline-offset-4 transition-colors duration-300 hover:text-platinum">
                   {s.form.privacyLink}

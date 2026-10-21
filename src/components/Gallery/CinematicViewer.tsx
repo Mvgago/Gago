@@ -17,8 +17,8 @@ export type CameraMotion = { x: number; y: number; z: number };
 
 type Props = {
   image: string;
-  /** A silent looping video to show instead of the image (the image stays as its poster) */
-  video?: string;
+  /** A silent looping film to show instead of the image: full size, a lighter one for phones, and its first frame */
+  film?: { src: string; small: string; poster: string; posterSmall: string };
   /** Receives the camera's damped offset each frame it moves (for the HUD's parallax) */
   onMotion?: (m: CameraMotion) => void;
   className?: string;
@@ -147,11 +147,14 @@ const MotionLoop: React.FC<{
   return null;
 };
 
-export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, className = "" }) => {
+export const CinematicViewer: React.FC<Props> = ({ image, film, onMotion, className = "" }) => {
+  // phones get the lighter film: it starts in a moment instead of after a long download
+  const phone = typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+  const video = film ? (phone ? film.small : film.src) : undefined;
+  const poster = film ? (phone ? film.posterSmall : film.poster) : undefined;
   const pointer = useRef({ x: 0, y: 0, active: 0 });
   const invalidateRef = useRef<() => void>(() => {});
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [filmReady, setFilmReady] = React.useState(false);
   const [frameReady, setFrameReady] = React.useState(false);
   // Phones (iOS above all) don't load a film until asked to play it: ask straight away.
   // If it never plays, the still underneath simply stays
@@ -226,7 +229,7 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
           is what shows, never the empty graphite, and the film dissolves in over it. If the
           phone won't play the film at all (low-power mode, data saver), it simply stays */}
       {video && (
-        <img src={image} alt="" aria-hidden className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+        <img src={poster} alt="" aria-hidden className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
       )}
       {video && (
         <video
@@ -238,6 +241,7 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
           playsInline
           autoPlay
           preload="auto"
+          poster={poster}
           // Start as soon as it can play, at its final speed from the first frame (changing
           // speed mid-play makes it stutter), then lift the cloud once frames are flowing
           onCanPlay={(e) => {
@@ -246,64 +250,13 @@ export const CinematicViewer: React.FC<Props> = ({ image, video, onMotion, class
             v.playbackRate = FILM_SPEED;
             if (v.paused) void v.play().catch(() => {});
           }}
-          onPlaying={() => {
-            setFrameReady(true);
-            window.setTimeout(() => setFilmReady(true), 120);
-          }}
-          // Shown from its own first frame (no poster: a still framed differently made the
-          // picture jump when the film took over), so it is in place from the first instant
+          onPlaying={() => setFrameReady(true)}
+          // Over its own first frame (the same picture, so nothing jumps), it simply takes over
           onLoadedData={() => setFrameReady(true)}
-          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
             frameReady ? "opacity-100" : "opacity-0"
           }`}
         />
-      )}
-      {/* A pale cloud over the first frame, dissipating once the film has started:
-          the haze lifts and its soft patches drift apart and fade (opacity and scale only, on the compositor) */}
-      {video && (
-        // The cloud comes with the first frame, never over the empty graphite (that read as a grey flash)
-        <div
-          aria-hidden
-          className={`pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-500 ${
-            frameReady ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          {/* The haze: frosted, pale, thinning */}
-          <div
-            className="absolute inset-0"
-            // Only opacity animates: an animated backdrop blur over a playing video stalls it
-            style={{
-              background: "rgba(244,242,239,0.55)",
-              opacity: filmReady ? 0 : 1,
-              transition: "opacity 1.4s ease-out 0.1s",
-              willChange: "opacity",
-            }}
-          />
-          {/* Billows of cloud that swell slightly as they fade, each at its own pace */}
-          {[
-            { x: "22%", y: "38%", w: "70vmax", d: 0.3 },
-            { x: "74%", y: "30%", w: "60vmax", d: 0.6 },
-            { x: "48%", y: "78%", w: "75vmax", d: 0.45 },
-          ].map((c) => (
-            <div
-              key={c.x}
-              className="absolute rounded-full"
-              style={{
-                left: c.x,
-                top: c.y,
-                width: c.w,
-                height: c.w,
-                translate: "-50% -50%",
-                background: "radial-gradient(closest-side, rgba(250,249,247,0.75), rgba(250,249,247,0.3) 55%, transparent)",
-                filter: "blur(30px)",
-                opacity: filmReady ? 0 : 1,
-                scale: filmReady ? "1.35" : "1",
-                transition: `opacity 1.2s ease-out ${c.d / 2}s, scale 1.6s ease-out ${c.d / 2}s`,
-                willChange: "opacity, scale",
-              }}
-            />
-          ))}
-        </div>
       )}
     </div>
   );

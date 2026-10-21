@@ -42,8 +42,16 @@ const scopeOf = (slug: string, lang: Lang) => {
 };
 const imageOf = (slug: string) => cases.find((c) => c.slug === slug)?.cover ?? "";
 
-// Projects shown as film instead of a still (files in public/video)
-const VIDEO: Record<string, string | undefined> = { sapphire: "/video/the-sapphire.mp4" };
+// Projects shown as film instead of a still (files in public/video): the full film, a lighter
+// one for phones, and the film's own first frame, shown until it plays so nothing jumps
+const FILM: Record<string, { src: string; small: string; poster: string; posterSmall: string } | undefined> = {
+  sapphire: {
+    src: "/video/the-sapphire.mp4",
+    small: "/video/the-sapphire-720.mp4",
+    poster: "/video/the-sapphire-poster.webp",
+    posterSmall: "/video/the-sapphire-poster-720.webp",
+  },
+};
 
 /** A layer at a given depth: it follows the camera by `depth` px per unit of drift */
 const Layer: React.FC<{
@@ -109,7 +117,7 @@ export const ProjectsSection: React.FC = () => {
           exit={{ opacity: 0, transition: { duration: 0.35, ease: [0.4, 0, 1, 1] } }}
         >
           <Suspense fallback={null}>
-            <CinematicViewer image={imageOf(active.slug)} video={VIDEO[active.slug]} onMotion={onMotion} className="absolute inset-0" />
+            <CinematicViewer image={imageOf(active.slug)} film={FILM[active.slug]} onMotion={onMotion} className="absolute inset-0" />
           </Suspense>
         </motion.div>
       </AnimatePresence>
