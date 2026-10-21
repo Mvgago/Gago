@@ -61,12 +61,12 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
 };
 
 
-// In the order of the disciplines: audiovisual, spaces and events, web and 3D, strategy and identity.
+// In the order of the disciplines: audiovisual, 3D and web, spaces and events, strategy and identity.
 // The 3D scenes run on their own; the pointer is left to the page so scrolling over them never sticks
 const EXAMPLES: Example[] = [
   { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
-  { scene: "stand", seen: ["smarthc"] },
   { frame: "/concepts/smarthc-devices/index.html?bare", seen: ["smarthc", "buendia", "sapphire"] },
+  { scene: "stand", seen: ["smarthc"] },
   { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 

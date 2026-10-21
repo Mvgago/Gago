@@ -9,16 +9,16 @@ import { cases } from "../outils/cases";
  */
 const PAGES: Record<string, Record<string, [string, string]>> = {
   "/": {
-    es: ["Fuga Haus — Estudio de diseño", "Estudio de diseño independiente: estrategia, identidad, arquitectura web y 3D interactivo, y audiovisual."],
-    en: ["Fuga Haus — Design studio", "Independent design studio: strategy, identity, web architecture and interactive 3D, and film."],
-    fr: ["Fuga Haus — Studio de design", "Studio de design indépendant : stratégie, identité, architecture web et 3D interactive, et audiovisuel."],
-    de: ["Fuga Haus — Designstudio", "Unabhängiges Designstudio: Strategie, Identität, Webarchitektur und interaktives 3D sowie Film."],
+    es: ["Fuga Haus — Estudio de diseño", "Estudio de diseño independiente: estrategia, identidad, 3D interactivo y diseño web, y audiovisual."],
+    en: ["Fuga Haus — Design studio", "Independent design studio: strategy, identity, interactive 3D and web design, and film."],
+    fr: ["Fuga Haus — Studio de design", "Studio de design indépendant : stratégie, identité, 3D interactive et design web, et audiovisuel."],
+    de: ["Fuga Haus — Designstudio", "Unabhängiges Designstudio: Strategie, Identität, interaktives 3D und Webdesign sowie Film."],
   },
   "/about": {
-    es: ["Estudio — Fuga Haus", "Qué hace el estudio: audiovisual, espacios y eventos, arquitectura web y 3D interactivo, estrategia e identidad."],
-    en: ["Studio — Fuga Haus", "What the studio does: film, spaces and events, web architecture and interactive 3D, strategy and identity."],
-    fr: ["Studio — Fuga Haus", "Ce que fait le studio : audiovisuel, espaces et événements, architecture web et 3D interactive, stratégie et identité."],
-    de: ["Studio — Fuga Haus", "Was das Studio macht: Film, Räume und Events, Webarchitektur und interaktives 3D, Strategie und Identität."],
+    es: ["Estudio — Fuga Haus", "Qué hace el estudio: audiovisual, 3D interactivo y diseño web, espacios y eventos, estrategia e identidad."],
+    en: ["Studio — Fuga Haus", "What the studio does: film, interactive 3D and web design, spaces and events, strategy and identity."],
+    fr: ["Studio — Fuga Haus", "Ce que fait le studio : audiovisuel, 3D interactive et design web, espaces et événements, stratégie et identité."],
+    de: ["Studio — Fuga Haus", "Was das Studio macht: Film, interaktives 3D und Webdesign, Räume und Events, Strategie und Identität."],
   },
   "/projects": {
     es: ["Proyectos — Fuga Haus", "Proyectos de identidad, web, 3D y comunicación."],
