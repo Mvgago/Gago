@@ -184,11 +184,11 @@ function rows(images: CaseImage[]): CaseImage[][] {
 const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang, className = "" }) => (
   <>
   {/* Phones: no labels, one quiet line (the sector, then what was done), and the link if any */}
-  <motion.div variants={rise} initial="hidden" animate="shown" custom={3} // the label typeface, a step up so it sits closer in size to the story above it
-    className={`${SMALL} text-[14px] leading-relaxed text-graphite sm:hidden ${className}`}>
+  <motion.div variants={rise} initial="hidden" animate="shown" custom={3} // the label typeface, at the same size as the story above it
+    className={`${SMALL} text-[15px] leading-relaxed text-graphite sm:hidden ${className}`}>
     <p>
       {/* the sector in full ink, the disciplines after it in grey: told apart without taking more room */}
-      <span className="text-[15px] text-ink">{(c.sector ?? c.client)[lang]}</span>
+      <span className="text-ink">{(c.sector ?? c.client)[lang]}</span>
       <span className="text-graphite/75">
         {"\u00a0— "}
         {/* the dot holds on to the word before it, so no line ever starts with one */}
