@@ -1,4 +1,5 @@
 import { DrawnImage, SAPPHIRE_MARK } from "../../components/Drawn/DrawnImage";
+import { CardsConveyor } from "../../components/Cards/CardsConveyor";
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import SocialPhone from "../../components/Social/SocialPhone";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
@@ -163,41 +164,6 @@ const Plate: React.FC<{ src: string; className?: string; alt?: string }> = ({ sr
     transition={{ duration: 0.9, ease: EASE_HAUS }}
   />
 );
-
-/**
- * Pieces laid out in slanted rows (cards, sheets): the picture travels along its own
- * diagonal, always to the right, briskly; at the end of each pass it dips into the
- * backdrop's own colour and starts again, so the loop never jumps. Starts once seen; still for reduced motion.
- */
-const Drift: React.FC<{ src: string; alt?: string; className?: string }> = ({ src, alt = "", className = "" }) => {
-  const box = useRef<HTMLDivElement>(null);
-  const [on, setOn] = useState(false);
-  useEffect(() => {
-    const el = box.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const io = new IntersectionObserver(([e]) => setOn(e.isIntersecting), { threshold: 0.15 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-  return (
-    <div ref={box} className={`relative overflow-hidden bg-[#8fa7af] ${className}`}>
-      <style>{`@keyframes case-drift { 0% { transform: scale(1.22) translate(-5%, 2.8%); opacity: 0; } 8% { opacity: 1; } 88% { opacity: 1; } 100% { transform: scale(1.22) translate(5%, -2.8%); opacity: 0; } }`}</style>
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
-        {...protect}
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{
-          transform: "scale(1.22)",
-          animation: "case-drift 6s cubic-bezier(.3,0,.35,1) infinite",
-          animationPlayState: on ? "running" : "paused",
-        }}
-      />
-    </div>
-  );
-};
 
 /** Images in sequence: full width, or two side by side where marked as a pair */
 function rows(images: CaseImage[]): CaseImage[][] {
@@ -447,8 +413,8 @@ export const CaseStudyPage: React.FC = () => {
                     <Suspense key="stand" fallback={<div className="aspect-[16/10] w-full bg-[#a9b8ba]" />}>
                       <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[16/10] w-full" />
                     </Suspense>
-                  ) : img.drift ? (
-                    <Drift key={img.src} src={img.src} alt={altText} className="aspect-[16/10] w-full" />
+                  ) : img.cards ? (
+                    <CardsConveyor key={img.src} cards={img.cards} alt={altText} className="aspect-[16/10] w-full" />
                   ) : img.draw === "sapphire-mark" ? (
                     <DrawnImage key={img.src} src={img.src} alt={altText} drawing={SAPPHIRE_MARK} className="w-full" />
                   ) : img.video ? (

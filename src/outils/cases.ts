@@ -37,6 +37,8 @@ import sapStationery from "../assets/peojects/saphire/saphire (10).jpg.webp";
 import smMascot from "../assets/peojects/smart/smart.png.webp";
 import smScreens from "../assets/peojects/smart/smart (1).png.webp";
 import smPrint from "../assets/peojects/smart/smart (2).jpg.webp";
+import smCardA from "../assets/peojects/smart/smart-card-a.webp";
+import smCardB from "../assets/peojects/smart/smart-card-b.webp";
 import smBrochure from "../assets/peojects/smart/smart-brochure.jpg.webp";
 import smDetailLogo from "../assets/peojects/smart/smart-detail-logo.jpg.webp";
 import smDetailGuides from "../assets/peojects/smart/smart-detail-guides.jpg.webp";
@@ -74,8 +76,8 @@ export type CaseImage = {
   href?: string;
   /** A construction sheet whose guide lines draw themselves the first time it is seen */
   draw?: "sapphire-mark";
-  /** A slow drift along the picture's own diagonal, for pieces laid out in rows on a slant */
-  drift?: boolean;
+  /** In place of the photograph: its cards (two designs) sliding on in slanted rows, without end */
+  cards?: [string, string];
 };
 
 export type Case = {
@@ -396,7 +398,7 @@ export const cases: Case[] = [
       { src: "", video: "/video/smarthc.mp4", videoSpeed: 1 },
       { src: smBrochure, pair: true },
       { src: smDetailLogo },
-      { src: smPrint, pair: true, drift: true },
+      { src: smPrint, pair: true, cards: [smCardA, smCardB] },
       { src: smDetailGuides },
     ],
 
