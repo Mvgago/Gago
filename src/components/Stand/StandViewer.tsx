@@ -1138,8 +1138,8 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
       <style>{`@keyframes stand-sway { 0%,100% { transform: translateX(-4px) rotate(-8deg); } 50% { transform: translateX(4px) rotate(8deg); } }`}</style>
       <div
         aria-hidden
-        // small, in the top corner, so it never covers the stand
-        className={`${SMALL} pointer-events-none absolute right-3 top-3 flex items-center gap-2 whitespace-nowrap rounded-full bg-[#1c2124]/45 px-3 py-1.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 sm:right-4 ${
+        // small, just under the caption in the top-left corner: never over the stand, never over the caption
+        className={`${SMALL} pointer-events-none absolute ${label ? "top-10 sm:top-11" : "top-3"} left-2.5 flex items-center gap-2 whitespace-nowrap rounded-full bg-[#1c2124]/45 px-3 py-1.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
           ready && !touched && !bare ? "opacity-100" : "opacity-0"
         }`}
       >
