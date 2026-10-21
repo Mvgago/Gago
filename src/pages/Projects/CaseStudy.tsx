@@ -186,9 +186,12 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
   {/* Phones: no labels, one quiet line (the sector, then what was done), and the link if any */}
   <motion.div variants={rise} initial="hidden" animate="shown" custom={3} className={`${SMALL} text-graphite sm:hidden ${className}`}>
     <p>
-      {(c.sector ?? c.client)[lang]}
-      {" — "}
-      {(c.services ? c.services.map((s) => DISCIPLINE[s.d][lang]) : c.disciplines.map((d) => DISCIPLINE[d][lang])).join(" · ")}
+      {/* the sector in full ink, the disciplines after it in grey: told apart without taking more room */}
+      <span className="text-ink">{(c.sector ?? c.client)[lang]}</span>
+      <span className="text-graphite/75">
+        {" — "}
+        {(c.services ? c.services.map((s) => DISCIPLINE[s.d][lang]) : c.disciplines.map((d) => DISCIPLINE[d][lang])).join(" · ")}
+      </span>
     </p>
     {c.link && (
       <a href={c.link.href} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-ink underline decoration-ink/30 underline-offset-4">
