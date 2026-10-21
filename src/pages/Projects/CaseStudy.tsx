@@ -1,3 +1,4 @@
+import { DrawnImage, SAPPHIRE_MARK } from "../../components/Drawn/DrawnImage";
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import SocialPhone from "../../components/Social/SocialPhone";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
@@ -411,6 +412,8 @@ export const CaseStudyPage: React.FC = () => {
                     <Suspense key="stand" fallback={<div className="aspect-[16/10] w-full bg-[#a9b8ba]" />}>
                       <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[16/10] w-full" />
                     </Suspense>
+                  ) : img.draw === "sapphire-mark" ? (
+                    <DrawnImage key={img.src} src={img.src} alt={altText} drawing={SAPPHIRE_MARK} className="w-full" />
                   ) : img.video ? (
                     <Film key={img.video} src={img.video} title={c.title} ratio="16 / 10" speed={img.videoSpeed} />
                   ) : (

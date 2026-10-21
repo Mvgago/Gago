@@ -72,6 +72,8 @@ export type CaseImage = {
   fit?: "contain";
   /** Opens an interactive version (e.g. a 3D recreation) in a new tab, with a small caption */
   href?: string;
+  /** A construction sheet whose guide lines draw themselves the first time it is seen */
+  draw?: "sapphire-mark";
 };
 
 export type Case = {
@@ -303,7 +305,7 @@ export const cases: Case[] = [
     images: [
       // `pair` goes on the first of the two that share a row
       // The system beside the brand on the building: from the drawing to the place
-      { src: sapMark, pair: true, fit: "contain" },
+      { src: sapMark, pair: true, fit: "contain", draw: "sapphire-mark" },
       { src: sapKey },
       { src: sapWeb, pair: true },
       { src: sapStationery },
