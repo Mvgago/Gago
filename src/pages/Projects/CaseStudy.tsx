@@ -184,15 +184,17 @@ function rows(images: CaseImage[]): CaseImage[][] {
 const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang, className = "" }) => (
   <>
   {/* Phones: no labels, one quiet line (the sector, then what was done), and the link if any */}
-  <motion.div variants={rise} initial="hidden" animate="shown" custom={3} // the label typeface, at the same size as the story above it
-    className={`${SMALL} text-[15px] leading-relaxed text-graphite sm:hidden ${className}`}>
+  <motion.div variants={rise} initial="hidden" animate="shown" custom={3} // in the story's own typeface and size, so the two read as one piece; colour tells sector from disciplines
+    className={`${BODY} lowercase text-graphite sm:hidden ${className}`}>
     <p>
       {/* the sector in full ink, the disciplines after it in grey: told apart without taking more room */}
       <span className="text-ink">{(c.sector ?? c.client)[lang]}</span>
       <span className="text-graphite/75">
         {"\u00a0— "}
-        {/* the dot holds on to the word before it, so no line ever starts with one */}
-        {(c.services ? c.services.map((s) => DISCIPLINE[s.d][lang]) : c.disciplines.map((d) => DISCIPLINE[d][lang])).join("\u00a0· ")}
+        {/* each discipline kept whole, and the dot holds on to it, so no line starts with one */}
+        {(c.services ? c.services.map((s) => DISCIPLINE[s.d][lang]) : c.disciplines.map((d) => DISCIPLINE[d][lang]))
+          .map((name) => name.replace(/ /g, "\u00a0"))
+          .join("\u00a0· ")}
       </span>
     </p>
     {c.link && (
