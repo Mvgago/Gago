@@ -304,18 +304,23 @@ export const CaseStudyPage: React.FC = () => {
             {c.lead[lang]}
           </motion.p>
           {/* Beside the media, the story reads in order: who they are, what they needed, what was done */}
-          {side && c.body && (
-            <motion.p
-              variants={rise}
-              initial="hidden"
-              animate="shown"
-              custom={3}
-              className={`${BODY} mt-8 max-w-[52ch] text-graphite`}
-            >
-              {c.body[lang]}
-            </motion.p>
+          {/* Large screens only: on phones the film or the picture comes first, and these follow it */}
+          {side && (
+            <div className="hidden lg:block">
+              {c.body && (
+                <motion.p
+                  variants={rise}
+                  initial="hidden"
+                  animate="shown"
+                  custom={3}
+                  className={`${BODY} mt-8 max-w-[52ch] text-graphite`}
+                >
+                  {c.body[lang]}
+                </motion.p>
+              )}
+              <Facts c={c} lang={lang} className={c.body ? "mt-10" : "mt-12"} />
+            </div>
           )}
-          {side && <Facts c={c} lang={lang} className={c.body ? "mt-10" : "mt-12"} />}
         </div>
 
         {side ? (
@@ -345,6 +350,13 @@ export const CaseStudyPage: React.FC = () => {
           </motion.figure>
         ) : (
           <Facts c={c} lang={lang} className="self-end md:col-span-4 md:col-start-9" />
+        )}
+        {/* Phones and tablets: the story and the services under the film or the picture, so it is seen on arriving */}
+        {side && (
+          <div className="lg:hidden">
+            {c.body && <p className={`${BODY} max-w-[52ch] text-graphite`}>{c.body[lang]}</p>}
+            <Facts c={c} lang={lang} className={c.body ? "mt-8" : ""} />
+          </div>
         )}
       </header>
 
