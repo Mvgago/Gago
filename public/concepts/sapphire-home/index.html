@@ -406,6 +406,8 @@ slab(ENVELOPE, 0.5);
 const WALLS = [
   // the facade: kitchen and laundry, the entrance bay, the bedroom wing's two outer walls
   [-6.4, -0.22, 2.3, -3.72, 0.3], [-6.4, -0.22, -6.94, -0.76, 0.3], [-6.94, -0.76, -7.55, -0.15, 0.3],
+  // the front door's stretch of facade, closed: the outside of the home is shut all round
+  [-7.55, -0.15, -8.22, 0.5, 0.3],
   [-8.22, 0.5, -15.82, 8.0, 0.3], [-15.82, 8.0, -10.12, 13.7, 0.3],
   // laundry: its wall to the hall (door in the middle), its walls to the facade and the kitchen
   [-3.95, -1.2, -3.09, 0.51, 0.14], [-3.94, 0.51, -1.63, 0.51, 0.12], [-0.6, 0.51, 0.06, 0.51, 0.12],
@@ -427,6 +429,10 @@ const WALLS = [
 /* ---- interior walls, made tight: every loose end drawn onto the wall it meets, so no slit is left;
    the doors found as gaps between two wall runs in line, and given jambs, a head and a threshold;
    the bathrooms' walls clad in matte tile on their wet side ---- */
+// the front door, drawn on the hall side of the closed facade
+{ const ax = -7.55, az = -0.15, bx = -8.22, bz = 0.5, dx = bx - ax, dz = bz - az, len = Math.hypot(dx, dz), nx = dz / len, nz = -dx / len;
+  const leaf = new THREE.Mesh(new THREE.BoxGeometry(len - 0.08, 1.95, 0.03), M.walnut);
+  leaf.position.set((ax + bx) / 2 + nx * 0.165, 0.975, (az + bz) / 2 + nz * 0.165); leaf.rotation.y = -Math.atan2(dz, dx); leaf.castShadow = true; house.add(leaf); }
 const DOOR_H = 1.98;
 const BATH_POLYS = (() => { const rot = (cx, cz, l, w) => { const u = [-Math.SQRT1_2, Math.SQRT1_2], v = [Math.SQRT1_2, Math.SQRT1_2];
   return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [cx + u[0] * a * l / 2 + v[0] * b * w / 2, cz + u[1] * a * l / 2 + v[1] * b * w / 2]); };
@@ -470,6 +476,9 @@ const inPoly = ([x, z], poly) => { let c = false; for (let i = 0, j = poly.lengt
     piece(open, 0.03, th + 0.024, M.trim, 0, DOOR_H - 0.015);
     // the threshold, flush with the floor
     piece(open, 0.012, th, M.threshold, 0, 0.006);
+    // in the facade (the front door): the opening is closed by a solid door leaf, flush with the wall's
+    // outer face, so the outside of the home is shut all round
+    if (th >= 0.28) { const leaf = new THREE.Mesh(new THREE.BoxGeometry(open - 0.06, DOOR_H - 0.03, 0.05), M.walnut); leaf.position.set(0, (DOOR_H - 0.03) / 2, 0); leaf.castShadow = true; leaf.receiveShadow = true; g.add(leaf); }
   });
   // 3. the bathrooms' walls: matte tile on the side that faces into the bathroom
   const tileUV = (geo, w, h) => { const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * w / 0.6, uv.getY(i) * h / 0.6); };
