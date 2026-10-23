@@ -287,6 +287,7 @@ const M = {
   navy: fabric('#2f3f63'), sky: fabric('#9fb8c9'), rust: fabric('#a05a3c'), cream: fabric('#f4efe6'), rattan: new THREE.MeshStandardMaterial({ map: weaveTex, color: '#c6a170', roughness: .9 }),
   leather: new THREE.MeshStandardMaterial({ color: '#8a5a36', roughness: .55 }),
   ceramic: new THREE.MeshStandardMaterial({ color: '#efe9df', roughness: .35 }),
+  vase: new THREE.MeshStandardMaterial({ color: '#c9b9a3', roughness: .8 }), // matte stoneware
   ceramicBlue: new THREE.MeshStandardMaterial({ color: '#2e4f8f', roughness: .3 }),
   terracottaPot: new THREE.MeshStandardMaterial({ color: '#b06f4a', roughness: .85 }),
   planter: new THREE.MeshStandardMaterial({ color: '#d8cfc0', roughness: .9 }),
@@ -669,13 +670,15 @@ const kitchenFronts = [];
   realBed(bed(-8.255, 7.755, 1.6, 2.05, Math.PI / 4), 1.6, 2.05, '/models/sapphire/bed.glb'); // dorm 2
   realBed(bed(-9.77, 9.45, 1.8, 2.1, -3 * Math.PI / 4), 1.8, 2.1, '/models/sapphire/bed3.glb'); // dorm 1
 }
-// --- rubber plants in woven baskets: one by the living room's sofa, in full view, one in the hall.
+// --- rubber plants in woven baskets: one in the living room's corner by the long sofa, a taller one
+// in its far corner beyond the second sofa, and one in the hall.
 // "Rubber Plant (fig)" by jamieirvin, CC BY 4.0
 new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
   const src = gltf.scene;
   src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   const b = new THREE.Box3().setFromObject(src), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
-  [[5.55, 7.15, 1.35, 0.4], [-4.9, 2.35, 1.1, 2.1]].forEach(([x, z, tall, ry]) => {
+  // kept clear of the sofas, the glass (x 6.11, z 8.71) and the columns
+  [[5.62, 8.22, 1.35, 0.4], [0.5, 8.22, 1.75, 2.6], [-4.9, 2.35, 1.1, 2.1]].forEach(([x, z, tall, ry]) => {
     const k = tall / s.y, one = src.clone();
     const holder = new THREE.Group(); holder.position.set(x, 0, z); holder.rotation.y = ry; house.add(holder);
     one.scale.setScalar(k); one.position.set(-c.x * k, -b.min.y * k, -c.z * k); holder.add(one);
@@ -793,6 +796,16 @@ function fig(x, z, s = 1) {
 
 // a single olive tree on the terrace, by the living room's corner: the one plant
 oliveTree(-5.85, 9.22, 0.85);
+// a kentia in the living room's corner by the dining table, against the glass
+kentia(5.62, 0.55, 1.05);
+// the kitchen island: a stoneware vase of olive branches at its far end
+{
+  const ic = new THREE.Vector2(0.74, -0.51), ang = Math.atan2(1.0, 2.61);
+  const v = ic.clone().add(new THREE.Vector2(Math.cos(ang), -Math.sin(ang)).multiplyScalar(-0.95)).add(new THREE.Vector2(Math.sin(ang), Math.cos(ang)).multiplyScalar(0.12));
+  const vase = new THREE.Mesh(new THREE.LatheGeometry([[0, 0], [0.07, 0], [0.095, 0.05], [0.1, 0.12], [0.085, 0.2], [0.05, 0.26], [0.045, 0.3], [0.052, 0.31]].map(([r, y]) => new THREE.Vector2(r, y)), 40), M.vase);
+  vase.position.set(v.x, 0.92, v.y); add(vase);
+  branches(v.x, 1.2, v.y);
+}
 
 /* ================= the setting: a calm studio ground, not a painted sea ================= */
 // a soft, warm backdrop that takes the colour of the hour, and a ground that only catches shadow
