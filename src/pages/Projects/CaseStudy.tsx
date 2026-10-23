@@ -435,7 +435,8 @@ export const CaseStudyPage: React.FC = () => {
                 key={r}
                 src={row[0].frame ?? "/concepts/smarthc-devices/index.html"}
                 title={`${c.title} — 3D`}
-                className="aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[16/8]"
+                // a home to walk round takes the screen: edge to edge and nearly the viewport's height
+                className={row[0].frame?.includes("sapphire-home") ? "h-[82svh] min-h-[480px] w-full" : "aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[16/8]"}
               />
             ) : row[0].viewer === "social" && row[0].tiles ? (
               // The brand's social profile in a phone, on a wide band
