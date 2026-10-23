@@ -264,7 +264,8 @@ const M = {
   bathWall: new THREE.MeshStandardMaterial({ map: wallTileTex, roughness: .72 }),
   porcelain: new THREE.MeshStandardMaterial({ color: '#fbfbfa', roughness: .18 }),
   oak: new THREE.MeshStandardMaterial({ map: oakTex, roughness: .58 }),
-  deck: new THREE.MeshStandardMaterial({ map: deckTex, roughness: .78 }),
+  // the terraces: outdoor porcelain in a cool stone grey, a step darker than the warm travertine inside
+  deck: new THREE.MeshStandardMaterial({ map: deckTex, color: '#b7b9b8', roughness: .85 }),
   slabSide: new THREE.MeshStandardMaterial({ color: '#e9e3d9', roughness: .9 }),
   wood: new THREE.MeshStandardMaterial({ map: oakTex, color: '#f0dcc2', roughness: .55 }),
   teak: new THREE.MeshStandardMaterial({ map: oakTex, color: '#c79a6b', roughness: .65 }),
