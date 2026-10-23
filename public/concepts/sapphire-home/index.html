@@ -64,6 +64,29 @@ body.night .tag { color: #f4f1ec; text-shadow: 0 0 10px rgba(20,22,28,.9); } bod
 .tag.on { color: var(--sapphire); } .tag.on::before { background: var(--sapphire); }
 .tag.hide { opacity: 0; pointer-events: none; }
 
+/* the guided walk: a button at the head of the controls, and a caption naming each room as it is reached */
+.tourbtn { font: inherit; font-family: var(--mono); font-weight: 400; letter-spacing: .06em; text-transform: uppercase; font-size: 10px; color: #f4f1ec; background: var(--ink); border: 0; border-radius: 2px; padding: 8px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .25s; }
+.tourbtn:hover { background: var(--sapphire); }
+.tourbtn svg { width: 9px; height: 9px; fill: currentColor; }
+.tourcap { position: fixed; left: 34px; bottom: 86px; display: flex; flex-direction: column; gap: 3px; pointer-events: none; padding: 16px 22px 16px 18px; margin-left: -18px; background: rgba(245,245,243,.78); border-left: 1px solid var(--ink); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; transform: translateY(6px); transition: opacity .7s ease, transform .7s ease; }
+.tourcap.on { opacity: 1; transform: none; }
+.tourcap > * { transition: opacity .8s ease, transform .8s ease; } .tourcap:not(.on) > * { opacity: 0; transform: translateY(8px); }
+.tourcap.on > :nth-child(2) { transition-delay: .08s; } .tourcap.on > :nth-child(3) { transition-delay: .16s; } .tourcap.on > :nth-child(4) { transition-delay: .26s; }
+/* while walking: thin letterbox bars come in, the room tags and the hint step back */
+.bars i { position: fixed; left: 0; right: 0; height: 0; background: var(--ink); opacity: .9; z-index: 1; pointer-events: none; transition: height .9s cubic-bezier(.6,0,.2,1); }
+.bars i:first-child { top: 0; } .bars i:last-child { bottom: 0; }
+body.touring .bars i { height: 5vh; }
+body.touring .tag { opacity: 0; pointer-events: none; } body.touring .hint, body.touring .credit { opacity: 0; }
+body.touring .hud .cap { opacity: 0; }
+.panel, .tourcap { z-index: 2; }
+.tourcap small { font-family: var(--mono); font-weight: 300; font-size: 9px; letter-spacing: .12em; color: var(--soft); }
+.tourcap b { font-family: var(--display); font-weight: 300; font-size: 30px; letter-spacing: .01em; color: var(--ink); line-height: 1.05; }
+.tourcap span { font-family: var(--mono); font-weight: 300; font-size: 11px; letter-spacing: .06em; color: var(--soft); }
+.tourcap p { margin: 6px 0 0; max-width: 320px; font-family: var(--display); font-weight: 300; font-size: 14px; line-height: 1.35; color: var(--ink); opacity: .82; }
+body.night .tourcap p { color: #f4f1ec; }
+.tourcap i { display: block; margin-top: 12px; width: 120px; height: 1px; background: rgba(29,34,48,.15); overflow: hidden; }
+.tourcap em { display: block; height: 100%; width: 100%; background: var(--ink); transform-origin: left; transform: scaleX(0); }
+body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec; } body.night .tourcap b { color: #f4f1ec; } body.night .tourcap small, body.night .tourcap span { color: rgba(244,241,236,.7); } body.night .tourcap em { background: #f4f1ec; }
 /* The controls: one pane of frosted glass at the foot */
 .panel { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; gap: 18px; align-items: center; padding: 6px 8px; border-radius: 3px; background: var(--glass); border: 1px solid rgba(29,34,48,.12); backdrop-filter: blur(14px) saturate(1.25); -webkit-backdrop-filter: blur(14px) saturate(1.25); box-shadow: 0 14px 40px rgba(30, 36, 50, .14); font-family: var(--mono); font-weight: 300; font-size: 11px; max-width: calc(100vw - 68px); box-sizing: border-box; }
 .group { display: flex; align-items: center; gap: 4px; }
@@ -83,6 +106,8 @@ body.night .tag { color: #f4f1ec; text-shadow: 0 0 10px rgba(20,22,28,.9); } bod
   .panel { left: 20px; right: 20px; transform: none; bottom: 22px; max-width: none; gap: 6px; padding: 6px; font-size: 10.5px; justify-content: space-between; }
   .credit { right: 20px; bottom: 7px; font-size: 7.5px; }
   .group, .sep { display: none; }
+  .tourbtn { padding: 0 11px; align-self: stretch; } .tourbtn span { display: none; }
+  .tourcap { left: 22px; bottom: 96px; } .tourcap b { font-size: 22px; }
   .cycle { display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: 1px; font: inherit; color: var(--ink); background: rgba(255,255,255,.55); border: 0; border-radius: 2px; padding: 6px 9px 7px; cursor: pointer; min-width: 0; }
   .cycle small { font-size: 9.5px; color: var(--soft); letter-spacing: .04em; }
   .cycle b { font-weight: 400; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
@@ -102,7 +127,11 @@ body.night .tag { color: #f4f1ec; text-shadow: 0 0 10px rgba(20,22,28,.9); } bod
 <p class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.3 15.6a1.5 1.5 0 0 1 2.2-2l2.5 2.4"/></svg><span id="hint-text"></span></p>
 <div id="tags"></div>
 <p class="credit">Taburete: <a href="https://sketchfab.com/3d-models/jamaica-stool-acc5711fb4734bdcbeccc3c3753e1412" target="_blank" rel="noopener">Jamaica Stool</a>, <a href="https://sketchfab.com/jldaureil" target="_blank" rel="noopener">jldaureil</a> · <a href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank" rel="noopener">CC BY-ND 4.0</a></p>
+<div class="bars" aria-hidden="true"><i></i><i></i></div>
+<div class="tourcap" id="tourcap" aria-live="polite"><small id="tc-step"></small><b id="tc-name"></b><span id="tc-m2"></span><p id="tc-line"></p><i><em id="tc-bar"></em></i></div>
 <div class="panel" id="panel">
+  <button type="button" class="tourbtn" id="tourbtn"><svg viewBox="0 0 12 12"><path id="tb-icon" d="M3 2l7 4-7 4z"/></svg><span id="tb-text"></span></button>
+  <div class="sep tsep"></div>
   <div class="group" data-k="light"><span id="l-light"></span></div>
   <div class="sep"></div>
   <div class="group" data-k="floor"><span id="l-floor"></span></div>
@@ -129,16 +158,16 @@ const LANG = (() => { try { const l = localStorage.getItem('fugahaus.lang'); if 
 const DICT = {
   es: { cap: 'Concepto · Planta 2C, la vivienda en 3D', drag: 'arrastra para girar', swipe: 'desliza para girar', light: 'luz', floor: 'suelo', kitchen: 'cocina',
         morning: 'mañana', sunset: 'atardecer', night: 'noche', stone: 'travertino', oak: 'roble', white: 'blanco', sapphire: 'zafiro',
-        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1' },
+        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1', tour: 'recorrer', stop: 'parar' },
   en: { cap: 'Concept · Floor 2C, the home in 3D', drag: 'drag to rotate', swipe: 'swipe to rotate', light: 'light', floor: 'floor', kitchen: 'kitchen',
         morning: 'morning', sunset: 'sunset', night: 'night', stone: 'travertine', oak: 'oak', white: 'white', sapphire: 'sapphire',
-        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom' },
+        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom', tour: 'walk through', stop: 'stop' },
   fr: { cap: 'Concept · Étage 2C, le logement en 3D', drag: 'faites glisser pour tourner', swipe: 'glissez pour tourner', light: 'lumière', floor: 'sol', kitchen: 'cuisine',
         morning: 'matin', sunset: 'couchant', night: 'nuit', stone: 'travertin', oak: 'chêne', white: 'blanc', sapphire: 'saphir',
-        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1' },
+        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1', tour: 'parcourir', stop: 'arrêter' },
   de: { cap: 'Konzept · Etage 2C, die Wohnung in 3D', drag: 'ziehen zum Drehen', swipe: 'wischen zum Drehen', light: 'licht', floor: 'boden', kitchen: 'küche',
         morning: 'morgen', sunset: 'abend', night: 'nacht', stone: 'travertin', oak: 'eiche', white: 'weiß', sapphire: 'saphir',
-        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1' },
+        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1', tour: 'rundgang', stop: 'stopp' },
 };
 const TX = DICT[LANG] || DICT.es;
 const t = (k) => TX[k] ?? DICT.es[k] ?? k;
@@ -266,6 +295,8 @@ const M = {
   // matte stucco, broken white with the faintest platinum cast
   wall: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#eeebe5', roughness: .96 }),
   trim: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#e6e2db', roughness: .9 }),
+  doorGroove: new THREE.MeshStandardMaterial({ color: '#5a4030', roughness: .7 }),
+  door: new THREE.MeshStandardMaterial({ color: '#a77d58', roughness: .55 }), // a warm oak leaf, light enough to read in shade
   column: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#e7e5e0', roughness: .97 }),
   threshold: new THREE.MeshStandardMaterial({ color: '#d9d1c4', roughness: .6 }),
   wallTop: new THREE.MeshStandardMaterial({ color: '#c8bfb2', roughness: 1 }),
@@ -367,14 +398,14 @@ const rail = (a, b, h = 1.0) => {
 /* contact shadows: where a wall or a column meets the floor, light can't reach the corner; a soft
    gradient laid on the floor along it gives the volumes their weight, at no cost per frame */
 const aoTex = (() => { const c = document.createElement('canvas'); c.width = 4; c.height = 64; const x = c.getContext('2d');
-  const g = x.createLinearGradient(0, 0, 0, 64); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.35, 'rgba(0,0,0,.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  const g = x.createLinearGradient(0, 0, 0, 64); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.25, 'rgba(0,0,0,.5)'); g.addColorStop(.6, 'rgba(0,0,0,.15)'); g.addColorStop(1, 'rgba(0,0,0,0)');
   x.fillStyle = g; x.fillRect(0, 0, 4, 64); const t = new THREE.CanvasTexture(c); return t; })();
 const aoRingTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
   const g = x.createRadialGradient(64, 64, 20, 64, 64, 64); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.4, 'rgba(0,0,0,.4)'); g.addColorStop(1, 'rgba(0,0,0,0)');
   x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })();
-const aoMat = new THREE.MeshBasicMaterial({ map: aoTex, color: '#000000', transparent: true, opacity: 0.34, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
-const aoRingMat = new THREE.MeshBasicMaterial({ map: aoRingTex, color: '#000000', transparent: true, opacity: 0.3, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
-const AO_W = 0.42, AO_Y = 0.023;
+const aoMat = new THREE.MeshBasicMaterial({ map: aoTex, color: '#000000', transparent: true, opacity: 0.15, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
+const aoRingMat = new THREE.MeshBasicMaterial({ map: aoRingTex, color: '#000000', transparent: true, opacity: 0.14, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
+const AO_W = 0.55, AO_Y = 0.023;
 function contactStrip(a, b, th) {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz); if (len < 0.1) return;
   const ry = -Math.atan2(dz, dx), nx = -dz / len, nz = dx / len;
@@ -429,10 +460,22 @@ const WALLS = [
 /* ---- interior walls, made tight: every loose end drawn onto the wall it meets, so no slit is left;
    the doors found as gaps between two wall runs in line, and given jambs, a head and a threshold;
    the bathrooms' walls clad in matte tile on their wet side ---- */
-// the front door, drawn on the hall side of the closed facade
+// the front door, set in the closed facade and shown on both faces: a walnut leaf with two sunk panels,
+// a flat casing round it and a bronze lever, so it reads as a door from the landing and from the hall
 { const ax = -7.55, az = -0.15, bx = -8.22, bz = 0.5, dx = bx - ax, dz = bz - az, len = Math.hypot(dx, dz), nx = dz / len, nz = -dx / len;
-  const leaf = new THREE.Mesh(new THREE.BoxGeometry(len - 0.08, 1.95, 0.03), M.walnut);
-  leaf.position.set((ax + bx) / 2 + nx * 0.165, 0.975, (az + bz) / 2 + nz * 0.165); leaf.rotation.y = -Math.atan2(dz, dx); leaf.castShadow = true; house.add(leaf); }
+  const W = Math.min(0.9, len - 0.04), H = 2.05, ry = -Math.atan2(dz, dx), cx = (ax + bx) / 2, cz = (az + bz) / 2;
+  [-1, 1].forEach((side) => {
+    const g = new THREE.Group(); g.position.set(cx + nx * side * 0.15, 0, cz + nz * side * 0.15); g.rotation.y = ry + (side > 0 ? Math.PI : 0); house.add(g); // its front to the face it is on
+    const put = (w, h, d, mat, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; g.add(m); return m; };
+    put(W, H, 0.03, M.door, 0, H / 2, 0.015); // the leaf, just proud of the wall
+    // two sunk panels, outlined by a fine darker line
+    [[H * 0.69, H * 0.5], [H * 0.24, H * 0.36]].forEach(([y, h]) => { put(W - 0.2, h, 0.006, M.doorGroove, 0, y, 0.031); put(W - 0.24, h - 0.04, 0.008, M.door, 0, y, 0.033); });
+    // the casing: two sides and a head
+    [-1, 1].forEach((sd) => put(0.07, H + 0.07, 0.025, M.trim, sd * (W / 2 + 0.035), (H + 0.07) / 2, 0.012)); put(W + 0.14, 0.07, 0.025, M.trim, 0, H + 0.035, 0.012);
+    // the lever: a rose and a handle, at hand height
+    const hx = -W / 2 + 0.09; put(0.05, 0.05, 0.012, M.bronze, hx, 1.02, 0.036); put(0.14, 0.018, 0.018, M.bronze, hx + 0.06, 1.02, 0.058);
+  });
+}
 const DOOR_H = 1.98;
 const BATH_POLYS = (() => { const rot = (cx, cz, l, w) => { const u = [-Math.SQRT1_2, Math.SQRT1_2], v = [Math.SQRT1_2, Math.SQRT1_2];
   return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [cx + u[0] * a * l / 2 + v[0] * b * w / 2, cz + u[1] * a * l / 2 + v[1] * b * w / 2]); };
@@ -948,17 +991,85 @@ let focus = null;
 ROOMS.filter((room) => !(phone && room.k === 'hall')).forEach((room) => {
   const el = document.createElement('button'); el.type = 'button'; el.className = 'tag';
   el.innerHTML = `${t(room.k)}<small>${room.m2} m²</small>`;
-  el.addEventListener('click', () => { const on = focus === room; focus = on ? null : room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !on && x === el)); goTo(on ? HOME : room); poke(); });
+  el.addEventListener('click', () => { stopTour(); const on = focus === room; focus = on ? null : room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !on && x === el)); goTo(on ? HOME : room); poke(); });
   room.el = el; tagsEl.appendChild(el);
 });
 
 const sph = new THREE.Spherical(), goal = { look: new THREE.Vector3(...HOME.look), az: HOME.az, pol: HOME.pol, r: HOME.r };
 let flying = 0;
 function goTo(v) { goal.look.set(...v.look); goal.az = v.az; goal.pol = v.pol; goal.r = v.r * (phone && v !== HOME ? 1.3 : 1); flying = 1; }
+/* ================= the guided walk ================= */
+// Hall, kitchen, living room, terrace, main bedroom, then the whole floor, round and round until
+// touched. Between rooms the camera flies a timed arc: it lifts and draws back mid-way and settles
+// in, eased at both ends, the same on any screen. At each room it slowly turns while the room's
+// name, area and a line about it come up. Each lap the light moves on: morning, sunset, night.
+// ?tour starts it on its own (for a sales office screen); space toggles it, arrows step it.
+const TOUR = ['hall', 'kitchenR', 'living', 'terrace', 'bedroom'].map((k) => ROOMS.find((r) => r.k === k)).concat([null]);
+const LINES = {
+  es: { hall: 'La llegada: luz natural desde el primer paso.', kitchenR: 'Abierta al salón, con isla de mármol y vistas a la terraza.', living: 'Cristal de suelo a techo hacia el Mediterráneo.', terrace: 'Ochenta metros al aire libre, comedor y solárium.', bedroom: 'Dormitorio principal con vestidor y baño en suite.', home: 'Tres dormitorios, terrazas en dos frentes, primera línea.' },
+  en: { hall: 'Arrival: daylight from the very first step.', kitchenR: 'Open to the living room, a marble island, terrace views.', living: 'Floor-to-ceiling glass towards the Mediterranean.', terrace: 'Eighty square metres outdoors, dining and sun deck.', bedroom: 'Main bedroom with dressing room and en-suite bath.', home: 'Three bedrooms, terraces on two fronts, on the seafront.' },
+  fr: { hall: 'L’arrivée : la lumière dès le premier pas.', kitchenR: 'Ouverte sur le séjour, îlot en marbre, vue sur la terrasse.', living: 'Baies du sol au plafond vers la Méditerranée.', terrace: 'Quatre-vingts mètres en plein air, repas et solarium.', bedroom: 'Chambre principale avec dressing et salle de bains.', home: 'Trois chambres, terrasses sur deux façades, front de mer.' },
+  de: { hall: 'Ankommen: Tageslicht vom ersten Schritt an.', kitchenR: 'Offen zum Wohnraum, Marmorinsel, Blick auf die Terrasse.', living: 'Raumhohes Glas zum Mittelmeer.', terrace: 'Achtzig Quadratmeter im Freien, Essplatz und Sonnendeck.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', home: 'Drei Schlafzimmer, Terrassen an zwei Seiten, erste Meereslinie.' },
+};
+const LN = LINES[LANG] || LINES.es;
+const FLY = 3.4, HOLD = 5.2, LIGHTS = ['morning', 'sunset', 'night'];
+const tour = { on: false, i: 0, lap: 0, flyFrom: 0, holdFrom: 0, holdUntil: 0, from: null, to: null };
+const tc = { box: document.getElementById('tourcap'), step: document.getElementById('tc-step'), name: document.getElementById('tc-name'), m2: document.getElementById('tc-m2'), line: document.getElementById('tc-line'), bar: document.getElementById('tc-bar') };
+const tbtn = document.getElementById('tourbtn'), tbIcon = document.getElementById('tb-icon'), tbText = document.getElementById('tb-text');
+const setBtn = () => { tbIcon.setAttribute('d', tour.on ? 'M3 2h2.4v8H3zM6.6 2H9v8H6.6z' : 'M3 2l7 4-7 4z'); tbText.textContent = t(tour.on ? 'stop' : 'tour'); tbtn.setAttribute('aria-pressed', tour.on); };
+const easeIO = (u) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+// each stop seen from a little higher and further than the tag's view, so the room reads whole
+const viewOf = (room) => { const v = room || HOME; return { look: new THREE.Vector3(...v.look), az: v.az, pol: room ? Math.min(v.pol, 0.66) : v.pol, r: room ? v.r * (phone ? 1.85 : 1.45) : v.r }; };
+function tourGo(i, T = clock.getElapsedTime()) {
+  tour.i = (i + TOUR.length) % TOUR.length; tour.holdUntil = 0; const room = TOUR[tour.i];
+  focus = room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !!room && x === room.el));
+  sph.setFromVector3(v3.copy(camera.position).sub(controls.target));
+  tour.from = { look: controls.target.clone(), az: sph.theta, pol: sph.phi, r: sph.radius }; tour.to = viewOf(room);
+  tour.flyFrom = T; flying = 0; tc.box.classList.remove('on');
+}
+function startTour() { if (tour.on) return; tour.on = true; tour.lap = 0; document.body.classList.add('touring'); setBtn(); hideHint(); tourGo(0); }
+function stopTour() { if (!tour.on) return; tour.on = false; tour.holdUntil = 0; tour.to = null; document.body.classList.remove('touring'); setBtn(); tc.box.classList.remove('on'); poke(); }
+tbtn.addEventListener('click', () => { if (tour.on) { stopTour(); focus = null; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.remove('on')); goTo(HOME); } else startTour(); });
+addEventListener('keydown', (e) => {
+  if (e.code === 'Space') { e.preventDefault(); tbtn.click(); }
+  else if (tour.on && (e.code === 'ArrowRight' || e.code === 'ArrowLeft')) tourGo(tour.i + (e.code === 'ArrowRight' ? 1 : -1));
+});
+setBtn();
+// the flight itself, called from the loop; true while it holds the camera
+function tourFrame(T, dt) {
+  if (!tour.on || !tour.to) return false;
+  const f = tour.from, g = tour.to;
+  if (!tour.holdUntil) {
+    const u = Math.min(1, (T - tour.flyFrom) / FLY), e = easeIO(u), lift = Math.sin(Math.PI * u);
+    let dAz = g.az - f.az; dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
+    controls.target.lerpVectors(f.look, g.look, e);
+    // an arc, not a slide: higher and further back half-way, settling as it arrives
+    sph.set(THREE.MathUtils.lerp(f.r, g.r, e) * (1 + 0.28 * lift), Math.max(0.35, THREE.MathUtils.lerp(f.pol, g.pol, e) - 0.22 * lift), f.az + dAz * e);
+    camera.position.setFromSpherical(sph).add(controls.target);
+    if (u >= 1) { // arrived: name the room and hold
+      tour.holdFrom = T; tour.holdUntil = T + HOLD; const room = TOUR[tour.i];
+      tc.step.textContent = room ? `${String(tour.i + 1).padStart(2, '0')} — ${String(TOUR.length - 1).padStart(2, '0')}` : t('cap').split('·')[0].trim();
+      tc.name.textContent = room ? t(room.k) : 'The Sapphire';
+      tc.m2.textContent = room ? `${room.m2} m²` : t('cap').split('·').pop().trim();
+      tc.line.textContent = LN[room ? room.k : 'home'];
+      tc.box.classList.add('on');
+      // the end of a lap: the light moves on to the next hour
+      if (!room) { tour.lap++; const h = LIGHTS[tour.lap % LIGHTS.length]; if (STATE.light !== h) choose('light', h); }
+    }
+    return true;
+  }
+  // held: a slow turn, so the walk never stands still
+  sph.setFromVector3(v3.copy(camera.position).sub(controls.target)); sph.theta += 0.045 * dt;
+  camera.position.setFromSpherical(sph).add(controls.target);
+  tc.bar.style.transform = `scaleX(${Math.min(1, (T - tour.holdFrom) / HOLD).toFixed(3)})`;
+  if (T > tour.holdUntil) tourGo(tour.i + 1, T);
+  return true;
+}
+if (new URLSearchParams(location.search).has('tour')) setTimeout(startTour, 4200);
 const setSph = (az, pol, r) => { sph.set(r, pol, az); camera.position.setFromSpherical(sph).add(controls.target); };
 controls.target.set(...HOME.look);
 setSph(HOME.az - 0.9, 0.55, HOME.r * 1.9);
-controls.addEventListener('start', () => { flying = 0; poke(); hideHint(); });
+controls.addEventListener('start', () => { flying = 0; stopTour(); poke(); hideHint(); });
 
 const clock = new THREE.Clock();
 let idleAt = 0;
@@ -1031,16 +1142,19 @@ function frame() {
   const it = reduced ? 1 : ease((T - introAt) / 2.8);
   // easing per frame, by elapsed time: the same glide on a slow phone as on a fast screen
   const dt = Math.min(0.25, T - (lastT ?? T)); lastT = T; const k = 1 - Math.pow(0.02, dt);
+  const touring = it >= 1 && landed && tourFrame(T, dt);
   if (it < 1) { flying = 0; landed = false; setSph(HOME.az - 0.9 * (1 - it), 0.55 + (HOME.pol - 0.55) * it, HOME.r * (1.9 - 0.9 * it)); }
   // the flight in always lands where it should, however few frames it had
   else if (!landed) { landed = true; setSph(HOME.az, HOME.pol, HOME.r); }
-  else if (flying) {
+  else if (flying && !tour.on) {
     controls.target.lerp(goal.look, k);
     sph.setFromVector3(v3.copy(camera.position).sub(controls.target));
     let dAz = goal.az - sph.theta; dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
     sph.theta += dAz * k; sph.phi += (goal.pol - sph.phi) * k; sph.radius += (goal.r - sph.radius) * k;
     camera.position.setFromSpherical(sph).add(controls.target);
     if (Math.abs(dAz) < 0.002 && Math.abs(goal.r - sph.radius) < 0.02 && controls.target.distanceTo(goal.look) < 0.01) flying = 0;
+  } else if (touring) {
+    // the walk has the camera
   } else if (!reduced && !focus && T > idleAt) {
     sph.setFromVector3(v3.copy(camera.position).sub(controls.target));
     sph.theta += ((HOME.az + Math.sin(T * 0.11) * 0.38) - sph.theta) * 0.008;
