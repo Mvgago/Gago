@@ -24,32 +24,43 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; -webkit-t
 #stage.on { opacity: 1; }
 #stage canvas { display: block; width: 100%; height: 100%; }
 
-.cap, .hint { position: fixed; top: 16px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; color: var(--soft); pointer-events: none; margin: 0; transition: color 1.2s, opacity .6s; }
-.cap { left: 22px; }
-.cap b { font-weight: 400; color: var(--ink); transition: color 1.2s; }
-.hint { right: 18px; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 99px; background: rgba(29, 34, 48, 0.42); color: #f4f1ec; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+/* The HUD floats a hair in front of the scene: its layer drifts a few pixels against the camera,
+   like a sheet of optical glass, and never bends the image under it */
+.hud { position: fixed; inset: 0; pointer-events: none; will-change: transform; }
+/* the vitrine: a 1px CAD frame inset from the edges, flat corner marks, microscopic measures */
+#cad { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+#cad .l { stroke: var(--line); stroke-width: 1; fill: none; shape-rendering: crispEdges; vector-effect: non-scaling-stroke; transition: stroke 1.2s; }
+#cad .k { stroke: var(--tick); stroke-width: 1; shape-rendering: crispEdges; transition: stroke 1.2s; }
+#cad text { font-family: var(--mono); font-size: 7.5px; letter-spacing: .06em; fill: var(--tick); transition: fill 1.2s; }
+:root { --line: rgba(29, 34, 48, .22); --tick: rgba(29, 34, 48, .34); }
+body.night { --line: rgba(244, 241, 236, .2); --tick: rgba(244, 241, 236, .32); }
+.cap, .hint { position: fixed; top: 26px; font-family: var(--mono); font-size: 10px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft); pointer-events: none; margin: 0; transition: color 1.2s, opacity .6s; }
+.cap { left: 34px; display: flex; flex-direction: column; gap: 5px; }
+.cap b { font-family: var(--display); font-weight: 300; font-size: 22px; letter-spacing: .02em; text-transform: none; color: var(--ink); transition: color 1.2s; }
+.readout { position: absolute; left: 34px; bottom: 80px; margin: 0; font-family: var(--mono); font-size: 9px; font-weight: 300; letter-spacing: .1em; color: var(--tick); font-variant-numeric: tabular-nums; transition: color 1.2s; white-space: pre; }
+.hint { right: 34px; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 2px; background: rgba(29, 34, 48, 0.5); color: #f4f1ec; text-transform: none; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .hint svg { width: 15px; height: 15px; animation: sway 1.8s ease-in-out infinite; }
 @keyframes sway { 0%, 100% { transform: translateX(-3px) rotate(-8deg); } 50% { transform: translateX(3px) rotate(8deg); } }
 body.night .cap, body.night .cap b { color: rgba(244, 241, 236, 0.85); }
 /* the credit the stool's licence asks for: present, but as quiet as the page allows */
-.credit { position: fixed; right: 14px; bottom: 6px; margin: 0; font-family: var(--mono); font-size: 8.5px; letter-spacing: .02em; color: rgba(29, 34, 48, .38); transition: color 1.2s; }
+.credit { position: fixed; right: 34px; bottom: 7px; margin: 0; font-family: var(--mono); font-size: 8.5px; letter-spacing: .02em; color: rgba(29, 34, 48, .38); transition: color 1.2s; }
 .credit a { color: inherit; text-decoration: none; }
 .credit a:hover { text-decoration: underline; }
 body.night .credit { color: rgba(244, 241, 236, .4); }
 
 /* The rooms: a quiet tag on each, as on the plan, that takes the camera there */
-.tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 2px; font-family: var(--mono); font-size: 11px; letter-spacing: .04em; color: var(--ink); background: var(--glass); border: 1px solid rgba(255,255,255,.75); padding: 5px 10px 6px; border-radius: 10px; backdrop-filter: blur(10px) saturate(1.2); -webkit-backdrop-filter: blur(10px) saturate(1.2); box-shadow: 0 8px 24px rgba(30, 36, 50, .12); cursor: pointer; white-space: nowrap; transition: opacity .5s, background .3s; user-select: none; }
+.tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 2px; font-family: var(--display); font-weight: 400; font-size: 12px; letter-spacing: .03em; color: var(--ink); background: var(--glass); border: 1px solid rgba(29,34,48,.14); padding: 5px 10px 6px; border-radius: 2px; backdrop-filter: blur(10px) saturate(1.2); -webkit-backdrop-filter: blur(10px) saturate(1.2); box-shadow: 0 8px 24px rgba(30, 36, 50, .12); cursor: pointer; white-space: nowrap; transition: opacity .5s, background .3s; user-select: none; }
 .tag::after { content: ''; position: absolute; left: 50%; bottom: -9px; width: 1px; height: 8px; background: rgba(29, 34, 48, .45); }
-.tag small { font-size: 10px; color: var(--soft); }
+.tag small { font-family: var(--mono); font-weight: 300; font-size: 9.5px; letter-spacing: .06em; color: var(--soft); }
 .tag:hover, .tag.on { background: rgba(255, 255, 255, .9); }
-.tag.on { box-shadow: 0 0 0 1.5px var(--sapphire), 0 8px 24px rgba(30, 36, 50, .16); }
+.tag.on { border-color: var(--sapphire); box-shadow: 0 8px 24px rgba(30, 36, 50, .16); }
 .tag.hide { opacity: 0; pointer-events: none; }
 
 /* The controls: one pane of frosted glass at the foot */
-.panel { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; gap: 18px; align-items: center; padding: 8px 10px; border-radius: 16px; background: var(--glass); border: 1px solid rgba(255,255,255,.8); backdrop-filter: blur(14px) saturate(1.25); -webkit-backdrop-filter: blur(14px) saturate(1.25); box-shadow: 0 14px 40px rgba(30, 36, 50, .14); font-family: var(--mono); font-size: 11.5px; max-width: calc(100vw - 24px); box-sizing: border-box; }
+.panel { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; gap: 18px; align-items: center; padding: 6px 8px; border-radius: 3px; background: var(--glass); border: 1px solid rgba(29,34,48,.12); backdrop-filter: blur(14px) saturate(1.25); -webkit-backdrop-filter: blur(14px) saturate(1.25); box-shadow: 0 14px 40px rgba(30, 36, 50, .14); font-family: var(--mono); font-weight: 300; font-size: 11px; max-width: calc(100vw - 68px); box-sizing: border-box; }
 .group { display: flex; align-items: center; gap: 4px; }
-.group > span { color: var(--soft); margin: 0 6px 0 4px; letter-spacing: .04em; }
-.group button { font: inherit; letter-spacing: .03em; color: var(--ink); background: transparent; border: 0; padding: 7px 11px; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: background .25s, color .25s; }
+.group > span { color: var(--soft); margin: 0 6px 0 4px; letter-spacing: .1em; text-transform: uppercase; font-size: 9.5px; }
+.group button { font: inherit; letter-spacing: .04em; color: var(--ink); background: transparent; border: 0; padding: 7px 11px; border-radius: 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: background .25s, color .25s; }
 .group button:hover { background: rgba(29, 34, 48, .06); }
 .group button.on { background: var(--ink); color: #f4f1ec; }
 .sw { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); flex: none; }
@@ -58,12 +69,14 @@ body.night .credit { color: rgba(244, 241, 236, .4); }
 /* phones: one row, each setting a pill that steps through its options at a tap */
 .cycle { display: none; }
 @media (max-width: 760px) {
-  .cap { left: 12px; top: 12px; font-size: 10.5px; max-width: 62%; }
-  .hint { right: 10px; top: 10px; font-size: 10.5px; padding: 5px 10px; }
-  .panel { left: 10px; right: 10px; transform: none; bottom: 18px; gap: 6px; padding: 6px; font-size: 10.5px; justify-content: space-between; }
-  .credit { right: 12px; bottom: 4px; font-size: 8px; }
+  .cap { left: 22px; top: 20px; font-size: 9px; max-width: 62%; }
+  .cap b { font-size: 17px; }
+  .readout { left: 22px; bottom: auto; top: 76px; font-size: 8px; }
+  .hint { right: 20px; top: 20px; font-size: 10.5px; padding: 5px 10px; }
+  .panel { left: 20px; right: 20px; transform: none; bottom: 22px; max-width: none; gap: 6px; padding: 6px; font-size: 10.5px; justify-content: space-between; }
+  .credit { right: 20px; bottom: 7px; font-size: 7.5px; }
   .group, .sep { display: none; }
-  .cycle { display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: 1px; font: inherit; color: var(--ink); background: rgba(255,255,255,.55); border: 0; border-radius: 10px; padding: 6px 9px 7px; cursor: pointer; min-width: 0; }
+  .cycle { display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: 1px; font: inherit; color: var(--ink); background: rgba(255,255,255,.55); border: 0; border-radius: 2px; padding: 6px 9px 7px; cursor: pointer; min-width: 0; }
   .cycle small { font-size: 9.5px; color: var(--soft); letter-spacing: .04em; }
   .cycle b { font-weight: 400; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
   .tag { font-size: 10px; padding: 4px 8px 5px; }
@@ -74,7 +87,11 @@ body.night .credit { color: rgba(244, 241, 236, .4); }
 <body>
 
 <div id="stage"></div>
-<p class="cap" id="cap"><b>The Sapphire</b> · <span id="cap-text"></span></p>
+<div class="hud" id="hud">
+  <svg id="cad" aria-hidden="true"></svg>
+  <p class="cap" id="cap"><b>The Sapphire</b><span id="cap-text"></span></p>
+  <p class="readout" id="readout" aria-hidden="true"></p>
+</div>
 <p class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.3 15.6a1.5 1.5 0 0 1 2.2-2l2.5 2.4"/></svg><span id="hint-text"></span></p>
 <div id="tags"></div>
 <p class="credit">Taburete: <a href="https://sketchfab.com/3d-models/jamaica-stool-acc5711fb4734bdcbeccc3c3753e1412" target="_blank" rel="noopener">Jamaica Stool</a>, <a href="https://sketchfab.com/jldaureil" target="_blank" rel="noopener">jldaureil</a> · <a href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank" rel="noopener">CC BY-ND 4.0</a></p>
@@ -128,12 +145,19 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* ================= renderer, scene ================= */
 const stage = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, phone ? 1.6 : 2));
+renderer.setPixelRatio(Math.min(devicePixelRatio, phone ? 1.6 : 1.75));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// the shadows are drawn again only when something changes them (the hour, a model arriving),
+// not every frame: the frame budget goes to the image
+renderer.shadowMap.autoUpdate = false;
+let shadowDirty = 4;
+const redrawShadows = (n = 2) => (shadowDirty = Math.max(shadowDirty, n));
+// any model that arrives casts its shadow in the next frame
+{ const load = GLTFLoader.prototype.load; GLTFLoader.prototype.load = function (url, onLoad, ...rest) { return load.call(this, url, (g) => { onLoad && onLoad(g); redrawShadows(); }, ...rest); }; }
 stage.appendChild(renderer.domElement);
 const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
@@ -144,7 +168,7 @@ scene.environmentIntensity = 0.5;
 
 const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 400);
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true; controls.dampingFactor = 0.06;
+controls.enableDamping = true; controls.dampingFactor = 0.05; // a long, soft inertia
 controls.enablePan = false; controls.enableZoom = false;
 controls.minPolarAngle = 0.4; controls.maxPolarAngle = 1.2;
 controls.rotateSpeed = 0.6;
@@ -735,7 +759,7 @@ function applyHour() {
   renderer.toneMappingExposure = cur.exp; scene.environmentIntensity = cur.env;
   lamps.forEach((l) => (l.intensity = 2.4 * cur.lamps)); M.lamp.emissiveIntensity = 1.6 * cur.lamps;
 }
-function setHour(k) { from = snap(); to = HOURS[k]; mixT = 0; mixFrom = -1; document.body.classList.toggle('night', k === 'night'); }
+function setHour(k) { from = snap(); to = HOURS[k]; mixT = 0; mixFrom = -1; redrawShadows(); document.body.classList.toggle('night', k === 'night'); }
 
 /* ================= finishes ================= */
 function setFloor(k) { floors.inside.material = k === 'oak' ? M.oak : M.stone; }
@@ -823,6 +847,44 @@ function fit() {
 }
 addEventListener('resize', fit); fit();
 
+/* ================= HUD: the CAD vitrine, its parallax and its readout ================= */
+const hudEl = document.getElementById('hud'), cadEl = document.getElementById('cad'), readEl = document.getElementById('readout');
+function drawCad() {
+  const w = innerWidth, h = innerHeight, m = phone ? 12 : 18, c = 14; // inset and corner length
+  const L = m + 0.5, R = w - m - 0.5, Tp = m + 0.5, B = h - m - 0.5;
+  let s = '';
+  // the frame: hairlines, broken at the corners, where flat CAD corner marks stand slightly off them
+  s += `<path class="l" d="M${L + c + 6} ${Tp}H${R - c - 6}M${L + c + 6} ${B}H${R - c - 6}M${L} ${Tp + c + 6}V${B - c - 6}M${R} ${Tp + c + 6}V${B - c - 6}" opacity=".55"/>`;
+  [[L, Tp, 1, 1], [R, Tp, -1, 1], [L, B, 1, -1], [R, B, -1, -1]].forEach(([x, y, sx, sy]) => {
+    s += `<path class="l" d="M${x} ${y + sy * c}V${y}H${x + sx * c}"/>`;
+    s += `<path class="k" d="M${x + sx * 4} ${y + sy * 4}h${sx * 3}M${x + sx * 4} ${y + sy * 4}v${sy * 3}"/>`;
+  });
+  // microscopic measures along the top and left edges: a tick every 10 px, longer every 50, a figure every 200
+  for (let x = L + 40; x < R - 40; x += 10) {
+    const k = Math.round(x - L) % 50 === 0 ? 5 : 2; s += `<path class="k" d="M${Math.round(x) + 0.5} ${Tp + 1}v${k}"/>`;
+    if (!phone && Math.round(x - L) % 200 === 0) s += `<text x="${Math.round(x) + 3}" y="${Tp + 12}">${String(Math.round(x - L)).padStart(4, '0')}</text>`; }
+  for (let y = Tp + 40; y < B - 40; y += 10) { const k = Math.round(y - Tp) % 50 === 0 ? 5 : 2; s += `<path class="k" d="M${L + 1} ${Math.round(y) + 0.5}h${k}"/>`; }
+  // a centre mark, faint
+  s += `<path class="k" d="M${Math.round(w / 2) + 0.5} ${Tp + 1}v8M${L + 1} ${Math.round(h / 2) + 0.5}h8" opacity=".9"/>`;
+  cadEl.innerHTML = s;
+}
+addEventListener('resize', drawCad); drawCad();
+// the HUD's parallax: a few pixels against the camera's turn, eased so it trails like glass in front of it
+const hudPos = { x: 0, y: 0 }, hudSph = new THREE.Spherical();
+let readLast = 0;
+function hudFrame(T) {
+  hudSph.setFromVector3(new THREE.Vector3().copy(camera.position).sub(controls.target));
+  const tx = reduced ? 0 : Math.sin(hudSph.theta - HOME.az) * -7, ty = reduced ? 0 : (hudSph.phi - HOME.pol) * 12;
+  hudPos.x += (tx - hudPos.x) * 0.08; hudPos.y += (ty - hudPos.y) * 0.08;
+  hudEl.style.transform = `translate3d(${hudPos.x.toFixed(2)}px, ${hudPos.y.toFixed(2)}px, 0)`;
+  if (T - readLast > 0.1) { // the readout: where the camera stands, in the plan's terms
+    readLast = T;
+    const az = ((THREE.MathUtils.radToDeg(hudSph.theta) % 360) + 360) % 360, el = 90 - THREE.MathUtils.radToDeg(hudSph.phi);
+    readEl.textContent = `AZ ${az.toFixed(1).padStart(5, '0')}°   EL ${el.toFixed(1).padStart(4, '0')}°   D ${hudSph.radius.toFixed(2).padStart(5, '0')} m\nX ${controls.target.x.toFixed(2)}   Z ${controls.target.z.toFixed(2)}   1:${Math.round(hudSph.radius * 40)}`;
+  }
+}
+
+
 /* ================= loop ================= */
 const v3 = new THREE.Vector3();
 let introAt = null, lastT = null, landed = false;
@@ -861,6 +923,9 @@ function frame() {
     room.el.classList.toggle('hide', off);
     if (!off) room.el.style.transform = `translate(${((v3.x + 1) / 2) * w}px, ${((1 - v3.y) / 2) * h}px) translate(-50%, -100%)`;
   });
+  if (mixT < 1) redrawShadows(1);
+  if (shadowDirty > 0) { renderer.shadowMap.needsUpdate = true; shadowDirty--; }
+  hudFrame(T);
   renderer.render(scene, camera);
 }
 
