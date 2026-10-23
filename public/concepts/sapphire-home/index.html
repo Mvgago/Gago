@@ -28,13 +28,6 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; -webkit-t
    like a sheet of optical glass, and never bends the image under it */
 .hud { position: fixed; inset: 0; pointer-events: none; will-change: transform; }
 
-/* the vitrine: a 1px CAD frame inset from the edges, flat corner marks, microscopic measures */
-#cad { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-#cad .l { stroke: var(--line); stroke-width: 1; fill: none; shape-rendering: crispEdges; vector-effect: non-scaling-stroke; transition: stroke 1.2s; }
-#cad .k { stroke: var(--tick); stroke-width: 1; shape-rendering: crispEdges; transition: stroke 1.2s; }
-#cad text { font-family: var(--mono); font-size: 7.5px; letter-spacing: .06em; fill: var(--tick); transition: fill 1.2s; }
-:root { --line: rgba(29, 34, 48, .22); --tick: rgba(29, 34, 48, .34); }
-body.night { --line: rgba(244, 241, 236, .2); --tick: rgba(244, 241, 236, .32); }
 .cap, .hint { position: fixed; top: 26px; font-family: var(--mono); font-size: 10px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft); pointer-events: none; margin: 0; transition: color 1.2s, opacity .6s; }
 .cap { left: 34px; display: flex; flex-direction: column; gap: 5px; }
 .cap b { font-family: var(--display); font-weight: 300; font-size: 22px; letter-spacing: .02em; text-transform: none; color: var(--ink); transition: color 1.2s; }
@@ -55,13 +48,13 @@ body.night .credit { color: rgba(244, 241, 236, .4); }
 .loader b { position: absolute; inset: 0; width: 100%; transform-origin: left; transform: scaleX(0); background: var(--ink); transition: transform .4s ease; }
 .loader.gone { opacity: 0; pointer-events: none; }
 /* The rooms: a quiet tag on each, as on the plan, that takes the camera there */
-.tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 1px; font-family: var(--display); font-weight: 400; font-size: 13px; letter-spacing: .03em; color: var(--ink); background: none; border: 0; padding: 0 2px 14px; cursor: pointer; white-space: nowrap; transition: opacity .5s, color .3s; user-select: none; text-shadow: 0 0 10px rgba(245,245,243,.9), 0 0 2px rgba(245,245,243,.9); }
-.tag::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 1px; height: 11px; background: rgba(29, 34, 48, .5); }
-.tag::before { content: ''; position: absolute; left: calc(50% - 2px); bottom: -2px; width: 5px; height: 5px; border-radius: 50%; background: var(--ink); }
-body.night .tag { color: #f4f1ec; text-shadow: 0 0 10px rgba(20,22,28,.9); } body.night .tag::after, body.night .tag::before { background: rgba(244,241,236,.7); }
+.tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 1px; font-family: var(--display); font-weight: 400; font-size: 12.5px; letter-spacing: .03em; color: var(--ink); background: rgba(250, 250, 248, .9); border: 1px solid rgba(29, 34, 48, .12); border-radius: 2px; padding: 5px 11px 6px; margin-top: -14px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 18px rgba(30, 36, 50, .1); cursor: pointer; white-space: nowrap; transition: opacity .5s, color .3s, border-color .3s; user-select: none; }
+.tag::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 12px; background: rgba(29, 34, 48, .45); }
+.tag::before { content: ''; position: absolute; left: calc(50% - 2px); top: calc(100% + 11px); width: 5px; height: 5px; border-radius: 50%; background: var(--ink); }
+body.night .tag { color: #f4f1ec; background: rgba(28, 32, 42, .82); border-color: rgba(244,241,236,.18); } body.night .tag::after, body.night .tag::before { background: rgba(244,241,236,.7); }
 .tag small { font-family: var(--mono); font-weight: 300; font-size: 9.5px; letter-spacing: .06em; color: var(--soft); }
 .tag:hover { color: var(--sapphire); }
-.tag.on { color: var(--sapphire); } .tag.on::before { background: var(--sapphire); }
+.tag.on { color: var(--sapphire); border-color: var(--sapphire); } .tag.on::before, .tag.on::after { background: var(--sapphire); }
 .tag.hide { opacity: 0; pointer-events: none; }
 
 /* the guided walk: a button at the head of the controls, and a caption naming each room as it is reached */
@@ -121,7 +114,6 @@ body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec
 <div id="stage"></div>
 <div class="loader" id="loader" aria-hidden="true"><span class="ln">The Sapphire</span><i><b id="bar"></b></i></div>
 <div class="hud" id="hud">
-  <svg id="cad" aria-hidden="true"></svg>
   <p class="cap" id="cap"><b>The Sapphire</b><span id="cap-text"></span></p>
 </div>
 <p class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.3 15.6a1.5 1.5 0 0 1 2.2-2l2.5 2.4"/></svg><span id="hint-text"></span></p>
@@ -295,8 +287,8 @@ const M = {
   // matte stucco, broken white with the faintest platinum cast
   wall: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#eeebe5', roughness: .96 }),
   trim: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#e6e2db', roughness: .9 }),
-  doorGroove: new THREE.MeshStandardMaterial({ color: '#5a4030', roughness: .7 }),
-  door: new THREE.MeshStandardMaterial({ color: '#a77d58', roughness: .55 }), // a warm oak leaf, light enough to read in shade
+  doorGroove: new THREE.MeshStandardMaterial({ color: '#cfcac1', roughness: .6 }),
+  door: new THREE.MeshStandardMaterial({ color: '#f3f1ec', roughness: .42 }), // white lacquer // a warm oak leaf, light enough to read in shade
   column: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#e7e5e0', roughness: .97 }),
   threshold: new THREE.MeshStandardMaterial({ color: '#d9d1c4', roughness: .6 }),
   wallTop: new THREE.MeshStandardMaterial({ color: '#c8bfb2', roughness: 1 }),
@@ -454,16 +446,24 @@ const WALLS = [
   // dorm 2's and dorm 3's walls, out to the glass, the wardrobes between them
   [-4.18, 3.99, -4.18, 8.62, 0.12], [-3.44, 3.99, -3.44, 8.62, 0.14],
   // the wardrobes off the hall, bath 3, dorm 3's wall to the living room
-  [-5.44, 2.05, 0.06, 2.05, 0.12], [-5.4, 2.05, -5.4, 2.83, 0.12], [-3.65, 2.05, -3.65, 2.97, 0.14],
+  [-5.44, 2.05, 0.06, 2.05, 0.12],
   [-2.38, 2.05, -2.38, 3.07, 0.12], [-2.42, 3.97, 0.06, 3.97, 0.14], [0.05, 2.05, 0.05, 8.62, 0.14],
 ];
 /* ---- interior walls, made tight: every loose end drawn onto the wall it meets, so no slit is left;
    the doors found as gaps between two wall runs in line, and given jambs, a head and a threshold;
    the bathrooms' walls clad in matte tile on their wet side ---- */
-// the front door, set in the closed facade and shown on both faces: a walnut leaf with two sunk panels,
+// the hall's wardrobes: one built-in run from the hall wall to a single flush front on the corridor,
+// full height, so the corridor's wall is one plane with no partitions sticking out of it
+{ const x0 = -5.44, x1 = -2.44, z0 = 2.11, z1 = 3.07, h = WALL_H;
+  const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, h, z1 - z0), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
+  m.position.set((x0 + x1) / 2, h / 2, (z0 + z1) / 2); add(m);
+  // the fronts' joints: fine vertical lines every 60 cm, as on the plan
+  for (let x = x0 + 0.6; x < x1 - 0.1; x += 0.6) { const j = new THREE.Mesh(new THREE.BoxGeometry(0.006, h - 0.1, 0.004), M.doorGroove); j.position.set(x, h / 2, z1 + 0.002); house.add(j); }
+  contactStrip([x0, z1 - 0.01], [x1, z1 - 0.01], 0.02); }
+// the front door, set in the closed facade and shown on both faces: a white lacquered leaf with two sunk panels,
 // a flat casing round it and a bronze lever, so it reads as a door from the landing and from the hall
 { const ax = -7.55, az = -0.15, bx = -8.22, bz = 0.5, dx = bx - ax, dz = bz - az, len = Math.hypot(dx, dz), nx = dz / len, nz = -dx / len;
-  const W = Math.min(0.9, len - 0.04), H = 2.05, ry = -Math.atan2(dz, dx), cx = (ax + bx) / 2, cz = (az + bz) / 2;
+  const W = 0.8, H = 2.05, ry = -Math.atan2(dz, dx), cx = (ax + bx) / 2 - (dx / len) * 0.06, cz = (az + bz) / 2 - (dz / len) * 0.06;
   [-1, 1].forEach((side) => {
     const g = new THREE.Group(); g.position.set(cx + nx * side * 0.15, 0, cz + nz * side * 0.15); g.rotation.y = ry + (side > 0 ? Math.PI : 0); house.add(g); // its front to the face it is on
     const put = (w, h, d, mat, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; g.add(m); return m; };
@@ -515,8 +515,8 @@ const inPoly = ([x, z], poly) => { let c = false; for (let i = 0, j = poly.lengt
     // the head: wall over the opening, from the door's height to the cut
     piece(open + 0.002, WALL_H - DOOR_H, th, [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall], 0, (DOOR_H + WALL_H) / 2);
     // the jambs: two flat linings, slightly proud of the wall on both faces, and the lining under the head
-    [-1, 1].forEach((sd) => piece(0.03, DOOR_H, th + 0.024, M.trim, sd * (open / 2 - 0.015), DOOR_H / 2));
-    piece(open, 0.03, th + 0.024, M.trim, 0, DOOR_H - 0.015);
+    [-1, 1].forEach((sd) => piece(0.03, DOOR_H, th, M.trim, sd * (open / 2 - 0.015), DOOR_H / 2));
+    piece(open, 0.03, th, M.trim, 0, DOOR_H - 0.015);
     // the threshold, flush with the floor
     piece(open, 0.012, th, M.threshold, 0, 0.006);
     // in the facade (the front door): the opening is closed by a solid door leaf, flush with the wall's
@@ -592,8 +592,9 @@ const realSofa = (g, w, d) => {
   realSofa(s1, sx1 - sx0, sz1 - sz0);
   // a second one, facing the glass to the sea, its end meeting the first's: the two make an L
   // (where the plan draws the daybed); its back to the room, clear of the columns
-  s1.position.x = 3.93; // nudged to meet the second sofa's front
-  const s2 = group(2.45, 7.28, Math.PI / 2); sofa(s2, 2.3, 0.95, M.sofa);
+  s1.position.x = 4.05;
+  // the second sofa stops short of the first one's front, with a hand's width between them
+  const s2 = group(2.45, 6.28, Math.PI / 2); sofa(s2, 2.3, 0.95, M.sofa);
   [[-0.6, M.sand], [0.6, M.sand]].forEach(([x, m]) => cushion(s2, x, -0.2, m));
   realSofa(s2, 2.3, 0.95);
   // between them, a low table worth looking at: a travertine top on a walnut plinth, rounded at
@@ -1092,21 +1093,9 @@ function fit() {
 }
 addEventListener('resize', fit); fit();
 
-/* ================= HUD: the CAD vitrine and its parallax ================= */
-const hudEl = document.getElementById('hud'), cadEl = document.getElementById('cad');
-function drawCad() {
-  const w = innerWidth, h = innerHeight, m = phone ? 12 : 18, c = 14; // inset and corner length
-  const L = m + 0.5, R = w - m - 0.5, Tp = m + 0.5, B = h - m - 0.5;
-  let s = '';
-  // the frame: hairlines, broken at the corners, where flat CAD corner marks stand slightly off them
-  s += `<path class="l" d="M${L + c + 6} ${Tp}H${R - c - 6}M${L + c + 6} ${B}H${R - c - 6}M${L} ${Tp + c + 6}V${B - c - 6}M${R} ${Tp + c + 6}V${B - c - 6}" opacity=".55"/>`;
-  [[L, Tp, 1, 1], [R, Tp, -1, 1], [L, B, 1, -1], [R, B, -1, -1]].forEach(([x, y, sx, sy]) => {
-    s += `<path class="l" d="M${x} ${y + sy * c}V${y}H${x + sx * c}"/>`;
-    s += `<path class="k" d="M${x + sx * 4} ${y + sy * 4}h${sx * 3}M${x + sx * 4} ${y + sy * 4}v${sy * 3}"/>`;
-  });
-  cadEl.innerHTML = s;
-}
-addEventListener('resize', drawCad); drawCad();
+/* ================= HUD: its parallax ================= */
+const hudEl = document.getElementById('hud');
+
 // the HUD's parallax: a few pixels against the camera's turn, eased so it trails like glass in front of it
 const hudPos = { x: 0, y: 0 }, hudSph = new THREE.Spherical();
 // the cursor pulls the HUD a few pixels as if it hung on a sheet of glass in front of the scene:
