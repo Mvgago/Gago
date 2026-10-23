@@ -225,6 +225,11 @@ const tileTex = tex(512, 512, (x, w, h) => { const n = 4, t = w / n;
   for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { x.fillStyle = `hsl(205, 6%, ${80 + rnd() * 4}%)`; x.fillRect(i * t, j * t, t, t);
     for (let p = 0; p < 120; p++) { x.fillStyle = `rgba(90,100,110,${rnd() * .06})`; x.fillRect(i * t + rnd() * t, j * t + rnd() * t, 2, 2); } }
   x.fillStyle = 'rgba(120,128,135,.6)'; for (let i = 0; i <= n; i++) { x.fillRect(i * t - 1, 0, 2, h); x.fillRect(0, i * t - 1, w, 2); } });
+// the bathrooms' wall tile: 30 × 60 cm, stack bond, matte, pale platinum with fine joints
+const wallTileTex = tex(512, 512, (x, w, h) => { const cw = w / 2, ch = h / 1;
+  for (let i = 0; i < 2; i++) { x.fillStyle = `hsl(200, 5%, ${86 + rnd() * 3}%)`; x.fillRect(i * cw, 0, cw, ch);
+    for (let p = 0; p < 200; p++) { x.fillStyle = `rgba(100,110,118,${rnd() * .04})`; x.fillRect(i * cw + rnd() * cw, rnd() * ch, 2, 2); } }
+  x.fillStyle = 'rgba(130,136,142,.55)'; x.fillRect(cw - 1, 0, 2, h); x.fillRect(0, 0, 2, h); x.fillRect(0, 0, w, 2); x.fillRect(0, h / 2 - 1, w, 2); });
 // white marble for the worktops
 const marbleTex = tex(512, 512, (x, w, h) => { x.fillStyle = '#f4f2ee'; x.fillRect(0, 0, w, h);
   for (let v = 0; v < 14; v++) { x.strokeStyle = `rgba(150,150,155,${.08 + rnd() * .18})`; x.lineWidth = .6 + rnd() * 1.8; x.beginPath(); let px = rnd() * w, py = 0; x.moveTo(px, py); while (py < h) { px += (rnd() - .45) * 40; py += 20 + rnd() * 30; x.lineTo(px, py); } x.stroke(); } }, [1, 1]);
@@ -251,10 +256,14 @@ const leafTex = (hue, sat, lig, shape = 'lance') => tex(128, 256, (x, w, h) => {
 /* ================= materials ================= */
 const fabric = (c, rough = .95) => new THREE.MeshStandardMaterial({ map: weaveTex, color: c, roughness: rough });
 const M = {
-  wall: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#f3eee6', roughness: .93 }),
+  // matte stucco, broken white with the faintest platinum cast
+  wall: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#eeebe5', roughness: .96 }),
+  trim: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#e6e2db', roughness: .9 }),
+  threshold: new THREE.MeshStandardMaterial({ color: '#d9d1c4', roughness: .6 }),
   wallTop: new THREE.MeshStandardMaterial({ color: '#c8bfb2', roughness: 1 }),
   stone: new THREE.MeshStandardMaterial({ map: stoneTex, roughness: .5 }),
-  bathFloor: new THREE.MeshStandardMaterial({ map: tileTex, roughness: .35 }),
+  bathFloor: new THREE.MeshStandardMaterial({ map: tileTex, roughness: .62 }), // technical gres, matte
+  bathWall: new THREE.MeshStandardMaterial({ map: wallTileTex, roughness: .72 }),
   porcelain: new THREE.MeshStandardMaterial({ color: '#fbfbfa', roughness: .18 }),
   oak: new THREE.MeshStandardMaterial({ map: oakTex, roughness: .58 }),
   deck: new THREE.MeshStandardMaterial({ map: deckTex, roughness: .78 }),
@@ -382,7 +391,72 @@ const WALLS = [
   [-5.44, 2.05, 0.06, 2.05, 0.12], [-5.4, 2.05, -5.4, 2.83, 0.12], [-3.65, 2.05, -3.65, 2.97, 0.14],
   [-2.38, 2.05, -2.38, 3.07, 0.12], [-2.42, 3.97, 0.06, 3.97, 0.14], [0.05, 2.05, 0.05, 8.62, 0.14],
 ];
-WALLS.forEach(([x1, z1, x2, z2, th]) => wall([x1, z1], [x2, z2], th));
+/* ---- interior walls, made tight: every loose end drawn onto the wall it meets, so no slit is left;
+   the doors found as gaps between two wall runs in line, and given jambs, a head and a threshold;
+   the bathrooms' walls clad in matte tile on their wet side ---- */
+const DOOR_H = 1.98;
+const BATH_POLYS = (() => { const rot = (cx, cz, l, w) => { const u = [-Math.SQRT1_2, Math.SQRT1_2], v = [Math.SQRT1_2, Math.SQRT1_2];
+  return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [cx + u[0] * a * l / 2 + v[0] * b * w / 2, cz + u[1] * a * l / 2 + v[1] * b * w / 2]); };
+  return [
+    [[-2.3, 2.1], [-0.12, 2.1], [-0.12, 3.85], [-2.3, 3.85]], // bath 3
+    [[-6.95, 4.0], [-4.3, 4.0], [-4.3, 5.85], [-6.2, 5.85], [-6.95, 5.1]], // bath 2
+    rot(-10.3, 4.1, 4.2, 2.3), // bath 1, along the wing
+    rot(-7.89, 1.81, 1.45, 1.45), // guest WC
+  ]; })();
+const inPoly = ([x, z], poly) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, zi] = poly[i], [xj, zj] = poly[j];
+  if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) c = !c; } return c; };
+{
+  const segs = WALLS.map(([x1, z1, x2, z2, th]) => ({ a: [x1, z1], b: [x2, z2], th }));
+  // 1. tight joints: an end within 22 cm of another wall's line is drawn onto that line
+  const closest = (p, s) => { const dx = s.b[0] - s.a[0], dz = s.b[1] - s.a[1], L2 = dx * dx + dz * dz;
+    const t = Math.max(0, Math.min(1, ((p[0] - s.a[0]) * dx + (p[1] - s.a[1]) * dz) / L2)); return [s.a[0] + t * dx, s.a[1] + t * dz]; };
+  segs.forEach((s, i) => ['a', 'b'].forEach((end) => {
+    let best = null, bd = 0.22;
+    segs.forEach((o, j) => { if (i === j) return; const q = closest(s[end], o), d = Math.hypot(q[0] - s[end][0], q[1] - s[end][1]); if (d > 0.002 && d < bd) { bd = d; best = q; } });
+    if (best) s[end] = best;
+  }));
+  // 2. doors: two runs on one line with a gap of 60–120 cm between their ends
+  const doors = [];
+  segs.forEach((s, i) => segs.forEach((o, j) => { if (j <= i) return;
+    const d1 = [s.b[0] - s.a[0], s.b[1] - s.a[1]], d2 = [o.b[0] - o.a[0], o.b[1] - o.a[1]], l1 = Math.hypot(...d1), l2 = Math.hypot(...d2);
+    if (Math.abs((d1[0] * d2[1] - d1[1] * d2[0]) / (l1 * l2)) > 0.03) return; // not parallel
+    const off = Math.abs(((o.a[0] - s.a[0]) * d1[1] - (o.a[1] - s.a[1]) * d1[0]) / l1); if (off > 0.06) return; // not on one line
+    let gap = null; ['a', 'b'].forEach((e1) => ['a', 'b'].forEach((e2) => { const g = Math.hypot(s[e1][0] - o[e2][0], s[e1][1] - o[e2][1]); if (!gap || g < gap.g) gap = { g, p: s[e1], q: o[e2] }; }));
+    if (gap.g > 0.6 && gap.g < 1.2) doors.push({ p: gap.p, q: gap.q, th: Math.max(s.th, o.th) });
+  }));
+  segs.forEach((s) => wall(s.a, s.b, s.th));
+  doors.forEach(({ p, q, th }) => {
+    const dx = q[0] - p[0], dz = q[1] - p[1], len = Math.hypot(dx, dz), ry = -Math.atan2(dz, dx), ux = dx / len, uz = dz / len;
+    const g = new THREE.Group(); g.position.set((p[0] + q[0]) / 2, 0, (p[1] + q[1]) / 2); g.rotation.y = ry; house.add(g);
+    const open = len - th; // the clear opening, between the wall ends' faces
+    const piece = (w, h, d, mat, x, y) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, 0); m.castShadow = true; m.receiveShadow = true; g.add(m); };
+    // the head: wall over the opening, from the door's height to the cut
+    piece(open + 0.002, WALL_H - DOOR_H, th, [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall], 0, (DOOR_H + WALL_H) / 2);
+    // the jambs: two flat linings, slightly proud of the wall on both faces, and the lining under the head
+    [-1, 1].forEach((sd) => piece(0.03, DOOR_H, th + 0.024, M.trim, sd * (open / 2 - 0.015), DOOR_H / 2));
+    piece(open, 0.03, th + 0.024, M.trim, 0, DOOR_H - 0.015);
+    // the threshold, flush with the floor
+    piece(open, 0.012, th, M.threshold, 0, 0.006);
+  });
+  // 3. the bathrooms' walls: matte tile on the side that faces into the bathroom
+  const tileUV = (geo, w, h) => { const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * w / 0.6, uv.getY(i) * h / 0.6); };
+  segs.forEach((s) => {
+    const dx = s.b[0] - s.a[0], dz = s.b[1] - s.a[1], len = Math.hypot(dx, dz), ux = dx / len, uz = dz / len, nx = -uz, nz = ux;
+    BATH_POLYS.forEach((poly) => [-1, 1].forEach((side) => {
+      const N = Math.max(2, Math.round(len / 0.05)); let run = null; const runs = [];
+      for (let k = 0; k <= N; k++) { const t = (k / N) * len, px = s.a[0] + ux * t + nx * side * (s.th / 2 + 0.06), pz = s.a[1] + uz * t + nz * side * (s.th / 2 + 0.06);
+        if (inPoly([px, pz], poly)) { if (!run) run = [t, t]; else run[1] = t; } else if (run) { runs.push(run); run = null; } }
+      if (run) runs.push(run);
+      runs.filter(([t0, t1]) => t1 - t0 > 0.15).forEach(([t0, t1]) => {
+        const w = t1 - t0, mid = (t0 + t1) / 2, h = WALL_H - 0.01;
+        const geo = new THREE.BoxGeometry(w, h, 0.012); tileUV(geo, w, h);
+        const m = new THREE.Mesh(geo, M.bathWall);
+        m.position.set(s.a[0] + ux * mid + nx * side * (s.th / 2 + 0.006), h / 2 + 0.02, s.a[1] + uz * mid + nz * side * (s.th / 2 + 0.006));
+        m.rotation.y = -Math.atan2(dz, dx); m.receiveShadow = true; house.add(m);
+      });
+    }));
+  });
+}
 // the round columns: in the living room's line and on the terrace, and one in the hall
 [[1.7, 0.99], [6.43, 0.99], [1.7, 4.0], [6.43, 4.0], [1.7, 7.9], [6.43, 7.9], [-6.73, 3.42]].forEach(([x, z]) => column(x, z));
 // the home's glass: the kitchen and the living room to the terraces, the bedrooms to theirs
@@ -536,7 +610,13 @@ const kitchenFronts = [];
     rot(-10.3, 4.1, 4.2, 2.3), // bath 1, along the wing
     rot(-7.89, 1.81, 1.45, 1.45), // guest WC
   ];
-  BATHS.forEach((poly) => floor(poly, M.bathFloor, 0.008, 0.6));
+  // the bathrooms' floor: technical gres, raised a touch (2 cm) above the rest, with a clean edge
+  BATH_POLYS.forEach((poly) => {
+    const sh = new THREE.Shape(poly.map(([x, z]) => new THREE.Vector2(x, -z)));
+    const g = new THREE.ExtrudeGeometry(sh, { depth: 0.02, bevelEnabled: false }); g.rotateX(-Math.PI / 2);
+    const uv = g.attributes.uv, pos = g.attributes.position; for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / 0.6, pos.getZ(i) / 0.6);
+    add(new THREE.Mesh(g, [M.bathFloor, M.threshold]), false, true);
+  });
   // baths
   box(0.78, 0.55, 0.5, M.porcelain, -1.78, 0.28, 2.39, 0.06); box(0.9, 0.55, 0.45, M.porcelain, -5.65, 0.28, 4.26, 0.06);
   const tub = cyl(0.72, 0.72, 0.55, M.porcelain, -9.2, 0.28, 2.85, 48); // bath 1's round tub
