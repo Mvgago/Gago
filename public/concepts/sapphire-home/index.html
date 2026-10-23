@@ -150,16 +150,16 @@ const LANG = (() => { try { const l = localStorage.getItem('fugahaus.lang'); if 
 const DICT = {
   es: { cap: 'Concepto · Planta 2C, la vivienda en 3D', drag: 'arrastra para girar', swipe: 'desliza para girar', light: 'luz', floor: 'suelo', kitchen: 'cocina',
         morning: 'mañana', sunset: 'atardecer', night: 'noche', stone: 'travertino', oak: 'roble', white: 'blanco', sapphire: 'zafiro',
-        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1', tour: 'recorrer', stop: 'parar' },
+        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1', tour: 'recorrer', stop: 'parar', dining: 'Comedor' },
   en: { cap: 'Concept · Floor 2C, the home in 3D', drag: 'drag to rotate', swipe: 'swipe to rotate', light: 'light', floor: 'floor', kitchen: 'kitchen',
         morning: 'morning', sunset: 'sunset', night: 'night', stone: 'travertine', oak: 'oak', white: 'white', sapphire: 'sapphire',
-        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom', tour: 'walk through', stop: 'stop' },
+        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom', tour: 'walk through', stop: 'stop', dining: 'Dining' },
   fr: { cap: 'Concept · Étage 2C, le logement en 3D', drag: 'faites glisser pour tourner', swipe: 'glissez pour tourner', light: 'lumière', floor: 'sol', kitchen: 'cuisine',
         morning: 'matin', sunset: 'couchant', night: 'nuit', stone: 'travertin', oak: 'chêne', white: 'blanc', sapphire: 'saphir',
-        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1', tour: 'parcourir', stop: 'arrêter' },
+        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1', tour: 'parcourir', stop: 'arrêter', dining: 'Salle à manger' },
   de: { cap: 'Konzept · Etage 2C, die Wohnung in 3D', drag: 'ziehen zum Drehen', swipe: 'wischen zum Drehen', light: 'licht', floor: 'boden', kitchen: 'küche',
         morning: 'morgen', sunset: 'abend', night: 'nacht', stone: 'travertin', oak: 'eiche', white: 'weiß', sapphire: 'saphir',
-        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1', tour: 'rundgang', stop: 'stopp' },
+        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1', tour: 'rundgang', stop: 'stopp', dining: 'Essbereich' },
 };
 const TX = DICT[LANG] || DICT.es;
 const t = (k) => TX[k] ?? DICT.es[k] ?? k;
@@ -1000,17 +1000,19 @@ const sph = new THREE.Spherical(), goal = { look: new THREE.Vector3(...HOME.look
 let flying = 0;
 function goTo(v) { goal.look.set(...v.look); goal.az = v.az; goal.pol = v.pol; goal.r = v.r * (phone && v !== HOME ? 1.3 : 1); flying = 1; }
 /* ================= the guided walk ================= */
-// Hall, kitchen, living room, terrace, main bedroom, then the whole floor, round and round until
+// Kitchen, dining, living room, terrace, main bedroom, then the whole floor, round and round until
 // touched. Between rooms the camera flies a timed arc: it lifts and draws back mid-way and settles
 // in, eased at both ends, the same on any screen. At each room it slowly turns while the room's
 // name, area and a line about it come up. Each lap the light moves on: morning, sunset, night.
 // ?tour starts it on its own (for a sales office screen); space toggles it, arrows step it.
-const TOUR = ['hall', 'kitchenR', 'living', 'terrace', 'bedroom'].map((k) => ROOMS.find((r) => r.k === k)).concat([null]);
+// the hall is passed through rather than stopped at: it has little to show from above
+const DINING = { k: 'dining', m2: '48,70' };
+const TOUR = ['kitchenR', 'dining', 'living', 'terrace', 'bedroom'].map((k) => (k === 'dining' ? DINING : ROOMS.find((r) => r.k === k))).concat([null]);
 const LINES = {
-  es: { hall: 'La llegada: luz natural desde el primer paso.', kitchenR: 'Abierta al salón, con isla de mármol y vistas a la terraza.', living: 'Cristal de suelo a techo hacia el Mediterráneo.', terrace: 'Ochenta metros al aire libre, comedor y solárium.', bedroom: 'Dormitorio principal con vestidor y baño en suite.', home: 'Tres dormitorios, terrazas en dos frentes, primera línea.' },
-  en: { hall: 'Arrival: daylight from the very first step.', kitchenR: 'Open to the living room, a marble island, terrace views.', living: 'Floor-to-ceiling glass towards the Mediterranean.', terrace: 'Eighty square metres outdoors, dining and sun deck.', bedroom: 'Main bedroom with dressing room and en-suite bath.', home: 'Three bedrooms, terraces on two fronts, on the seafront.' },
-  fr: { hall: 'L’arrivée : la lumière dès le premier pas.', kitchenR: 'Ouverte sur le séjour, îlot en marbre, vue sur la terrasse.', living: 'Baies du sol au plafond vers la Méditerranée.', terrace: 'Quatre-vingts mètres en plein air, repas et solarium.', bedroom: 'Chambre principale avec dressing et salle de bains.', home: 'Trois chambres, terrasses sur deux façades, front de mer.' },
-  de: { hall: 'Ankommen: Tageslicht vom ersten Schritt an.', kitchenR: 'Offen zum Wohnraum, Marmorinsel, Blick auf die Terrasse.', living: 'Raumhohes Glas zum Mittelmeer.', terrace: 'Achtzig Quadratmeter im Freien, Essplatz und Sonnendeck.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', home: 'Drei Schlafzimmer, Terrassen an zwei Seiten, erste Meereslinie.' },
+  es: { dining: 'Mesa para seis junto al cristal, con la terraza a un paso.', hall: 'La llegada: luz natural desde el primer paso.', kitchenR: 'Abierta al salón, con isla de mármol y vistas a la terraza.', living: 'Cristal de suelo a techo hacia el Mediterráneo.', terrace: 'Ochenta metros al aire libre, comedor y solárium.', bedroom: 'Dormitorio principal con vestidor y baño en suite.', home: 'Tres dormitorios, terrazas en dos frentes, primera línea.' },
+  en: { dining: 'A table for six by the glass, the terrace a step away.', hall: 'Arrival: daylight from the very first step.', kitchenR: 'Open to the living room, a marble island, terrace views.', living: 'Floor-to-ceiling glass towards the Mediterranean.', terrace: 'Eighty square metres outdoors, dining and sun deck.', bedroom: 'Main bedroom with dressing room and en-suite bath.', home: 'Three bedrooms, terraces on two fronts, on the seafront.' },
+  fr: { dining: 'Une table pour six contre la baie, la terrasse à un pas.', hall: 'L’arrivée : la lumière dès le premier pas.', kitchenR: 'Ouverte sur le séjour, îlot en marbre, vue sur la terrasse.', living: 'Baies du sol au plafond vers la Méditerranée.', terrace: 'Quatre-vingts mètres en plein air, repas et solarium.', bedroom: 'Chambre principale avec dressing et salle de bains.', home: 'Trois chambres, terrasses sur deux façades, front de mer.' },
+  de: { dining: 'Ein Tisch für sechs am Glas, die Terrasse einen Schritt entfernt.', hall: 'Ankommen: Tageslicht vom ersten Schritt an.', kitchenR: 'Offen zum Wohnraum, Marmorinsel, Blick auf die Terrasse.', living: 'Raumhohes Glas zum Mittelmeer.', terrace: 'Achtzig Quadratmeter im Freien, Essplatz und Sonnendeck.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', home: 'Drei Schlafzimmer, Terrassen an zwei Seiten, erste Meereslinie.' },
 };
 const LN = LINES[LANG] || LINES.es;
 const FLY = 3.4, HOLD = 5.2, LIGHTS = ['morning', 'sunset', 'night'];
@@ -1019,11 +1021,20 @@ const tc = { box: document.getElementById('tourcap'), step: document.getElementB
 const tbtn = document.getElementById('tourbtn'), tbIcon = document.getElementById('tb-icon'), tbText = document.getElementById('tb-text');
 const setBtn = () => { tbIcon.setAttribute('d', tour.on ? 'M3 2h2.4v8H3zM6.6 2H9v8H6.6z' : 'M3 2l7 4-7 4z'); tbText.textContent = t(tour.on ? 'stop' : 'tour'); tbtn.setAttribute('aria-pressed', tour.on); };
 const easeIO = (u) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
-// each stop seen from a little higher and further than the tag's view, so the room reads whole
-const viewOf = (room) => { const v = room || HOME; return { look: new THREE.Vector3(...v.look), az: v.az, pol: room ? Math.min(v.pol, 0.66) : v.pol, r: room ? v.r * (phone ? 1.85 : 1.45) : v.r }; };
+// each stop framed like a shot from just above the room: close in, tilted, the room filling the screen
+// with its furniture and materials in the foreground (look-at point, turn, tilt from vertical, distance)
+const SHOTS = {
+  dining:   { look: [4.8, 0.5, 2.5],   az: 2.0,  pol: 0.82, r: 6.2 },  // the table for six, the kentia, the glass to the terrace
+  kitchenR: { look: [0.7, 0.7, -0.9],  az: 0.25, pol: 0.82, r: 5.6 },  // the island and stools, the run behind
+  living:   { look: [3.7, 0.4, 6.7],   az: 2.55, pol: 0.86, r: 6.4 },  // the two sofas and the table, the glass and the sea beyond
+  terrace:  { look: [7.9, 0.3, 3.6],   az: 1.0,  pol: 0.9,  r: 7.4 },  // the outdoor lounge and the loungers
+  bedroom:  { look: [-10.0, 0.4, 9.7], az: 0.8,  pol: 0.74, r: 5.8 },  // the main bed, the glass to its terrace
+};
+const viewOf = (room) => { if (!room) return { look: new THREE.Vector3(...HOME.look), az: HOME.az, pol: HOME.pol, r: HOME.r };
+  const v = SHOTS[room.k] || room; return { look: new THREE.Vector3(...v.look), az: v.az, pol: v.pol, r: v.r * (phone ? 1.4 : 1) }; };
 function tourGo(i, T = clock.getElapsedTime()) {
   tour.i = (i + TOUR.length) % TOUR.length; tour.holdUntil = 0; const room = TOUR[tour.i];
-  focus = room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !!room && x === room.el));
+  focus = room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !!room && !!room.el && x === room.el));
   sph.setFromVector3(v3.copy(camera.position).sub(controls.target));
   tour.from = { look: controls.target.clone(), az: sph.theta, pol: sph.phi, r: sph.radius }; tour.to = viewOf(room);
   tour.flyFrom = T; flying = 0; tc.box.classList.remove('on');
@@ -1045,7 +1056,9 @@ function tourFrame(T, dt) {
     let dAz = g.az - f.az; dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
     controls.target.lerpVectors(f.look, g.look, e);
     // an arc, not a slide: higher and further back half-way, settling as it arrives
-    sph.set(THREE.MathUtils.lerp(f.r, g.r, e) * (1 + 0.28 * lift), Math.max(0.35, THREE.MathUtils.lerp(f.pol, g.pol, e) - 0.22 * lift), f.az + dAz * e);
+    // between rooms it rises and draws back (more for longer moves), so it never cuts through a wall
+    const reach = Math.min(1, f.look.distanceTo(g.look) / 8);
+    sph.set(THREE.MathUtils.lerp(f.r, g.r, e) * (1 + (0.35 + 0.5 * reach) * lift), Math.max(0.3, THREE.MathUtils.lerp(f.pol, g.pol, e) - (0.2 + 0.25 * reach) * lift), f.az + dAz * e);
     camera.position.setFromSpherical(sph).add(controls.target);
     if (u >= 1) { // arrived: name the room and hold
       tour.holdFrom = T; tour.holdUntil = T + HOLD; const room = TOUR[tour.i];
@@ -1060,7 +1073,7 @@ function tourFrame(T, dt) {
     return true;
   }
   // held: a slow turn, so the walk never stands still
-  sph.setFromVector3(v3.copy(camera.position).sub(controls.target)); sph.theta += 0.045 * dt;
+  sph.setFromVector3(v3.copy(camera.position).sub(controls.target)); sph.theta += 0.04 * dt; sph.radius *= 1 - 0.012 * dt; // a slow turn and a slow push in
   camera.position.setFromSpherical(sph).add(controls.target);
   tc.bar.style.transform = `scaleX(${Math.min(1, (T - tour.holdFrom) / HOLD).toFixed(3)})`;
   if (T > tour.holdUntil) tourGo(tour.i + 1, T);
