@@ -9,7 +9,7 @@
 <style>
 /* The Sapphire's own light: warm stone, pale oak, white linen, the sea beyond, sapphire blue for accents */
 :root {
-  --ground: #e6e7e5;
+  --ground: #f0f0ef;
   --ink: #1d2230;
   --soft: rgba(29, 34, 48, 0.6);
   --sapphire: #1f3fa6;
@@ -24,9 +24,8 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; -webkit-t
 #stage.on { opacity: 1; }
 #stage canvas { display: block; width: 100%; height: 100%; }
 
-/* The HUD floats a hair in front of the scene: its layer drifts a few pixels against the camera,
-   like a sheet of optical glass, and never bends the image under it */
-.hud { position: fixed; inset: 0; pointer-events: none; will-change: transform; }
+/* The HUD: the project's name, fixed in its corner, never moving with the scene */
+.hud { position: fixed; inset: 0; pointer-events: none; }
 
 .cap, .hint { position: fixed; top: 26px; font-family: var(--mono); font-size: 10px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft); pointer-events: none; margin: 0; transition: color 1.2s, opacity .6s; }
 .cap { left: 34px; display: flex; flex-direction: column; gap: 5px; }
@@ -37,10 +36,10 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; -webkit-t
 body.night .cap, body.night .cap b { color: rgba(244, 241, 236, 0.85); }
 /* the credit the stool's licence asks for: present, but as quiet as the page allows */
 /* the 3D models' credits, as their licences ask: a quiet link in the corner that opens the list */
-.credit { position: fixed; right: 34px; bottom: 7px; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; font-family: var(--mono); font-size: 8px; letter-spacing: .04em; color: rgba(29, 34, 48, .28); transition: color .4s, opacity .6s; }
+.credit { position: fixed; left: 34px; bottom: 7px; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; font-family: var(--mono); font-size: 8px; letter-spacing: .04em; color: rgba(29, 34, 48, .28); transition: color .4s, opacity .6s; }
 .credit:hover { color: rgba(29, 34, 48, .6); }
 body.night .credit { color: rgba(244, 241, 236, .3); }
-.credits { position: fixed; right: 34px; bottom: 26px; z-index: 3; width: min(360px, calc(100vw - 40px)); box-sizing: border-box; padding: 14px 16px 12px; background: rgba(250, 250, 248, .94); border: 1px solid rgba(29, 34, 48, .12); border-radius: 3px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 14px 40px rgba(30, 36, 50, .16); font-family: var(--mono); font-size: 10px; line-height: 1.5; color: var(--ink); }
+.credits { position: fixed; left: 34px; bottom: 26px; z-index: 3; width: min(360px, calc(100vw - 40px)); box-sizing: border-box; padding: 14px 16px 12px; background: rgba(250, 250, 248, .94); border: 1px solid rgba(29, 34, 48, .12); border-radius: 3px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 14px 40px rgba(30, 36, 50, .16); font-family: var(--mono); font-size: 10px; line-height: 1.5; color: var(--ink); }
 .credits[hidden] { display: none; }
 .credits b { display: block; margin-bottom: 8px; font-weight: 400; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
 .credits ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
@@ -55,11 +54,12 @@ body.night .credit { color: rgba(244, 241, 236, .3); }
 .loader b { position: absolute; inset: 0; width: 100%; transform-origin: left; transform: scaleX(0); background: var(--ink); transition: transform .4s ease; }
 .loader.gone { opacity: 0; pointer-events: none; }
 /* The rooms: a quiet tag on each, as on the plan, that takes the camera there */
-.tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 1px; font-family: var(--display); font-weight: 400; font-size: 12.5px; letter-spacing: .03em; color: var(--ink); background: rgba(250, 250, 248, .9); border: 1px solid rgba(29, 34, 48, .12); border-radius: 2px; padding: 5px 11px 6px; margin-top: -14px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 18px rgba(30, 36, 50, .1); cursor: pointer; white-space: nowrap; transition: opacity .5s, color .3s, border-color .3s; user-select: none; }
-.tag::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 12px; background: rgba(29, 34, 48, .45); }
-.tag::before { content: ''; position: absolute; left: calc(50% - 2px); top: calc(100% + 11px); width: 5px; height: 5px; border-radius: 50%; background: var(--ink); }
+.tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 1px; font-family: var(--display); font-weight: 400; font-size: 11px; letter-spacing: .03em; color: var(--ink); background: rgba(250, 250, 248, .55); border: 1px solid rgba(29, 34, 48, .07); border-radius: 2px; padding: 3px 8px 4px; margin-top: -11px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 3px 10px rgba(30, 36, 50, .05); cursor: pointer; white-space: nowrap; transition: opacity .5s, color .3s, border-color .3s; user-select: none; }
+.tag::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 9px; background: rgba(29, 34, 48, .3); }
+.tag::before { content: ''; position: absolute; left: calc(50% - 1.5px); top: calc(100% + 8px); width: 4px; height: 4px; border-radius: 50%; background: rgba(29, 34, 48, .7); }
 body.night .tag { color: #f4f1ec; background: rgba(28, 32, 42, .82); border-color: rgba(244,241,236,.18); } body.night .tag::after, body.night .tag::before { background: rgba(244,241,236,.7); }
-.tag small { font-family: var(--mono); font-weight: 300; font-size: 9.5px; letter-spacing: .06em; color: var(--soft); }
+.tag small { font-family: var(--mono); font-weight: 300; font-size: 8.5px; letter-spacing: .06em; color: var(--soft); }
+.tag:hover, .tag.on { background: rgba(250, 250, 248, .9); }
 .tag:hover { color: var(--sapphire); }
 .tag.on { color: var(--sapphire); border-color: var(--sapphire); } .tag.on::before, .tag.on::after { background: var(--sapphire); }
 .tag.hide { opacity: 0; pointer-events: none; }
@@ -104,7 +104,7 @@ body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec
   .cap b { font-size: 17px; }
     .hint { right: 20px; top: 20px; font-size: 10.5px; padding: 5px 10px; }
   .panel { left: 20px; right: 20px; transform: none; bottom: 22px; max-width: none; gap: 6px; padding: 6px; font-size: 10.5px; justify-content: space-between; }
-  .credit { right: 20px; bottom: 7px; font-size: 7.5px; }
+  .credit { left: 20px; bottom: 7px; font-size: 7.5px; } .credits { left: 20px; }
   .group, .sep { display: none; }
   .tourbtn { padding: 0 11px; align-self: stretch; } .tourbtn span { display: none; }
   .tourcap { left: 22px; bottom: 96px; } .tourcap b { font-size: 22px; }
@@ -268,8 +268,8 @@ const tex = (w, h, draw, repeat, color = true) => {
 // travertine: large warm slabs (1.2 m), soft banded veins, fine joints
 const stoneTex = tex(1024, 1024, (x, w, h) => {
   for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
-    const l = 87 + rnd() * 4;
-    x.fillStyle = `hsl(36, 16%, ${l}%)`; x.fillRect(i * w / 2, j * h / 2, w / 2, h / 2);
+    const l = 82 + rnd() * 4;
+    x.fillStyle = `hsl(35, 24%, ${l}%)`; x.fillRect(i * w / 2, j * h / 2, w / 2, h / 2);
     for (let v = 0; v < 60; v++) {
       x.strokeStyle = `rgba(${150 + rnd() * 30},${118 + rnd() * 20},${84 + rnd() * 15},${.04 + rnd() * .08})`; x.lineWidth = 1 + rnd() * 4;
       const y0 = j * h / 2 + rnd() * h / 2; x.beginPath(); x.moveTo(i * w / 2, y0);
@@ -355,9 +355,11 @@ const M = {
   // matte stucco, broken white with the faintest platinum cast
   // smooth, flat paint: no texture, so the walls read as clean planes
   wall: new THREE.MeshStandardMaterial({ color: '#f3f3f1', roughness: .96 }),
+  // the columns: the walls' paint a step down and fully matte, with almost no reflection of the room, as
+  // a round face always turns some of itself to the sun and would otherwise glow beside the walls
+  column: new THREE.MeshStandardMaterial({ color: '#dddcd8', roughness: 1, envMapIntensity: 0.25 }),
   trim: new THREE.MeshStandardMaterial({ color: '#ebebe8', roughness: .9 }),
   doorGroove: new THREE.MeshStandardMaterial({ color: '#cfcac1', roughness: .6 }),
-  column: new THREE.MeshStandardMaterial({ color: '#eeeeec', roughness: .97 }),
   threshold: new THREE.MeshStandardMaterial({ color: '#d9d1c4', roughness: .6 }),
   wallTop: new THREE.MeshStandardMaterial({ color: '#d6d6d3', roughness: 1 }), // the section: a quiet light grey
   skirting: new THREE.MeshStandardMaterial({ color: '#f8f8f6', roughness: .45 }), // satin white
@@ -367,7 +369,7 @@ const M = {
   oak: new THREE.MeshStandardMaterial({ map: oakTex, roughness: .58 }),
   // the terraces: outdoor porcelain, a clean pale stone, a touch cooler than the travertine inside
   deck: new THREE.MeshStandardMaterial({ map: deckTex, color: '#ebebe9', roughness: .8 }),
-  slabSide: new THREE.MeshStandardMaterial({ color: '#e8e8e6', roughness: .9 }),
+  slabSide: new THREE.MeshStandardMaterial({ color: '#d4d4d1', roughness: .9 }), // a step darker than the floors, so the edge recedes
   wood: new THREE.MeshStandardMaterial({ map: oakTex, color: '#f0dcc2', roughness: .55 }),
   teak: new THREE.MeshStandardMaterial({ map: oakTex, color: '#c79a6b', roughness: .65 }),
   walnut: new THREE.MeshStandardMaterial({ map: oakTex, color: '#8e6446', roughness: .5 }),
@@ -377,7 +379,8 @@ const M = {
   black: new THREE.MeshStandardMaterial({ color: '#232323', roughness: .4, metalness: .3 }),
   frame: new THREE.MeshStandardMaterial({ color: '#8f7e66', roughness: .35, metalness: .7 }), // slim champagne bronze
   sill: new THREE.MeshStandardMaterial({ color: '#ddd4c6', roughness: .7 }),
-  glass: new THREE.MeshStandardMaterial({ color: '#a9c7c4', roughness: .04, metalness: .1, transparent: true, opacity: .26, depthWrite: false }),
+  // clear, nearly neutral glazing: the rooms read through it, not tinted green behind it
+  glass: new THREE.MeshStandardMaterial({ color: '#e4ecee', roughness: .04, metalness: .1, transparent: true, opacity: .12, depthWrite: false }),
   rail: new THREE.MeshStandardMaterial({ color: '#eef8f9', roughness: .02, transparent: true, opacity: .13, depthWrite: false }),
   front: new THREE.MeshStandardMaterial({ color: '#f1ede6', roughness: .45 }),
   steel: new THREE.MeshStandardMaterial({ color: '#cfd1d2', roughness: .25, metalness: .9 }),
@@ -426,13 +429,18 @@ const slab = (pts, depth) => {
 };
 // walls, columns and glass all cut at one height, as in a sectioned architectural model
 const WALL_H = 2.1;
+const inPoly = ([x, z], poly) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, zi] = poly[i], [xj, zj] = poly[j];
+  if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) c = !c; } return c; };
 // a wall from a to b, running on past each end by ea / eb (half its thickness unless told otherwise)
 const wall = (a, b, th = 0.24, h = WALL_H, ea = th / 2, eb = th / 2) => {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz), mid = (len + eb - ea) / 2;
   const m = new THREE.Mesh(new THREE.BoxGeometry(len + ea + eb, h, th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
   m.position.set(a[0] + (dx / len) * mid, h / 2, a[1] + (dz / len) * mid); m.rotation.y = -Math.atan2(dz, dx);
-  // a white skirting on both faces, 7 cm tall and barely proud (inside the bathrooms the tile covers it)
-  [-1, 1].forEach((sd) => { const sk = new THREE.Mesh(new THREE.BoxGeometry(len + ea + eb, 0.07, 0.01), M.skirting); sk.position.set(0, -h / 2 + 0.035, sd * (th / 2 + 0.005)); sk.receiveShadow = true; m.add(sk); });
+  // a white skirting on each face that looks into the home, 7 cm tall and barely proud (inside the bathrooms
+  // the tile covers it); none on the facade's outer face
+  [-1, 1].forEach((sd) => { const o = sd * (th / 2 + 0.06), px = m.position.x - (dz / len) * o, pz = m.position.z + (dx / len) * o;
+    if (!inPoly([px, pz], INSIDE)) return;
+    const sk = new THREE.Mesh(new THREE.BoxGeometry(len + ea + eb, 0.07, 0.01), M.skirting); sk.position.set(0, -h / 2 + 0.035, sd * (th / 2 + 0.005)); sk.receiveShadow = true; m.add(sk); });
   return add(m);
 };
 // the home's own glass: sliding windows from floor to (cut) ceiling, in dark bronze frames on a stone sill,
@@ -444,8 +452,9 @@ const glazing = (a, b, panes = 3, h = GLASS_H) => {
   const g = new THREE.Group(); g.position.set((a[0] + b[0]) / 2, 0, (a[1] + b[1]) / 2); g.rotation.y = -Math.atan2(dz, dx); house.add(g);
   const sill = new THREE.Mesh(new THREE.BoxGeometry(len + 0.1, 0.03, 0.18), M.sill); sill.position.y = 0.015; sill.receiveShadow = true; g.add(sill);
   const pane = new THREE.Mesh(new THREE.BoxGeometry(len, h - 0.08, 0.025), M.glass); pane.position.y = h / 2; g.add(pane);
-  for (let i = 0; i <= panes; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(i === 0 || i === panes ? 0.035 : 0.025, h, 0.05), M.frame); f.position.set(-len / 2 + (len * i) / panes, h / 2, 0); f.castShadow = true; g.add(f); }
-  [0.03, h - 0.02].forEach((y) => { const f = new THREE.Mesh(new THREE.BoxGeometry(len + 0.03, 0.035, 0.05), M.frame); f.position.y = y; f.castShadow = true; g.add(f); });
+  // slim profiles: the frames drawn as fine lines round the glass, not bars across the view
+  for (let i = 0; i <= panes; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(i === 0 || i === panes ? 0.025 : 0.016, h, 0.04), M.frame); f.position.set(-len / 2 + (len * i) / panes, h / 2, 0); f.castShadow = true; g.add(f); }
+  [0.025, h - 0.015].forEach((y) => { const f = new THREE.Mesh(new THREE.BoxGeometry(len + 0.02, 0.025, 0.04), M.frame); f.position.y = y; f.castShadow = true; g.add(f); });
 };
 // the terrace's balustrade: lower, frameless clear glass in panels with fine joints, a slim steel handrail on top
 // and a stone channel at its foot — nothing like the windows of the house
@@ -472,6 +481,8 @@ function contactStrip(a, b, th) {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz); if (len < 0.1) return;
   const ry = -Math.atan2(dz, dx), nx = -dz / len, nz = dx / len;
   [-1, 1].forEach((side) => {
+    // only where there is floor to fall on: never past the slab's edge, out over the void
+    if (!inPoly([(a[0] + b[0]) / 2 + nx * side * (th / 2 + 0.1), (a[1] + b[1]) / 2 + nz * side * (th / 2 + 0.1)], ENVELOPE)) return;
     // the gradient's dark edge turned to face the wall on either side
     const m = new THREE.Mesh(new THREE.PlaneGeometry(len + th, AO_W), aoMat);
     m.rotation.order = 'YXZ'; m.rotation.y = ry + (side < 0 ? Math.PI : 0); m.rotation.x = -Math.PI / 2;
@@ -480,7 +491,9 @@ function contactStrip(a, b, th) {
   });
 }
 function contactRing(x, z, r) { const m = new THREE.Mesh(new THREE.PlaneGeometry((r + 0.3) * 2, (r + 0.3) * 2), aoRingMat); m.rotation.x = -Math.PI / 2; m.position.set(x, AO_Y, z); m.renderOrder = 1; house.add(m); }
-const column = (x, z) => { const c = cyl(0.2, 0.2, WALL_H, M.column, x, WALL_H / 2, z, 48); contactRing(x, z, 0.2); return c; };
+// slimmer than the plan's structural circle, so they stand quietly in the rooms and on the terrace
+// in the walls' own matte paint (and a section-grey top), so they read as part of the architecture
+const column = (x, z) => { const c = cyl(0.15, 0.15, WALL_H, [M.column, M.wallTop, M.wallTop], x, WALL_H / 2, z, 48); contactRing(x, z, 0.15); return c; };
 
 /* ================= the plan: the whole of Floor 2C, traced from the sales plan itself ================= */
 // Walls, columns and outline were taken from the drawing's own lines (45 px to the metre), so every
@@ -488,11 +501,14 @@ const column = (x, z) => { const c = cyl(0.2, 0.2, WALL_H, M.column, x, WALL_H /
 const P = (px, py) => [(px - 380) / 45, (py - 188) / 45];
 const PLAN_WALLS = [{"o":[[-9.244,8.333],[-9.244,8.467],[-9.289,8.556],[-9.133,8.556],[-7.844,9.844],[-7.844,10.022],[-8.2,10.378],[-8.156,10.467],[-8.067,10.467],[-7.6,10.0],[-7.6,9.933],[-9.156,8.356]],"h":[]},{"o":[[-3.6,6.644],[-3.6,8.489],[-3.489,8.489],[-3.489,6.644]],"h":[]},{"o":[[-11.044,6.089],[-11.133,6.111],[-11.222,6.222],[-11.311,6.222],[-11.378,6.289],[-11.4,6.4],[-11.8,6.8],[-11.978,6.8],[-11.978,6.844],[-11.911,6.911],[-11.911,7.067],[-11.867,7.067],[-11.0,6.2],[-11.0,6.133]],"h":[]},{"o":[[-6.467,5.667],[-6.422,5.8],[-6.222,6.0],[-4.156,6.0],[-4.156,5.867],[-4.289,5.844],[-6.156,5.844],[-6.378,5.622]],"h":[]},{"o":[[-13.356,5.378],[-15.911,7.933],[-15.933,8.044],[-15.889,8.133],[-13.511,10.511],[-13.378,10.511],[-13.2,10.333],[-10.867,12.689],[-10.711,12.778],[-10.622,12.711],[-10.644,12.622],[-10.533,12.6],[-10.422,12.711],[-10.289,12.711],[-10.2,12.644],[-10.244,12.533],[-10.333,12.533],[-12.911,9.956],[-12.933,9.844],[-12.978,9.844],[-12.978,9.933],[-13.067,10.0],[-13.044,10.133],[-13.089,10.178],[-13.2,10.111],[-13.333,10.2],[-13.378,10.178],[-13.467,10.044],[-13.356,9.911],[-13.378,9.822],[-13.444,9.8],[-13.533,9.844],[-15.333,8.044],[-15.244,7.911],[-13.422,6.089],[-13.311,6.022],[-13.267,6.022],[-12.333,6.956],[-12.289,6.956],[-12.267,6.756],[-12.111,6.756],[-12.111,6.689],[-12.4,6.689],[-13.156,5.933],[-13.111,5.778],[-13.0,5.667],[-13.0,5.6],[-13.222,5.378]],"h":[]},{"o":[[-8.467,5.089],[-8.6,5.089],[-8.689,5.178],[-8.689,5.289],[-10.978,7.578],[-10.956,7.667],[-10.867,7.667],[-10.533,7.333],[-10.356,7.333],[-9.644,8.044],[-9.644,8.178],[-9.422,8.156],[-9.422,8.111],[-10.267,7.244],[-10.267,7.067],[-8.422,5.2],[-8.422,5.133]],"h":[]},{"o":[[-0.067,4.0],[-0.067,8.622],[0.044,8.622],[0.044,4.0]],"h":[]},{"o":[[-2.489,3.933],[-2.467,4.0],[-0.444,4.0],[-0.444,3.844],[-2.467,3.844]],"h":[]},{"o":[[-3.489,3.778],[-3.6,3.778],[-3.622,3.889],[-7.289,3.889],[-7.844,4.444],[-7.844,4.511],[-7.778,4.578],[-7.644,4.578],[-7.089,5.133],[-6.978,5.111],[-6.978,5.022],[-7.4,4.6],[-7.4,4.422],[-7.0,4.022],[-3.489,4.0]],"h":[]},{"o":[[-0.111,2.0],[-0.111,3.067],[0.044,3.067],[0.044,2.0]],"h":[]},{"o":[[-3.489,2.0],[-3.489,2.133],[-2.511,2.133],[-2.489,3.044],[-2.333,3.067],[-2.333,2.0]],"h":[]},{"o":[[-5.467,2.778],[-5.356,2.778],[-5.333,2.133],[-3.911,2.133],[-3.911,2.0],[-5.467,2.0]],"h":[]},{"o":[[-6.822,1.933],[-6.956,1.867],[-7.022,1.933],[-7.022,2.0],[-7.822,2.8],[-8.0,2.8],[-8.422,2.378],[-8.422,2.178],[-8.511,2.133],[-8.511,2.289],[-8.689,2.311],[-8.689,2.356],[-8.133,2.911],[-8.133,3.111],[-10.178,5.156],[-10.178,5.2],[-10.133,5.2],[-10.111,5.267],[-10.067,5.267],[-9.378,4.578],[-9.289,4.578],[-9.2,4.489],[-9.2,4.4],[-6.889,2.089],[-6.8,2.089]],"h":[]},{"o":[[-8.2,0.356],[-8.356,0.356],[-13.022,5.022],[-13.067,5.156],[-12.867,5.378],[-12.689,5.378],[-12.578,5.267],[-12.489,5.244],[-11.956,5.778],[-11.889,5.778],[-11.844,5.644],[-12.356,5.133],[-12.333,5.022],[-9.244,1.911],[-9.133,1.911],[-9.133,1.778],[-9.044,1.689],[-8.911,1.689],[-8.867,1.533],[-8.333,1.0],[-8.289,1.022],[-8.2,0.978],[-8.0,0.978],[-7.6,1.378],[-7.533,1.378],[-7.489,1.333],[-7.511,1.244],[-8.0,0.778],[-7.978,0.667],[-8.022,0.556]],"h":[]},{"o":[[-0.756,-0.422],[-0.733,-0.289],[-0.511,0.222],[-0.511,0.444],[-0.622,0.467],[-0.622,0.6],[0.044,0.6],[0.022,0.444],[-0.244,0.444],[-0.289,0.4],[-0.622,-0.444]],"h":[]},{"o":[[2.422,-3.644],[2.289,-3.933],[2.089,-3.933],[-6.444,-0.378],[-6.933,-0.889],[-7.111,-0.889],[-7.644,-0.356],[-7.689,-0.222],[-7.844,-0.311],[-7.933,-0.289],[-7.978,-0.222],[-7.978,-0.067],[-8.222,-0.022],[-8.244,0.111],[-8.156,0.178],[-7.778,0.156],[-7.756,-0.156],[-7.711,-0.2],[-7.644,-0.2],[-7.489,-0.044],[-7.4,-0.022],[-7.333,-0.044],[-7.022,-0.356],[-6.644,0.022],[-6.511,0.022],[-6.467,-0.044],[-6.2,-0.044],[-6.089,0.022],[-6.022,0.0],[-5.978,-0.089],[-3.978,-0.911],[-3.889,-0.867],[-3.867,-0.889],[-3.822,-0.844],[-3.378,0.244],[-3.4,0.444],[-3.978,0.444],[-3.933,0.6],[-1.644,0.6],[-1.644,0.467],[-1.689,0.444],[-3.133,0.444],[-3.667,-0.8],[-3.689,-0.978],[-3.511,-1.089],[-2.911,-1.333],[-2.689,-1.356],[-2.667,-1.467],[-2.711,-1.533],[-2.844,-1.578],[-2.844,-1.667],[-2.756,-1.733],[-2.267,-1.933],[-2.178,-1.933],[-2.133,-1.889],[-2.178,-1.733],[-2.133,-1.644],[-2.067,-1.622],[-2.0,-1.644],[-1.956,-1.733],[-1.533,-1.911],[-1.4,-1.889],[-1.156,-1.311],[-1.089,-1.311],[-1.022,-1.356],[-1.022,-1.4],[-1.244,-1.889],[-1.244,-2.0],[-1.2,-2.044],[2.4,-3.533]],"h":[]}];
 // the whole floor with its terraces, and the line of glass that closes the home against them
-const ENVELOPE = [[9.53, -2.18], [6.56, -2.02], [5.96, -2.09], [4.71, -4.8], [2.56, -3.89], [2.2, -3.89], [-6.22, -0.38], [-6.6, -0.42], [-7.02, -0.84], [-7.6, -0.27], [-7.89, -0.22], [-8.16, 0.04], [-8.2, 0.33], [-15.87, 8.02], [-13.44, 10.44], [-13.2, 10.36], [-13.0, 10.42], [-8.02, 15.4], [-2.24, 9.67], [2.82, 9.64], [4.47, 9.53], [7.27, 9.18], [10.04, 8.58]];
-const INSIDE = [[2.2, -3.89], [-6.22, -0.38], [-6.6, -0.42], [-7.02, -0.84], [-7.6, -0.27], [-7.89, -0.22], [-8.16, 0.04], [-8.2, 0.33], [-15.87, 8.02], [-13.44, 10.44], [-13.2, 10.36], [-13.0, 10.42], [-9.78, 13.64], [-7.6, 10.6], [-6.22, 8.71], [6.11, 8.71], [6.11, 0], [3.67, 0]];
+// on the house's own sides it runs along the facade walls' outer face, its corners where those faces meet,
+// so the slab is one clean edge under the walls (not the sales plan's door swing and small jogs)
+const ENVELOPE = [[9.53, -2.18], [6.56, -2.02], [5.96, -2.09], [4.71, -4.8], [2.56, -3.89], [2.24, -3.86], [-6.36, -0.40], [-6.94, -0.97], [-16.06, 7.97], [-8.33, 15.70], [-2.24, 9.67], [2.82, 9.64], [4.47, 9.53], [7.27, 9.18], [10.04, 8.58]];
+// (the inner floor taken to the same outer faces, so it meets the walls everywhere and never shows past them)
+const INSIDE = [[2.24, -3.86], [-6.36, -0.40], [-6.94, -0.97], [-16.06, 7.97], [-10.06, 13.98], [-9.95, 13.87], [-7.6, 10.6], [-6.22, 8.71], [6.11, 8.71], [6.11, 0], [3.67, 0]];
 const floors = { inside: floor(INSIDE, M.stone, 0.004) };
 floor(ENVELOPE, M.deck, 0, 1.0);
-slab(ENVELOPE, 0.5);
+slab(ENVELOPE, 0.25); // a thin, quiet edge: the floor reads as a slab, not a plinth
 
 // the walls, drawn as straight runs over the sales plan: plain flat partitions, the rooms closed,
 // open only where the plan has a door. [x1, z1, x2, z2, thickness]
@@ -501,7 +517,7 @@ const WALLS = [
   [-6.4, -0.22, 2.3, -3.72, 0.3], [-6.4, -0.22, -6.94, -0.76, 0.3], [-6.94, -0.76, -7.14, -0.564, 0.3],
   // the front door: left as a plain opening in the facade, the way in read at a glance, centred on its
   // stretch between the facade's corner and the guest WC's wall
-  [-7.98, 0.264, -15.82, 8.0, 0.3], [-15.82, 8.0, -10.12, 13.7, 0.3],
+  [-7.98, 0.264, -15.82, 8.0, 0.3], [-15.82, 8.0, -9.95, 13.87, 0.3], // run on to meet the bedroom's glass
   // laundry: its wall to the hall (door in the middle), its walls to the facade and the kitchen
   [-3.95, -1.2, -3.09, 0.51, 0.14], [-3.94, 0.51, -1.63, 0.51, 0.12], [-0.6, 0.51, 0.06, 0.51, 0.12],
   [-1.38, -2.25, -0.99, -1.24, 0.12], [-0.73, -0.43, -0.34, 0.51, 0.12],
@@ -532,14 +548,15 @@ const WALLS = [
   contactStrip([x0, z1 - 0.01], [x1, z1 - 0.01], 0.02); }
 // the wardrobes between dorms 2 and 3: the strip between their walls filled solid to the cut, its
 // fronts on dorm 2's side marked by the same fine joints every 60 cm
-{ const x0 = -4.12, x1 = -3.51, z0 = 4.06, z1 = 8.62, h = WALL_H;
+{ const x0 = -4.12, x1 = -3.51, z0 = 4.06, z1 = 8.74 /* out to the facade: a solid bay between the glass */, h = WALL_H;
   const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, h, z1 - z0), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
   m.position.set((x0 + x1) / 2, h / 2, (z0 + z1) / 2); add(m);
   for (let z = z0 + 0.6; z < z1 - 0.1; z += 0.6) { const j = new THREE.Mesh(new THREE.BoxGeometry(0.004, h - 0.1, 0.006), M.doorGroove); j.position.set(-4.18 - 0.062, h / 2, z); house.add(j); } }
 const DOOR_H = 1.98;
 // the home's glass: the kitchen and the living room to the terraces, the bedrooms to theirs [a, b, panes]
 const GLASS_RUNS = [[[3.67, 0], [2.33, -3.73], 3], [[3.67, 0], [6.11, 0], 2], [[6.11, 0], [6.11, 8.71], 5], [[6.11, 8.71], [0.05, 8.71], 4],
-  [[-0.05, 8.71], [-6.22, 8.71], 3], [[-6.22, 8.71], [-7.6, 10.6], 2], [[-7.6, 10.6], [-9.78, 13.64], 2]];
+  // (no glass where the wardrobes between dorms 2 and 3 meet the facade)
+  [[-0.05, 8.71], [-3.44, 8.71], 2], [[-4.18, 8.71], [-6.22, 8.71], 1], [[-6.22, 8.71], [-7.6, 10.6], 2], [[-7.6, 10.6], [-9.95, 13.87], 2]];
 // one point inside each bathroom (bath 1 has two: its long room and the WC at its end); the rooms
 // themselves are found from the walls, so floor and tile stop exactly where the bathroom does
 const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], [[-7.89, 1.81]]];
@@ -567,17 +584,19 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
   const dist = (p, s) => { const q = closest(p, s); return Math.hypot(q[0] - p[0], q[1] - p[1]); };
   const joined = (p, i) => segs.some((o, j) => j !== i && dist(p, o) < 0.01);
   const jamb = (p) => doors.some((d) => d.p === p || d.q === p);
-  // an end that meets the glass stops on the glass's line, and a bronze mullion as deep as the frames
-  // closes the joint, covering the wall's whole thickness, so no slit is left between wall and window
-  const glassAt = (p) => GLASS_RUNS.find(([a, b]) => dist(p, { a, b }) < 0.03);
+  // an end that meets the glass stops on the glass's line, and a return in the wall's own finish, a
+  // little deeper than the frames, closes the joint across its whole thickness: no slit between wall and window
+  // (an end within 12 cm of the glass is run on to it first: the plan stops some walls just short)
+  const glassAt = (p) => GLASS_RUNS.find(([a, b]) => dist(p, { a, b }) < 0.12);
   segs.forEach((s, i) => {
     const ends = { a: s.a, b: s.b }, ext = {};
-    ['a', 'b'].forEach((e) => { const p = ends[e], run = glassAt(p);
+    ['a', 'b'].forEach((e) => { let p = ends[e]; const run = glassAt(p);
       ext[e] = run ? 0 : joined(p, i) && !jamb(p) ? 0 : s.th / 2;
+      if (run) { p = closest(p, { a: run[0], b: run[1] }); s[e] = p; }
       if (run) { const [ga, gb] = run, gl = Math.hypot(gb[0] - ga[0], gb[1] - ga[1]), gu = [(gb[0] - ga[0]) / gl, (gb[1] - ga[1]) / gl];
         const wl = Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]), wu = [(s.b[0] - s.a[0]) / wl, (s.b[1] - s.a[1]) / wl];
         const across = Math.abs(gu[0] * wu[1] - gu[1] * wu[0]) || 1; // the wall's crossing of the glass
-        const post = new THREE.Mesh(new THREE.BoxGeometry(s.th / across + 0.05, WALL_H, 0.06), M.frame);
+        const post = new THREE.Mesh(new THREE.BoxGeometry(s.th / across + 0.03, WALL_H, 0.07), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
         post.position.set(p[0], WALL_H / 2, p[1]); post.rotation.y = -Math.atan2(gu[1], gu[0]); post.castShadow = true; house.add(post); } });
     s.ea = ext.a; s.eb = ext.b;
     wall(s.a, s.b, s.th, WALL_H, s.ea, s.eb); contactStrip(s.a, s.b, s.th); });
@@ -684,7 +703,7 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
 [[1.7, 0.99], [6.43, 0.99], [1.7, 4.0], [6.43, 4.0], [1.7, 7.9], [6.43, 7.9], [-6.73, 3.42]].forEach(([x, z]) => column(x, z));
 GLASS_RUNS.forEach(([a, b, n]) => glazing(a, b, n));
 // the balustrade, along every open edge of the terraces
-[[2.56, -3.89], [4.71, -4.8], [5.96, -2.09], [6.56, -2.02], [9.53, -2.18], [10.04, 8.58], [7.27, 9.18], [4.47, 9.53], [2.82, 9.64], [-2.24, 9.67], [-8.02, 15.4], [-9.78, 13.64]]
+[[2.56, -3.89], [4.71, -4.8], [5.96, -2.09], [6.56, -2.02], [9.53, -2.18], [10.04, 8.58], [7.27, 9.18], [4.47, 9.53], [2.82, 9.64], [-2.24, 9.67], [-8.33, 15.70], [-10.0, 14.03]]
   .forEach((pt, i, a) => { if (i < a.length - 1) rail(pt, a[i + 1]); });
 
 /* ================= furniture ================= */
@@ -866,9 +885,13 @@ function tallerAtPlusX(obj) {
     const cot = part(/COT_WOOD/), mat = part(/MATTRESS/), pillow = part(/PILLOW_01/);
     // its own bedding kept, in the house's linen: the draped cover in beige, the sheet turned over it in
     // white; the folded throw (shaped for a double) and the pillow (stood against the headboard) come out
-    const linen = (c) => new THREE.MeshStandardMaterial({ map: linenTex, bumpMap: linenBump, bumpScale: 1.6, color: c, roughness: .95 });
+    // cloth, not plastic: a soft sheen at grazing angles, as woven linen and cotton have, over the weave's relief
+    const linen = (c) => new THREE.MeshPhysicalMaterial({ map: linenTex, bumpMap: linenBump, bumpScale: 1.2, color: c, roughness: .9, sheen: 1, sheenRoughness: .65, sheenColor: new THREE.Color('#ffffff').lerp(new THREE.Color(c), .5) });
     const sheet = linen('#f7f4ee');
-    part(/BEDSHEET_BEDSHEET/).material = linen('#e6dac6'); part(/WHITE_CLOTH/).material = sheet;
+    // the cover in a pale pearl grey; the mattress and the sheet under the hem dressed in the same cloth,
+    // so nothing else shows round the cover: only the pillows stand out
+    const cover = linen('#dddcd8');
+    part(/BEDSHEET_BEDSHEET/).material = cover; part(/MATTRESS/).material = cover; part(/WHITE_CLOTH/).material = cover;
     [/BLANKET/, /PILLOW_01/].forEach((re) => flat.remove(part(re)));
     const mb = new THREE.Box3().setFromObject(mat), cb = new THREE.Box3().setFromObject(cot);
     // the headboard: every face of the frame beyond the mattress's head end that rises above its top
@@ -878,9 +901,10 @@ function tallerAtPlusX(obj) {
         const head = t.every((k) => p.getZ(k) < mb.min.z + 0.5), high = t.some((k) => p.getY(k) > mb.max.y - 2);
         if (!(head && high)) kept.push(...t); }
       g.setIndex(kept); }
-    // the frame in a pale natural oak, as the house's, not its orange pine
-    cot.material = new THREE.MeshStandardMaterial({ map: oakTex, color: '#fff6ea', roughness: .6 });
-    // a low rail across the head, up to the mattress's top, in the same wood
+    // the base upholstered in a greige linen, as the headboard, not left in its orange pine
+    const upholstery = linen('#bdbcb7'); // a grey a shade deeper than the cover, so the two read apart
+    cot.material = upholstery;
+    // a low rail across the head, up to the mattress's top, in the same cloth
     const rail = new THREE.Mesh(new THREE.BoxGeometry(cb.max.x - cb.min.x, mb.max.y - cb.min.y, mb.min.z - cb.min.z), cot.material);
     rail.position.set((cb.min.x + cb.max.x) / 2, (cb.min.y + mb.max.y) / 2, (cb.min.z + mb.min.z) / 2); rail.castShadow = rail.receiveShadow = true; flat.add(rail);
     // narrowed to a single, its length and height at true scale
@@ -893,13 +917,26 @@ function tallerAtPlusX(obj) {
     // the bed's width, the one that leaves it thinnest is the one it lies at
     const m = new THREE.Box3().setFromObject(mat), top = m.max.y, zc = (m.min.z + m.max.z) / 2;
     const made = new THREE.Group(); made.add(turn);
+    // and a second one as the model has it, stood against the headboard, the flat one laid in front of it
+    let back = 0.2;
+    { const g = pillow.geometry.clone(); g.center(); g.scale(kl, kl, kl); g.rotateY(Math.PI / 2);
+      const s = new THREE.Box3().setFromBufferAttribute(g.attributes.position).getSize(new THREE.Vector3()); back = s.x;
+      const up = new THREE.Mesh(g, linen('#ebe6dc')); up.position.set(-1.0 + s.x / 2 + 0.01, top + s.y / 2 - 0.03, zc); up.castShadow = up.receiveShadow = true; made.add(up); }
     { const g = pillow.geometry.clone(), p = g.attributes.position; let best = 0, bh = Infinity;
       for (let d = -90; d <= 90; d++) { const r = d * Math.PI / 180, cs = Math.cos(r), sn = Math.sin(r); let lo = Infinity, hi = -Infinity;
         for (let i = 0; i < p.count; i += 5) { const y = p.getY(i) * cs - p.getZ(i) * sn; lo = Math.min(lo, y); hi = Math.max(hi, y); }
         if (hi - lo < bh) { bh = hi - lo; best = r; } }
       g.rotateX(best); g.center(); g.scale(kl, kl, kl); g.rotateY(Math.PI / 2); // its length across the bed
       const s = new THREE.Box3().setFromBufferAttribute(g.attributes.position).getSize(new THREE.Vector3());
-      const pl = new THREE.Mesh(g, sheet); pl.position.set(m.min.x + s.x / 2 + 0.05, top + s.y / 2 - 0.01, zc); pl.castShadow = pl.receiveShadow = true; made.add(pl); }
+      const pl = new THREE.Mesh(g, sheet); pl.position.set(-1.0 + back * 0.6 + s.x / 2, top + s.y / 2 - 0.01, zc); pl.castShadow = pl.receiveShadow = true; made.add(pl); }
+    // a headboard hung on the wall, clear of the floor (from just under the mattress's top to 1.2 m), all in
+    // cloth: a full, soft-edged cushion, and behind it a welt in a deeper grey of the same linen that shows
+    // a centimetre all round, as an upholsterer's piping
+    { const W = m.max.z - m.min.z + 0.14, y0 = top - 0.12, y1 = 1.2, H = y1 - y0, yc = (y0 + y1) / 2;
+      const welt = new THREE.Mesh(new RoundedBoxGeometry(0.05, H + 0.02, W + 0.02, 5, 0.02), linen('#a8a7a2'));
+      welt.position.set(-1.0 - 0.025, yc, zc); welt.castShadow = welt.receiveShadow = true; made.add(welt);
+      const pad = new THREE.Mesh(new RoundedBoxGeometry(0.09, H, W, 8, 0.042), upholstery);
+      pad.position.set(-1.0 + 0.005, yc, zc); pad.castShadow = pad.receiveShadow = true; made.add(pad); }
     singles.forEach((g) => { g.clear(); g.add(made.clone()); });
   }, undefined, () => {});
   // the real double beds, once loaded, each in a drawn one's place: its length along the drawn one's,
@@ -921,7 +958,9 @@ function tallerAtPlusX(obj) {
   }, undefined, () => {});
   // dorm 1's double, its headboard against the diagonal partition between dorms 1 and 2, as on the plan
   // (the line x - z = -17.6), each from its own side
-  realBed(bed(-9.77, 9.45, 1.8, 2.1, -3 * Math.PI / 4), 1.8, 2.1, '/models/sapphire/bed3.glb'); // dorm 1
+  // its box generous (2.0 × 2.35 m): the model's tall headboard and hanging cover count in the fit, and a
+  // tighter box left its mattress smaller than the singles'; drawn back so the head stays on the partition
+  realBed(bed(-9.858, 9.538, 2.0, 2.35, -3 * Math.PI / 4), 2.0, 2.35, '/models/sapphire/bed3.glb'); // dorm 1
 }
 // --- rubber plants in woven baskets: one in the living room's corner by the long sofa, a taller one
 // in its far corner beyond the second sofa, and one in the hall.
@@ -1041,7 +1080,7 @@ function fig(x, z, s = 1) {
 }
 
 // a single olive tree on the terrace, by the living room's corner: the one plant
-oliveTree(-5.85, 9.22, 0.85);
+oliveTree(-3.6, 10.3, 0.85); // out on the terrace's open corner, clear of the bedrooms' glass
 // a palm in the living room's corner by the dining table, against the glass, 1.6 m tall; its leaves
 // cut out of their texture. "Palm Plant" by SomeKevin, CC BY 4.0
 new GLTFLoader().load('/models/sapphire/palm.glb', (gltf) => {
@@ -1055,7 +1094,7 @@ new GLTFLoader().load('/models/sapphire/palm.glb', (gltf) => {
 // a soft, warm backdrop that takes the colour of the hour, and a ground that only catches shadow
 const backMat = new THREE.ShaderMaterial({
   side: THREE.BackSide, depthWrite: false, fog: false,
-  uniforms: { top: { value: new THREE.Color('#f5f5f3') }, bot: { value: new THREE.Color('#e2e3e2') } },
+  uniforms: { top: { value: new THREE.Color('#fcfcfb') }, bot: { value: new THREE.Color('#f0f0ef') } },
   vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
   fragmentShader: `precision highp float; uniform vec3 top; uniform vec3 bot; varying vec3 vP; void main(){ float h = smoothstep(-0.35, 0.6, vP.y); gl_FragColor = vec4(mix(bot, top, h), 1.0);
     #include <colorspace_fragment>
@@ -1063,7 +1102,7 @@ const backMat = new THREE.ShaderMaterial({
 });
 const back = new THREE.Mesh(new THREE.SphereGeometry(200, 32, 16), backMat); scene.add(back);
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.ShadowMaterial({ opacity: 0.18, color: '#3c3f44' }));
-ground.rotation.x = -Math.PI / 2; ground.position.y = -0.52; ground.receiveShadow = true; scene.add(ground);
+ground.rotation.x = -Math.PI / 2; ground.position.y = -0.27; ground.receiveShadow = true; scene.add(ground);
 
 /* ================= light ================= */
 const sun = new THREE.DirectionalLight('#fff4e6', 2.6);
@@ -1075,7 +1114,7 @@ const hemi = new THREE.HemisphereLight('#dfe8ef', '#e6dacb', 0.9); scene.add(hem
 
 // three hours, lit as the renders are: clear morning, golden sunset, a warm-lit night
 const HOURS = {
-  morning: { sun: [ 15, 10, -10], sunCol: '#fff7ee', sunI: 2.6, hemiS: '#eaf0f6', hemiG: '#e8e8e6', hemiI: 0.9, top: '#f5f5f4', bot: '#e3e4e4', exp: 0.92, env: 0.5, lamps: 0, shadow: 0.18 },
+  morning: { sun: [ 15, 10, -10], sunCol: '#fff7ee', sunI: 2.6, hemiS: '#eaf0f6', hemiG: '#e8e8e6', hemiI: 0.9, top: '#fcfcfb', bot: '#f0f0ef', exp: 0.92, env: 0.5, lamps: 0, shadow: 0.14 },
   sunset:  { sun: [ 20,  4.5, 8], sunCol: '#ffa766', sunI: 3.2, hemiS: '#f5cfa8', hemiG: '#8a6c66', hemiI: 0.62, top: '#f4e2cf', bot: '#cdb3a3', exp: 1.06, env: 0.35, lamps: 0.55, shadow: 0.24 },
   night:   { sun: [-10, 14, 10], sunCol: '#9db0ff', sunI: 0.28, hemiS: '#30405f', hemiG: '#1c1b21', hemiI: 0.45, top: '#4c5568', bot: '#2b303b', exp: 1.15, env: 0.1, lamps: 1, shadow: 0.3 },
 };
@@ -1142,7 +1181,7 @@ const ROOMS = [
   { k: 'living', m2: '48,70', at: [3.3, 1.1, 5.5], look: [3.2, 0.3, 4.4], az: 0.55, pol: 0.86, r: 13 },
   { k: 'kitchenR', m2: '13,10', at: [0.8, 1.1, -1.7], look: [1.0, 0.3, -1.2], az: 0.35, pol: 0.8, r: 9.5 },
   { k: 'hall', m2: '14,60', at: [-5.6, 1.1, 1.3], look: [-5.4, 0.3, 1.6], az: 0.6, pol: 0.82, r: 11 },
-  { k: 'bedroom', m2: '18,90', at: [-11.2, 1.1, 9.6], look: [-10.6, 0.3, 9.8], az: 0.75, pol: 0.82, r: 12 },
+  { k: 'bedroom', m2: '18,90', at: [-10.4, 1.1, 11.3], look: [-10.4, 0.3, 10.8], az: 0.75, pol: 0.82, r: 12 },
   { k: 'bed2', m2: '19,40', at: [-7.7, 1.1, 7.2], look: [-8.1, 0.3, 7.6], az: 0.75, pol: 0.82, r: 11 },
   { k: 'bed3', m2: '18,80', at: [-1.7, 1.1, 6.4], look: [-1.7, 0.3, 6.4], az: 0.6, pol: 0.82, r: 11 },
   { k: 'terrace', m2: '84,20', at: [8.4, 1.1, 2.6], look: [7.6, 0.3, 2.8], az: 0.9, pol: 0.92, r: 14 },
@@ -1161,19 +1200,21 @@ const sph = new THREE.Spherical(), goal = { look: new THREE.Vector3(...HOME.look
 let flying = 0;
 function goTo(v) { goal.look.set(...v.look); goal.az = v.az; goal.pol = v.pol; goal.r = v.r * (phone && v !== HOME ? 1.3 : 1); flying = 1; }
 /* ================= the guided walk ================= */
-// Kitchen, dining, living room, terrace, main bedroom, then the whole floor, round and round until
-// touched. Between rooms the camera flies a timed arc: it lifts and draws back mid-way and settles
-// in, eased at both ends, the same on any screen. At each room it slowly turns while the room's
-// name, area and a line about it come up. Each lap the light moves on: morning, sunset, night.
-// ?tour starts it on its own (for a sales office screen); space toggles it, arrows step it.
+// Kitchen, dining, living room, terrace, then the bedrooms in the order the house lays them out (3, 2,
+// the main one), then the whole floor, round and round until touched. Between rooms the camera flies
+// a timed arc: it lifts and draws back mid-way and settles in, eased at both ends, the same on any
+// screen. At each room it slowly turns while the room's name, area and a line about it come up.
+// ?tour starts it on its own (for a sales office screen), and only then does each lap move the light
+// on (morning, sunset, night); walked by hand it keeps the light chosen. Space toggles it, arrows step it.
 // the hall is passed through rather than stopped at: it has little to show from above
 const DINING = { k: 'dining', m2: '48,70' };
-const TOUR = ['kitchenR', 'dining', 'living', 'terrace', 'bedroom'].map((k) => (k === 'dining' ? DINING : ROOMS.find((r) => r.k === k))).concat([null]);
+const TOUR = ['kitchenR', 'dining', 'living', 'terrace', 'bed3', 'bed2', 'bedroom'].map((k) => (k === 'dining' ? DINING : ROOMS.find((r) => r.k === k))).concat([null]);
+const AUTO = new URLSearchParams(location.search).has('tour');
 const LINES = {
-  es: { dining: 'Mesa para seis junto al cristal, con la terraza a un paso.', hall: 'La llegada: luz natural desde el primer paso.', kitchenR: 'Abierta al salón, con isla de mármol y vistas a la terraza.', living: 'Cristal de suelo a techo hacia el Mediterráneo.', terrace: 'Ochenta metros al aire libre, comedor y solárium.', bedroom: 'Dormitorio principal con vestidor y baño en suite.', home: 'Tres dormitorios, terrazas en dos frentes, primera línea.' },
-  en: { dining: 'A table for six by the glass, the terrace a step away.', hall: 'Arrival: daylight from the very first step.', kitchenR: 'Open to the living room, a marble island, terrace views.', living: 'Floor-to-ceiling glass towards the Mediterranean.', terrace: 'Eighty square metres outdoors, dining and sun deck.', bedroom: 'Main bedroom with dressing room and en-suite bath.', home: 'Three bedrooms, terraces on two fronts, on the seafront.' },
-  fr: { dining: 'Une table pour six contre la baie, la terrasse à un pas.', hall: 'L’arrivée : la lumière dès le premier pas.', kitchenR: 'Ouverte sur le séjour, îlot en marbre, vue sur la terrasse.', living: 'Baies du sol au plafond vers la Méditerranée.', terrace: 'Quatre-vingts mètres en plein air, repas et solarium.', bedroom: 'Chambre principale avec dressing et salle de bains.', home: 'Trois chambres, terrasses sur deux façades, front de mer.' },
-  de: { dining: 'Ein Tisch für sechs am Glas, die Terrasse einen Schritt entfernt.', hall: 'Ankommen: Tageslicht vom ersten Schritt an.', kitchenR: 'Offen zum Wohnraum, Marmorinsel, Blick auf die Terrasse.', living: 'Raumhohes Glas zum Mittelmeer.', terrace: 'Achtzig Quadratmeter im Freien, Essplatz und Sonnendeck.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', home: 'Drei Schlafzimmer, Terrassen an zwei Seiten, erste Meereslinie.' },
+  es: { dining: 'Mesa para seis junto al cristal, con la terraza a un paso.', hall: 'La llegada: luz natural desde el primer paso.', kitchenR: 'Abierta al salón, con isla de mármol y vistas a la terraza.', living: 'Cristal de suelo a techo hacia el Mediterráneo.', terrace: 'Ochenta metros al aire libre, comedor y solárium.', bedroom: 'Dormitorio principal con vestidor y baño en suite.', bed3: 'Dos camas junto al cristal, abierto a la terraza.', bed2: 'Dos camas y armario empotrado, luz de la terraza.', home: 'Tres dormitorios, terrazas en dos frentes, primera línea.' },
+  en: { dining: 'A table for six by the glass, the terrace a step away.', hall: 'Arrival: daylight from the very first step.', kitchenR: 'Open to the living room, a marble island, terrace views.', living: 'Floor-to-ceiling glass towards the Mediterranean.', terrace: 'Eighty square metres outdoors, dining and sun deck.', bedroom: 'Main bedroom with dressing room and en-suite bath.', bed3: 'Twin beds by the glass, open to the terrace.', bed2: 'Twin beds and built-in wardrobes, terrace light.', home: 'Three bedrooms, terraces on two fronts, on the seafront.' },
+  fr: { dining: 'Une table pour six contre la baie, la terrasse à un pas.', hall: 'L’arrivée : la lumière dès le premier pas.', kitchenR: 'Ouverte sur le séjour, îlot en marbre, vue sur la terrasse.', living: 'Baies du sol au plafond vers la Méditerranée.', terrace: 'Quatre-vingts mètres en plein air, repas et solarium.', bedroom: 'Chambre principale avec dressing et salle de bains.', bed3: 'Deux lits contre la baie, ouverte sur la terrasse.', bed2: 'Deux lits et placards intégrés, lumière de la terrasse.', home: 'Trois chambres, terrasses sur deux façades, front de mer.' },
+  de: { dining: 'Ein Tisch für sechs am Glas, die Terrasse einen Schritt entfernt.', hall: 'Ankommen: Tageslicht vom ersten Schritt an.', kitchenR: 'Offen zum Wohnraum, Marmorinsel, Blick auf die Terrasse.', living: 'Raumhohes Glas zum Mittelmeer.', terrace: 'Achtzig Quadratmeter im Freien, Essplatz und Sonnendeck.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', bed3: 'Zwei Betten am Glas, offen zur Terrasse.', bed2: 'Zwei Betten und Einbauschränke, Licht von der Terrasse.', home: 'Drei Schlafzimmer, Terrassen an zwei Seiten, erste Meereslinie.' },
 };
 const LN = LINES[LANG] || LINES.es;
 const FLY = 3.4, HOLD = 5.2, LIGHTS = ['morning', 'sunset', 'night'];
@@ -1185,11 +1226,13 @@ const easeIO = (u) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2
 // each stop framed like a shot from just above the room: close in, tilted, the room filling the screen
 // with its furniture and materials in the foreground (look-at point, turn, tilt from vertical, distance)
 const SHOTS = {
-  dining:   { look: [4.8, 0.5, 2.5],   az: 2.0,  pol: 0.82, r: 6.2 },  // the table for six, the kentia, the glass to the terrace
+  dining:   { look: [4.8, 0.5, 2.5],   az: 2.0,  pol: 0.82, r: 6.2 },  // the table for six, the palm, the glass to the terrace
   kitchenR: { look: [0.7, 0.7, -0.9],  az: 0.25, pol: 0.82, r: 5.6 },  // the island and stools, the run behind
   living:   { look: [3.7, 0.4, 6.7],   az: 2.55, pol: 0.86, r: 6.4 },  // the two sofas and the table, the glass and the sea beyond
   terrace:  { look: [7.9, 0.3, 3.6],   az: 1.0,  pol: 0.9,  r: 7.4 },  // the outdoor lounge and the loungers
-  bedroom:  { look: [-10.0, 0.4, 9.7], az: 0.8,  pol: 0.74, r: 5.8 },  // the main bed, the glass to its terrace
+  bed3:     { look: [-1.2, 0.4, 6.6],  az: -0.55, pol: 0.7, r: 5.8 },  // the twin beds from the glass side, over the wardrobes, headboards on the far wall
+  bed2:     { look: [-8.3, 0.4, 7.75], az: 2.25, pol: 0.8,  r: 5.8 },  // the twin beds from their feet, the diagonal partition behind
+  bedroom:  { look: [-9.9, 0.4, 9.7],  az: 0.8,  pol: 0.74, r: 6.2 },  // the main bed, the glass to its terrace
 };
 const viewOf = (room) => { if (!room) return { look: new THREE.Vector3(...HOME.look), az: HOME.az, pol: HOME.pol, r: HOME.r };
   const v = SHOTS[room.k] || room; return { look: new THREE.Vector3(...v.look), az: v.az, pol: v.pol, r: v.r * (phone ? 1.4 : 1) }; };
@@ -1228,8 +1271,8 @@ function tourFrame(T, dt) {
       tc.m2.textContent = room ? `${room.m2} m²` : t('cap').split('·').pop().trim();
       tc.line.textContent = LN[room ? room.k : 'home'];
       tc.box.classList.add('on');
-      // the end of a lap: the light moves on to the next hour
-      if (!room) { tour.lap++; const h = LIGHTS[tour.lap % LIGHTS.length]; if (STATE.light !== h) choose('light', h); }
+      // the end of a lap, on the sales screen only: the light moves on to the next hour
+      if (!room && AUTO) { tour.lap++; const h = LIGHTS[tour.lap % LIGHTS.length]; if (STATE.light !== h) choose('light', h); }
     }
     return true;
   }
@@ -1240,7 +1283,7 @@ function tourFrame(T, dt) {
   if (T > tour.holdUntil) tourGo(tour.i + 1, T);
   return true;
 }
-if (new URLSearchParams(location.search).has('tour')) setTimeout(startTour, 4200);
+if (AUTO) setTimeout(startTour, 4200);
 const setSph = (az, pol, r) => { sph.set(r, pol, az); camera.position.setFromSpherical(sph).add(controls.target); };
 controls.target.set(...HOME.look);
 setSph(HOME.az - 0.9, 0.55, HOME.r * 1.9);
@@ -1261,36 +1304,13 @@ function fit() {
   const tall = w / h < 0.9;
   camera.fov = tall ? 44 : 32;
   camera.updateProjectionMatrix();
-  HOME.r = tall ? 33 : w / h < 1.3 ? 34 : 30;
+  HOME.r = tall ? 33 : w / h < 1.3 ? 34 : 26.5; // wide screens: closer in, the home filling the frame
   // tall frames: aimed a little above the floor, so it sits in the space over the controls
-  HOME.look[1] = tall ? 1.6 : 0.2;
+  HOME.look[1] = tall ? 1.6 : -0.9; // aimed a little low, so the home sits higher, clear of the controls
   if (!focus) { goal.look.set(...HOME.look); controls.target.set(...HOME.look); goal.r = HOME.r; }
 }
 addEventListener('resize', fit); fit();
 
-/* ================= HUD: its parallax ================= */
-const hudEl = document.getElementById('hud');
-
-// the HUD's parallax: a few pixels against the camera's turn, eased so it trails like glass in front of it
-const hudPos = { x: 0, y: 0 }, hudSph = new THREE.Spherical();
-// the cursor pulls the HUD a few pixels as if it hung on a sheet of glass in front of the scene:
-// a damped spring (stiffness, damping), so it overshoots a hair and settles
-const ptr = { x: 0, y: 0 }, spr = { x: 0, y: 0, vx: 0, vy: 0 };
-addEventListener('pointermove', (e) => { ptr.x = (e.clientX / innerWidth) * 2 - 1; ptr.y = (e.clientY / innerHeight) * 2 - 1; }, { passive: true });
-document.addEventListener('pointerleave', () => { ptr.x = 0; ptr.y = 0; });
-let hudT = 0;
-function hudFrame(T) {
-  hudSph.setFromVector3(new THREE.Vector3().copy(camera.position).sub(controls.target));
-  const tx = reduced ? 0 : Math.sin(hudSph.theta - HOME.az) * -7, ty = reduced ? 0 : (hudSph.phi - HOME.pol) * 12;
-  hudPos.x += (tx - hudPos.x) * 0.08; hudPos.y += (ty - hudPos.y) * 0.08;
-  const dt = Math.min(0.05, T - hudT || 0.016); hudT = T;
-  if (!reduced && !touch) { const K = 60, D = 11; // spring
-    spr.vx += (ptr.x * -9 - spr.x) * K * dt - spr.vx * D * dt; spr.vy += (ptr.y * -6 - spr.y) * K * dt - spr.vy * D * dt;
-    spr.x += spr.vx * dt; spr.y += spr.vy * dt; }
-  const depth = 1 + (Math.abs(spr.x) + Math.abs(spr.y)) * 0.0004; // a breath of z: the plane comes forward as it moves
-  hudEl.style.transform = `translate3d(${(hudPos.x + spr.x).toFixed(2)}px, ${(hudPos.y + spr.y).toFixed(2)}px, 0) scale(${depth.toFixed(4)})`;
-
-}
 
 
 /* ================= loop ================= */
@@ -1336,7 +1356,6 @@ function frame() {
   });
   if (mixT < 1) redrawShadows(1);
   if (shadowDirty > 0) { renderer.shadowMap.needsUpdate = true; shadowDirty--; }
-  hudFrame(T);
   draw();
 }
 
