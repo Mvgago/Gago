@@ -48,12 +48,20 @@ body.night .cap, body.night .cap b { color: rgba(244, 241, 236, 0.85); }
 .credit a:hover { text-decoration: underline; }
 body.night .credit { color: rgba(244, 241, 236, .4); }
 
+/* loading: the name and a 1px line filling, then the scene comes up under it as it fades */
+.loader { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: var(--ground); z-index: 5; transition: opacity .9s ease; }
+.loader .ln { font-family: var(--display); font-weight: 300; font-size: 20px; letter-spacing: .04em; color: var(--ink); }
+.loader i { position: relative; width: 160px; height: 1px; background: rgba(29,34,48,.12); overflow: hidden; }
+.loader b { position: absolute; inset: 0; width: 100%; transform-origin: left; transform: scaleX(0); background: var(--ink); transition: transform .4s ease; }
+.loader.gone { opacity: 0; pointer-events: none; }
 /* The rooms: a quiet tag on each, as on the plan, that takes the camera there */
-.tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 2px; font-family: var(--display); font-weight: 400; font-size: 12px; letter-spacing: .03em; color: var(--ink); background: var(--glass); border: 1px solid rgba(29,34,48,.14); padding: 5px 10px 6px; border-radius: 2px; backdrop-filter: blur(10px) saturate(1.2); -webkit-backdrop-filter: blur(10px) saturate(1.2); box-shadow: 0 8px 24px rgba(30, 36, 50, .12); cursor: pointer; white-space: nowrap; transition: opacity .5s, background .3s; user-select: none; }
-.tag::after { content: ''; position: absolute; left: 50%; bottom: -9px; width: 1px; height: 8px; background: rgba(29, 34, 48, .45); }
+.tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 1px; font-family: var(--display); font-weight: 400; font-size: 13px; letter-spacing: .03em; color: var(--ink); background: none; border: 0; padding: 0 2px 14px; cursor: pointer; white-space: nowrap; transition: opacity .5s, color .3s; user-select: none; text-shadow: 0 0 10px rgba(245,245,243,.9), 0 0 2px rgba(245,245,243,.9); }
+.tag::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 1px; height: 11px; background: rgba(29, 34, 48, .5); }
+.tag::before { content: ''; position: absolute; left: calc(50% - 2px); bottom: -2px; width: 5px; height: 5px; border-radius: 50%; background: var(--ink); }
+body.night .tag { color: #f4f1ec; text-shadow: 0 0 10px rgba(20,22,28,.9); } body.night .tag::after, body.night .tag::before { background: rgba(244,241,236,.7); }
 .tag small { font-family: var(--mono); font-weight: 300; font-size: 9.5px; letter-spacing: .06em; color: var(--soft); }
-.tag:hover, .tag.on { background: rgba(255, 255, 255, .9); }
-.tag.on { border-color: var(--sapphire); box-shadow: 0 8px 24px rgba(30, 36, 50, .16); }
+.tag:hover { color: var(--sapphire); }
+.tag.on { color: var(--sapphire); } .tag.on::before { background: var(--sapphire); }
 .tag.hide { opacity: 0; pointer-events: none; }
 
 /* The controls: one pane of frosted glass at the foot */
@@ -86,6 +94,7 @@ body.night .credit { color: rgba(244, 241, 236, .4); }
 <body>
 
 <div id="stage"></div>
+<div class="loader" id="loader" aria-hidden="true"><span class="ln">The Sapphire</span><i><b id="bar"></b></i></div>
 <div class="hud" id="hud">
   <svg id="cad" aria-hidden="true"></svg>
   <p class="cap" id="cap"><b>The Sapphire</b><span id="cap-text"></span></p>
@@ -257,6 +266,7 @@ const M = {
   // matte stucco, broken white with the faintest platinum cast
   wall: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#eeebe5', roughness: .96 }),
   trim: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#e6e2db', roughness: .9 }),
+  column: new THREE.MeshStandardMaterial({ map: plasterTex, color: '#e7e5e0', roughness: .97 }),
   threshold: new THREE.MeshStandardMaterial({ color: '#d9d1c4', roughness: .6 }),
   wallTop: new THREE.MeshStandardMaterial({ color: '#c8bfb2', roughness: 1 }),
   stone: new THREE.MeshStandardMaterial({ map: stoneTex, roughness: .5 }),
@@ -274,7 +284,7 @@ const M = {
   travertine: new THREE.MeshStandardMaterial({ map: stoneTex, color: '#fbf3e6', roughness: .42 }),
   bronze: new THREE.MeshStandardMaterial({ color: '#8a6d4c', roughness: .35, metalness: .75 }),
   black: new THREE.MeshStandardMaterial({ color: '#232323', roughness: .4, metalness: .3 }),
-  frame: new THREE.MeshStandardMaterial({ color: '#4b4038', roughness: .4, metalness: .6 }),
+  frame: new THREE.MeshStandardMaterial({ color: '#8f7e66', roughness: .35, metalness: .7 }), // slim champagne bronze
   sill: new THREE.MeshStandardMaterial({ color: '#ddd4c6', roughness: .7 }),
   glass: new THREE.MeshStandardMaterial({ color: '#a9c7c4', roughness: .04, metalness: .1, transparent: true, opacity: .26, depthWrite: false }),
   rail: new THREE.MeshStandardMaterial({ color: '#eef8f9', roughness: .02, transparent: true, opacity: .13, depthWrite: false }),
@@ -341,8 +351,8 @@ const glazing = (a, b, panes = 3, h = GLASS_H) => {
   const g = new THREE.Group(); g.position.set((a[0] + b[0]) / 2, 0, (a[1] + b[1]) / 2); g.rotation.y = -Math.atan2(dz, dx); house.add(g);
   const sill = new THREE.Mesh(new THREE.BoxGeometry(len + 0.1, 0.03, 0.18), M.sill); sill.position.y = 0.015; sill.receiveShadow = true; g.add(sill);
   const pane = new THREE.Mesh(new THREE.BoxGeometry(len, h - 0.08, 0.025), M.glass); pane.position.y = h / 2; g.add(pane);
-  for (let i = 0; i <= panes; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(0.06, h, 0.09), M.frame); f.position.set(-len / 2 + (len * i) / panes, h / 2, 0); f.castShadow = true; g.add(f); }
-  [0.04, h - 0.03].forEach((y) => { const f = new THREE.Mesh(new THREE.BoxGeometry(len + 0.06, 0.06, 0.09), M.frame); f.position.y = y; f.castShadow = true; g.add(f); });
+  for (let i = 0; i <= panes; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(i === 0 || i === panes ? 0.035 : 0.025, h, 0.05), M.frame); f.position.set(-len / 2 + (len * i) / panes, h / 2, 0); f.castShadow = true; g.add(f); }
+  [0.03, h - 0.02].forEach((y) => { const f = new THREE.Mesh(new THREE.BoxGeometry(len + 0.03, 0.035, 0.05), M.frame); f.position.y = y; f.castShadow = true; g.add(f); });
 };
 // the terrace's balustrade: lower, frameless clear glass in panels with fine joints, a slim steel handrail on top
 // and a stone channel at its foot — nothing like the windows of the house
@@ -354,7 +364,30 @@ const rail = (a, b, h = 1.0) => {
   const base = new THREE.Mesh(new THREE.BoxGeometry(len, 0.09, 0.12), M.sill); base.position.y = 0.045; base.castShadow = true; base.receiveShadow = true; g.add(base);
   const top = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, len, 12), M.steel); top.rotation.z = Math.PI / 2; top.position.y = h + 0.02; top.castShadow = true; g.add(top);
 };
-const column = (x, z) => cyl(0.2, 0.2, WALL_H, M.wall, x, WALL_H / 2, z, 32);
+/* contact shadows: where a wall or a column meets the floor, light can't reach the corner; a soft
+   gradient laid on the floor along it gives the volumes their weight, at no cost per frame */
+const aoTex = (() => { const c = document.createElement('canvas'); c.width = 4; c.height = 64; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, 64); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.35, 'rgba(0,0,0,.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 4, 64); const t = new THREE.CanvasTexture(c); return t; })();
+const aoRingTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+  const g = x.createRadialGradient(64, 64, 20, 64, 64, 64); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.4, 'rgba(0,0,0,.4)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })();
+const aoMat = new THREE.MeshBasicMaterial({ map: aoTex, color: '#000000', transparent: true, opacity: 0.34, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
+const aoRingMat = new THREE.MeshBasicMaterial({ map: aoRingTex, color: '#000000', transparent: true, opacity: 0.3, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
+const AO_W = 0.42, AO_Y = 0.023;
+function contactStrip(a, b, th) {
+  const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz); if (len < 0.1) return;
+  const ry = -Math.atan2(dz, dx), nx = -dz / len, nz = dx / len;
+  [-1, 1].forEach((side) => {
+    // the gradient's dark edge turned to face the wall on either side
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(len + th, AO_W), aoMat);
+    m.rotation.order = 'YXZ'; m.rotation.y = ry + (side < 0 ? Math.PI : 0); m.rotation.x = -Math.PI / 2;
+    m.position.set((a[0] + b[0]) / 2 + nx * side * (th / 2 + AO_W / 2), AO_Y, (a[1] + b[1]) / 2 + nz * side * (th / 2 + AO_W / 2));
+    m.renderOrder = 1; house.add(m);
+  });
+}
+function contactRing(x, z, r) { const m = new THREE.Mesh(new THREE.PlaneGeometry((r + 0.3) * 2, (r + 0.3) * 2), aoRingMat); m.rotation.x = -Math.PI / 2; m.position.set(x, AO_Y, z); m.renderOrder = 1; house.add(m); }
+const column = (x, z) => { const c = cyl(0.2, 0.2, WALL_H, M.column, x, WALL_H / 2, z, 48); contactRing(x, z, 0.2); return c; };
 
 /* ================= the plan: the whole of Floor 2C, traced from the sales plan itself ================= */
 // Walls, columns and outline were taken from the drawing's own lines (45 px to the metre), so every
@@ -424,7 +457,7 @@ const inPoly = ([x, z], poly) => { let c = false; for (let i = 0, j = poly.lengt
     let gap = null; ['a', 'b'].forEach((e1) => ['a', 'b'].forEach((e2) => { const g = Math.hypot(s[e1][0] - o[e2][0], s[e1][1] - o[e2][1]); if (!gap || g < gap.g) gap = { g, p: s[e1], q: o[e2] }; }));
     if (gap.g > 0.6 && gap.g < 1.2) doors.push({ p: gap.p, q: gap.q, th: Math.max(s.th, o.th) });
   }));
-  segs.forEach((s) => wall(s.a, s.b, s.th));
+  segs.forEach((s) => { wall(s.a, s.b, s.th); contactStrip(s.a, s.b, s.th); });
   doors.forEach(({ p, q, th }) => {
     const dx = q[0] - p[0], dz = q[1] - p[1], len = Math.hypot(dx, dz), ry = -Math.atan2(dz, dx), ux = dx / len, uz = dz / len;
     const g = new THREE.Group(); g.position.set((p[0] + q[0]) / 2, 0, (p[1] + q[1]) / 2); g.rotation.y = ry; house.add(g);
@@ -1030,6 +1063,12 @@ addEventListener('message', (e) => {
 });
 applyHour(); setFloor(STATE.floor); setKitchen(STATE.kitchen);
 stage.classList.add('on');
+// the loader goes once the models are in (or after a while, if one never comes)
+{ const lo = document.getElementById('loader'), bar = document.getElementById('bar'); let done = false;
+  const finish = () => { if (done) return; done = true; bar.style.transform = 'scaleX(1)'; setTimeout(() => lo.classList.add('gone'), 350); redrawShadows(); };
+  THREE.DefaultLoadingManager.onProgress = (_, n, total) => { bar.style.transform = `scaleX(${(n / Math.max(total, 1)).toFixed(3)})`; };
+  THREE.DefaultLoadingManager.onLoad = finish; THREE.DefaultLoadingManager.onError = () => {};
+  setTimeout(finish, 6000); }
 renderer.setAnimationLoop(frame);
 </script>
 </body>
