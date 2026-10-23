@@ -9,7 +9,7 @@
 <style>
 /* The Sapphire's own light: warm stone, pale oak, white linen, the sea beyond, sapphire blue for accents */
 :root {
-  --ground: #e9e3d9;
+  --ground: #e6e7e5;
   --ink: #1d2230;
   --soft: rgba(29, 34, 48, 0.6);
   --sapphire: #1f3fa6;
@@ -27,14 +27,7 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; -webkit-t
 /* The HUD floats a hair in front of the scene: its layer drifts a few pixels against the camera,
    like a sheet of optical glass, and never bends the image under it */
 .hud { position: fixed; inset: 0; pointer-events: none; will-change: transform; }
-/* film grain: an organic emulsion laid over the canvas at very low opacity, stepping like film so
-   it never shimmers; it adds tooth to the image without touching its sharpness */
-.grain { position: fixed; inset: -50%; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .46  0 0 0 0 .42  0 0 0 1.1 -.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  animation: grain 1s steps(8) infinite; }
-body.night .grain { mix-blend-mode: screen; opacity: .05; }
-@keyframes grain { 0% { transform: translate(0, 0); } 12% { transform: translate(-3%, 2%); } 25% { transform: translate(2%, -4%); } 37% { transform: translate(-4%, -1%); } 50% { transform: translate(3%, 3%); } 62% { transform: translate(-1%, 4%); } 75% { transform: translate(4%, -2%); } 87% { transform: translate(-2%, -3%); } 100% { transform: translate(0, 0); } }
-@media (prefers-reduced-motion: reduce) { .grain { animation: none; } }
+
 /* the vitrine: a 1px CAD frame inset from the edges, flat corner marks, microscopic measures */
 #cad { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 #cad .l { stroke: var(--line); stroke-width: 1; fill: none; shape-rendering: crispEdges; vector-effect: non-scaling-stroke; transition: stroke 1.2s; }
@@ -45,7 +38,6 @@ body.night { --line: rgba(244, 241, 236, .2); --tick: rgba(244, 241, 236, .32); 
 .cap, .hint { position: fixed; top: 26px; font-family: var(--mono); font-size: 10px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft); pointer-events: none; margin: 0; transition: color 1.2s, opacity .6s; }
 .cap { left: 34px; display: flex; flex-direction: column; gap: 5px; }
 .cap b { font-family: var(--display); font-weight: 300; font-size: 22px; letter-spacing: .02em; text-transform: none; color: var(--ink); transition: color 1.2s; }
-.readout { position: absolute; left: 34px; bottom: 80px; margin: 0; font-family: var(--mono); font-size: 9px; font-weight: 300; letter-spacing: .1em; color: var(--tick); font-variant-numeric: tabular-nums; transition: color 1.2s; white-space: pre; }
 .hint { right: 34px; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 2px; background: rgba(29, 34, 48, 0.5); color: #f4f1ec; text-transform: none; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .hint svg { width: 15px; height: 15px; animation: sway 1.8s ease-in-out infinite; }
 @keyframes sway { 0%, 100% { transform: translateX(-3px) rotate(-8deg); } 50% { transform: translateX(3px) rotate(8deg); } }
@@ -79,8 +71,7 @@ body.night .credit { color: rgba(244, 241, 236, .4); }
 @media (max-width: 760px) {
   .cap { left: 22px; top: 20px; font-size: 9px; max-width: 62%; }
   .cap b { font-size: 17px; }
-  .readout { left: 22px; bottom: auto; top: 76px; font-size: 8px; }
-  .hint { right: 20px; top: 20px; font-size: 10.5px; padding: 5px 10px; }
+    .hint { right: 20px; top: 20px; font-size: 10.5px; padding: 5px 10px; }
   .panel { left: 20px; right: 20px; transform: none; bottom: 22px; max-width: none; gap: 6px; padding: 6px; font-size: 10.5px; justify-content: space-between; }
   .credit { right: 20px; bottom: 7px; font-size: 7.5px; }
   .group, .sep { display: none; }
@@ -95,11 +86,9 @@ body.night .credit { color: rgba(244, 241, 236, .4); }
 <body>
 
 <div id="stage"></div>
-<div class="grain" aria-hidden="true"></div>
 <div class="hud" id="hud">
   <svg id="cad" aria-hidden="true"></svg>
   <p class="cap" id="cap"><b>The Sapphire</b><span id="cap-text"></span></p>
-  <p class="readout" id="readout" aria-hidden="true"></p>
 </div>
 <p class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.3 15.6a1.5 1.5 0 0 1 2.2-2l2.5 2.4"/></svg><span id="hint-text"></span></p>
 <div id="tags"></div>
@@ -820,14 +809,14 @@ kentia(5.62, 0.55, 1.05);
 // a soft, warm backdrop that takes the colour of the hour, and a ground that only catches shadow
 const backMat = new THREE.ShaderMaterial({
   side: THREE.BackSide, depthWrite: false, fog: false,
-  uniforms: { top: { value: new THREE.Color('#f6f3ee') }, bot: { value: new THREE.Color('#e4ded4') } },
+  uniforms: { top: { value: new THREE.Color('#f5f5f3') }, bot: { value: new THREE.Color('#e2e3e2') } },
   vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
   fragmentShader: `precision highp float; uniform vec3 top; uniform vec3 bot; varying vec3 vP; void main(){ float h = smoothstep(-0.35, 0.6, vP.y); gl_FragColor = vec4(mix(bot, top, h), 1.0);
     #include <colorspace_fragment>
   }`,
 });
 const back = new THREE.Mesh(new THREE.SphereGeometry(200, 32, 16), backMat); scene.add(back);
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.ShadowMaterial({ opacity: 0.18, color: '#5a4a3a' }));
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.ShadowMaterial({ opacity: 0.18, color: '#3c3f44' }));
 ground.rotation.x = -Math.PI / 2; ground.position.y = -0.52; ground.receiveShadow = true; scene.add(ground);
 
 /* ================= light ================= */
@@ -840,7 +829,7 @@ const hemi = new THREE.HemisphereLight('#dfe8ef', '#e6dacb', 0.9); scene.add(hem
 
 // three hours, lit as the renders are: clear morning, golden sunset, a warm-lit night
 const HOURS = {
-  morning: { sun: [ 15, 10, -10], sunCol: '#ffe7c7', sunI: 2.8, hemiS: '#dde7f0', hemiG: '#eadcc8', hemiI: 0.9, top: '#f6f3ee', bot: '#e4ded4', exp: 1.0, env: 0.5, lamps: 0, shadow: 0.18 },
+  morning: { sun: [ 15, 10, -10], sunCol: '#ffe7c7', sunI: 2.8, hemiS: '#e2e8ee', hemiG: '#e4e1dc', hemiI: 0.9, top: '#f5f5f3', bot: '#e2e3e2', exp: 1.0, env: 0.5, lamps: 0, shadow: 0.18 },
   sunset:  { sun: [ 20,  4.5, 8], sunCol: '#ffa766', sunI: 3.2, hemiS: '#f5cfa8', hemiG: '#8a6c66', hemiI: 0.62, top: '#f4e2cf', bot: '#cdb3a3', exp: 1.06, env: 0.35, lamps: 0.55, shadow: 0.24 },
   night:   { sun: [-10, 14, 10], sunCol: '#9db0ff', sunI: 0.28, hemiS: '#30405f', hemiG: '#1c1b21', hemiI: 0.45, top: '#4c5568', bot: '#2b303b', exp: 1.15, env: 0.1, lamps: 1, shadow: 0.3 },
 };
@@ -949,8 +938,8 @@ function fit() {
 }
 addEventListener('resize', fit); fit();
 
-/* ================= HUD: the CAD vitrine, its parallax and its readout ================= */
-const hudEl = document.getElementById('hud'), cadEl = document.getElementById('cad'), readEl = document.getElementById('readout');
+/* ================= HUD: the CAD vitrine and its parallax ================= */
+const hudEl = document.getElementById('hud'), cadEl = document.getElementById('cad');
 function drawCad() {
   const w = innerWidth, h = innerHeight, m = phone ? 12 : 18, c = 14; // inset and corner length
   const L = m + 0.5, R = w - m - 0.5, Tp = m + 0.5, B = h - m - 0.5;
@@ -961,13 +950,6 @@ function drawCad() {
     s += `<path class="l" d="M${x} ${y + sy * c}V${y}H${x + sx * c}"/>`;
     s += `<path class="k" d="M${x + sx * 4} ${y + sy * 4}h${sx * 3}M${x + sx * 4} ${y + sy * 4}v${sy * 3}"/>`;
   });
-  // microscopic measures along the top and left edges: a tick every 10 px, longer every 50, a figure every 200
-  for (let x = L + 40; x < R - 40; x += 10) {
-    const k = Math.round(x - L) % 50 === 0 ? 5 : 2; s += `<path class="k" d="M${Math.round(x) + 0.5} ${Tp + 1}v${k}"/>`;
-    if (!phone && Math.round(x - L) % 200 === 0) s += `<text x="${Math.round(x) + 3}" y="${Tp + 12}">${String(Math.round(x - L)).padStart(4, '0')}</text>`; }
-  for (let y = Tp + 40; y < B - 40; y += 10) { const k = Math.round(y - Tp) % 50 === 0 ? 5 : 2; s += `<path class="k" d="M${L + 1} ${Math.round(y) + 0.5}h${k}"/>`; }
-  // a centre mark, faint
-  s += `<path class="k" d="M${Math.round(w / 2) + 0.5} ${Tp + 1}v8M${L + 1} ${Math.round(h / 2) + 0.5}h8" opacity=".9"/>`;
   cadEl.innerHTML = s;
 }
 addEventListener('resize', drawCad); drawCad();
@@ -979,7 +961,6 @@ const ptr = { x: 0, y: 0 }, spr = { x: 0, y: 0, vx: 0, vy: 0 };
 addEventListener('pointermove', (e) => { ptr.x = (e.clientX / innerWidth) * 2 - 1; ptr.y = (e.clientY / innerHeight) * 2 - 1; }, { passive: true });
 document.addEventListener('pointerleave', () => { ptr.x = 0; ptr.y = 0; });
 let hudT = 0;
-let readLast = 0;
 function hudFrame(T) {
   hudSph.setFromVector3(new THREE.Vector3().copy(camera.position).sub(controls.target));
   const tx = reduced ? 0 : Math.sin(hudSph.theta - HOME.az) * -7, ty = reduced ? 0 : (hudSph.phi - HOME.pol) * 12;
@@ -990,11 +971,7 @@ function hudFrame(T) {
     spr.x += spr.vx * dt; spr.y += spr.vy * dt; }
   const depth = 1 + (Math.abs(spr.x) + Math.abs(spr.y)) * 0.0004; // a breath of z: the plane comes forward as it moves
   hudEl.style.transform = `translate3d(${(hudPos.x + spr.x).toFixed(2)}px, ${(hudPos.y + spr.y).toFixed(2)}px, 0) scale(${depth.toFixed(4)})`;
-  if (T - readLast > 0.1) { // the readout: where the camera stands, in the plan's terms
-    readLast = T;
-    const az = ((THREE.MathUtils.radToDeg(hudSph.theta) % 360) + 360) % 360, el = 90 - THREE.MathUtils.radToDeg(hudSph.phi);
-    readEl.textContent = `AZ ${az.toFixed(1).padStart(5, '0')}°   EL ${el.toFixed(1).padStart(4, '0')}°   D ${hudSph.radius.toFixed(2).padStart(5, '0')} m\nX ${controls.target.x.toFixed(2)}   Z ${controls.target.z.toFixed(2)}   1:${Math.round(hudSph.radius * 40)}`;
-  }
+
 }
 
 
