@@ -1271,7 +1271,12 @@ function tallerAtPlusX(obj) {
     const drop = []; m.traverse((o) => { if (!o.isMesh) return; const bs = new THREE.Box3().setFromObject(o, true).getSize(new THREE.Vector3());
       // (its pale print given a little more body, so it reads against the light floor)
       // (only the printed rug itself: the figure and a plain grey backing sheet that lay over it are dropped)
-      if (!o.material.map) drop.push(o); else { o.receiveShadow = true; o.castShadow = false; } });
+      if (!o.material.map) drop.push(o); else { o.receiveShadow = true; o.castShadow = false;
+        // its near-black block dyed the double bed's taupe, keeping the wool's light and shade
+        const img = o.material.map.image; if (img) { const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height; const x = cv.getContext('2d'); x.drawImage(img, 0, 0);
+          const d = x.getImageData(0, 0, cv.width, cv.height), p = d.data;
+          for (let i = 0; i < p.length; i += 4) { const l = (p[i] + p[i + 1] + p[i + 2]) / 3; if (l < 68 && p[i + 1] < 75) { const k = 0.82 + l / 300; p[i] = 158 * k; p[i + 1] = 144 * k; p[i + 2] = 127 * k; } }
+          x.putImageData(d, 0, 0); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.flipY = o.material.map.flipY; t.wrapS = o.material.map.wrapS; t.wrapT = o.material.map.wrapT; t.anisotropy = aniso; o.material.map = t; } } });
     drop.forEach((o) => o.parent.remove(o));
     let b = new THREE.Box3().setFromObject(m, true), s = b.getSize(new THREE.Vector3());
     if (s.y > Math.min(s.x, s.z)) { m.rotation.x = -Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
