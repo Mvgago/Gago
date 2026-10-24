@@ -575,10 +575,12 @@ const WALLS = [
   [-8.18, 0.46, -7.43, 1.36, 0.12], [-6.86, 1.93, -10.04, 5.14, 0.14], [-9.3, 1.55, -7.9, 2.95, 0.12],
   [-12.7, 4.94, -11.86, 5.78, 0.12], [-13.3, 5.6, -11.95, 7.2, 0.12], [-11.95, 7.2, -11.2, 6.45, 0.12],
   // dorm 2's wall to the hall, and the partition between dorms 1 and 2, out to the glass
-  [-8.32, 5.18, -10.85, 7.68, 0.14], [-10.29, 7.21, -7.35, 10.25, 0.14],
+  // (dorm 2's door in line with its wall: a short return on the same line closes it to bath 2's wall)
+  [-8.32, 5.18, -10.85, 7.68, 0.14], [-7.68, 4.547, -7.458, 4.328, 0.14], [-10.29, 7.21, -7.35, 10.25, 0.14],
   // the corridor's south side and bath 2
-  [-7.05, 3.99, -3.44, 3.99, 0.14], [-7.05, 3.99, -7.4, 4.4, 0.12], [-7.4, 4.4, -6.9, 5.14, 0.12],
-  [-6.35, 5.68, -6.15, 5.96, 0.12], [-6.15, 5.96, -4.18, 5.96, 0.12],
+  [-7.05, 3.99, -3.44, 3.99, 0.14], [-7.05, 3.99, -7.4, 4.4, 0.12],
+  // (bath 2's diagonal wall one straight line, its door a gap along it)
+  [-7.4, 4.4, -6.875, 5.055, 0.12], [-6.45, 5.586, -6.15, 5.96, 0.12], [-6.15, 5.96, -4.18, 5.96, 0.12],
   // dorm 2's and dorm 3's walls, out to the glass, the wardrobes between them
   [-4.18, 3.99, -4.18, 8.62, 0.12], [-3.44, 3.99, -3.44, 8.62, 0.14],
   // the wardrobes off the hall, bath 3, dorm 3's wall to the living room
@@ -736,22 +738,22 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
     if (to && dd > 0.5 && dd < 1.85 && !jamb(p) && !glassAt(p) && Math.hypot(p[0] + 3.94, p[1] - 0.51) > 0.1) {
       const key = [p, to].map((q) => q.map((v) => v.toFixed(2)).join(',')).sort().join('|');
       if (!headed.has(key)) { headed.add(key);
-        // laid along the wall it springs from (its faces flush with that wall's, no step), as far as the
-        // opening reaches in that direction
-        const wd = [p[0] - back[0], p[1] - back[1]], wl = Math.hypot(...wd), wu = [wd[0] / wl, wd[1] / wl];
-        const reach = Math.max(0.3, (to[0] - p[0]) * wu[0] + (to[1] - p[1]) * wu[1]);
-        // only where the opening lies straight ahead of the wall (the wall across it within a few cm of its
-        // line); a doorway met at a slant is left open, rather than bridged by a piece that can't sit flush
-        const side = Math.abs((to[0] - p[0]) * wu[1] - (to[1] - p[1]) * wu[0]);
-        if (side > 0.12) { headed.delete(key); return; }
-        const g = new THREE.Group(); g.position.set(p[0] + wu[0] * reach / 2, 0, p[1] + wu[1] * reach / 2); g.rotation.y = -Math.atan2(wu[1], wu[0]); house.add(g);
-        // (half a wall's thickness past its own free end, as the wall itself runs on; at the far side the
-        // same only if that is a wall's free end too, otherwise it stops inside the wall it meets: never proud)
-        const farFree = segs.some((o) => (Math.hypot(o.a[0] - to[0], o.a[1] - to[1]) < 0.01 || Math.hypot(o.b[0] - to[0], o.b[1] - to[1]) < 0.01));
-        const e0 = s.th / 2, e1 = farFree ? s.th / 2 : 0;
-        const head = new THREE.Mesh(new THREE.BoxGeometry(reach + e0 + e1, WALL_H - DOOR_H, s.th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
-        head.position.set((e1 - e0) / 2, (DOOR_H + WALL_H) / 2 - 0.0005, 0); head.castShadow = head.receiveShadow = true; g.add(head);
-        const lin = new THREE.Mesh(new THREE.BoxGeometry(reach, 0.03, s.th + 0.004), M.trim); lin.position.y = DOOR_H - 0.015; g.add(lin); } }
+        // a piece of wall over the opening, from the door's height to the cut, whose plan is the outline
+        // joining the two wall ends' own sections (each end's width across its own wall): so it runs on from
+        // both faces with no step, whatever the angle between them
+        const wd = [p[0] - back[0], p[1] - back[1]], wl = Math.hypot(...wd), n0 = [-wd[1] / wl, wd[0] / wl];
+        const os = segs.find((o) => dist(to, o) < 0.01 && o !== s), od = os ? [os.b[0] - os.a[0], os.b[1] - os.a[1]] : wd, ol = Math.hypot(...od);
+        const farEnd = os && (Math.hypot(os.a[0] - to[0], os.a[1] - to[1]) < 0.01 || Math.hypot(os.b[0] - to[0], os.b[1] - to[1]) < 0.01);
+        // at a wall's free end, its own section; landing on a wall's side, the first wall's width carried across
+        const n1 = farEnd ? [-od[1] / ol, od[0] / ol] : n0, t1 = farEnd ? os.th : s.th;
+        const pts = [[p[0] + n0[0] * s.th / 2, p[1] + n0[1] * s.th / 2], [p[0] - n0[0] * s.th / 2, p[1] - n0[1] * s.th / 2],
+          [to[0] - n1[0] * t1 / 2, to[1] - n1[1] * t1 / 2], [to[0] + n1[0] * t1 / 2, to[1] + n1[1] * t1 / 2]];
+        // (the two far corners kept on the same sides as the near ones, so the outline never crosses itself)
+        const cr = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+        if (Math.sign(cr(pts[0], pts[1], pts[2])) !== Math.sign(cr(pts[1], pts[2], pts[3]))) { const tq = pts[2]; pts[2] = pts[3]; pts[3] = tq; }
+        const shape = new THREE.Shape(pts.map(([x, z]) => new THREE.Vector2(x, -z)));
+        const geo = new THREE.ExtrudeGeometry(shape, { depth: WALL_H - DOOR_H, bevelEnabled: false }); geo.rotateX(-Math.PI / 2); geo.translate(0, DOOR_H, 0);
+        const head = new THREE.Mesh(geo, [M.wallTop, M.wall]); head.castShadow = head.receiveShadow = true; house.add(head); } }
   }));
   const tileUV = (geo, w, h) => { const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * w / 0.6, uv.getY(i) * h / 0.6); };
   BATH_SEEDS.forEach((seeds) => {
