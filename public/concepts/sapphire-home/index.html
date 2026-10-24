@@ -740,6 +740,10 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
         // opening reaches in that direction
         const wd = [p[0] - back[0], p[1] - back[1]], wl = Math.hypot(...wd), wu = [wd[0] / wl, wd[1] / wl];
         const reach = Math.max(0.3, (to[0] - p[0]) * wu[0] + (to[1] - p[1]) * wu[1]);
+        // only where the opening lies straight ahead of the wall (the wall across it within a few cm of its
+        // line); a doorway met at a slant is left open, rather than bridged by a piece that can't sit flush
+        const side = Math.abs((to[0] - p[0]) * wu[1] - (to[1] - p[1]) * wu[0]);
+        if (side > 0.12) { headed.delete(key); return; }
         const g = new THREE.Group(); g.position.set(p[0] + wu[0] * reach / 2, 0, p[1] + wu[1] * reach / 2); g.rotation.y = -Math.atan2(wu[1], wu[0]); house.add(g);
         // (half a wall's thickness past its own free end, as the wall itself runs on; at the far side the
         // same only if that is a wall's free end too, otherwise it stops inside the wall it meets: never proud)
