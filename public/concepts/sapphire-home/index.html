@@ -1276,7 +1276,9 @@ function tallerAtPlusX(obj) {
     if (s.y > Math.min(s.x, s.z)) { m.rotation.x = -Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
     if (s.z > s.x) { m.rotation.y = Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
     m.scale.multiplyScalar(2.4 / s.x); b = new THREE.Box3().setFromObject(m, true); const c = b.getCenter(new THREE.Vector3());
-    const holder = new THREE.Group(); holder.add(m); m.position.set(-c.x, 0.004 - b.min.y, -c.z);
+    // (it is a flat sheet: lifted clear of the floor and drawn in front of it, or the two flicker through each other)
+    m.traverse((o) => { if (o.isMesh) { o.material.polygonOffset = true; o.material.polygonOffsetFactor = -4; o.material.polygonOffsetUnits = -4; } });
+    const holder = new THREE.Group(); holder.add(m); m.position.set(-c.x, 0.014 - b.min.y, -c.z);
     const ax = Math.cos(-3 * Math.PI / 4 + Math.PI), az = -Math.sin(-3 * Math.PI / 4 + Math.PI);
     holder.position.set(-9.858 - ax * 1.55, 0, 9.538 - az * 1.55); holder.rotation.y = -3 * Math.PI / 4 + Math.PI / 2; house.add(holder);
   }, undefined, () => {});
