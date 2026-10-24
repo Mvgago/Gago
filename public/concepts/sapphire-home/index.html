@@ -858,8 +858,12 @@ const realArmchairs = (groups, w, d) => {
     const k = Math.min(2.6 / s.x, 2.0 / s.z); m.scale.multiplyScalar(k);
     b = new THREE.Box3().setFromObject(m, true); const c = b.getCenter(new THREE.Vector3());
     m.position.set(3.75 - c.x, 0.006 - b.min.y, 6.85 - c.z); house.add(m);
-    // and a second, alongside it under the armchairs, so the seating stands on one broad rug
-    const m2 = m.clone(); m2.position.x -= 2.25; m2.position.y -= 0.002; house.add(m2); // (just under the first's edge, clear of the column)
+    // and a second, alongside it on the dining room's side
+    m.updateMatrixWorld(true); const rb = new THREE.Box3().setFromObject(m, true), rw = rb.max.z - rb.min.z;
+    // edge to edge, mirrored across the seam, so its pattern runs on from the first's edge
+    const m2 = m.clone(); m2.position.y -= 0.002;
+    const mir = new THREE.Group(); mir.add(m2); mir.scale.z = -1; mir.position.z = 2 * rb.min.z + 0.005; house.add(mir);
+    m2.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.side = THREE.DoubleSide; } }); // (beside it towards the dining room, in front of the nearer armchair)
   }, undefined, () => {});
   // between them, a solid low table in steel: a thick brushed-steel top with softened edges (1.25 × 0.66 m,
   // 6 cm), floating on a graphite steel plinth set well back from its edges; two books, a bowl and a
