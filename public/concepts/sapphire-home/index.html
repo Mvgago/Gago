@@ -1356,7 +1356,7 @@ new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
           g.addColorStop(0, relief ? '#ffffff' : '#ffffff'); g.addColorStop(1, relief ? '#303030' : '#b8b8c0');
           x.save(); x.translate(cx, cy); x.rotate(sd * 0.55); x.scale(0.55, 1); x.fillStyle = g; x.beginPath(); x.arc(0, 0, cw * 0.36, 0, 7); x.fill(); x.restore(); }); };
       const knitTex = tex(512, 512, knitDraw(false), [3, 2]), knitBump = tex(512, 512, knitDraw(true), [3, 2], false);
-      const knit = new THREE.MeshPhysicalMaterial({ map: knitTex, bumpMap: knitBump, bumpScale: 5, color: '#33447a', roughness: .95, sheen: .8, sheenRoughness: .6, sheenColor: new THREE.Color('#8e9bd0') });
+      const knit = new THREE.MeshPhysicalMaterial({ map: knitTex, bumpMap: knitBump, bumpScale: 5, color: '#2f3d68', roughness: 1, sheen: .25, sheenRoughness: .9, sheenColor: new THREE.Color('#5d6a94'), envMapIntensity: .5 }); // matte wool, no gleam
       // round in plan, its top and sides softly full; the knit wrapped round it
       const g = new THREE.SphereGeometry(1, 72, 36), p = g.attributes.position, uv = g.attributes.uv, f = (v, e) => Math.sign(v) * Math.pow(Math.abs(v), e);
       for (let i = 0; i < p.count; i++) { const sy = p.getY(i), rr = Math.hypot(p.getX(i), p.getZ(i)) || 1e-6, k = Math.pow(rr, 0.35) / rr;
