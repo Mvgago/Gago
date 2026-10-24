@@ -232,6 +232,7 @@ const CREDITS = [
   ['Bed', SKF + '3d-models/bed-b8c16d4b69f64335b46379b119b102b4', 'rickmaolly', SKF + 'rickmaolly', ...BY, true],
   ['BED 30', SKF + '3d-models/bed-30-df64476b23824a049614adda81d42e67', 'jasirkt', SKF + 'jasirkt', ...BY, true],
   ['Tumbona Doble Reclinable', SKF + '3d-models/tumbona-doble-reclinable-a8186ce559e4441d815f63a6bf9f983b', 'vmmaniac', SKF + 'vmmaniac', ...BY, true],
+  ['Folded Towel', SKF + '3d-models/folded-towel-c5f9e72edf7d4b5eaa2ec9b95c3b099d', 'Nicothin', SKF + 'juhyt80', ...BY, true],
   ['Carpet', SKF + '3d-models/carpet-434fcc9211e1434dbee7c5024c191c4c', 'Seismic_Creations', SKF + 'Seismic_Creations', ...BY, true],
   ['Rubber Plant (fig)', SKF + '3d-models/rubber-plant-fig-fc83523315714f8d96534bfaa4e15af1', 'jamieirvin', SKF + 'jamieirvin', ...BY, true],
   ['Palm Plant', SKF + '3d-models/palm-plant-fc5680053bb54ff6bacae64be12200ad', 'SomeKevin', SKF + 'SomeKevin', ...BY, true],
@@ -1388,7 +1389,28 @@ new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
     const c = b.getCenter(new THREE.Vector3()); turn.position.set(-c.x, -b.min.y, -c.z * 1);
     const [x0] = P(715, 0), [x1] = P(790, 0), xc = (x0 + x1) / 2;
     loungerAt.forEach((g) => house.remove(g));
-    [5.95, 7.57].forEach((z) => { const one = wide.clone(); one.position.set(xc, 0, z); house.add(one); });
+    const placed = [5.95, 7.57].map((z) => { const one = wide.clone(); one.position.set(xc, 0, z); house.add(one); return one; });
+    // a folded towel left on the foot of the first, a touch askew, as someone would.
+    // "Folded Towel" by Nicothin, CC BY 4.0
+    new GLTFLoader().load('/models/sapphire/towel.glb', (tg) => {
+      // (its own texture reads as a grid of lines: dressed instead in soft terry cotton, the house's sapphire)
+      const terry = new THREE.MeshPhysicalMaterial({ map: linenTex, bumpMap: linenBump, bumpScale: 3, color: '#4a64a0', roughness: .95, sheen: 1, sheenRoughness: .5, sheenColor: new THREE.Color('#9fb2dc') });
+      // (its normals rebuilt from the folds: as stored they lit it flat)
+      const tw = tg.scene; tw.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material = terry;
+        const g3 = o.geometry; const pa = g3.attributes.position; if (!(pa.array instanceof Float32Array)) { const f = new Float32Array(pa.count * 3); for (let i = 0; i < pa.count; i++) { f[i * 3] = pa.getX(i); f[i * 3 + 1] = pa.getY(i); f[i * 3 + 2] = pa.getZ(i); } g3.setAttribute('position', new THREE.BufferAttribute(f, 3)); }
+        g3.deleteAttribute('normal'); g3.computeVertexNormals(); } });
+      let tb = new THREE.Box3().setFromObject(tw, true), ts = tb.getSize(new THREE.Vector3());
+      if (ts.y > Math.min(ts.x, ts.z) * 1.2) tw.rotation.x = -Math.PI / 2; // laid flat
+      tb = new THREE.Box3().setFromObject(tw, true); ts = tb.getSize(new THREE.Vector3());
+      tw.scale.multiplyScalar(0.6 / Math.max(ts.x, ts.z)); // a large beach towel, about 60 cm folded
+      tb = new THREE.Box3().setFromObject(tw, true); const tc = tb.getCenter(new THREE.Vector3());
+      const lg = placed[0]; lg.updateMatrixWorld(true); const lb = new THREE.Box3().setFromObject(lg, true);
+      // the seat's top at the foot, found by casting down onto the lounger
+      const fx = lb.max.x - 0.38, fz = (lb.min.z + lb.max.z) / 2, ray = new THREE.Raycaster(new THREE.Vector3(fx, 3, fz), new THREE.Vector3(0, -1, 0));
+      const hit = ray.intersectObject(lg, true)[0], top = hit ? hit.point.y : 0.4;
+      const holder = new THREE.Group(); holder.add(tw); tw.position.set(-tc.x, -tb.min.y, -tc.z);
+      holder.position.set(fx, top, fz); holder.rotation.y = 0.25; house.add(holder); redrawShadows();
+    }, undefined, () => {});
   }, undefined, () => {});
 }
 
