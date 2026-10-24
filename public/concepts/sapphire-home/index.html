@@ -233,6 +233,8 @@ const CREDITS = [
   ['BED 30', SKF + '3d-models/bed-30-df64476b23824a049614adda81d42e67', 'jasirkt', SKF + 'jasirkt', ...BY, true],
   ['Tumbona Doble Reclinable', SKF + '3d-models/tumbona-doble-reclinable-a8186ce559e4441d815f63a6bf9f983b', 'vmmaniac', SKF + 'vmmaniac', ...BY, true],
   ['Folded Towel', SKF + '3d-models/folded-towel-c5f9e72edf7d4b5eaa2ec9b95c3b099d', 'Nicothin', SKF + 'juhyt80', ...BY, true],
+  ['petate, carpet, straw carpet, Straw Rug', SKF + '3d-models/petate-carpet-straw-carpet-straw-rug-1a5021f8623c4ddeb5eabf7eccb77bc2', 'ocelotlmx', SKF + 'ocelotlmx', ...BY, true],
+  ['Carpet Fluffy', SKF + '3d-models/carpet-fluffy-435d64ef1e36457790000c6b6aa4b8b2', 'polybean', SKF + 'polybean', ...BY, true],
   ['Carpet', SKF + '3d-models/carpet-434fcc9211e1434dbee7c5024c191c4c', 'Seismic_Creations', SKF + 'Seismic_Creations', ...BY, true],
   ['Rubber Plant (fig)', SKF + '3d-models/rubber-plant-fig-fc83523315714f8d96534bfaa4e15af1', 'jamieirvin', SKF + 'jamieirvin', ...BY, true],
   ['Palm Plant', SKF + '3d-models/palm-plant-fc5680053bb54ff6bacae64be12200ad', 'SomeKevin', SKF + 'SomeKevin', ...BY, true],
@@ -1258,6 +1260,18 @@ function tallerAtPlusX(obj) {
   // its box generous (2.0 × 2.35 m): the model's tall headboard and hanging cover count in the fit, and a
   // tighter box left its mattress smaller than the singles'; drawn back so the head stays on the partition
   realBed(bed(-9.858, 9.538, 2.0, 2.35, -3 * Math.PI / 4), 2.0, 2.35, '/models/sapphire/bed3.glb'); // dorm 1
+  // a soft fluffy rug at its foot, across the bed's width (1.7 × 1.0 m). "Carpet Fluffy" by polybean, CC BY 4.0
+  new GLTFLoader().load('/models/sapphire/carpet2.glb', (cg) => {
+    const m = cg.scene; m.traverse((o) => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = false; } });
+    let b = new THREE.Box3().setFromObject(m, true), s = b.getSize(new THREE.Vector3());
+    if (s.y > Math.min(s.x, s.z)) { m.rotation.x = -Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
+    if (s.z > s.x) { m.rotation.y = Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
+    m.scale.multiplyScalar(Math.min(1.7 / s.x, 1.0 / s.z)); b = new THREE.Box3().setFromObject(m, true); const c = b.getCenter(new THREE.Vector3());
+    const holder = new THREE.Group(); holder.add(m); m.position.set(-c.x, 0.004 - b.min.y, -c.z);
+    // the bed's foot: 2.35 m from its head on the partition, along its axis (the diagonal, towards the room)
+    const ax = Math.cos(-3 * Math.PI / 4 + Math.PI), az = -Math.sin(-3 * Math.PI / 4 + Math.PI);
+    holder.position.set(-9.858 - ax * 1.75, 0, 9.538 - az * 1.75); holder.rotation.y = -3 * Math.PI / 4 + Math.PI / 2; house.add(holder);
+  }, undefined, () => {});
 }
 // --- rubber plants in woven baskets: one in the living room's corner by the long sofa, a taller one
 // in its far corner beyond the second sofa, and one in the hall.
@@ -1378,7 +1392,18 @@ new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
         x.strokeStyle = relief ? 'rgba(255,255,255,.35)' : 'rgba(170,160,142,.6)'; x.lineWidth = 16; x.strokeRect(10, 10, w - 20, h - 20); };
       const jute = tex(1024, 1024, sisal(false)), juteBump = tex(1024, 1024, sisal(true), null, false);
       const r = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 2.3), new THREE.MeshStandardMaterial({ map: jute, bumpMap: juteBump, bumpScale: 3, roughness: 1 }));
-      r.rotation.x = -Math.PI / 2; r.position.set(8.05, 0.006, -0.55); r.receiveShadow = true; house.add(r); }
+      r.rotation.x = -Math.PI / 2; r.position.set(8.05, 0.006, -0.55); r.receiveShadow = true; house.add(r);
+      // the woven straw petate in its place once loaded, at the same 2.9 × 2.3 m.
+      // "petate, carpet, straw carpet, Straw Rug" by ocelotlmx, CC BY 4.0
+      new GLTFLoader().load('/models/sapphire/petate.glb', (pg) => {
+        const m = pg.scene; m.traverse((o) => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = false; } });
+        let b = new THREE.Box3().setFromObject(m, true), s = b.getSize(new THREE.Vector3());
+        if (s.y > Math.min(s.x, s.z)) { m.rotation.x = -Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
+        if ((s.z > s.x) !== (2.3 > 2.9)) { m.rotation.y += Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
+        m.scale.set(m.scale.x * 2.9 / s.x, m.scale.y, m.scale.z * 2.3 / s.z);
+        b = new THREE.Box3().setFromObject(m, true); const c = b.getCenter(new THREE.Vector3());
+        m.position.set(8.05 - c.x, 0.004 - b.min.y, -0.55 - c.z); house.remove(r); house.add(m);
+      }, undefined, () => {}); }
     // a knitted pouf in navy, by the table
     // a round pouf in a chunky sapphire knit: rows of plump stitches, drawn for colour and for relief
     { const knitDraw = (relief) => (x, w, h) => { x.fillStyle = relief ? '#202020' : '#ffffff'; x.fillRect(0, 0, w, h);
