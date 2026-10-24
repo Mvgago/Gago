@@ -341,6 +341,9 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div className="sticky top-16 z-10 -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
+                {/* under its edge a soft veil of the page's ground: text passing beneath fades in and out
+                    of it instead of being cut off mid-line */}
+                <div aria-hidden className="pointer-events-none absolute inset-x-0 top-full h-10 bg-gradient-to-b from-[#efeef0] to-[#efeef0]/0" />
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
