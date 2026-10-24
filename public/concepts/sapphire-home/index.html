@@ -1068,12 +1068,20 @@ const kitchenFronts = [];
   const at = (s, off) => a.clone().add(dir.clone().multiplyScalar(s)).add(n.clone().multiplyScalar(off));
   // base run (its front on the plan line, its back against the facade)
   // (both cut round the sink's bowl, so it reads as a real basin and not a rim on solid stone)
-  const s0 = len * 0.66, hw = 0.25, hd = 0.11;
+  const s0 = len * 0.66, hw = 0.225, hd = 0.095; // (inside the bowl's rim, so no gap shows round it)
   const piece = (s1, s2, o1, o2, h, y, mat) => { const q = at((s1 + s2) / 2, (o1 + o2) / 2); return box(s2 - s1, h, o2 - o1, mat, q.x, y, q.y, mat === M.marble ? 0 : 0.008, ang); }; // (the stone's pieces square-edged, so they meet without a seam)
   [[0, s0 - hw], [s0 + hw, len - 0.6]].forEach(([s1, s2]) => kitchenFronts.push(piece(s1, s2, -0.6, 0, 0.84, 0.42, M.front)));
   kitchenFronts.push(piece(s0 - hw, s0 + hw, -0.6, 0, 0.54, 0.27, M.front), piece(s0 - hw, s0 + hw, -0.02, 0, 0.84, 0.42, M.front));
   [[-0.02, s0 - hw, -0.62, 0.02], [s0 + hw, len - 0.58, -0.62, 0.02], [s0 - hw, s0 + hw, -0.3 + hd, 0.02], [s0 - hw, s0 + hw, -0.62, -0.3 - hd]]
     .forEach(([s1, s2, o1, o2]) => piece(s1, s2, o1, o2, 0.035, 0.86, M.marble));
+  // the sink's own deck, between its rim and its bowl, in its black (the model leaves it open)
+  [[s0 - 0.275, s0 - hw, -0.43, -0.17], [s0 + hw, s0 + 0.275, -0.43, -0.17], [s0 - hw, s0 + hw, -0.43, -0.3 - hd], [s0 - hw, s0 + hw, -0.3 + hd, -0.17]]
+    .forEach(([s1, s2, o1, o2]) => piece(s1, s2, o1, o2, 0.003, 0.8785, M.black));
+  // and the cut lined in the same black, floor and four sides, wherever the model's bowl doesn't reach
+  const lin = 0.18, ly = 0.877 - lin / 2;
+  [[s0 - hw, s0 - hw + 0.004, -0.3 - hd, -0.3 + hd], [s0 + hw - 0.004, s0 + hw, -0.3 - hd, -0.3 + hd], [s0 - hw, s0 + hw, -0.3 - hd, -0.3 - hd + 0.004], [s0 - hw, s0 + hw, -0.3 + hd - 0.004, -0.3 + hd]]
+    .forEach(([s1, s2, o1, o2]) => piece(s1, s2, o1, o2, lin, ly, M.black));
+  piece(s0 - hw, s0 + hw, -0.3 - hd, -0.3 + hd, 0.004, 0.877 - lin, M.black);
   // the tall column, by the glass
   const tall = at(len - 0.3, -0.3); kitchenFronts.push(box(0.6, WALL_H - 0.02, 0.62, M.front, tall.x, (WALL_H - 0.02) / 2, tall.y, 0.008, ang));
   // hob and sink, on the run
