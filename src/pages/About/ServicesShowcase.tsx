@@ -399,7 +399,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   // what is delivered, the part to read: larger, in full ink, each with its number
                   // As the discipline arrives its services come in one after another, each line drawing
                   // itself across; on hover a line fills in ink and its words step a touch to the right
-                  {/* (tighter on phones, so each sheet fits under the header whole) */}
+                  // (tighter on phones, so each sheet fits under the header whole)
                   <ul className="mt-6 max-w-[44ch] lg:mt-9">
                     {d.list.map((item, k) => {
                       const on = i === active;
