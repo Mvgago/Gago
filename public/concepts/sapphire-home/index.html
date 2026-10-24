@@ -888,17 +888,27 @@ const realArmchairs = (groups, w, d) => {
     box(0.3, 0.032, 0.22, M.book[1], tx - 0.28, H + 0.016, tz - 0.06, 0.006, 0.15);
     box(0.27, 0.028, 0.2, M.book[2], tx - 0.27, H + 0.046, tz - 0.06, 0.006, 0.05);
     cyl(0.13, 0.09, 0.065, M.ceramic, tx + 0.28, H + 0.033, tz + 0.06, 32);
-    // a glazed sapphire vase, turned like a bottle (a round belly, a slim neck, a lip), with a few dried
-    // stems of pampas in it, so it reads at a glance as a vase of flowers
-    { const vx = tx + 0.02, vz = tz - 0.14;
-      const prof = [[0, 0], [0.05, 0], [0.068, 0.03], [0.074, 0.075], [0.064, 0.12], [0.034, 0.16], [0.026, 0.19], [0.03, 0.205], [0.026, 0.21]].map(([r, y]) => new THREE.Vector2(r, y));
+    pampasVase(tx + 0.02, H, tz - 0.14);
+  }
+  // a glazed sapphire vase, turned like a bottle (a round belly, a slim neck, a lip), with a few dried
+  // stems of pampas in it, so it reads at a glance as a vase of flowers (on the living room's table and the terrace's)
+  function pampasVase(vx, H, vz) { globalThis.pampasVase = pampasVase;
+    { const prof = [[0, 0], [0.05, 0], [0.068, 0.03], [0.074, 0.075], [0.064, 0.12], [0.034, 0.16], [0.026, 0.19], [0.03, 0.205], [0.026, 0.21]].map(([r, y]) => new THREE.Vector2(r, y));
       const vase = new THREE.Mesh(new THREE.LatheGeometry(prof, 40), new THREE.MeshPhysicalMaterial({ color: '#2a4785', roughness: .28, clearcoat: .6, clearcoatRoughness: .2 }));
       vase.position.set(vx, H, vz); vase.castShadow = vase.receiveShadow = true; house.add(vase);
-      const stem = new THREE.MeshStandardMaterial({ color: '#c9b48e', roughness: .9 }), plume = new THREE.MeshStandardMaterial({ color: '#e8dcc4', roughness: 1 });
+      // each plume a soft feathery spray: hundreds of fine wisps drawn on a cut-out card, three cards
+      // crossed round the stem so it reads full from every side
+      const feather = pampasVase.tex || (pampasVase.tex = tex(128, 384, (x, w, h) => { x.clearRect(0, 0, w, h);
+        for (let i = 0; i < 900; i++) { const t = Math.random(), y = h * (0.04 + t * 0.94), spread = Math.sin(Math.PI * Math.min(1, t * 1.15)) * w * 0.46;
+          const a = (Math.random() - 0.5) * 2, len = 10 + Math.random() * 28, x0 = w / 2 + a * spread * 0.3;
+          x.strokeStyle = `rgba(${236 + Math.random() * 14},${222 + Math.random() * 14},${196 + Math.random() * 16},${0.25 + Math.random() * 0.45})`; x.lineWidth = 0.8 + Math.random();
+          x.beginPath(); x.moveTo(x0, y); x.quadraticCurveTo(x0 + a * spread * 0.5, y - len * 0.4, x0 + a * spread, y - len); x.stroke(); } }));
+      const plume = new THREE.MeshStandardMaterial({ map: feather, transparent: true, alphaTest: 0.08, depthWrite: false, side: THREE.DoubleSide, roughness: 1 });
+      const stem = new THREE.MeshStandardMaterial({ color: '#c9b48e', roughness: .9 });
       [[0.0, 0.42, 0.18], [0.5, 0.36, -0.22], [2.4, 0.4, 0.12], [3.9, 0.33, -0.08], [5.1, 0.38, 0.25]].forEach(([a, len, lean]) => {
-        const g = new THREE.Group(); g.position.set(vx, H + 0.2, vz); g.rotation.set(Math.sin(a) * lean * 1.7, a, Math.cos(a) * lean * 1.7); // fanned out, as a loose bunch house.add(g);
+        const g = new THREE.Group(); g.position.set(vx, H + 0.2, vz); g.rotation.set(Math.sin(a) * lean * 1.7, a, Math.cos(a) * lean * 1.7); house.add(g); // fanned out, as a loose bunch
         const s = new THREE.Mesh(new THREE.CylinderGeometry(0.0025, 0.003, len, 5), stem); s.position.y = len / 2; g.add(s);
-        const f = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), plume); f.scale.set(0.022, 0.07, 0.022); f.position.y = len + 0.04; f.castShadow = true; g.add(f); }); }
+        for (let c = 0; c < 3; c++) { const f = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.2), plume); f.position.y = len + 0.07; f.rotation.y = (c * Math.PI) / 3; g.add(f); } }); }
   }
 }
 // the dining chairs' material with its wood repainted: every light (wood) pixel of its texture taken to the
@@ -1320,7 +1330,7 @@ new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
     { const tx = 7.65, tz = -0.05, tm = new THREE.MeshStandardMaterial({ color: '#f2f0ec', roughness: .55 });
       put(new RoundedBoxGeometry(1.0, 0.05, 0.58, 3, 0.012), tm, tx, 0.32, tz);
       [-1, 1].forEach((sd) => put(new RoundedBoxGeometry(0.05, 0.3, 0.5, 3, 0.01), tm, tx + sd * 0.42, 0.15, tz));
-      put(new THREE.CylinderGeometry(0.06, 0.075, 0.24, 24), M.ceramicBlue, tx + 0.2, 0.465, tz - 0.06);
+      globalThis.pampasVase(tx + 0.2, 0.345, tz - 0.06); // the living room's vase of pampas, again
       box(0.28, 0.035, 0.2, M.book[2], tx - 0.2, 0.362, tz + 0.04, 0.005, 0.2); }
     // the jute rug, a woven pale straw with a slightly darker border
     // a natural sisal, pale and neutral (stone more than straw): a tight basket weave of fibres, drawn for
