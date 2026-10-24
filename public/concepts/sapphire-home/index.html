@@ -1393,10 +1393,10 @@ new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
     // a folded towel left on the foot of the first, a touch askew, as someone would.
     // "Folded Towel" by Nicothin, CC BY 4.0
     new GLTFLoader().load('/models/sapphire/towel.glb', (tg) => {
-      // (its own texture reads as a grid of lines: dressed instead in soft terry cotton, the house's sapphire)
-      const terry = new THREE.MeshPhysicalMaterial({ map: linenTex, bumpMap: linenBump, bumpScale: 3, color: '#4a64a0', roughness: .95, sheen: 1, sheenRoughness: .5, sheenColor: new THREE.Color('#9fb2dc') });
-      // (its normals rebuilt from the folds: as stored they lit it flat)
-      const tw = tg.scene; tw.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material = terry;
+      // its own striped print kept, given a soft terry cotton's relief and sheen (and its normals rebuilt
+      // from the folds: as stored they lit it flat)
+      const tw = tg.scene; tw.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true;
+        o.material = new THREE.MeshPhysicalMaterial({ map: o.material.map, bumpMap: linenBump, bumpScale: 2, roughness: .95, sheen: 1, sheenRoughness: .5, sheenColor: new THREE.Color('#c8d3ec') });
         const g3 = o.geometry; const pa = g3.attributes.position; if (!(pa.array instanceof Float32Array)) { const f = new Float32Array(pa.count * 3); for (let i = 0; i < pa.count; i++) { f[i * 3] = pa.getX(i); f[i * 3 + 1] = pa.getY(i); f[i * 3 + 2] = pa.getZ(i); } g3.setAttribute('position', new THREE.BufferAttribute(f, 3)); }
         g3.deleteAttribute('normal'); g3.computeVertexNormals(); } });
       let tb = new THREE.Box3().setFromObject(tw, true), ts = tb.getSize(new THREE.Vector3());
