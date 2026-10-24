@@ -145,12 +145,16 @@ export const AboutPage: React.FC = () => {
   // Already on the page, a second click on such a link glides down instead
   const arrived = useRef(false);
   useEffect(() => {
-    if (hash !== "#contact") return;
+    // the contact, or one of the disciplines (the landing's line of services links to each)
+    const anchor = hash === "#contact" ? "contact" : hash.startsWith("#disciplina-") ? hash.slice(1) : null;
+    if (!anchor) return;
     const toContact = (immediate: boolean) => {
-      const target = document.getElementById("contact");
+      const target = document.getElementById(anchor);
       // the section already keeps the header's height above it (scroll-margin); on phones that is
-      // all it needs, so the whole form fits in one screen
-      if (target) scrollToTarget(lenis, target, { offset: window.innerWidth < 640 ? 0 : -96, immediate });
+      // all it needs, so the whole form fits in one screen. A discipline lands level with the held
+      // frame, under the header
+      const offset = anchor === "contact" ? (window.innerWidth < 640 ? 0 : -96) : window.innerWidth < 1024 ? -64 : -112;
+      if (target) scrollToTarget(lenis, target, { offset, immediate });
     };
     if (!arrived.current) {
       const raf = requestAnimationFrame(() => toContact(true));

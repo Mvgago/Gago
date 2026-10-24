@@ -327,6 +327,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
           return (
             <div
               key={d.title}
+              id={`disciplina-${i}`}
               data-i={i}
               ref={(el) => (items.current[i] = el)}
               // a whole screen each on large screens, its title at the top, level with the frame; a line
