@@ -1825,7 +1825,9 @@ let idleAt = 0;
 function poke() { idleAt = clock.getElapsedTime() + 6; }
 let hintOff = false;
 const hideHint = () => { if (!hintOff) { hintOff = true; document.getElementById('hint').style.opacity = 0; } };
-setTimeout(hideHint, 5000);
+// (counted from when the viewer is first on screen: inside the site's page it loads long before it is scrolled to)
+{ const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); setTimeout(hideHint, 6000); } });
+  io.observe(document.body); }
 
 /* ================= size ================= */
 function fit() {
