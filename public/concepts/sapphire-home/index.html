@@ -1119,6 +1119,7 @@ function tallerAtPlusX(obj) {
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.flipY = mat.map.flipY; t.wrapS = mat.map.wrapS; t.wrapT = mat.map.wrapT; t.anisotropy = aniso;
     // matte, as cotton and linen are: no satin sheen on the pillows
     const m = mat.clone(); m.map = t; m.roughness = 0.9; m.metalness = 0; return m; };
+  const bedPad = new THREE.MeshPhysicalMaterial({ map: linenTex, bumpMap: linenBump, bumpScale: 1.4, color: '#8f8b84', roughness: .92, sheen: 1, sheenRoughness: .6, sheenColor: new THREE.Color('#c9c5bd') });
   const realBed = (g, w, l, url) => new GLTFLoader().load(url, (gltf) => {
     const src = gltf.scene;
     src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material = retoneBed(o.material); } });
@@ -1132,6 +1133,19 @@ function tallerAtPlusX(obj) {
     // its headboard on the drawn bed's head line (-l/2, at the wall), centred across, on the floor
     turn.scale.setScalar(k); turn.position.set(-l / 2 - b.min.x * k, -b.min.y * k, -c.z * k);
     g.clear(); g.add(turn);
+    // its headboard is an open frame: filled with a padded cushion in the same warm grey, set into the
+    // frame from just above the pillows' line to under its rim, so it reads soft and full
+    { g.updateMatrixWorld(true); const inv = new THREE.Matrix4().copy(g.matrixWorld).invert(), v = new THREE.Vector3();
+      const all = new THREE.Box3(), head = new THREE.Box3();
+      turn.traverse((o) => { if (!o.isMesh) return; const p = o.geometry.attributes.position;
+        for (let i = 0; i < p.count; i += 2) { v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld).applyMatrix4(inv); all.expandByPoint(v); } });
+      const span = all.max.x - all.min.x;
+      turn.traverse((o) => { if (!o.isMesh) return; const p = o.geometry.attributes.position;
+        for (let i = 0; i < p.count; i += 2) { v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld).applyMatrix4(inv); if (v.x < all.min.x + span * 0.08) head.expandByPoint(v); } });
+      // (over the whole frame, rim and all, a touch proud of it: one full, rounded cushion with no raised edge)
+      const top = head.max.y + 0.015, bot = head.max.y * 0.4, W = head.max.z - head.min.z + 0.02, D = head.max.x - head.min.x + 0.03;
+      const pad = new THREE.Mesh(new RoundedBoxGeometry(D, top - bot, W, 8, Math.min(0.06, D / 2 - 0.001)), bedPad);
+      pad.position.set(head.min.x + D / 2 - 0.005, (top + bot) / 2, (head.min.z + head.max.z) / 2); pad.castShadow = pad.receiveShadow = true; g.add(pad); }
   }, undefined, () => {});
   // dorm 1's double, its headboard against the diagonal partition between dorms 1 and 2, as on the plan
   // (the line x - z = -17.6), each from its own side
