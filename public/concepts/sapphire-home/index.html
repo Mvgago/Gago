@@ -673,7 +673,9 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
     pts.forEach((p) => {
       const ends = [], through = segs.some((s) => dist(p, s) < 0.01 && Math.hypot(s.a[0] - p[0], s.a[1] - p[1]) > 0.01 && Math.hypot(s.b[0] - p[0], s.b[1] - p[1]) > 0.01);
       segs.forEach((s) => ['a', 'b'].forEach((e) => { if (Math.hypot(s[e][0] - p[0], s[e][1] - p[1]) < 0.01) { const o = e === 'a' ? s.b : s.a, l = Math.hypot(o[0] - p[0], o[1] - p[1]); ends.push({ d: [(o[0] - p[0]) / l, (o[1] - p[1]) / l], th: s.th }); } }));
-      if (through || ends.length < 2) return;
+      // (only plain two-wall corners: where three meet, their overlap already closes it, and a hull of all
+      // their faces would stand out as a spur)
+      if (through || ends.length !== 2) return;
       const hull = [];
       ends.forEach(({ d, th }) => [-1, 1].forEach((sd) => hull.push([p[0] - d[1] * sd * th / 2, p[1] + d[0] * sd * th / 2])));
       ends.forEach((A, i) => ends.forEach((B, j) => { if (j <= i) return; const cr = A.d[0] * B.d[1] - A.d[1] * B.d[0]; if (Math.abs(cr) < 0.2) return;
