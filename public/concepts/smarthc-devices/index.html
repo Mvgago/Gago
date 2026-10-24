@@ -24,7 +24,10 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 #stage canvas { display: block; width: 100%; height: 100%; }
 .label, .hint { position: fixed; top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; color: var(--soft); pointer-events: none; }
 .label { left: 40px; }
-.hint { right: 40px; transition: opacity .6s; font-size: 10px; opacity: .55; }
+/* the hint as on the Sapphire's viewer: a small dark glass pill with a swaying hand */
+.hint { right: 40px; margin: 0; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 2px; background: rgba(29, 34, 48, 0.5); color: #f4f1ec; font-size: 10px; font-weight: 300; letter-spacing: 0.08em; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: opacity .6s; }
+.hint svg { width: 15px; height: 15px; animation: sway 1.8s ease-in-out infinite; }
+@keyframes sway { 0%, 100% { transform: translateX(-3px) rotate(-8deg); } 50% { transform: translateX(3px) rotate(8deg); } }
 .line { position: fixed; left: 40px; bottom: 26px; margin: 0; font-family: var(--display); font-weight: 300; font-size: clamp(22px, 3vw, 40px); line-height: 1.05; letter-spacing: 0.01em; pointer-events: none; }
 .line span { color: var(--orange); }
 .steps { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; width: clamp(250px, 19vw, 290px); pointer-events: none; font-family: Inter, sans-serif; --brand: #dfb451; }
@@ -57,7 +60,7 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 
 <div id="stage"></div>
 <p class="label">Concepto · Experiencia interactiva de producto</p>
-<p class="hint" id="hint">firma en la pantalla · arrastra para girar</p>
+<p class="hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.3 15.6a1.5 1.5 0 0 1 2.2-2l2.5 2.4"/></svg>firma en la pantalla · arrastra para girar</p>
 <p class="line">Seguridad a tu <span>medida.</span></p>
 <script>
 // ?bare: the scene alone, as on the studio page (no title, hint or tagline over it)
