@@ -200,16 +200,16 @@ const LANG = (() => { try { const l = localStorage.getItem('fugahaus.lang'); if 
 const DICT = {
   es: { cap: 'Concepto · Planta 2C, la vivienda en 3D', drag: 'arrastra para girar', swipe: 'desliza para girar', light: 'luz', floor: 'suelo', kitchen: 'cocina',
         morning: 'mañana', sunset: 'atardecer', night: 'noche', stone: 'travertino', oak: 'roble', white: 'blanco', sapphire: 'zafiro',
-        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1', bed2: 'Dormitorio 2', bed3: 'Dormitorio 3', tour: 'recorrer', stop: 'parar', dining: 'Comedor' },
+        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1', bed2: 'Dormitorio 2', bed3: 'Dormitorio 3', sea: 'Frente al mar', tour: 'recorrer', stop: 'parar', dining: 'Comedor' },
   en: { cap: 'Concept · Floor 2C, the home in 3D', drag: 'drag to rotate', swipe: 'swipe to rotate', light: 'light', floor: 'floor', kitchen: 'kitchen',
         morning: 'morning', sunset: 'sunset', night: 'night', stone: 'travertine', oak: 'oak', white: 'white', sapphire: 'sapphire',
-        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom', bed2: 'Bedroom 2', bed3: 'Bedroom 3', tour: 'walk through', stop: 'stop', dining: 'Dining' },
+        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom', bed2: 'Bedroom 2', bed3: 'Bedroom 3', sea: 'Facing the sea', tour: 'walk through', stop: 'stop', dining: 'Dining' },
   fr: { cap: 'Concept · Étage 2C, le logement en 3D', drag: 'faites glisser pour tourner', swipe: 'glissez pour tourner', light: 'lumière', floor: 'sol', kitchen: 'cuisine',
         morning: 'matin', sunset: 'couchant', night: 'nuit', stone: 'travertin', oak: 'chêne', white: 'blanc', sapphire: 'saphir',
-        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1', bed2: 'Chambre 2', bed3: 'Chambre 3', tour: 'parcourir', stop: 'arrêter', dining: 'Salle à manger' },
+        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1', bed2: 'Chambre 2', bed3: 'Chambre 3', sea: 'Face à la mer', tour: 'parcourir', stop: 'arrêter', dining: 'Salle à manger' },
   de: { cap: 'Konzept · Etage 2C, die Wohnung in 3D', drag: 'ziehen zum Drehen', swipe: 'wischen zum Drehen', light: 'licht', floor: 'boden', kitchen: 'küche',
         morning: 'morgen', sunset: 'abend', night: 'nacht', stone: 'travertin', oak: 'eiche', white: 'weiß', sapphire: 'saphir',
-        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1', bed2: 'Schlafzimmer 2', bed3: 'Schlafzimmer 3', tour: 'rundgang', stop: 'stopp', dining: 'Essbereich' },
+        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1', bed2: 'Schlafzimmer 2', bed3: 'Schlafzimmer 3', sea: 'Mit Blick aufs Meer', tour: 'rundgang', stop: 'stopp', dining: 'Essbereich' },
 };
 const TX = DICT[LANG] || DICT.es;
 const t = (k) => TX[k] ?? DICT.es[k] ?? k;
@@ -600,6 +600,21 @@ const WALLS = [
   const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, h, z1 - z0), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
   m.position.set((x0 + x1) / 2, h / 2, (z0 + z1) / 2); add(m);
   for (let z = z0 + 0.6; z < z1 - 0.1; z += 0.6) { const j = new THREE.Mesh(new THREE.BoxGeometry(0.004, h - 0.1, 0.006), M.doorGroove); j.position.set(-4.18 - 0.062, h / 2, z); house.add(j); } }
+// the main bedroom's dressing room (VEST. on the plan), in its corner by the facade's apex: white built-in
+// wardrobes along both outer walls, full height, flush fronts with fine joints every 60 cm, as in the hall
+{ const apex = [-15.82, 8.0], depth = 0.6, h = WALL_H;
+  const run = (dir, nrm, t0, t1) => { const len = t1 - t0, mid = (t0 + t1) / 2, off = 0.15 + depth / 2;
+    const cx = apex[0] + dir[0] * mid + nrm[0] * off, cz = apex[1] + dir[1] * mid + nrm[1] * off, ry = -Math.atan2(dir[1], dir[0]);
+    const m = new THREE.Mesh(new THREE.BoxGeometry(len, h, depth), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
+    m.position.set(cx, h / 2, cz); m.rotation.y = ry; add(m);
+    // the fronts' joints, on the face towards the room
+    for (let t = t0 + 0.6; t < t1 - 0.1; t += 0.6) { const j = new THREE.Mesh(new THREE.BoxGeometry(0.006, h - 0.1, 0.004), M.doorGroove);
+      j.position.set(apex[0] + dir[0] * t + nrm[0] * (0.15 + depth + 0.002), h / 2, apex[1] + dir[1] * t + nrm[1] * (0.15 + depth + 0.002)); j.rotation.y = ry; house.add(j); }
+    contactStrip([apex[0] + dir[0] * t0 + nrm[0] * (0.15 + depth), apex[1] + dir[1] * t0 + nrm[1] * (0.15 + depth)], [apex[0] + dir[0] * t1 + nrm[0] * (0.15 + depth), apex[1] + dir[1] * t1 + nrm[1] * (0.15 + depth)], 0.01); };
+  const k = Math.SQRT1_2;
+  run([k, -k], [k, k], 0.15 + depth, 3.42); // along the facade right up to the bathroom's wall, clear of the other run
+  run([k, k], [k, -k], 0.15, 2.4); // along the facade towards the bedroom's glass
+}
 const DOOR_H = 1.98;
 // the home's glass: the kitchen and the living room to the terraces, the bedrooms to theirs [a, b, panes]
 const GLASS_RUNS = [[[3.67, 0], [2.33, -3.73], 3], [[3.67, 0], [6.11, 0], 2], [[6.11, 0], [6.11, 8.71], 5], [[6.11, 8.71], [0.05, 8.71], 4],
@@ -751,7 +766,8 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
 [[1.7, 0.99], [6.43, 0.99], [1.7, 4.0], [6.43, 4.0], [1.7, 7.9], [6.43, 7.9], [-6.73, 3.42]].forEach(([x, z]) => column(x, z));
 GLASS_RUNS.forEach(([a, b, n]) => glazing(a, b, n));
 // the balustrade, along every open edge of the terraces
-[[2.56, -3.89], [4.71, -4.8], [5.96, -2.09], [6.56, -2.02], [9.53, -2.18], [10.04, 8.58], [7.27, 9.18], [4.47, 9.53], [2.82, 9.64], [-2.24, 9.67], [-8.33, 15.70], [-10.0, 14.03]]
+// (both ends carried right up to the facade, so the handrail meets the wall rather than stopping short)
+[[2.3, -3.8], [4.71, -4.8], [5.96, -2.09], [6.56, -2.02], [9.53, -2.18], [10.04, 8.58], [7.27, 9.18], [4.47, 9.53], [2.82, 9.64], [-2.24, 9.67], [-8.33, 15.70], [-10.12, 13.91]]
   .forEach((pt, i, a) => { if (i < a.length - 1) rail(pt, a[i + 1]); });
 
 /* ================= furniture ================= */
@@ -1514,13 +1530,15 @@ function goTo(v) { goal.look.set(...v.look); goal.az = v.az; goal.pol = v.pol; g
 // on (morning, sunset, night); walked by hand it keeps the light chosen. Space toggles it, arrows step it.
 // the hall is passed through rather than stopped at: it has little to show from above
 const DINING = { k: 'dining', m2: '48,70' };
-const TOUR = ['kitchenR', 'dining', 'living', 'terrace', 'bed3', 'bed2', 'bedroom'].map((k) => (k === 'dining' ? DINING : ROOMS.find((r) => r.k === k))).concat([null]);
+// and after the living room, one shot from inside it at eye level, out through the glass to the sea
+const SEA = { k: 'sea', m2: '48,70' };
+const TOUR = ['kitchenR', 'dining', 'living', 'sea', 'terrace', 'bed3', 'bed2', 'bedroom'].map((k) => (k === 'dining' ? DINING : k === 'sea' ? SEA : ROOMS.find((r) => r.k === k))).concat([null]);
 const AUTO = new URLSearchParams(location.search).has('tour');
 const LINES = {
-  es: { kitchenR: 'Isla de mármol, abierta al salón y a la terraza.', dining: 'Mesa para seis junto al ventanal, con la terraza al lado.', living: 'Ventanales de suelo a techo con vistas al mar.', terrace: '84 m² exteriores: comedor, zona de estar y solárium.', bed3: 'Dos camas individuales y ventanal a la terraza.', bed2: 'Dos camas individuales y armario empotrado.', bedroom: 'Dormitorio principal con vestidor y baño propio.', hall: 'Un recibidor amplio que reparte toda la vivienda.', home: 'Tres dormitorios y terrazas en dos fachadas, en primera línea de mar.' },
-  en: { kitchenR: 'A marble island, open to the living room and terrace.', dining: 'Seats six by the window, with the terrace right beside it.', living: 'Floor-to-ceiling windows looking out to sea.', terrace: '84 m² outdoors: dining, lounge and sun deck.', bed3: 'Two single beds and a window onto the terrace.', bed2: 'Two single beds and built-in wardrobes.', bedroom: 'Main bedroom with dressing room and en-suite bathroom.', hall: 'A generous entrance hall that leads to every room.', home: 'Three bedrooms and terraces on two sides, right on the seafront.' },
-  fr: { kitchenR: 'Îlot en marbre, ouvert sur le séjour et la terrasse.', dining: 'Une table pour six près de la baie, la terrasse juste à côté.', living: 'Des baies du sol au plafond face à la mer.', terrace: '84 m² extérieurs : repas, salon et solarium.', bed3: 'Deux lits simples et une baie sur la terrasse.', bed2: 'Deux lits simples et des placards intégrés.', bedroom: 'Chambre principale avec dressing et salle de bains privée.', hall: 'Une entrée généreuse qui dessert tout le logement.', home: 'Trois chambres et des terrasses sur deux façades, en front de mer.' },
-  de: { kitchenR: 'Marmorinsel, offen zum Wohnraum und zur Terrasse.', dining: 'Ein Tisch für sechs am Fenster, die Terrasse direkt daneben.', living: 'Raumhohe Fenster mit Blick aufs Meer.', terrace: '84 m² im Freien: Essplatz, Lounge und Sonnendeck.', bed3: 'Zwei Einzelbetten und ein Fenster zur Terrasse.', bed2: 'Zwei Einzelbetten und Einbauschränke.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', hall: 'Eine großzügige Diele, die alle Räume erschließt.', home: 'Drei Schlafzimmer und Terrassen an zwei Seiten, direkt am Meer.' },
+  es: { sea: 'El salón se abre por completo a la terraza y al mar.', kitchenR: 'Isla de mármol, abierta al salón y a la terraza.', dining: 'Mesa para seis junto al ventanal, con la terraza al lado.', living: 'Ventanales de suelo a techo con vistas al mar.', terrace: '84 m² exteriores: comedor, zona de estar y solárium.', bed3: 'Dos camas individuales y ventanal a la terraza.', bed2: 'Dos camas individuales y armario empotrado.', bedroom: 'Dormitorio principal con vestidor y baño propio.', hall: 'Un recibidor amplio que reparte toda la vivienda.', home: 'Tres dormitorios y terrazas en dos fachadas, en primera línea de mar.' },
+  en: { sea: 'The living room opens fully onto the terrace and the sea.', kitchenR: 'A marble island, open to the living room and terrace.', dining: 'Seats six by the window, with the terrace right beside it.', living: 'Floor-to-ceiling windows looking out to sea.', terrace: '84 m² outdoors: dining, lounge and sun deck.', bed3: 'Two single beds and a window onto the terrace.', bed2: 'Two single beds and built-in wardrobes.', bedroom: 'Main bedroom with dressing room and en-suite bathroom.', hall: 'A generous entrance hall that leads to every room.', home: 'Three bedrooms and terraces on two sides, right on the seafront.' },
+  fr: { sea: 'Le séjour s’ouvre entièrement sur la terrasse et la mer.', kitchenR: 'Îlot en marbre, ouvert sur le séjour et la terrasse.', dining: 'Une table pour six près de la baie, la terrasse juste à côté.', living: 'Des baies du sol au plafond face à la mer.', terrace: '84 m² extérieurs : repas, salon et solarium.', bed3: 'Deux lits simples et une baie sur la terrasse.', bed2: 'Deux lits simples et des placards intégrés.', bedroom: 'Chambre principale avec dressing et salle de bains privée.', hall: 'Une entrée généreuse qui dessert tout le logement.', home: 'Trois chambres et des terrasses sur deux façades, en front de mer.' },
+  de: { sea: 'Der Wohnraum öffnet sich ganz zur Terrasse und zum Meer.', kitchenR: 'Marmorinsel, offen zum Wohnraum und zur Terrasse.', dining: 'Ein Tisch für sechs am Fenster, die Terrasse direkt daneben.', living: 'Raumhohe Fenster mit Blick aufs Meer.', terrace: '84 m² im Freien: Essplatz, Lounge und Sonnendeck.', bed3: 'Zwei Einzelbetten und ein Fenster zur Terrasse.', bed2: 'Zwei Einzelbetten und Einbauschränke.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', hall: 'Eine großzügige Diele, die alle Räume erschließt.', home: 'Drei Schlafzimmer und Terrassen an zwei Seiten, direkt am Meer.' },
 };
 const LN = LINES[LANG] || LINES.es;
 const FLY = 3.4, HOLD = 5.2, LIGHTS = ['morning', 'sunset', 'night'];
@@ -1536,6 +1554,7 @@ const SHOTS = {
   kitchenR: { look: [0.7, 0.7, -0.9],  az: 0.25, pol: 0.82, r: 5.6 },  // the island and stools, the run behind
   living:   { look: [3.7, 0.4, 6.7],   az: 2.55, pol: 0.86, r: 6.4 },  // the two sofas and the table, the glass and the sea beyond
   terrace:  { look: [7.9, 0.3, 3.6],   az: 1.0,  pol: 0.9,  r: 7.4 },  // the outdoor lounge and the loungers
+  sea:      { look: [8.4, 1.0, 5.7],   az: -1.3, pol: 1.44, r: 6.4 },  // at eye level by the dining table, out over the terrace to the sea
   bed3:     { look: [-1.2, 0.4, 6.6],  az: -0.55, pol: 0.7, r: 5.8 },  // the twin beds from the glass side, over the wardrobes, headboards on the far wall
   bed2:     { look: [-8.3, 0.4, 7.75], az: 2.25, pol: 0.8,  r: 5.8 },  // the twin beds from their feet, the diagonal partition behind
   bedroom:  { look: [-9.9, 0.4, 9.7],  az: 0.8,  pol: 0.74, r: 6.2 },  // the main bed, the glass to its terrace
@@ -1549,8 +1568,9 @@ function tourGo(i, T = clock.getElapsedTime()) {
   tour.from = { look: controls.target.clone(), az: sph.theta, pol: sph.phi, r: sph.radius }; tour.to = viewOf(room);
   tour.flyFrom = T; flying = 0; tc.box.classList.remove('on');
 }
-function startTour() { if (tour.on) return; tour.on = true; tour.lap = 0; document.body.classList.add('touring'); setBtn(); hideHint(); tourGo(0); }
-function stopTour() { if (!tour.on) return; tour.on = false; tour.holdUntil = 0; tour.to = null; document.body.classList.remove('touring'); setBtn(); tc.box.classList.remove('on'); poke(); }
+// while walking, the camera may come down to eye level (the hand-held view stays above, as a model)
+function startTour() { if (tour.on) return; controls.maxPolarAngle = 1.5; tour.on = true; tour.lap = 0; document.body.classList.add('touring'); setBtn(); hideHint(); tourGo(0); }
+function stopTour() { if (!tour.on) return; tour.on = false; controls.maxPolarAngle = 1.2; if (sph.phi > 1.2) { sph.phi = 1.2; camera.position.setFromSpherical(sph).add(controls.target); } tour.holdUntil = 0; tour.to = null; document.body.classList.remove('touring'); setBtn(); tc.box.classList.remove('on'); poke(); }
 tbtn.addEventListener('click', () => { if (tour.on) { stopTour(); focus = null; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.remove('on')); goTo(HOME); } else startTour(); });
 addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); tbtn.click(); }
