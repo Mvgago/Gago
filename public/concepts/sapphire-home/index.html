@@ -476,7 +476,7 @@ const WALL_H = 2.1;
 const inPoly = ([x, z], poly) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, zi] = poly[i], [xj, zj] = poly[j];
   if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) c = !c; } return c; };
 // a wall from a to b, running on past each end by ea / eb (half its thickness unless told otherwise)
-const wall = (a, b, th = 0.24, h = WALL_H, ea = th / 2, eb = th / 2) => {
+const wall = (a, b, th = 0.24, h = WALL_H, ea = th / 2, eb = th / 2, ska = th / 2, skb = th / 2) => {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz), mid = (len + eb - ea) / 2;
   const m = new THREE.Mesh(new THREE.BoxGeometry(len + ea + eb, h, th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
   m.position.set(a[0] + (dx / len) * mid, h / 2, a[1] + (dz / len) * mid); m.rotation.y = -Math.atan2(dz, dx);
@@ -484,7 +484,10 @@ const wall = (a, b, th = 0.24, h = WALL_H, ea = th / 2, eb = th / 2) => {
   // the tile covers it); none on the facade's outer face
   [-1, 1].forEach((sd) => { const o = sd * (th / 2 + 0.06), px = m.position.x - (dz / len) * o, pz = m.position.z + (dx / len) * o;
     if (!inPoly([px, pz], INSIDE)) return;
-    const sk = new THREE.Mesh(new THREE.BoxGeometry(len + ea + eb, 0.07, 0.01), M.skirting); sk.position.set(0, -h / 2 + 0.035, sd * (th / 2 + 0.005)); sk.receiveShadow = true; m.add(sk); });
+    // run on to the full wall's ends whatever their joint (inside a meeting wall it is hidden; round an
+    // outside corner it meets its neighbour's skirting instead of stopping short of it)
+    // (ska / skb: how far past each end; none where the wall stops on the glass)
+    const sk = new THREE.Mesh(new THREE.BoxGeometry(len + ska + skb + 0.01, 0.07, 0.01), M.skirting); sk.position.x = (ea - eb) / 2 + (skb - ska) / 2; sk.position.set(0, -h / 2 + 0.035, sd * (th / 2 + 0.005)); sk.receiveShadow = true; m.add(sk); });
   return add(m);
 };
 // the home's own glass: sliding windows from floor to (cut) ceiling, in dark bronze frames on a stone sill,
@@ -553,7 +556,7 @@ const ENVELOPE = [[9.53, -2.18], [6.56, -2.02], [5.96, -2.09], [4.71, -4.8], [2.
 const INSIDE = [[2.24, -3.86], [-6.36, -0.40], [-6.94, -0.97], [-16.06, 7.97], [-10.06, 13.98], [-9.95, 13.87], [-7.6, 10.6], [-6.22, 8.71], [6.11, 8.71], [6.11, 0], [3.67, 0]];
 const floors = { inside: floor(INSIDE, M.stone, 0.004) };
 floor(ENVELOPE, M.deck, 0, 1.0);
-slab(ENVELOPE, 0.25); // a thin, quiet edge: the floor reads as a slab, not a plinth
+slab(ENVELOPE, 0.7); // a deeper plinth, so the home stands up off the ground
 
 // the walls, drawn as straight runs over the sales plan: plain flat partitions, the rooms closed,
 // open only where the plan has a door. [x1, z1, x2, z2, thickness]
@@ -644,7 +647,7 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
         const post = new THREE.Mesh(new THREE.BoxGeometry(s.th / across + 0.03, WALL_H, 0.07), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
         post.position.set(p[0], WALL_H / 2, p[1]); post.rotation.y = -Math.atan2(gu[1], gu[0]); post.castShadow = true; house.add(post); } });
     s.ea = ext.a; s.eb = ext.b;
-    wall(s.a, s.b, s.th, WALL_H, s.ea, s.eb); contactStrip(s.a, s.b, s.th); });
+    wall(s.a, s.b, s.th, WALL_H, s.ea, s.eb, glassAt(s.a) ? 0 : s.th / 2, glassAt(s.b) ? 0 : s.th / 2); contactStrip(s.a, s.b, s.th); });
   // where walls only end at a point (a corner, not a T), the corner is filled with a mitred post:
   // the outline of their ends and of where their faces meet, so the corner closes clean and sharp
   { const pts = []; segs.forEach((s) => ['a', 'b'].forEach((e) => { if (!pts.some((q) => Math.hypot(q[0] - s[e][0], q[1] - s[e][1]) < 0.01)) pts.push(s[e]); }));
@@ -1385,7 +1388,7 @@ const backMat = new THREE.ShaderMaterial({
 });
 const back = new THREE.Mesh(new THREE.SphereGeometry(200, 32, 16), backMat); scene.add(back);
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.ShadowMaterial({ opacity: 0.18, color: '#3c3f44' }));
-ground.rotation.x = -Math.PI / 2; ground.position.y = -0.27; ground.receiveShadow = true; scene.add(ground);
+ground.rotation.x = -Math.PI / 2; ground.position.y = -0.72; ground.receiveShadow = true; scene.add(ground);
 // the seafront, only hinted, as the sales plan's watercolour band: on the sea side beyond the terraces, a
 // wash on the ground from the palest sand through a soft shoreline to a greyed water blue, every edge
 // fading into the ground; lit like the rest, so it dims with the hour
@@ -1405,7 +1408,7 @@ ground.rotation.x = -Math.PI / 2; ground.position.y = -0.27; ground.receiveShado
   // narrow enough that the shore and the water fall within the frame, a few metres off the terrace
   const m = new THREE.Mesh(new THREE.PlaneGeometry(13, 70), new THREE.MeshStandardMaterial({ map: sea, transparent: true, depthWrite: false, roughness: 1 }));
   // (set back a little from the terrace's edge)
-  m.rotation.x = -Math.PI / 2; m.position.set(12.5 + 6.5, -0.266, 4); m.receiveShadow = true; scene.add(m); }
+  m.rotation.x = -Math.PI / 2; m.position.set(12.5 + 6.5, -0.716, 4); /* on the ground, at the plinth's foot */ m.receiveShadow = true; scene.add(m); }
 
 /* ================= light ================= */
 const sun = new THREE.DirectionalLight('#fff4e6', 2.6);
