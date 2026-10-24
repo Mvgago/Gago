@@ -736,14 +736,18 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
     if (to && dd > 0.5 && dd < 1.85 && !jamb(p) && !glassAt(p) && Math.hypot(p[0] + 3.94, p[1] - 0.51) > 0.1) {
       const key = [p, to].map((q) => q.map((v) => v.toFixed(2)).join(',')).sort().join('|');
       if (!headed.has(key)) { headed.add(key);
-        const g = new THREE.Group(); g.position.set((p[0] + to[0]) / 2, 0, (p[1] + to[1]) / 2); g.rotation.y = -Math.atan2(to[1] - p[1], to[0] - p[0]); house.add(g);
+        // laid along the wall it springs from (its faces flush with that wall's, no step), as far as the
+        // opening reaches in that direction
+        const wd = [p[0] - back[0], p[1] - back[1]], wl = Math.hypot(...wd), wu = [wd[0] / wl, wd[1] / wl];
+        const reach = Math.max(0.3, (to[0] - p[0]) * wu[0] + (to[1] - p[1]) * wu[1]);
+        const g = new THREE.Group(); g.position.set(p[0] + wu[0] * reach / 2, 0, p[1] + wu[1] * reach / 2); g.rotation.y = -Math.atan2(wu[1], wu[0]); house.add(g);
         // (half a wall's thickness past its own free end, as the wall itself runs on; at the far side the
         // same only if that is a wall's free end too, otherwise it stops inside the wall it meets: never proud)
         const farFree = segs.some((o) => (Math.hypot(o.a[0] - to[0], o.a[1] - to[1]) < 0.01 || Math.hypot(o.b[0] - to[0], o.b[1] - to[1]) < 0.01));
         const e0 = s.th / 2, e1 = farFree ? s.th / 2 : 0;
-        const head = new THREE.Mesh(new THREE.BoxGeometry(dd + e0 + e1, WALL_H - DOOR_H, s.th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
+        const head = new THREE.Mesh(new THREE.BoxGeometry(reach + e0 + e1, WALL_H - DOOR_H, s.th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
         head.position.set((e1 - e0) / 2, (DOOR_H + WALL_H) / 2 - 0.0005, 0); head.castShadow = head.receiveShadow = true; g.add(head);
-        const lin = new THREE.Mesh(new THREE.BoxGeometry(dd, 0.03, s.th + 0.004), M.trim); lin.position.y = DOOR_H - 0.015; g.add(lin); } }
+        const lin = new THREE.Mesh(new THREE.BoxGeometry(reach, 0.03, s.th + 0.004), M.trim); lin.position.y = DOOR_H - 0.015; g.add(lin); } }
   }));
   const tileUV = (geo, w, h) => { const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * w / 0.6, uv.getY(i) * h / 0.6); };
   BATH_SEEDS.forEach((seeds) => {
