@@ -732,14 +732,17 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
     // and the doorway finished as the in-line ones are: the wall carried over it, from the door's height
     // to the cut, with a lining under it, so every opening in the house reads the same
     const dd = to ? Math.hypot(to[0] - p[0], to[1] - p[1]) : 0;
-    if (to && dd > 0.5 && dd < 1.7 && !jamb(p) && !glassAt(p)) {
+    // (bath 1's entrance is the widest, 1.75 m; the laundry's open end by the kitchen is a pass, not a door)
+    if (to && dd > 0.5 && dd < 1.85 && !jamb(p) && !glassAt(p) && Math.hypot(p[0] + 3.94, p[1] - 0.51) > 0.1) {
       const key = [p, to].map((q) => q.map((v) => v.toFixed(2)).join(',')).sort().join('|');
       if (!headed.has(key)) { headed.add(key);
         const g = new THREE.Group(); g.position.set((p[0] + to[0]) / 2, 0, (p[1] + to[1]) / 2); g.rotation.y = -Math.atan2(to[1] - p[1], to[0] - p[0]); house.add(g);
-        // run on into both walls by their thickness (hidden inside them), so it meets each without a seam,
-        // its top flush with theirs
-        const head = new THREE.Mesh(new THREE.BoxGeometry(dd + s.th + 0.12, WALL_H - DOOR_H, s.th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
-        head.position.set(0.06 - s.th / 2 + s.th / 2, (DOOR_H + WALL_H) / 2 - 0.0005, 0); head.castShadow = head.receiveShadow = true; g.add(head);
+        // (half a wall's thickness past its own free end, as the wall itself runs on; at the far side the
+        // same only if that is a wall's free end too, otherwise it stops inside the wall it meets: never proud)
+        const farFree = segs.some((o) => (Math.hypot(o.a[0] - to[0], o.a[1] - to[1]) < 0.01 || Math.hypot(o.b[0] - to[0], o.b[1] - to[1]) < 0.01));
+        const e0 = s.th / 2, e1 = farFree ? s.th / 2 : 0;
+        const head = new THREE.Mesh(new THREE.BoxGeometry(dd + e0 + e1, WALL_H - DOOR_H, s.th), [M.wall, M.wall, M.wallTop, M.wall, M.wall, M.wall]);
+        head.position.set((e1 - e0) / 2, (DOOR_H + WALL_H) / 2 - 0.0005, 0); head.castShadow = head.receiveShadow = true; g.add(head);
         const lin = new THREE.Mesh(new THREE.BoxGeometry(dd, 0.03, s.th + 0.004), M.trim); lin.position.y = DOOR_H - 0.015; g.add(lin); } }
   }));
   const tileUV = (geo, w, h) => { const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * w / 0.6, uv.getY(i) * h / 0.6); };
