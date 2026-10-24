@@ -177,17 +177,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
         // held as soon as its example, title, text and list are all on screen (what follows the list, the
         // closing invitation, may pass under the next sheet); if those fit, right under the header
         if (!el) return;
-        const list = el.querySelector("ul"), frame = el.querySelector<HTMLElement>("[data-frame]");
-        const measure = () => (list ? list.getBoundingClientRect().bottom - el.getBoundingClientRect().top + 24 : el.offsetHeight);
-        // a sheet that won't fit under the header has its example made just short enough that it does (never
-        // below a third of its width), so it is held whole like the others instead of slipping under the header
-        if (frame) frame.style.height = "";
-        let end = measure();
-        const over = end - (window.innerHeight - 64);
-        if (!mq.matches && frame && over > 0) {
-          frame.style.height = `${Math.max(frame.offsetHeight - over, frame.offsetWidth / 3)}px`;
-          end = measure();
-        }
+        const list = el.querySelector("ul"), end = list ? list.getBoundingClientRect().bottom - el.getBoundingClientRect().top + 24 : el.offsetHeight;
         el.style.top = mq.matches ? "" : `${Math.min(64, window.innerHeight - end)}px`;
       });
     place();
@@ -351,7 +341,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               {/* held under the header while its text is read, the text passing beneath it, as the
                   shorter sheets are held whole (those taller than the screen used to let it scroll away) */}
               <div>
-              <div data-frame className="relative -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              <div className="relative -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
               </div>
@@ -409,12 +399,13 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   // what is delivered, the part to read: larger, in full ink, each with its number
                   // As the discipline arrives its services come in one after another, each line drawing
                   // itself across; on hover a line fills in ink and its words step a touch to the right
-                  <ul className="mt-9 max-w-[44ch]">
+                  {/* (tighter on phones, so each sheet fits under the header whole) */}
+                  <ul className="mt-6 max-w-[44ch] lg:mt-9">
                     {d.list.map((item, k) => {
                       const on = i === active;
                       const delay = on ? `${250 + k * 130}ms` : "0ms";
                       return (
-                        <li key={item} className="group/svc relative py-4">
+                        <li key={item} className="group/svc relative py-2.5 lg:py-4">
                           <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-ink/15" />
                           <span
                             aria-hidden
