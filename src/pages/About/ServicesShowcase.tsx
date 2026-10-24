@@ -335,8 +335,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
               {/* held under the header while its text is read, the text passing beneath it, as the
                   shorter sheets are held whole (those taller than the screen used to let it scroll away) */}
-              {/* (the frame is held only over the discipline's own text: its list ends the hold, so the
-                  closing invitation and the next section are never passed under it) */}
+              {/* (the frame is held only over the discipline's title and text: it lets go before the list,
+                  so neither the list nor the closing invitation is ever passed under it) */}
               <div>
               <div className="sticky top-16 z-10 -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
@@ -388,6 +388,10 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   ))}
                 </h3>
                 <p className={`${BODY} mt-6 max-w-[42ch] text-ink/80`}>{d.text}</p>
+              </div>
+              </div>
+              {/* from here on the frame has let go: the list, and the invitation after the last, are read whole */}
+              <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {d.list && (
                   // what is delivered, the part to read: larger, in full ink, each with its number
                   // As the discipline arrives its services come in one after another, each line drawing
@@ -419,9 +423,6 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     })}
                   </ul>
                 )}
-              </div>
-              </div>
-              <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* at the end of the four, an invitation that comes in once the last is reached */}
                 {i === s.disciplines.length - 1 && (
                   <div className="mt-14">
