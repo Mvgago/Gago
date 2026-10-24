@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
  * It loads only as it nears the screen, and is told to pause whenever it scrolls out of view,
  * so a heavy scene never runs in the background.
  */
-const DevicesFrame: React.FC<{ src: string; title: string; className?: string; paused?: boolean; allowed?: boolean }> = ({ src, title, className = "", paused = false, allowed = true }) => {
+const DevicesFrame: React.FC<{ src: string; title: string; className?: string; paused?: boolean; allowed?: boolean; id?: string }> = ({ src, title, className = "", paused = false, allowed = true, id }) => {
   const box = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
   const [near, setNear] = useState(false);
@@ -35,7 +35,7 @@ const DevicesFrame: React.FC<{ src: string; title: string; className?: string; p
   }, []);
 
   return (
-    <div ref={box} className={`relative overflow-hidden bg-[#d5dcdf] ${className}`}>
+    <div ref={box} id={id} className={`relative overflow-hidden bg-[#d5dcdf] ${className}`}>
       {load && (
         <iframe
           ref={frame}

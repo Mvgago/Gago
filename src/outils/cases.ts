@@ -311,15 +311,15 @@ export const cases: Case[] = [
       // The system beside the brand on the building: from the drawing to the place
       { src: sapMark, pair: true, fit: "contain", draw: "sapphire-mark" },
       { src: sapKey },
+      // Early on, the sales presentation: the site in axonometry, a plan set in the brand, and then that
+      // same flat to walk round in 3D (a concept of the studio's), the piece most worth seeing
+      { src: sapAxo, pair: true, fit: "contain" },
+      { src: sapPlan, fit: "contain" },
+      { src: "", viewer: "devices", frame: "/concepts/sapphire-home/index.html" },
       { src: sapWeb, pair: true },
       { src: sapStationery },
       { src: sapType, pair: true, fit: "contain" },
       { src: sapColours, fit: "contain" },
-      // The sales presentation: the site in axonometry, then a plan set in the brand
-      { src: sapAxo, pair: true, fit: "contain" },
-      { src: sapPlan, fit: "contain" },
-      // Right after the plan: the day zone of that same flat, to walk round in 3D (a concept of the studio's)
-      { src: "", viewer: "devices", frame: "/concepts/sapphire-home/index.html" },
       { src: sapBillboard, pair: true },
       { src: sapAerial },
       // The terrace, the building from the garden, then the sea: wide, to close

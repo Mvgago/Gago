@@ -3,7 +3,8 @@ import { CardsConveyor } from "../../components/Cards/CardsConveyor";
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import SocialPhone from "../../components/Social/SocialPhone";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
+import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { motion } from "framer-motion";
 import { cases, CASE_UI, DISCIPLINE, type Case, type CaseImage } from "../../outils/cases";
 import type { Lang } from "../../i18n/strings";
@@ -257,6 +258,22 @@ const Facts: React.FC<{ c: Case; lang: Lang; className?: string }> = ({ c, lang,
   </>
 );
 
+/** Arriving with a #fragment (a link straight to a piece of the case, such as its 3D viewer): once the
+ *  page has come in, it glides there. */
+const ScrollToHash: React.FC = () => {
+  const { hash } = useLocation();
+  const lenis = useLenis();
+  useEffect(() => {
+    if (!hash) return;
+    const t = window.setTimeout(() => {
+      const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (el) scrollToTarget(lenis, el, { offset: -72 });
+    }, 900);
+    return () => window.clearTimeout(t);
+  }, [hash, lenis]);
+  return null;
+};
+
 export const CaseStudyPage: React.FC = () => {
   const { slug } = useParams();
   const { lang } = useI18n();
@@ -277,6 +294,7 @@ export const CaseStudyPage: React.FC = () => {
 
   return (
     <main className="px-4 pb-16 pt-28 sm:px-6 md:px-8 md:pt-32">
+      <ScrollToHash />
       <LightWall />
 
       {/* One line: back to the index, where we are, on to the next project */}
@@ -433,6 +451,8 @@ export const CaseStudyPage: React.FC = () => {
               // The interactive product scene, wide: taller on phones so the devices stay large
               <DevicesFrame
                 key={r}
+                // the home's viewer can be linked to directly (from the studio page)
+                id={row[0].frame?.includes("sapphire-home") ? "vivienda-3d" : undefined}
                 src={row[0].frame ?? "/concepts/smarthc-devices/index.html"}
                 title={`${c.title} — 3D`}
                 // a home to walk round takes the screen: edge to edge and nearly the viewport's height

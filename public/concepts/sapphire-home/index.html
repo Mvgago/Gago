@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Sapphire — la vivienda en 3D</title>
+<!-- ?bare marked before anything is drawn, so the loading logo never flashes on the studio page -->
+<script>if (/[?&]bare\b/.test(location.search)) document.documentElement.classList.add('bare');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&family=Jost:wght@300;400&display=swap">
 <style>
 /* The Sapphire's own light: warm stone, pale oak, white linen, the sea beyond, sapphire blue for accents */
 :root {
@@ -49,7 +51,11 @@ body.night .credit { color: rgba(244, 241, 236, .3); }
 
 /* loading: the name and a 1px line filling, then the scene comes up under it as it fades */
 .loader { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: var(--ground); z-index: 5; transition: opacity .9s ease; }
-.loader .ln { font-family: var(--display); font-weight: 300; font-size: 20px; letter-spacing: .04em; color: var(--ink); }
+/* the development's own wordmark, as on its sales plan: THE / SAPPHIRE / RESIDENCES in a light geometric
+   sans (Jost, the open Futura), capitals tracked wide */
+.loader .ln { display: flex; flex-direction: column; align-items: center; gap: 7px; font-family: 'Jost', var(--display); font-weight: 300; color: var(--ink); text-transform: uppercase; }
+.loader .ln .wm { font-weight: 300; font-size: 25px; letter-spacing: .6em; margin-right: -.6em; }
+.loader .ln small { font-size: 8px; letter-spacing: .7em; margin-right: -.7em; color: var(--soft); }
 .loader i { position: relative; width: 160px; height: 1px; background: rgba(29,34,48,.12); overflow: hidden; }
 .loader b { position: absolute; inset: 0; width: 100%; transform-origin: left; transform: scaleX(0); background: var(--ink); transition: transform .4s ease; }
 .loader.gone { opacity: 0; pointer-events: none; }
@@ -65,19 +71,34 @@ body.night .tag { color: #f4f1ec; background: rgba(28, 32, 42, .82); border-colo
 .tag.hide { opacity: 0; pointer-events: none; }
 
 /* the guided walk: a button at the head of the controls, and a caption naming each room as it is reached */
-.tourbtn { font: inherit; font-family: var(--mono); font-weight: 400; letter-spacing: .06em; text-transform: uppercase; font-size: 10px; color: #f4f1ec; background: var(--ink); border: 0; border-radius: 2px; padding: 8px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .25s; }
-.tourbtn:hover { background: var(--sapphire); }
+.tourbtn { font: inherit; font-family: var(--mono); font-weight: 400; letter-spacing: .06em; text-transform: uppercase; font-size: 10px; color: #f4f1ec; background: rgba(59, 55, 52, .9); border: 0; border-radius: 2px; padding: 7px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .25s; }
+/* the site's own Index pill: warm graphite, a shade lighter on hover */
+.tourbtn:hover { background: #4d4744; }
 .tourbtn svg { width: 9px; height: 9px; fill: currentColor; }
 .tourcap { position: fixed; left: 34px; bottom: 86px; display: flex; flex-direction: column; gap: 3px; pointer-events: none; padding: 16px 22px 16px 18px; margin-left: -18px; background: rgba(245,245,243,.78); border-left: 1px solid var(--ink); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; transform: translateY(6px); transition: opacity .7s ease, transform .7s ease; }
 .tourcap.on { opacity: 1; transform: none; }
 .tourcap > * { transition: opacity .8s ease, transform .8s ease; } .tourcap:not(.on) > * { opacity: 0; transform: translateY(8px); }
 .tourcap.on > :nth-child(2) { transition-delay: .08s; } .tourcap.on > :nth-child(3) { transition-delay: .16s; } .tourcap.on > :nth-child(4) { transition-delay: .26s; }
 /* while walking: thin letterbox bars come in, the room tags and the hint step back */
-.bars i { position: fixed; left: 0; right: 0; height: 0; background: var(--ink); opacity: .9; z-index: 1; pointer-events: none; transition: height .9s cubic-bezier(.6,0,.2,1); }
+/* a true letterbox: solid bands in the site's warm graphite, tall enough to frame the shot, the caption
+   resting on the lower one and the controls set within it */
+.bars i { position: fixed; left: 0; right: 0; height: 0; background: rgba(59, 55, 52, .62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 1; pointer-events: none; transition: height .9s cubic-bezier(.6,0,.2,1); }
 .bars i:first-child { top: 0; } .bars i:last-child { bottom: 0; }
-body.touring .bars i { height: 5vh; }
+body.touring .bars i { height: 11vh; }
+body.touring .tourcap { bottom: calc(11vh + 18px); }
+body.touring .panel { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.1); box-shadow: none; }
+body.touring .panel .group > span, body.touring .panel .group button { color: rgba(244,241,236,.6); }
+body.touring .panel .group button.on { color: #f4f1ec; background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); }
+body.touring .panel .sep { background: rgba(255,255,255,.12); }
 body.touring .tag { opacity: 0; pointer-events: none; } body.touring .hint, body.touring .credit { opacity: 0; }
 body.touring .hud .cap { opacity: 0; }
+/* ?bare (the studio page): the scene alone, no title, hint, tags or controls over it; only the credits stay */
+body.bare .hud, body.bare .hint, body.bare #tags, body.bare .panel, body.bare .tourcap, body.bare .bars { display: none; }
+/* nor the development's logo while it loads: on the studio page it is the studio's example, not The Sapphire's
+   page; a plain ground until the scene is ready */
+html.bare .loader .ln, html.bare .loader i { display: none; }
+/* and no credits over it there: they stay on the full viewer, one click away */
+html.bare .credit, html.bare .credits { display: none; }
 .panel, .tourcap { z-index: 2; }
 .tourcap small { font-family: var(--mono); font-weight: 300; font-size: 9px; letter-spacing: .12em; color: var(--soft); }
 .tourcap b { font-family: var(--display); font-weight: 300; font-size: 30px; letter-spacing: .01em; color: var(--ink); line-height: 1.05; }
@@ -88,14 +109,16 @@ body.night .tourcap p { color: #f4f1ec; }
 .tourcap em { display: block; height: 100%; width: 100%; background: var(--ink); transform-origin: left; transform: scaleX(0); }
 body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec; } body.night .tourcap b { color: #f4f1ec; } body.night .tourcap small, body.night .tourcap span { color: rgba(244,241,236,.7); } body.night .tourcap em { background: #f4f1ec; }
 /* The controls: one pane of frosted glass at the foot */
-.panel { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; gap: 18px; align-items: center; padding: 6px 8px; border-radius: 3px; background: var(--glass); border: 1px solid rgba(29,34,48,.12); backdrop-filter: blur(14px) saturate(1.25); -webkit-backdrop-filter: blur(14px) saturate(1.25); box-shadow: 0 14px 40px rgba(30, 36, 50, .14); font-family: var(--mono); font-weight: 300; font-size: 11px; max-width: calc(100vw - 68px); box-sizing: border-box; }
-.group { display: flex; align-items: center; gap: 4px; }
-.group > span { color: var(--soft); margin: 0 6px 0 4px; letter-spacing: .1em; text-transform: uppercase; font-size: 9.5px; }
-.group button { font: inherit; letter-spacing: .04em; color: var(--ink); background: transparent; border: 0; padding: 7px 11px; border-radius: 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: background .25s, color .25s; }
-.group button:hover { background: rgba(29, 34, 48, .06); }
-.group button.on { background: var(--ink); color: #f4f1ec; }
-.sw { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); flex: none; }
-.sep { width: 1px; align-self: stretch; background: rgba(29, 34, 48, .12); }
+/* only the walk's button is solid; the settings sit light on frosted glass, the chosen one in a soft
+   white chip with a hairline, so the colour swatch always shows */
+.panel { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; gap: 12px; align-items: center; padding: 5px 6px; border-radius: 3px; background: rgba(255, 255, 255, .42); border: 1px solid rgba(29,34,48,.07); backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2); box-shadow: 0 8px 24px rgba(30, 36, 50, .07); font-family: var(--mono); font-weight: 300; font-size: 10.5px; max-width: calc(100vw - 68px); box-sizing: border-box; }
+.group { display: flex; align-items: center; gap: 2px; }
+.group > span { color: rgba(29, 34, 48, .5); margin: 0 4px 0 2px; letter-spacing: .1em; text-transform: uppercase; font-size: 9px; }
+.group button { font: inherit; letter-spacing: .03em; color: rgba(29, 34, 48, .55); background: transparent; border: 1px solid transparent; padding: 5px 9px; border-radius: 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background .25s, color .25s, border-color .25s; }
+.group button:hover { color: var(--ink); background: rgba(255, 255, 255, .5); }
+.group button.on { color: var(--ink); background: rgba(255, 255, 255, .85); border-color: rgba(29, 34, 48, .14); }
+.sw { width: 9px; height: 9px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); flex: none; }
+.sep { width: 1px; align-self: stretch; margin: 4px 0; background: rgba(29, 34, 48, .08); }
 
 /* phones: one row, each setting a pill that steps through its options at a tap */
 .cycle { display: none; }
@@ -107,10 +130,19 @@ body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec
   .credit { left: 20px; bottom: 7px; font-size: 7.5px; } .credits { left: 20px; }
   .group, .sep { display: none; }
   .tourbtn { padding: 0 11px; align-self: stretch; } .tourbtn span { display: none; }
-  .tourcap { left: 22px; bottom: 96px; } .tourcap b { font-size: 22px; }
+  /* the walk's caption on a phone: a small card just above the controls, name and line only */
+  .tourcap { left: 20px; right: auto; bottom: 74px; margin-left: 0; padding: 7px 11px 8px 10px; gap: 1px; max-width: 62vw; }
+  body.touring .bars i { height: 9vh; } body.touring .tourcap { bottom: calc(9vh + 12px); }
+  body.touring .cycle { background: rgba(255,255,255,.1); color: #f4f1ec; } body.touring .cycle small { color: rgba(244,241,236,.6); }
+  .tourcap small, .tourcap i { display: none; }
+  .tourcap b { font-size: 15px; } .tourcap span { font-size: 9px; }
+  .tourcap p { margin-top: 2px; font-size: 11.5px; line-height: 1.3; max-width: none; }
   .cycle { display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: 1px; font: inherit; color: var(--ink); background: rgba(255,255,255,.55); border: 0; border-radius: 2px; padding: 6px 9px 7px; cursor: pointer; min-width: 0; }
   .cycle small { font-size: 9.5px; color: var(--soft); letter-spacing: .04em; }
-  .cycle b { font-weight: 400; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .cycle b { font-weight: 400; display: flex; align-items: center; gap: 6px; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  /* the three pills share the row equally whatever their words, and a long one is cut short, never pushed off */
+  .cycle { overflow: hidden; flex: 1 1 0 !important; } .panel { overflow: hidden; } .tourbtn { flex: none; }
+  .cycle small, .cycle b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .tag { font-size: 10px; padding: 4px 8px 5px; }
   .tag small { font-size: 9px; }
 }
@@ -119,7 +151,7 @@ body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec
 <body>
 
 <div id="stage"></div>
-<div class="loader" id="loader" aria-hidden="true"><span class="ln">The Sapphire</span><i><b id="bar"></b></i></div>
+<div class="loader" id="loader" aria-hidden="true"><span class="ln"><small>The</small><span class="wm">Sapphire</span><small>Residences</small></span><i><b id="bar"></b></i></div>
 <div class="hud" id="hud">
   <p class="cap" id="cap"><b>The Sapphire</b><span id="cap-text"></span></p>
 </div>
@@ -151,6 +183,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
@@ -181,6 +214,9 @@ document.getElementById('cap-text').textContent = t('cap');
 document.getElementById('hint-text').textContent = t(touch ? 'swipe' : 'drag');
 ['light', 'floor', 'kitchen'].forEach((k) => (document.getElementById('l-' + k).textContent = t(k)));
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// ?bare: shown on the studio page as an example, the scene alone, slowly turning on its own
+const BARE = new URLSearchParams(location.search).has('bare');
+if (BARE) document.body.classList.add('bare');
 
 /* ================= credits: every 3D model in the scene, its author and licence ================= */
 // [title, source, author, author's page, licence, licence's page, changed here]
@@ -190,6 +226,7 @@ const CREDITS = [
   ['Sleek Modern Dining Table Set', SKF + '3d-models/sleek-modern-dining-table-set-9135349108174c8285433b3695977158', 'Stars_001', SKF + 'Stars_001', ...BY, true],
   ['Bed', SKF + '3d-models/bed-b8c16d4b69f64335b46379b119b102b4', 'rickmaolly', SKF + 'rickmaolly', ...BY, true],
   ['BED 30', SKF + '3d-models/bed-30-df64476b23824a049614adda81d42e67', 'jasirkt', SKF + 'jasirkt', ...BY, true],
+  ['Tumbona Doble Reclinable', SKF + '3d-models/tumbona-doble-reclinable-a8186ce559e4441d815f63a6bf9f983b', 'vmmaniac', SKF + 'vmmaniac', ...BY, true],
   ['Rubber Plant (fig)', SKF + '3d-models/rubber-plant-fig-fc83523315714f8d96534bfaa4e15af1', 'jamieirvin', SKF + 'jamieirvin', ...BY, true],
   ['Palm Plant', SKF + '3d-models/palm-plant-fc5680053bb54ff6bacae64be12200ad', 'SomeKevin', SKF + 'SomeKevin', ...BY, true],
   ['JAMAICA STOOL', SKF + '3d-models/jamaica-stool-acc5711fb4734bdcbeccc3c3753e1412', 'jldaureil', SKF + 'jldaureil', 'CC BY-ND 4.0', 'http://creativecommons.org/licenses/by-nd/4.0/', false],
@@ -222,7 +259,8 @@ renderer.shadowMap.autoUpdate = false;
 let shadowDirty = 4;
 const redrawShadows = (n = 2) => (shadowDirty = Math.max(shadowDirty, n));
 // any model that arrives casts its shadow in the next frame
-{ const load = GLTFLoader.prototype.load; GLTFLoader.prototype.load = function (url, onLoad, ...rest) { return load.call(this, url, (g) => { onLoad && onLoad(g); redrawShadows(); }, ...rest); }; }
+// (the models are stored meshopt-compressed: every loader is given the decoder)
+{ const load = GLTFLoader.prototype.load; GLTFLoader.prototype.load = function (url, onLoad, ...rest) { this.setMeshoptDecoder(MeshoptDecoder); return load.call(this, url, (g) => { onLoad && onLoad(g); redrawShadows(); }, ...rest); }; }
 stage.appendChild(renderer.domElement);
 const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
@@ -371,6 +409,7 @@ const M = {
   deck: new THREE.MeshStandardMaterial({ map: deckTex, color: '#ebebe9', roughness: .8 }),
   slabSide: new THREE.MeshStandardMaterial({ color: '#d4d4d1', roughness: .9 }), // a step darker than the floors, so the edge recedes
   wood: new THREE.MeshStandardMaterial({ map: oakTex, color: '#f0dcc2', roughness: .55 }),
+  paleOak: new THREE.MeshStandardMaterial({ map: oakTex, color: '#f4e6d2', roughness: .55 }), // the dining tables' pale oak
   teak: new THREE.MeshStandardMaterial({ map: oakTex, color: '#c79a6b', roughness: .65 }),
   walnut: new THREE.MeshStandardMaterial({ map: oakTex, color: '#8e6446', roughness: .5 }),
   marble: new THREE.MeshStandardMaterial({ map: marbleTex, roughness: .22 }),
@@ -453,7 +492,8 @@ const glazing = (a, b, panes = 3, h = GLASS_H) => {
   const sill = new THREE.Mesh(new THREE.BoxGeometry(len + 0.1, 0.03, 0.18), M.sill); sill.position.y = 0.015; sill.receiveShadow = true; g.add(sill);
   const pane = new THREE.Mesh(new THREE.BoxGeometry(len, h - 0.08, 0.025), M.glass); pane.position.y = h / 2; g.add(pane);
   // slim profiles: the frames drawn as fine lines round the glass, not bars across the view
-  for (let i = 0; i <= panes; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(i === 0 || i === panes ? 0.025 : 0.016, h, 0.04), M.frame); f.position.set(-len / 2 + (len * i) / panes, h / 2, 0); f.castShadow = true; g.add(f); }
+  // (a few millimetres short of the cut, so where a mullion runs into a wall it never shows on the wall's top)
+  for (let i = 0; i <= panes; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(i === 0 || i === panes ? 0.025 : 0.016, h - 0.006, 0.04), M.frame); f.position.set(-len / 2 + (len * i) / panes, (h - 0.006) / 2, 0); f.castShadow = true; g.add(f); }
   [0.025, h - 0.015].forEach((y) => { const f = new THREE.Mesh(new THREE.BoxGeometry(len + 0.02, 0.025, 0.04), M.frame); f.position.y = y; f.castShadow = true; g.add(f); });
 };
 // the terrace's balustrade: lower, frameless clear glass in panels with fine joints, a slim steel handrail on top
@@ -718,10 +758,12 @@ const sofa = (g, w, d, mat, back = true, arms = [true, true]) => {
 const cushion = (g, x, z, mat, ry = 0, s = 0.45) => { const c = box(s, s * 0.9, 0.14, mat, x, 0.56, z, 0.06, ry, g); c.rotation.x = -0.25; return c; };
 // a modelled sofa in place of a drawn one: its length fitted to `w`, standing on the floor, its back
 // to the group's -z (as the drawn one's), swapped in only once it has arrived
+// the sofa's cloth (its two textured materials) a step lighter; its legs left as they are
+const lighterCloth = (o) => { if (o.material && o.material.map && !o.material.userData.lit) { o.material.color.setScalar(1.25); o.material.userData.lit = true; } };
 const realSofa = (g, w, d) => {
   new GLTFLoader().load('/models/sapphire/sofa.glb', (gltf) => {
     const m = gltf.scene;
-    m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; lighterCloth(o); } });
     let box3 = new THREE.Box3().setFromObject(m), size = box3.getSize(new THREE.Vector3());
     if (size.z > size.x) m.rotation.y = Math.PI / 2; // its length along x
     box3 = new THREE.Box3().setFromObject(m); size = box3.getSize(new THREE.Vector3());
@@ -733,6 +775,34 @@ const realSofa = (g, w, d) => {
     m.position.set(-c.x, -box3.min.y, -c.z - d / 2 + dz / 2 + 0.04);
     const holder = new THREE.Group(); holder.add(m); holder.rotation.y = SOFA_FACE;
     g.clear(); g.add(holder);
+  }, undefined, () => {});
+};
+// the same sofa made an armchair `w` wide: at its real size, then only its middle drawn together, so its
+// arms and the ends of its cushions keep their true shape and only the seat between them narrows
+const realArmchairs = (groups, w, d) => {
+  new GLTFLoader().load('/models/sapphire/sofa.glb', (gltf) => {
+    const m = gltf.scene; m.updateMatrixWorld(true);
+    let b = new THREE.Box3().setFromObject(m), s = b.getSize(new THREE.Vector3());
+    const turn = new THREE.Matrix4().makeRotationY(s.z > s.x ? Math.PI / 2 : 0), scale = new THREE.Matrix4().makeScale(0.0254, 0.0254, 0.0254);
+    const flat = new THREE.Group(), parts = [];
+    m.traverse((o) => { if (o.isMesh) { lighterCloth(o); parts.push(o); } });
+    // its positions and normals are stored packed (quantised integers): unpacked to plain floats first,
+    // or baking them into metres would clip them
+    const unpack = (g, name) => { const a = g.attributes[name]; if (!a || a.array instanceof Float32Array) return;
+      const f = new Float32Array(a.count * 3); for (let i = 0; i < a.count; i++) { f[i * 3] = a.getX(i); f[i * 3 + 1] = a.getY(i); f[i * 3 + 2] = a.getZ(i); }
+      g.setAttribute(name, new THREE.BufferAttribute(f, 3)); };
+    parts.forEach((o) => { const g0 = o.geometry.clone(); unpack(g0, 'position'); unpack(g0, 'normal');
+      const g = g0.applyMatrix4(o.matrixWorld).applyMatrix4(turn).applyMatrix4(scale);
+      const mesh = new THREE.Mesh(g, o.material); mesh.castShadow = mesh.receiveShadow = true; flat.add(mesh); });
+    b = new THREE.Box3().setFromObject(flat); const c = b.getCenter(new THREE.Vector3()), half = (b.max.x - b.min.x) / 2;
+    const end = 0.38, a = half - end, k = Math.max(0.05, (w / 2 - end) / a);
+    flat.children.forEach((mesh) => { const p = mesh.geometry.attributes.position;
+      for (let i = 0; i < p.count; i++) { const x = p.getX(i) - c.x, ax = Math.abs(x); p.setX(i, Math.sign(x) * (ax <= a ? ax * k : a * k + (ax - a))); }
+      p.needsUpdate = true; mesh.geometry.computeBoundingBox(); mesh.geometry.computeBoundingSphere(); });
+    b = new THREE.Box3().setFromObject(flat); const dz = b.max.z - b.min.z;
+    // standing on the floor, its back where the drawn one's was
+    flat.position.set(0, -b.min.y, -(b.min.z + b.max.z) / 2 - d / 2 + dz / 2 + 0.04);
+    groups.forEach((g) => { const holder = new THREE.Group(); holder.add(flat.clone()); holder.rotation.y = SOFA_FACE; g.clear(); g.add(holder); });
   }, undefined, () => {});
 };
 
@@ -748,22 +818,65 @@ const realSofa = (g, w, d) => {
   // a second one, facing the glass to the sea, its end meeting the first's: the two make an L
   // (where the plan draws the daybed); its back to the room, clear of the columns
   s1.position.x = 4.05;
-  // the second sofa stops short of the first one's front, with a hand's width between them
-  const s2 = group(2.45, 6.28, Math.PI / 2); sofa(s2, 2.3, 0.95, M.sofa);
-  [[-0.6, M.sand], [0.6, M.sand]].forEach(([x, m]) => cushion(s2, x, -0.2, m));
-  realSofa(s2, 2.3, 0.95);
-  // between them, a low table worth looking at: a travertine top on a walnut plinth, rounded at
-  // the corners, with a few things on it (two books, a bowl, a small vase with a sprig)
+  // in the second sofa's place, facing the glass: two armchairs, the same sofa made a single seat each,
+  // side by side with a little air between them
+  const chairs = [-0.55, 0.55].map((dx) => { const g = group(2.45, 6.28 - dx, Math.PI / 2); sofa(g, 0.95, 0.95, M.sofa); return g; });
+  realArmchairs(chairs, 0.95, 0.95);
+  // between them, a solid low table in steel: a thick brushed-steel top with softened edges (1.25 × 0.66 m,
+  // 6 cm), floating on a graphite steel plinth set well back from its edges; two books, a bowl and a
+  // small vase on it
   {
-    const tx = 3.95, tz = 6.75;
-    box(1.0, 0.24, 0.5, M.walnut, tx, 0.12, tz, 0.04); // the plinth, set back
-    box(1.35, 0.08, 0.82, M.travertine, tx, 0.28, tz, 0.035); // the top
-    box(0.34, 0.035, 0.25, M.book[1], tx - 0.36, 0.338, tz - 0.1, 0.006, 0.15);
-    box(0.3, 0.03, 0.22, M.book[2], tx - 0.35, 0.37, tz - 0.1, 0.006, 0.05);
-    cyl(0.17, 0.11, 0.07, M.ceramic, tx + 0.3, 0.355, tz + 0.08, 32);
-    cyl(0.05, 0.065, 0.2, M.ceramicBlue, tx + 0.05, 0.42, tz - 0.18, 24);
+    const tx = 3.95, tz = 6.75, H = 0.36, T = 0.06;
+    const steelTop = new THREE.MeshStandardMaterial({ color: '#dfe2e4', metalness: .75, roughness: .4, envMapIntensity: 1.5 }); // a light satin steel, not chrome
+    const graphite = new THREE.MeshStandardMaterial({ color: '#9a9da0', metalness: .75, roughness: .45 });
+    box(1.06, H - T, 0.46, graphite, tx, (H - T) / 2, tz, 0.02); // the plinth, set back
+    box(1.42, T, 0.76, steelTop, tx, H - T / 2, tz, 0.025); // the top
+    box(0.3, 0.032, 0.22, M.book[1], tx - 0.28, H + 0.016, tz - 0.06, 0.006, 0.15);
+    box(0.27, 0.028, 0.2, M.book[2], tx - 0.27, H + 0.046, tz - 0.06, 0.006, 0.05);
+    cyl(0.13, 0.09, 0.065, M.ceramic, tx + 0.28, H + 0.033, tz + 0.06, 32);
+    cyl(0.045, 0.06, 0.18, M.ceramicBlue, tx + 0.02, H + 0.09, tz - 0.14, 24);
   }
 }
+// the dining chairs' material with its wood repainted: every light (wood) pixel of its texture taken to the
+// pale oak, keeping its grain's light and shade; the dark upholstery left as it is
+function paleChair(mat, fab = [218, 210, 199]) {
+  const src = mat.map && mat.map.image; if (!src) return mat;
+  const c = document.createElement('canvas'); c.width = src.width; c.height = src.height; const x = c.getContext('2d');
+  x.drawImage(src, 0, 0); const d = x.getImageData(0, 0, c.width, c.height), p = d.data;
+  for (let i = 0; i < p.length; i += 4) { const r = p[i], g = p[i + 1], b = p[i + 2], l = 0.3 * r + 0.59 * g + 0.11 * b;
+    // (the target is the table's own oak as it renders: the oak texture under its pale tint)
+    if (r - b > 18 && l > 45) { const k = Math.min(1.12, 0.85 + l / 600); p[i] = Math.min(255, 174 * k); p[i + 1] = Math.min(255, 148 * k); p[i + 2] = Math.min(255, 119 * k); }
+    // the dark upholstery made the living room sofa's own light greige cloth, its folds kept as light and shade
+    else { const k = 0.84 + Math.min(1, l / 90) * 0.16; p[i] = fab[0] * k; p[i + 1] = fab[1] * k; p[i + 2] = fab[2] * k; } }
+  x.putImageData(d, 0, 0);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.flipY = mat.map.flipY; t.wrapS = mat.map.wrapS; t.wrapT = mat.map.wrapT; t.anisotropy = aniso;
+  const m = mat.clone(); m.map = t; return m;
+}
+// one chair lifted out of the dining set's single mesh of six: its faces grouped by which of the six
+// places (two sides by three along) their centre falls in, the first place's faces kept, in world metres
+function oneChair(o) {
+  // (its positions are stored packed as integers: unpacked to floats first, or baking the matrix clips them)
+  const g = o.geometry.clone();
+  ['position', 'normal'].forEach((n) => { const a = g.attributes[n]; if (!a || a.array instanceof Float32Array) return;
+    const f = new Float32Array(a.count * 3); for (let i = 0; i < a.count; i++) { f[i * 3] = a.getX(i); f[i * 3 + 1] = a.getY(i); f[i * 3 + 2] = a.getZ(i); }
+    g.setAttribute(n, new THREE.BufferAttribute(f, 3)); });
+  g.applyMatrix4(o.matrixWorld); const p = g.attributes.position, idx = g.index ? g.index.array : Array.from({ length: p.count }, (_, i) => i);
+  const bb = new THREE.Box3().setFromBufferAttribute(p), sz = bb.getSize(new THREE.Vector3()), along = sz.z > sz.x ? 'z' : 'x', across = along === 'z' ? 'x' : 'z';
+  const v = new THREE.Vector3(), keep = [];
+  for (let i = 0; i < idx.length; i += 3) { v.set(0, 0, 0); for (let k = 0; k < 3; k++) v.add(new THREE.Vector3().fromBufferAttribute(p, idx[i + k])); v.divideScalar(3);
+    const side = v[across] < (bb.min[across] + bb.max[across]) / 2, bin = Math.floor((v[along] - bb.min[along]) / sz[along] * 3);
+    if (side && bin === 0) keep.push(idx[i], idx[i + 1], idx[i + 2]); }
+  g.setIndex(keep); const cb = new THREE.Box3(); const tmp = new THREE.Vector3(); keep.forEach((k) => cb.expandByPoint(tmp.fromBufferAttribute(p, k)));
+  const cc = cb.getCenter(new THREE.Vector3()); g.translate(-cc.x, -cb.min.y, -cc.z);
+  // which way it faces: towards the table, i.e. away from its side's edge
+  const mesh = new THREE.Mesh(g, o.material); mesh.castShadow = mesh.receiveShadow = true;
+  const holder = new THREE.Group(); holder.add(mesh);
+  // turned so it faces +z (its front towards the table it is set at)
+  const dir = (cc[across] < (bb.min[across] + bb.max[across]) / 2 ? 1 : -1); // it faces the table's centre line
+  holder.rotation.y = across === 'x' ? (dir > 0 ? Math.PI / 2 : -Math.PI / 2) : (dir > 0 ? 0 : Math.PI);
+  const wrap = new THREE.Group(); wrap.add(holder); return wrap;
+}
+let terraceChairs = () => {};
 // --- dining: an oak table for six, rattan chairs, a vase of olive branches, pendants
 const lamps = [];
 const pendant = (x, z, y = 1.65) => { const l = new THREE.PointLight('#ffc983', 0, 6, 1.5); l.position.set(x, y, z); house.add(l); lamps.push(l); };
@@ -782,11 +895,26 @@ const pendant = (x, z, y = 1.65) => { const l = new THREE.PointLight('#ffc983', 
   const drawn = house.children.slice(houseBefore);
   new GLTFLoader().load('/models/sapphire/dining.glb', (gltf) => {
     const m = gltf.scene;
-    m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    // the table lightened so it doesn't weigh on the room: its top in the house's pale oak, its legs in the
+    // coffee table's light satin steel. They are one piece in the model, so its faces are split by height:
+    // those at the top's level take the oak (a material group each)
+    const paleOak = M.paleOak;
+    const legSteel = new THREE.MeshStandardMaterial({ color: '#dfe2e4', metalness: .75, roughness: .4, envMapIntensity: 1.5 });
+    m.updateMatrixWorld(true);
+    m.traverse((o) => { if (!o.isMesh) return; o.castShadow = true; o.receiveShadow = true;
+      if (!/Table/.test(o.name)) return;
+      const g = o.geometry, p = g.attributes.position, idx = g.index ? Array.from(g.index.array) : Array.from({ length: p.count }, (_, i) => i);
+      const v = new THREE.Vector3(), ys = Array.from({ length: p.count }, (_, i) => v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld).y);
+      const hi = Math.max(...ys), lo = Math.min(...ys), cut = hi - (hi - lo) * 0.08; // the top: its upper 8%
+      const top = [], legs = [];
+      for (let i = 0; i < idx.length; i += 3) { const t = [idx[i], idx[i + 1], idx[i + 2]]; (t.every((k) => ys[k] > cut) ? top : legs).push(...t); }
+      g.setIndex(top.concat(legs)); g.clearGroups(); g.addGroup(0, top.length, 0); g.addGroup(top.length, legs.length, 1);
+      o.material = [paleOak, legSteel]; });
     let b = new THREE.Box3().setFromObject(m), sz = b.getSize(new THREE.Vector3());
     if (sz.x > sz.z) m.rotation.y = Math.PI / 2; // its length along z, as the room's
     b = new THREE.Box3().setFromObject(m); sz = b.getSize(new THREE.Vector3());
-    m.scale.setScalar(Math.min(1, (L + 0.4) / sz.z, (W + 1.3) / sz.x));
+    // a little under its modelled size, so it sits lighter in the room
+    m.scale.setScalar(0.88 * Math.min(1, (L + 0.4) / sz.z, (W + 1.3) / sz.x));
     b = new THREE.Box3().setFromObject(m); const c = b.getCenter(new THREE.Vector3());
     m.position.set(cx - c.x, -b.min.y, cz - c.z);
     // kept clear of the glass along the living room (x = 6.11), with room to pass behind the chairs
@@ -794,6 +922,14 @@ const pendant = (x, z, y = 1.65) => { const l = new THREE.PointLight('#ffc983', 
     if (over > 0) m.position.x -= over;
     drawn.forEach((o) => house.remove(o));
     house.add(m);
+    // the chairs: their wood repainted in the table's pale oak, the dark upholstery kept
+    let orig = null;
+    m.traverse((o) => { if (!o.isMesh || /Table/.test(o.name)) return; orig = o.material; o.material = paleChair(o.material); });
+    // and one of them, lifted out whole, made the terrace's six, upholstered in the terrace sofa's off-white
+    m.updateMatrixWorld(true);
+    m.traverse((o) => { if (o.isMesh && !/Table/.test(o.name) && !window.__chair) window.__chair = oneChair(o); });
+    if (window.__chair && orig) { const tm = paleChair(orig, [244, 242, 238]); window.__chair.traverse((o) => { if (o.isMesh) o.material = tm; }); }
+    if (window.__chair) terraceChairs(window.__chair);
   }, undefined, () => {});
   [-0.6, 0, 0.6].forEach((dz) => pendant(cx, cz + dz));
 }
@@ -942,9 +1078,26 @@ function tallerAtPlusX(obj) {
   // the real double beds, once loaded, each in a drawn one's place: its length along the drawn one's,
   // headboard at its -x end, fitted within its length and width; the same bed in both rooms.
   // "Bed" by rickmaolly, CC BY 4.0
+  // the double bed kept as modelled, only its colours brought into the house's: the black upholstery
+  // (headboard and base) to the singles' grey, the olive throw to their pearl grey, the white linen left
+  // white; each pixel keeps its own light and shade
+  const retoneBed = (mat) => { const img = mat.map && mat.map.image; if (!img) return mat;
+    const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d'); x.drawImage(img, 0, 0);
+    const d = x.getImageData(0, 0, c.width, c.height), p = d.data;
+    for (let i = 0; i < p.length; i += 4) { const r = p[i], g = p[i + 1], b = p[i + 2], l = (r + g + b) / 3, mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+      // the white sheets and pillows lifted to a soft, bright white, their folds kept
+      if (l > 170 && mx - mn < 30) { const k = 0.9 + (l - 170) / 850; p[i] = Math.min(255, 248 * k); p[i + 1] = Math.min(255, 246 * k); p[i + 2] = Math.min(255, 242 * k); continue; }
+      // the throw a deep warm taupe, so the bed keeps its character; the upholstery a warm mid grey
+      const throwPx = mx - mn > 12 && g >= b, tone = throwPx ? [158, 144, 127] : [150, 147, 141];
+      const k = 0.72 + Math.min(1, l / (throwPx ? 140 : 70)) * 0.28;
+      p[i] = tone[0] * k; p[i + 1] = tone[1] * k; p[i + 2] = tone[2] * k; }
+    x.putImageData(d, 0, 0);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.flipY = mat.map.flipY; t.wrapS = mat.map.wrapS; t.wrapT = mat.map.wrapT; t.anisotropy = aniso;
+    // matte, as cotton and linen are: no satin sheen on the pillows
+    const m = mat.clone(); m.map = t; m.roughness = 0.9; m.metalness = 0; return m; };
   const realBed = (g, w, l, url) => new GLTFLoader().load(url, (gltf) => {
     const src = gltf.scene;
-    src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    src.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material = retoneBed(o.material); } });
     const turn = new THREE.Group(); turn.add(src);
     // measured on its vertices, not its boxes, so it stands on the floor exactly
     let b = new THREE.Box3().setFromObject(turn, true), s = b.getSize(new THREE.Vector3());
@@ -982,25 +1135,150 @@ new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
 
 // --- terrace: a round teak table for six, an outdoor lounge, two loungers with a parasol
 {
-  const [tx, tz] = P(565, 55); cyl(0.7, 0.7, 0.04, M.teak, tx, 0.74, tz, 48); cyl(0.07, 0.22, 0.72, M.teak, tx, 0.36, tz, 20);
-  for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2 + 0.3; const g = group(tx + Math.cos(a) * 1.05, tz + Math.sin(a) * 1.05, -a - Math.PI / 2);
-    box(0.5, 0.05, 0.48, M.teak, 0, 0.44, 0, 0.02, 0, g); box(0.46, 0.06, 0.44, M.cream, 0, 0.49, 0.01, 0.03, 0, g); box(0.5, 0.36, 0.04, M.teak, 0, 0.66, -0.22, 0.02, 0, g);
-    [[-0.2, -0.2], [0.2, -0.2], [-0.2, 0.2], [0.2, 0.2]].forEach(([p, q]) => box(0.04, 0.44, 0.04, M.teak, p, 0.22, q, 0.01, 0, g)); }
-  // the lounge: a three-seater, two armchairs, a low table
-  const [ax0, az0] = P(700, 118), [ax1, az1] = P(790, 150);
-  const so = group((ax0 + ax1) / 2, (az0 + az1) / 2, 0); sofa(so, ax1 - ax0, az1 - az0 + 0.1, M.cream);
-  [[-0.6, M.sky], [0.6, M.sky]].forEach(([x, m]) => cushion(so, x, -0.15, m));
-  const [bx0, bz0] = P(720, 205), [bx1, bz1] = P(780, 235);
-  const so2 = group((bx0 + bx1) / 2, (bz0 + bz1) / 2, Math.PI); sofa(so2, bx1 - bx0, bz1 - bz0 + 0.1, M.cream);
-  [[0, M.sand]].forEach(([x, m]) => cushion(so2, x, -0.15, m));
-  const [lx0, lz0] = P(720, 160), [lx1, lz1] = P(770, 195); box(lx1 - lx0, 0.3, lz1 - lz0, M.teak, (lx0 + lx1) / 2, 0.15, (lz0 + lz1) / 2, 0.02);
-  // loungers, side by side, with towels, and a parasol between them
-  const lounger = (z0, z1) => { const [x0] = P(715, 0), [x1] = P(790, 0); const g = group((x0 + x1) / 2, (z0 + z1) / 2, Math.PI / 2);
+  const [tx, tz] = P(565, 55); cyl(0.56, 0.56, 0.04, M.paleOak, tx, 0.74, tz, 48); cyl(0.06, 0.19, 0.72, M.paleOak, tx, 0.36, tz, 20); // in the dining table's pale oak, 1.1 m across, so the corner breathes
+  // six outdoor chairs in the same pale oak: slender splayed legs, a thin seat frame, a back of three
+  // fine horizontal slats gently raked, and a soft linen cushion in the house's sand
+  const cushionM = new THREE.MeshPhysicalMaterial({ map: linenTex, bumpMap: linenBump, bumpScale: 1, color: '#d9ccb6', roughness: .9, sheen: 1, sheenRoughness: .7, sheenColor: new THREE.Color('#efe7da') });
+  // (drawn first; once the dining set has loaded, its own chair takes each place, facing the table)
+  const places = [];
+  // (turned half round: the lifted chair comes out with its back to +z, the drawn ones had theirs to -z)
+  terraceChairs = (proto) => places.forEach((g) => { g.clear(); const c = proto.clone(); c.rotation.y = Math.PI; c.scale.setScalar(0.92); g.add(c); });
+  for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2 + 0.3; const g = group(tx + Math.cos(a) * 0.86, tz + Math.sin(a) * 0.86, -a - Math.PI / 2); places.push(g);
+    [[-0.19, -0.18], [0.19, -0.18], [-0.19, 0.18], [0.19, 0.18]].forEach(([p, q]) => { const l = box(0.028, 0.44, 0.028, M.paleOak, p, 0.22, q, 0.008, 0, g); l.rotation.x = q * 0.25; l.rotation.z = -p * 0.25; });
+    box(0.44, 0.03, 0.42, M.paleOak, 0, 0.43, 0, 0.008, 0, g); // the seat frame
+    box(0.42, 0.055, 0.4, cushionM, 0, 0.47, 0.01, 0.025, 0, g); // the cushion
+    [-1, 1].forEach((sd) => { const p = box(0.028, 0.46, 0.028, M.paleOak, sd * 0.2, 0.66, -0.2, 0.008, 0, g); p.rotation.x = -0.12; }); // back posts
+    [0.6, 0.71, 0.82].forEach((y) => { const s = box(0.42, 0.045, 0.016, M.paleOak, 0, y, -0.205 - (y - 0.6) * 0.12, 0.006, 0, g); s.rotation.x = -0.12; }); }
+  // the lounge, as an outdoor living room: a white modular sofa in an L with a chaise, on slim steel
+  // legs, its seat and back cushions full and soft in white linen, turquoise cushions; a low white table
+  // on slab legs, a jute rug under it all, and a knitted pouf
+  {
+    // a cushion: full in the middle, softly squared at its edges (a superellipsoid), its cloth laid flat
+    // its top domed and gently puckered, as a filled cushion settles: soft folds running in from the edges
+    const soft = (l, h, w, ex = 0.22, ey = 0.5) => { const g = new THREE.SphereGeometry(1, 72, 36), p = g.attributes.position, uv = g.attributes.uv, f = (v, e) => Math.sign(v) * Math.pow(Math.abs(v), e);
+      for (let i = 0; i < p.count; i++) { const sx = p.getX(i), sy = p.getY(i), sz = p.getZ(i);
+        let x = f(sx, ex) * l / 2, y = f(sy, ey) * h / 2, z = f(sz, ex) * w / 2;
+        const u = Math.abs(sx), v = Math.abs(sz), edge = Math.max(u, v); // 0 at the middle, 1 at the rim
+        y += Math.sign(sy) * h * 0.14 * (1 - edge * edge); // fuller in the middle
+        y += h * 0.05 * Math.sin(sx * 9 + sz * 3) * Math.sin(sz * 8 - sx * 2) * edge * edge; // folds near the edges
+        p.setXYZ(i, x, y, z); uv.setXY(i, x / 0.5, z / 0.5 + y / 0.5); }
+      g.computeVertexNormals(); return g; };
+    // (a heavier outdoor weave: its texture drawn finer and its relief stronger than the bedding's)
+    const weave = linenTex.clone(), weaveBump = linenBump.clone(); [weave, weaveBump].forEach((t) => { t.repeat.set(4, 4); t.needsUpdate = true; });
+    const cloth = (c, sheen = '#ffffff') => new THREE.MeshPhysicalMaterial({ map: weave, bumpMap: weaveBump, bumpScale: 4.5, color: c, roughness: .93, sheen: 1, sheenRoughness: .55, sheenColor: new THREE.Color(sheen) });
+    // the cushions taken from the bed's own modelled pillow (its creases, its piping), each fitted to its
+    // size once that model has loaded: [mesh, length, height, thickness]
+    const pillows = [];
+    const pillow = (l, h, t, mat, x, y, z, rx = 0, ry = 0) => { const m = put(soft(l, h, t, 0.3, 0.5), mat, x, y, z, rx, ry); pillows.push([m, l, h, t]); return m; };
+    new GLTFLoader().load('/models/sapphire/bed30.glb', (gltf) => {
+      let src = null; gltf.scene.updateMatrixWorld(true);
+      gltf.scene.traverse((o) => { if (o.isMesh && /PILLOW_01/.test(o.name)) src = o; });
+      if (!src) return;
+      const g0 = src.geometry.clone().applyMatrix4(src.matrixWorld); g0.computeBoundingBox();
+      let s = g0.boundingBox.getSize(new THREE.Vector3());
+      // laid with its thin side along z and its length along x
+      if (s.y < s.x && s.y < s.z) g0.rotateX(Math.PI / 2); else if (s.x < s.y && s.x < s.z) g0.rotateY(Math.PI / 2);
+      g0.computeBoundingBox(); s = g0.boundingBox.getSize(new THREE.Vector3());
+      if (s.y > s.x) g0.rotateZ(Math.PI / 2);
+      g0.center(); g0.computeBoundingBox(); s = g0.boundingBox.getSize(new THREE.Vector3());
+      pillows.forEach(([m, l, h, t]) => { const g = g0.clone(); g.scale(l / s.x, h / s.y, t / s.z);
+        // its cloth laid on its face, one tile across the whole cushion (so a print or embroidery sits on it whole)
+        const uv = g.attributes.uv, p = g.attributes.position; if (uv) for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / l + 0.5, p.getY(i) / h + 0.5);
+        g.computeVertexNormals(); m.geometry.dispose(); m.geometry = g; });
+      redrawShadows();
+    }, undefined, () => {});
+    const white = cloth('#f4f2ee'), teal = cloth('#b9826c', '#d8b8a8') /* an earthy coral, matte */, legM = new THREE.MeshStandardMaterial({ color: '#c9ccce', metalness: .85, roughness: .35 });
+    const put = (geo, mat, x, y, z, rx = 0, ry = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, 0); m.castShadow = m.receiveShadow = true; house.add(m); return m; };
+    // a seat module: a white upholstered base on four slim legs, a full seat cushion on it
+    const seat = (x0, x1, z0, z1) => { const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, l = x1 - x0, w = z1 - z0;
+      put(new RoundedBoxGeometry(l, 0.16, w, 4, 0.04), white, cx, 0.2, cz);
+      [[x0 + 0.06, z0 + 0.06], [x1 - 0.06, z0 + 0.06], [x0 + 0.06, z1 - 0.06], [x1 - 0.06, z1 - 0.06]].forEach(([x, z]) => put(new THREE.CylinderGeometry(0.012, 0.012, 0.12, 10), legM, x, 0.06, z));
+      put(soft(l - 0.02, 0.17, w - 0.02), white, cx, 0.355, cz); };
+    // the main run along the back, 2.4 m, and the chaise coming forward at its right end
+    const zb = -1.65, zf = -0.72;
+    seat(6.9, 8.4, zb, zf); seat(8.4, 9.3, zb, zf); seat(8.4, 9.3, zf, 0.5);
+    // the back cushions, leaning on the run's back edge, three side by side
+    [7.3, 8.05, 8.85].forEach((x) => pillow(0.78, 0.56, 0.24, white, x, 0.68, zb + 0.15, -0.2));
+    // turquoise cushions, and one white, set against the backs
+    pillow(0.48, 0.44, 0.16, teal, 7.3, 0.64, zb + 0.34, -0.32, 0.12);
+    // the other one embroidered: the same earthy coral, with a field of small undyed stitches in a
+    // staggered grid and a running stitch round its edge, by hand rather than printed
+    const stitched = (relief) => (x, w, h) => { x.fillStyle = relief ? '#707070' : '#b9826c'; x.fillRect(0, 0, w, h);
+      const ink = relief ? '#ffffff' : '#f0e8dc'; x.fillStyle = ink; x.strokeStyle = ink; x.lineCap = 'round';
+      const n = 9, s = w / n;
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) { const cx = c * s + s / 2 + (r % 2) * s / 2, cy = r * s + s / 2;
+        // a little cross of two short stitches
+        x.lineWidth = 5; x.beginPath(); x.moveTo(cx - 7, cy - 7); x.lineTo(cx + 7, cy + 7); x.moveTo(cx + 7, cy - 7); x.lineTo(cx - 7, cy + 7); x.stroke(); }
+      // the running stitch round the edge
+      x.lineWidth = 4; x.setLineDash([16, 12]); x.strokeRect(22, 22, w - 44, h - 44); x.setLineDash([]); };
+    const stitchTex = tex(512, 512, stitched(false)), stitchBump = tex(512, 512, stitched(true), null, false);
+    const printed = new THREE.MeshPhysicalMaterial({ map: stitchTex, bumpMap: stitchBump, bumpScale: 3, roughness: .93, sheen: 1, sheenRoughness: .55, sheenColor: new THREE.Color('#d8b8a8') });
+    pillow(0.48, 0.44, 0.16, printed, 8.75, 0.64, zb + 0.34, -0.32, -0.1);
+    pillow(0.44, 0.4, 0.15, white, 8.25, 0.62, zb + 0.36, -0.3, 0.05);
+    // the low table: a white slab on two slab legs, a navy vase and a book on it
+    { const tx = 7.65, tz = -0.05, tm = new THREE.MeshStandardMaterial({ color: '#f2f0ec', roughness: .55 });
+      put(new RoundedBoxGeometry(1.0, 0.05, 0.58, 3, 0.012), tm, tx, 0.32, tz);
+      [-1, 1].forEach((sd) => put(new RoundedBoxGeometry(0.05, 0.3, 0.5, 3, 0.01), tm, tx + sd * 0.42, 0.15, tz));
+      put(new THREE.CylinderGeometry(0.06, 0.075, 0.24, 24), M.ceramicBlue, tx + 0.2, 0.465, tz - 0.06);
+      box(0.28, 0.035, 0.2, M.book[2], tx - 0.2, 0.362, tz + 0.04, 0.005, 0.2); }
+    // the jute rug, a woven pale straw with a slightly darker border
+    // a natural sisal, pale and neutral (stone more than straw): a tight basket weave of fibres, drawn for
+    // colour and again for relief, a quiet border in the same fibre
+    { const sisal = (relief) => (x, w, h) => { x.fillStyle = relief ? '#808080' : '#d9d3c6'; x.fillRect(0, 0, w, h);
+        const s = 8;
+        for (let j = 0; j < h; j += s) for (let i = 0; i < w; i += s) { const along = ((i + j) / s) % 2 === 0;
+          for (let k = 0; k < 4; k++) { const t = rnd();
+            x.fillStyle = relief ? `rgba(${t < .5 ? 0 : 255},${t < .5 ? 0 : 255},${t < .5 ? 0 : 255},${.18 + rnd() * .2})` : `rgba(${140 + rnd() * 50},${130 + rnd() * 40},${110 + rnd() * 30},${.15 + rnd() * .2})`;
+            if (along) x.fillRect(i, j + k * 2, s, 1.3); else x.fillRect(i + k * 2, j, 1.3, s); } }
+        for (let i = 0; i < 2500; i++) { x.fillStyle = relief ? `rgba(255,255,255,${rnd() * .2})` : `rgba(120,108,90,${rnd() * .12})`; x.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 3, 1); }
+        x.strokeStyle = relief ? 'rgba(255,255,255,.35)' : 'rgba(170,160,142,.6)'; x.lineWidth = 16; x.strokeRect(10, 10, w - 20, h - 20); };
+      const jute = tex(1024, 1024, sisal(false)), juteBump = tex(1024, 1024, sisal(true), null, false);
+      const r = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 2.3), new THREE.MeshStandardMaterial({ map: jute, bumpMap: juteBump, bumpScale: 3, roughness: 1 }));
+      r.rotation.x = -Math.PI / 2; r.position.set(8.05, 0.006, -0.55); r.receiveShadow = true; house.add(r); }
+    // a knitted pouf in navy, by the table
+    // a round pouf in a chunky sapphire knit: rows of plump stitches, drawn for colour and for relief
+    { const knitDraw = (relief) => (x, w, h) => { x.fillStyle = relief ? '#202020' : '#ffffff'; x.fillRect(0, 0, w, h);
+        const cw = w / 16, ch = h / 22;
+        for (let r = 0; r < 22; r++) for (let c = 0; c < 16; c++) [-1, 1].forEach((sd) => {
+          const cx = c * cw + cw / 2 + sd * cw * 0.2, cy = r * ch + ch / 2, g = x.createRadialGradient(cx, cy, 0, cx, cy, cw * 0.32);
+          g.addColorStop(0, relief ? '#ffffff' : '#ffffff'); g.addColorStop(1, relief ? '#303030' : '#b8b8c0');
+          x.save(); x.translate(cx, cy); x.rotate(sd * 0.55); x.scale(0.55, 1); x.fillStyle = g; x.beginPath(); x.arc(0, 0, cw * 0.36, 0, 7); x.fill(); x.restore(); }); };
+      const knitTex = tex(512, 512, knitDraw(false), [3, 2]), knitBump = tex(512, 512, knitDraw(true), [3, 2], false);
+      const knit = new THREE.MeshPhysicalMaterial({ map: knitTex, bumpMap: knitBump, bumpScale: 5, color: '#33447a', roughness: .95, sheen: .8, sheenRoughness: .6, sheenColor: new THREE.Color('#8e9bd0') });
+      // round in plan, its top and sides softly full; the knit wrapped round it
+      const g = new THREE.SphereGeometry(1, 72, 36), p = g.attributes.position, uv = g.attributes.uv, f = (v, e) => Math.sign(v) * Math.pow(Math.abs(v), e);
+      for (let i = 0; i < p.count; i++) { const sy = p.getY(i), rr = Math.hypot(p.getX(i), p.getZ(i)) || 1e-6, k = Math.pow(rr, 0.35) / rr;
+        p.setXYZ(i, p.getX(i) * k * 0.34, f(sy, 0.4) * 0.19, p.getZ(i) * k * 0.34); }
+      g.computeVertexNormals();
+      put(g, knit, 6.95, 0.19, 0.55); }
+  }
+  // two loungers side by side with a low travertine table between them: drawn first, then the real
+  // ones in their place once loaded: a reclining double made a single, its width drawn in to 0.8 m
+  // (its length and height true), backs to the house, feet to the sea.
+  // "Tumbona Doble Reclinable" by vmmaniac, CC BY 4.0
+  const loungerAt = [];
+  const lounger = (z0, z1) => { const [x0] = P(715, 0), [x1] = P(790, 0); const g = group((x0 + x1) / 2, (z0 + z1) / 2, Math.PI / 2); loungerAt.push(g);
     box(z1 - z0 + 0.05, 0.22, x1 - x0, M.teak, 0, 0.17, 0, 0.03, 0, g); box(z1 - z0 - 0.05, 0.1, x1 - x0 - 0.5, M.cream, 0, 0.32, 0.2, 0.04, 0, g);
     const back = box(z1 - z0 - 0.05, 0.1, 0.62, M.cream, 0, 0.5, -(x1 - x0) / 2 + 0.38, 0.04, 0, g); back.rotation.x = -0.75;
   };
   lounger(P(0, 447)[1], P(0, 470)[1]); lounger(P(0, 510)[1], P(0, 538)[1]);
-  cyl(0.22, 0.22, 0.42, M.travertine, P(752, 492)[0], 0.21, P(0, 492)[1], 28);
+  cyl(0.2, 0.2, 0.4, M.travertine, P(752, 492)[0], 0.2, P(0, 492)[1], 28);
+  new GLTFLoader().load('/models/sapphire/lounger.glb', (gltf) => {
+    const turn = new THREE.Group(); turn.add(gltf.scene);
+    // its cushions in the terrace sofa's off-white linen, its wood left as it is
+    const offWhite = new THREE.MeshPhysicalMaterial({ map: linenTex, bumpMap: linenBump, bumpScale: 3, color: '#f4f2ee', roughness: .93, sheen: 1, sheenRoughness: .55, sheenColor: new THREE.Color('#ffffff') });
+    gltf.scene.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; if (/Fabric/i.test(o.material.name)) o.material = offWhite; } });
+    let b = new THREE.Box3().setFromObject(turn, true), s = b.getSize(new THREE.Vector3());
+    if (s.z > s.x) turn.rotation.y = Math.PI / 2; // its length along x
+    if (tallerAtPlusX(turn)) turn.rotation.y += Math.PI; // its back to -x, the house
+    b = new THREE.Box3().setFromObject(turn, true); s = b.getSize(new THREE.Vector3());
+    // brought down to a lounger's usual size beside the rest (1.75 m long, its back 0.8 m), and narrowed to 0.7 m
+    const k = 1.75 / s.x, wide = new THREE.Group(); wide.add(turn); wide.scale.set(k, k, 0.7 / s.z);
+    const c = b.getCenter(new THREE.Vector3()); turn.position.set(-c.x, -b.min.y, -c.z * 1);
+    const [x0] = P(715, 0), [x1] = P(790, 0), xc = (x0 + x1) / 2;
+    loungerAt.forEach((g) => house.remove(g));
+    [5.95, 7.57].forEach((z) => { const one = wide.clone(); one.position.set(xc, 0, z); house.add(one); });
+  }, undefined, () => {});
 }
 
 /* ================= plants: built leaf by leaf, as instanced cut-outs ================= */
@@ -1103,6 +1381,26 @@ const backMat = new THREE.ShaderMaterial({
 const back = new THREE.Mesh(new THREE.SphereGeometry(200, 32, 16), backMat); scene.add(back);
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.ShadowMaterial({ opacity: 0.18, color: '#3c3f44' }));
 ground.rotation.x = -Math.PI / 2; ground.position.y = -0.27; ground.receiveShadow = true; scene.add(ground);
+// the seafront, only hinted, as the sales plan's watercolour band: on the sea side beyond the terraces, a
+// wash on the ground from the palest sand through a soft shoreline to a greyed water blue, every edge
+// fading into the ground; lit like the rest, so it dims with the hour
+{ const sea = tex(512, 512, (x, w, h) => {
+    const g = x.createLinearGradient(0, 0, w, 0);
+    g.addColorStop(0, 'rgba(241,237,229,0)'); g.addColorStop(0.12, 'rgba(241,237,229,.55)'); g.addColorStop(0.28, 'rgba(240,235,226,.7)');
+    g.addColorStop(0.36, 'rgba(203,221,224,.95)'); g.addColorStop(0.6, 'rgba(180,205,213,.9)'); g.addColorStop(1, 'rgba(180,205,213,0)');
+    x.fillStyle = g; x.fillRect(0, 0, w, h);
+    // the shoreline: a faint, soft line where the sand meets the water
+    const s = x.createLinearGradient(w * 0.31, 0, w * 0.35, 0); s.addColorStop(0, 'rgba(255,255,255,0)'); s.addColorStop(.5, 'rgba(255,255,255,.55)'); s.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = s; x.fillRect(w * 0.31, 0, w * 0.04, h);
+    // its ends fading away along the coast
+    x.globalCompositeOperation = 'destination-in';
+    const v = x.createLinearGradient(0, 0, 0, h); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(0.25, 'rgba(0,0,0,1)'); v.addColorStop(0.75, 'rgba(0,0,0,1)'); v.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = v; x.fillRect(0, 0, w, h); });
+  sea.wrapS = sea.wrapT = THREE.ClampToEdgeWrapping;
+  // narrow enough that the shore and the water fall within the frame, a few metres off the terrace
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(13, 70), new THREE.MeshStandardMaterial({ map: sea, transparent: true, depthWrite: false, roughness: 1 }));
+  // (set back a little from the terrace's edge)
+  m.rotation.x = -Math.PI / 2; m.position.set(12.5 + 6.5, -0.266, 4); m.receiveShadow = true; scene.add(m); }
 
 /* ================= light ================= */
 const sun = new THREE.DirectionalLight('#fff4e6', 2.6);
@@ -1140,7 +1438,7 @@ function setHour(k) { from = snap(); to = HOURS[k]; mixT = 0; mixFrom = -1; redr
 /* ================= finishes ================= */
 function setFloor(k) { floors.inside.material = k === 'oak' ? M.oak : M.stone; }
 function setKitchen(k) {
-  if (k === 'oak') { M.front.map = oakTex; M.front.color.set('#e8cfaf'); M.front.roughness = .55; }
+  if (k === 'oak') { M.front.map = oakTex; M.front.color.copy(M.paleOak.color); M.front.roughness = .55; } // the dining table's own oak
   else { M.front.map = null; M.front.color.set(k === 'sapphire' ? '#1c2a4a' : '#f1ede6'); M.front.roughness = k === 'sapphire' ? .38 : .45; }
   M.front.needsUpdate = true;
 }
@@ -1149,9 +1447,9 @@ function setKitchen(k) {
 const OPTIONS = {
   light: [['morning', '#f3d9a6'], ['sunset', '#f2a86e'], ['night', '#26375c']],
   floor: [['stone', '#e8ddcb'], ['oak', '#c49a6c']],
-  kitchen: [['white', '#f1ede6'], ['sapphire', '#1c2a4a'], ['oak', '#c9a27a']],
+  kitchen: [['white', '#f1ede6'], ['sapphire', '#1c2a4a'], ['oak', '#b8987a']],
 };
-const STATE = { light: 'morning', floor: 'stone', kitchen: 'sapphire' };
+const STATE = { light: 'morning', floor: 'stone', kitchen: 'white' };
 const ACT = { light: setHour, floor: setFloor, kitchen: setKitchen };
 const panelEl = document.getElementById('panel');
 const cycles = {};
@@ -1186,7 +1484,7 @@ const ROOMS = [
   { k: 'bed3', m2: '18,80', at: [-1.7, 1.1, 6.4], look: [-1.7, 0.3, 6.4], az: 0.6, pol: 0.82, r: 11 },
   { k: 'terrace', m2: '84,20', at: [8.4, 1.1, 2.6], look: [7.6, 0.3, 2.8], az: 0.9, pol: 0.92, r: 14 },
 ];
-const HOME = { look: [-2.6, 0.2, 5.0], az: 0.62, pol: 0.9, r: 32 };
+const HOME = { look: [-1.5, 0.2, 5.2], az: 0.62, pol: 0.9, r: 32 }; // a touch to the sea side, so its shore shows
 const tagsEl = document.getElementById('tags');
 let focus = null;
 ROOMS.filter((room) => !(phone && room.k === 'hall')).forEach((room) => {
@@ -1211,10 +1509,10 @@ const DINING = { k: 'dining', m2: '48,70' };
 const TOUR = ['kitchenR', 'dining', 'living', 'terrace', 'bed3', 'bed2', 'bedroom'].map((k) => (k === 'dining' ? DINING : ROOMS.find((r) => r.k === k))).concat([null]);
 const AUTO = new URLSearchParams(location.search).has('tour');
 const LINES = {
-  es: { dining: 'Mesa para seis junto al cristal, con la terraza a un paso.', hall: 'La llegada: luz natural desde el primer paso.', kitchenR: 'Abierta al salón, con isla de mármol y vistas a la terraza.', living: 'Cristal de suelo a techo hacia el Mediterráneo.', terrace: 'Ochenta metros al aire libre, comedor y solárium.', bedroom: 'Dormitorio principal con vestidor y baño en suite.', bed3: 'Dos camas junto al cristal, abierto a la terraza.', bed2: 'Dos camas y armario empotrado, luz de la terraza.', home: 'Tres dormitorios, terrazas en dos frentes, primera línea.' },
-  en: { dining: 'A table for six by the glass, the terrace a step away.', hall: 'Arrival: daylight from the very first step.', kitchenR: 'Open to the living room, a marble island, terrace views.', living: 'Floor-to-ceiling glass towards the Mediterranean.', terrace: 'Eighty square metres outdoors, dining and sun deck.', bedroom: 'Main bedroom with dressing room and en-suite bath.', bed3: 'Twin beds by the glass, open to the terrace.', bed2: 'Twin beds and built-in wardrobes, terrace light.', home: 'Three bedrooms, terraces on two fronts, on the seafront.' },
-  fr: { dining: 'Une table pour six contre la baie, la terrasse à un pas.', hall: 'L’arrivée : la lumière dès le premier pas.', kitchenR: 'Ouverte sur le séjour, îlot en marbre, vue sur la terrasse.', living: 'Baies du sol au plafond vers la Méditerranée.', terrace: 'Quatre-vingts mètres en plein air, repas et solarium.', bedroom: 'Chambre principale avec dressing et salle de bains.', bed3: 'Deux lits contre la baie, ouverte sur la terrasse.', bed2: 'Deux lits et placards intégrés, lumière de la terrasse.', home: 'Trois chambres, terrasses sur deux façades, front de mer.' },
-  de: { dining: 'Ein Tisch für sechs am Glas, die Terrasse einen Schritt entfernt.', hall: 'Ankommen: Tageslicht vom ersten Schritt an.', kitchenR: 'Offen zum Wohnraum, Marmorinsel, Blick auf die Terrasse.', living: 'Raumhohes Glas zum Mittelmeer.', terrace: 'Achtzig Quadratmeter im Freien, Essplatz und Sonnendeck.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', bed3: 'Zwei Betten am Glas, offen zur Terrasse.', bed2: 'Zwei Betten und Einbauschränke, Licht von der Terrasse.', home: 'Drei Schlafzimmer, Terrassen an zwei Seiten, erste Meereslinie.' },
+  es: { kitchenR: 'Isla de mármol, abierta al salón y a la terraza.', dining: 'Mesa para seis junto al ventanal, con la terraza al lado.', living: 'Ventanales de suelo a techo con vistas al mar.', terrace: '84 m² exteriores: comedor, zona de estar y solárium.', bed3: 'Dos camas individuales y ventanal a la terraza.', bed2: 'Dos camas individuales y armario empotrado.', bedroom: 'Dormitorio principal con vestidor y baño propio.', hall: 'Un recibidor amplio que reparte toda la vivienda.', home: 'Tres dormitorios y terrazas en dos fachadas, en primera línea de mar.' },
+  en: { kitchenR: 'A marble island, open to the living room and terrace.', dining: 'Seats six by the window, with the terrace right beside it.', living: 'Floor-to-ceiling windows looking out to sea.', terrace: '84 m² outdoors: dining, lounge and sun deck.', bed3: 'Two single beds and a window onto the terrace.', bed2: 'Two single beds and built-in wardrobes.', bedroom: 'Main bedroom with dressing room and en-suite bathroom.', hall: 'A generous entrance hall that leads to every room.', home: 'Three bedrooms and terraces on two sides, right on the seafront.' },
+  fr: { kitchenR: 'Îlot en marbre, ouvert sur le séjour et la terrasse.', dining: 'Une table pour six près de la baie, la terrasse juste à côté.', living: 'Des baies du sol au plafond face à la mer.', terrace: '84 m² extérieurs : repas, salon et solarium.', bed3: 'Deux lits simples et une baie sur la terrasse.', bed2: 'Deux lits simples et des placards intégrés.', bedroom: 'Chambre principale avec dressing et salle de bains privée.', hall: 'Une entrée généreuse qui dessert tout le logement.', home: 'Trois chambres et des terrasses sur deux façades, en front de mer.' },
+  de: { kitchenR: 'Marmorinsel, offen zum Wohnraum und zur Terrasse.', dining: 'Ein Tisch für sechs am Fenster, die Terrasse direkt daneben.', living: 'Raumhohe Fenster mit Blick aufs Meer.', terrace: '84 m² im Freien: Essplatz, Lounge und Sonnendeck.', bed3: 'Zwei Einzelbetten und ein Fenster zur Terrasse.', bed2: 'Zwei Einzelbetten und Einbauschränke.', bedroom: 'Hauptschlafzimmer mit Ankleide und eigenem Bad.', hall: 'Eine großzügige Diele, die alle Räume erschließt.', home: 'Drei Schlafzimmer und Terrassen an zwei Seiten, direkt am Meer.' },
 };
 const LN = LINES[LANG] || LINES.es;
 const FLY = 3.4, HOLD = 5.2, LIGHTS = ['morning', 'sunset', 'night'];
@@ -1302,11 +1600,17 @@ function fit() {
   renderer.setSize(w, h); camera.aspect = w / h;
   if (composer) { composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(w, h); }
   const tall = w / h < 0.9;
-  camera.fov = tall ? 44 : 32;
+  camera.fov = tall ? 50 : 32;
   camera.updateProjectionMatrix();
-  HOME.r = tall ? 33 : w / h < 1.3 ? 34 : 26.5; // wide screens: closer in, the home filling the frame
-  // tall frames: aimed a little above the floor, so it sits in the space over the controls
-  HOME.look[1] = tall ? 1.6 : -0.9; // aimed a little low, so the home sits higher, clear of the controls
+  // tall frames (phones): seen more from above, so the plan's depth fills the screen's height, and drawn
+  // back just far enough for the whole floor's width (some 27 m across) to fit between the edges
+  // and turned a quarter round, so the floor's long side (bedrooms to terrace) runs up the screen and its
+  // short side, some 16 m, is what has to fit across
+  HOME.pol = tall ? 0.55 : 0.9;
+  HOME.az = tall ? 0.62 + 1.5 : 0.62;
+  HOME.r = tall ? Math.max(30, 9.8 / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (w / h))) : w / h < 1.3 ? 34 : 26.5; // wide screens: closer in, the home filling the frame
+  // tall frames: aimed at the floor's middle; wide ones a little low, so the home sits higher, clear of the controls (none when bare)
+  HOME.look[1] = tall ? 0 : BARE ? 0.2 : -0.9;
   if (!focus) { goal.look.set(...HOME.look); controls.target.set(...HOME.look); goal.r = HOME.r; }
 }
 addEventListener('resize', fit); fit();
@@ -1339,6 +1643,10 @@ function frame() {
     if (Math.abs(dAz) < 0.002 && Math.abs(goal.r - sph.radius) < 0.02 && controls.target.distanceTo(goal.look) < 0.01) flying = 0;
   } else if (touring) {
     // the walk has the camera
+  } else if (BARE && !reduced) {
+    // bare: a slow, steady turn all the way round, so the example is alive without a hand on it
+    sph.setFromVector3(v3.copy(camera.position).sub(controls.target)); sph.theta += 0.05 * dt;
+    camera.position.setFromSpherical(sph).add(controls.target);
   } else if (!reduced && !focus && T > idleAt) {
     sph.setFromVector3(v3.copy(camera.position).sub(controls.target));
     sph.theta += ((HOME.az + Math.sin(T * 0.11) * 0.38) - sph.theta) * 0.008;
@@ -1352,7 +1660,9 @@ function frame() {
     v3.set(...room.at).project(camera);
     const off = v3.z > 1 || Math.abs(v3.x) > 1.05 || Math.abs(v3.y) > 1.05 || it < 0.9;
     room.el.classList.toggle('hide', off);
-    if (!off) room.el.style.transform = `translate(${((v3.x + 1) / 2) * w}px, ${((1 - v3.y) / 2) * h}px) translate(-50%, -100%)`;
+    // kept whole on screen: a tag near an edge slides in rather than being cut (its pin stays on the room)
+    if (!off) { const half = (room.el.offsetWidth || 90) / 2 + 8, px = Math.min(w - half, Math.max(half, ((v3.x + 1) / 2) * w));
+      room.el.style.transform = `translate(${px}px, ${((1 - v3.y) / 2) * h}px) translate(-50%, -100%)`; }
   });
   if (mixT < 1) redrawShadows(1);
   if (shadowDirty > 0) { renderer.shadowMap.needsUpdate = true; shadowDirty--; }

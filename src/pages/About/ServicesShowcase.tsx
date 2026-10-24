@@ -5,6 +5,8 @@ import { EASE_HAUS } from "../../lib/motion";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { BODY, SMALL, TITLE } from "../../lib/type";
 import type { Studio } from "../../i18n/studio";
+import { Link } from "react-router-dom";
+import { useI18n } from "../../i18n/I18n";
 
 /**
  * What the studio does, shown rather than listed. One discipline after another down the
@@ -34,7 +36,10 @@ if (typeof window !== "undefined") {
   }), 1500);
 }
 
-type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; seen: string[] };
+type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; seen: string[]; link?: string };
+
+// the way into the full example, where an example has one
+const OPEN: Record<string, string> = { es: "Recorrer la vivienda en 3D", en: "Walk through the home in 3D", fr: "Parcourir le logement en 3D", de: "Die Wohnung in 3D erkunden" };
 
 // A 3D scene is built only once its frame nears the screen (never while hidden at this width)
 const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allowed?: boolean }> = ({ name, paused = false, allowed = true }) => {
@@ -65,12 +70,13 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
 // The 3D scenes run on their own; the pointer is left to the page so scrolling over them never sticks
 const EXAMPLES: Example[] = [
   { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
-  { frame: "/concepts/smarthc-devices/index.html?bare", seen: ["smarthc", "buendia", "sapphire"] },
+  // the flat of The Sapphire to walk round: a space in 3D, the discipline's first promise
+  { frame: "/concepts/sapphire-home/index.html?bare", seen: ["sapphire", "smarthc", "buendia"], link: "/projects/sapphire#vivienda-3d" },
   { scene: "stand", seen: ["smarthc"] },
   { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
-const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: boolean }> = ({ ex, note, paused, allowed = true }) => (
+const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: boolean; linkLabel?: string }> = ({ ex, note, paused, allowed = true, linkLabel }) => (
   <div className="relative h-full w-full overflow-hidden bg-[#dfe1e2]">
     {ex.img && <img src={ex.img} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />}
     {ex.video && (
@@ -86,12 +92,24 @@ const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: 
     {note && (
       <p className={`${SMALL} absolute bottom-3 left-4 normal-case text-white/85 [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]`}>{note}</p>
     )}
+    {/* a way straight into the full example: a quiet pill on frosted glass; on hover the glass clears a
+        shade and its edge firms, nothing more */}
+    {ex.link && (
+      <Link
+        to={ex.link}
+        className={`${SMALL} absolute bottom-4 left-4 inline-flex items-center rounded-full border border-ink/10 bg-white/70 px-4 py-2 text-ink backdrop-blur-md transition-[background-color,border-color] duration-500 hover:border-ink/25 hover:bg-white/90`}
+      >
+        {linkLabel}
+      </Link>
+    )}
   </div>
 );
 
 
 export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
   const EX = EXAMPLES;
+  const { lang } = useI18n();
+  const linkLabel = OPEN[lang] ?? OPEN.es;
   const [active, setActive] = useState(0);
   const items = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -246,9 +264,9 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div
                 key={i}
                 aria-hidden={i !== active}
-                className={`absolute inset-0 transition-opacity duration-300 ease-out ${i === active ? "opacity-100" : "opacity-0"}`}
+                className={`absolute inset-0 transition-opacity duration-300 ease-out ${i === active ? "opacity-100" : "pointer-events-none opacity-0"}`}
               >
-                <Frame ex={ex} note={noteFor(i)} paused={i !== active} allowed={i === 0 || moved} />
+                <Frame ex={ex} note={noteFor(i)} paused={i !== active} allowed={i === 0 || moved} linkLabel={linkLabel} />
               </div>
             ))}
           </div>
@@ -317,7 +335,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
               <div className="-mx-4 mb-8 aspect-video sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
-                {EX[i] && <Frame ex={EX[i]} />}
+                {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
