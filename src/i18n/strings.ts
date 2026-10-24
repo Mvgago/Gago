@@ -2,7 +2,7 @@
  * Every visible string of the landing, the index, the header, the footer and
  * the contact menu, in the four site languages.
  *
- * The brand line, a thread in each language: "Hilando fino." / "Finely spun." / "Au fil près." / "Fein gesponnen."
+ * The brand line, off the script in each language: "Saltándonos el guion." / "Going off script." / "Loin du scénario." / "Abseits vom Drehbuch."
  * French and German should be read by a native speaker before launch.
  */
 
@@ -10,7 +10,7 @@ export const LANGS = ["en", "es", "fr", "de"] as const;
 export type Lang = (typeof LANGS)[number];
 
 const en = {
-  "hero.title": "Finely spun.",
+  "hero.title": "Going off script.",
   "hero.sub": "Identity|web|3D|film",
   "hero.and": "and",
   "hero.cta": "see projects",
@@ -57,7 +57,7 @@ const en = {
 export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
-  "hero.title": "Hilando fino.",
+  "hero.title": "Saltándonos el guion.",
   "hero.sub": "Identidad|web|3D|vídeo",
   "hero.and": "y",
   "hero.cta": "ver proyectos",
@@ -102,7 +102,7 @@ const es: Record<Key, string> = {
 };
 
 const fr: Record<Key, string> = {
-  "hero.title": "Au fil près.",
+  "hero.title": "Loin du scénario.",
   "hero.sub": "Identité|web|3D|vidéo",
   "hero.and": "et",
   "hero.cta": "voir les projets",
@@ -147,7 +147,7 @@ const fr: Record<Key, string> = {
 };
 
 const de: Record<Key, string> = {
-  "hero.title": "Fein gesponnen.",
+  "hero.title": "Abseits vom Drehbuch.",
   "hero.sub": "Identität|Web|3D|Film",
   "hero.and": "und",
   "hero.cta": "projekte ansehen",
