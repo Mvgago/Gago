@@ -143,7 +143,8 @@ const Film: React.FC<{ src: string; title: string; ratio?: string; speed?: numbe
       onLoadedData={() => setReady(true)}
       onPlaying={() => setReady(true)}
       // Its own proportion, reserved before it loads, so nothing around it moves
-      style={{ aspectRatio: ratio }}
+      // (The Sapphire's film is graded hot in places: its colour drawn back a little)
+      style={{ aspectRatio: ratio, filter: src.includes("sapphire") ? "saturate(0.8)" : undefined }}
       className={`block max-h-[88vh] w-full object-cover transition-opacity duration-700 ${
         ready ? "opacity-100" : "opacity-0"
       }`}

@@ -253,6 +253,8 @@ export const CinematicViewer: React.FC<Props> = ({ image, film, onMotion, classN
           onPlaying={() => setFrameReady(true)}
           // Over its own first frame (the same picture, so nothing jumps), it simply takes over
           onLoadedData={() => setFrameReady(true)}
+          // (The Sapphire's film is graded hot in places: its colour drawn back a little)
+          style={video.includes("sapphire") ? { filter: "saturate(0.8)" } : undefined}
           className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
             frameReady ? "opacity-100" : "opacity-0"
           }`}
