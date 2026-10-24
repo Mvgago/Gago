@@ -1264,7 +1264,11 @@ function tallerAtPlusX(obj) {
   // a 170 × 240 cm rug across the bed's foot, its long side across, a third of it under the bed.
   // "Carpet-02-Tetris-170x240-SophieDecor" by Alexander.Xas, CC BY 4.0
   new GLTFLoader().load('/models/sapphire/carpet3.glb', (cg) => {
-    const m = cg.scene; m.traverse((o) => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = false; } });
+    const m = cg.scene; m.updateMatrixWorld(true);
+    // the model comes with a standing figure for scale: only the rug itself kept (the flat part)
+    const drop = []; m.traverse((o) => { if (!o.isMesh) return; const bs = new THREE.Box3().setFromObject(o, true).getSize(new THREE.Vector3());
+      if (Math.min(bs.x, bs.y, bs.z) > 0.15) drop.push(o); else { o.receiveShadow = true; o.castShadow = false; } });
+    drop.forEach((o) => o.parent.remove(o));
     let b = new THREE.Box3().setFromObject(m, true), s = b.getSize(new THREE.Vector3());
     if (s.y > Math.min(s.x, s.z)) { m.rotation.x = -Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
     if (s.z > s.x) { m.rotation.y = Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
