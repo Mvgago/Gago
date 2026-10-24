@@ -1402,7 +1402,7 @@ new GLTFLoader().load('/models/sapphire/fig.glb', (gltf) => {
       // "petate, carpet, straw carpet, Straw Rug" by ocelotlmx, CC BY 4.0
       new GLTFLoader().load('/models/sapphire/petate.glb', (pg) => {
         // (its straw lightened to a pale natural fibre)
-        const m = pg.scene; m.traverse((o) => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = false; o.material = o.material.clone(); o.material.color = new THREE.Color(1.45, 1.4, 1.3); } });
+        const m = pg.scene; m.traverse((o) => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = false; o.material = o.material.clone(); o.material.color = new THREE.Color(1.85, 1.8, 1.7); } });
         let b = new THREE.Box3().setFromObject(m, true), s = b.getSize(new THREE.Vector3());
         if (s.y > Math.min(s.x, s.z)) { m.rotation.x = -Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
         if ((s.z > s.x) !== (2.3 > 2.9)) { m.rotation.y += Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
