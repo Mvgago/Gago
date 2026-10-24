@@ -58,7 +58,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Interactive 3D and web design",
         text: "Spaces and products in 3D you can walk through, and bespoke websites, fast and finished to the last detail.",
-        list: ["Spaces and products in 3D to explore", "3D renders and visuals for campaigns and property developments", "Bespoke web design and development", "Maintenance and technical SEO"],
+        list: ["Spaces and products in 3D to explore", "3D renders for campaigns and developments", "Bespoke websites, upkeep and SEO"],
       },
       {
         title: "Spaces and events",
@@ -136,7 +136,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "3D interactivo y diseño web",
         text: "Espacios y productos en 3D que se pueden recorrer, y webs a medida, rápidas y cuidadas hasta el último detalle.",
-        list: ["Espacios y productos en 3D que se pueden explorar", "Renders e infografías 3D para campañas y promociones inmobiliarias", "Diseño y desarrollo web a medida", "Mantenimiento y SEO técnico"],
+        list: ["Espacios y productos en 3D para explorar", "Renders 3D para campañas y promociones", "Webs a medida, mantenimiento y SEO"],
       },
       {
         title: "Espacios y eventos",
@@ -214,7 +214,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "3D interactive et design web",
         text: "Des espaces et des produits en 3D à parcourir, et des sites sur mesure, rapides et soignés jusqu’au moindre détail.",
-        list: ["Espaces et produits en 3D à explorer", "Rendus et visuels 3D pour campagnes et programmes immobiliers", "Conception et développement web sur mesure", "Maintenance et SEO technique"],
+        list: ["Espaces et produits en 3D à explorer", "Rendus 3D pour campagnes et programmes", "Sites sur mesure, maintenance et SEO"],
       },
       {
         title: "Espaces et événements",
@@ -292,7 +292,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Interaktives 3D und Webdesign",
         text: "Räume und Produkte in 3D zum Durchwandern und maßgeschneiderte Websites, schnell und bis ins Detail ausgearbeitet.",
-        list: ["Räume und Produkte in 3D zum Erkunden", "3D-Renderings und Visualisierungen für Kampagnen und Immobilienprojekte", "Webdesign und -entwicklung nach Maß", "Wartung und technisches SEO"],
+        list: ["Räume und Produkte in 3D zum Erkunden", "3D-Renderings für Kampagnen und Projekte", "Websites nach Maß, Wartung und SEO"],
       },
       {
         title: "Räume und Events",
