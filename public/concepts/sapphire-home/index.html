@@ -232,6 +232,7 @@ const CREDITS = [
   ['Bed', SKF + '3d-models/bed-b8c16d4b69f64335b46379b119b102b4', 'rickmaolly', SKF + 'rickmaolly', ...BY, true],
   ['BED 30', SKF + '3d-models/bed-30-df64476b23824a049614adda81d42e67', 'jasirkt', SKF + 'jasirkt', ...BY, true],
   ['Tumbona Doble Reclinable', SKF + '3d-models/tumbona-doble-reclinable-a8186ce559e4441d815f63a6bf9f983b', 'vmmaniac', SKF + 'vmmaniac', ...BY, true],
+  ['Carpet', SKF + '3d-models/carpet-434fcc9211e1434dbee7c5024c191c4c', 'Seismic_Creations', SKF + 'Seismic_Creations', ...BY, true],
   ['Rubber Plant (fig)', SKF + '3d-models/rubber-plant-fig-fc83523315714f8d96534bfaa4e15af1', 'jamieirvin', SKF + 'jamieirvin', ...BY, true],
   ['Palm Plant', SKF + '3d-models/palm-plant-fc5680053bb54ff6bacae64be12200ad', 'SomeKevin', SKF + 'SomeKevin', ...BY, true],
   ['JAMAICA STOOL', SKF + '3d-models/jamaica-stool-acc5711fb4734bdcbeccc3c3753e1412', 'jldaureil', SKF + 'jldaureil', 'CC BY-ND 4.0', 'http://creativecommons.org/licenses/by-nd/4.0/', false],
@@ -846,6 +847,20 @@ const realArmchairs = (groups, w, d) => {
   // side by side with a little air between them
   const chairs = [-0.55, 0.55].map((dx) => { const g = group(2.45, 6.28 - dx, Math.PI / 2); sofa(g, 0.95, 0.95, M.sofa); return g; });
   realArmchairs(chairs, 0.95, 0.95);
+  // a rug under the table, between the sofa and the armchairs, their front feet on it (2.6 × 2.0 m, laid
+  // flat on the floor). "Carpet" by Seismic_Creations, CC BY 4.0
+  new GLTFLoader().load('/models/sapphire/carpet.glb', (gltf) => {
+    const m = gltf.scene; m.traverse((o) => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = false; } });
+    let b = new THREE.Box3().setFromObject(m, true), s = b.getSize(new THREE.Vector3());
+    // laid flat if modelled standing, its long side along x
+    if (s.y > Math.min(s.x, s.z)) { m.rotation.x = -Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
+    if (s.z > s.x) { m.rotation.y += Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
+    const k = Math.min(2.6 / s.x, 2.0 / s.z); m.scale.multiplyScalar(k);
+    b = new THREE.Box3().setFromObject(m, true); const c = b.getCenter(new THREE.Vector3());
+    m.position.set(3.75 - c.x, 0.006 - b.min.y, 6.85 - c.z); house.add(m);
+    // and a second, alongside it under the armchairs, so the seating stands on one broad rug
+    const m2 = m.clone(); m2.position.x -= 2.25; m2.position.y -= 0.002; house.add(m2); // (just under the first's edge, clear of the column)
+  }, undefined, () => {});
   // between them, a solid low table in steel: a thick brushed-steel top with softened edges (1.25 × 0.66 m,
   // 6 cm), floating on a graphite steel plinth set well back from its edges; two books, a bowl and a
   // small vase on it
@@ -1143,9 +1158,32 @@ function tallerAtPlusX(obj) {
       turn.traverse((o) => { if (!o.isMesh) return; const p = o.geometry.attributes.position;
         for (let i = 0; i < p.count; i += 2) { v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld).applyMatrix4(inv); if (v.x < all.min.x + span * 0.08) head.expandByPoint(v); } });
       // (over the whole frame, rim and all, a touch proud of it: one full, rounded cushion with no raised edge)
-      const top = head.max.y + 0.015, bot = head.max.y * 0.4, W = head.max.z - head.min.z + 0.02, D = head.max.x - head.min.x + 0.03;
+      // (down to just off the floor, so the frame's own posts never show beneath it)
+      const top = head.max.y + 0.015, bot = 0.03, W = head.max.z - head.min.z + 0.02, D = Math.max(0.22, head.max.x - head.min.x + 0.03); // deep enough to take in the frame's side wings
       const pad = new THREE.Mesh(new RoundedBoxGeometry(D, top - bot, W, 8, Math.min(0.06, D / 2 - 0.001)), bedPad);
-      pad.position.set(head.min.x + D / 2 - 0.005, (top + bot) / 2, (head.min.z + head.max.z) / 2); pad.castShadow = pad.receiveShadow = true; g.add(pad); }
+      pad.position.set(head.min.x + D / 2 - 0.005, (top + bot) / 2, (head.min.z + head.max.z) / 2); pad.castShadow = pad.receiveShadow = true; g.add(pad);
+      // and the frame's side wings, which ran forward at both edges, taken out, leaving only the panel
+      // against the wall. The model is two meshes, the throw and everything else; in the larger one only the
+      // outermost strip at either side is taken (the wings are the frame's full width, the tucked sheet sits
+      // inside it), at the head end and above the base
+      { const zc = (head.min.z + head.max.z) / 2, half = (head.max.z - head.min.z) / 2, meshes = [];
+        turn.traverse((o) => { if (o.isMesh) meshes.push([o, o.geometry.attributes.position.count]); });
+        const frame = meshes.length ? meshes.sort((a2, b2) => b2[1] - a2[1])[0][0] : null;
+        if (frame) { const g2 = frame.geometry, p = g2.attributes.position, keep = [];
+          const idx = g2.index ? Array.from(g2.index.array) : Array.from({ length: p.count }, (_, i) => i);
+          const loc = (k) => v.fromBufferAttribute(p, k).applyMatrix4(frame.matrixWorld).applyMatrix4(inv).clone();
+          for (let i = 0; i < idx.length; i += 3) { const t = [idx[i], idx[i + 1], idx[i + 2]], q = t.map(loc);
+            // (sheet and wing share one mesh and interleave at the sides, so the wing is cut by height: only
+            // what rises above the mattress's top at the outer edge goes; below it the base reads as the bed's)
+            // (measured: the wings stand 0.81–0.85 m off the centre line, up to 1.1 m high, reaching about
+            // 0.3 m forward; the sheet beside them never rises above 0.58 m. A face counts if it sits wholly in
+            // that strip and any part of it shows in front of the new headboard)
+            // (re-measured: the arm itself runs 0.69–0.75 m off centre, sloping from 0.8 m high at the headboard
+            // down to the mattress's top about 0.7 m forward; the sheet there lies at 0.55–0.57)
+            const wing = q.every((u) => Math.abs(u.z - zc) > 0.8 && u.x < all.min.x + 0.45 && u.y > 0.58) && q.some((u) => u.x > head.min.x + D - 0.04);
+            if (!wing) keep.push(...t); }
+          if (keep.length !== idx.length) g2.setIndex(keep);
+        } } }
   }, undefined, () => {});
   // dorm 1's double, its headboard against the diagonal partition between dorms 1 and 2, as on the plan
   // (the line x - z = -17.6), each from its own side
