@@ -1270,7 +1270,8 @@ function tallerAtPlusX(obj) {
     // the model comes with a standing figure for scale: only the rug itself kept (the flat part)
     const drop = []; m.traverse((o) => { if (!o.isMesh) return; const bs = new THREE.Box3().setFromObject(o, true).getSize(new THREE.Vector3());
       // (its pale print given a little more body, so it reads against the light floor)
-      if (Math.min(bs.x, bs.y, bs.z) > 0.15) drop.push(o); else { o.receiveShadow = true; o.castShadow = false; o.material = o.material.clone(); o.material.color = new THREE.Color(0.62, 0.6, 0.57); } });
+      // (only the printed rug itself: the figure and a plain grey backing sheet that lay over it are dropped)
+      if (!o.material.map) drop.push(o); else { o.receiveShadow = true; o.castShadow = false; } });
     drop.forEach((o) => o.parent.remove(o));
     let b = new THREE.Box3().setFromObject(m, true), s = b.getSize(new THREE.Vector3());
     if (s.y > Math.min(s.x, s.z)) { m.rotation.x = -Math.PI / 2; b = new THREE.Box3().setFromObject(m, true); s = b.getSize(new THREE.Vector3()); }
