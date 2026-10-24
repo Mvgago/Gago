@@ -59,7 +59,9 @@ export const Home: React.FC = () => {
             {(() => {
               const title = t("hero.title"), mid = title.length / 2;
               const cut = [...title.matchAll(/ /g)].map((m) => m.index!).reduce((a, b) => (Math.abs(b - mid) < Math.abs(a - mid) ? b : a), title.indexOf(" "));
-              return [title.slice(0, cut), title.slice(cut + 1)].map((line, i) => (
+              // (a lema of two short words stands whole on one line: split, the second word was left alone)
+              const lines = title.split(" ").length <= 2 ? [title] : [title.slice(0, cut), title.slice(cut + 1)];
+              return lines.map((line, i) => (
                 <span key={line} className="block overflow-hidden pb-[0.08em]">
                   <span className="block" style={{ animation: `fh-line 1.4s cubic-bezier(.22,1,.36,1) ${0.9 + i * 0.16}s both` }}>
                     {line}
