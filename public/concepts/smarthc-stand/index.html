@@ -237,11 +237,13 @@ box(2.0, 0.02, 0.02, m.ledOrange, 0.55, P + 0.03, 1.12, false);
 decal(logoSheet(LOGO, GRAPHITE, 2048, 600), 1.5, 0.44, [0.55, P + 0.58, 1.122]);
 
 // A high table with three stools on the open front-left
-const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.04, 48), m.white);
+// (their tops in a satin white, a step down, so they don't flare under the spot)
+const satin = new THREE.MeshStandardMaterial({ color: '#dcdfe0', roughness: 0.55 });
+const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.04, 48), satin);
 bar.position.set(-1.75, P + 1.06, 1.15); bar.castShadow = true; scene.add(bar);
 box(0.06, 1.04, 0.06, m.chrome, -1.75, P + 0.52, 1.15);
 function stool(x, z) {
-  const seat = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.17, 0.07, 32), m.white); seat.position.set(x, P + 0.76, z);
+  const seat = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.17, 0.07, 32), satin); seat.position.set(x, P + 0.76, z);
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.72, 14), m.chrome); pole.position.set(x, P + 0.38, z);
   const base = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.02, 32), m.chrome); base.position.set(x, P + 0.01, z);
   [seat, pole, base].forEach((o) => { o.castShadow = true; o.receiveShadow = true; scene.add(o); });
@@ -260,9 +262,9 @@ function spot(x, z, tx, ty, tz, intensity) {
   l.position.set(x, P + H - 0.05, z); l.target.position.set(tx, ty, tz); scene.add(l, l.target);
 }
 spot(1.1, 0.2, 1.1, 1.8, -D / 2, 30);
-spot(-2.2, 0.6, -W / 2, 1.8, 0, 8);
+spot(-2.2, 0.6, -W / 2, 1.8, 0, 5); // (softer on the logos in the back corner)
 spot(0.55, 1.4, 0.55, 0.8, 0.75, 26);
-spot(-1.75, 1.4, -1.75, 1.0, 1.15, 18);
+spot(-1.75, 1.4, -1.75, 1.0, 1.15, 11);
 
 /* ---------- post: ambient occlusion for weight, a whisper of bloom for the light ---------- */
 const composer = new EffectComposer(renderer);
@@ -270,7 +272,7 @@ composer.addPass(new RenderPass(scene, camera));
 const gtao = new GTAOPass(scene, camera, innerWidth, innerHeight);
 gtao.updateGtaoMaterial({ radius: 0.35, distanceExponent: 1.2, thickness: 1.2, scale: 1.1 });
 composer.addPass(gtao);
-composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.28, 0.5, 0.92));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.2, 0.5, 0.96));
 composer.addPass(new OutputPass());
 
 /* ---------- views ---------- */
