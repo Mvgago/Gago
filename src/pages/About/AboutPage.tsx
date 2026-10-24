@@ -109,7 +109,8 @@ const Field: React.FC<{
   };
   return (
     <label className="relative block">
-      <span className={`${SMALL} ${dark ? "text-platinum/60" : "text-graphite"}`}>{label}</span>
+      {/* one line always, so fields side by side keep their lines level even when a label is long */}
+      <span className={`${SMALL} block overflow-hidden text-ellipsis whitespace-nowrap ${dark ? "text-platinum/60" : "text-graphite"}`}>{label}</span>
       {multiline ? (
         <textarea rows={4} {...common} className={`${shared} h-14 resize-none sm:h-auto`} />
       ) : (
@@ -520,7 +521,7 @@ export const AboutPage: React.FC = () => {
             onSubmit={onSubmit}
             noValidate
             // phones: tighter, so the whole form fits in about one screen
-            className="relative grid grid-cols-2 gap-x-4 gap-y-4 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-4 backdrop-blur-sm sm:gap-9 sm:p-8 md:p-10 xl:grid-cols-3"
+            className="relative grid grid-cols-2 items-end gap-x-4 gap-y-4 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-4 backdrop-blur-sm sm:gap-9 sm:p-8 md:p-10 xl:grid-cols-3"
           >
             {/* the trap: out of sight, out of the tab order, and left empty by anyone real */}
             <input ref={trap} type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute -left-[9999px] top-0 h-px w-px opacity-0" />

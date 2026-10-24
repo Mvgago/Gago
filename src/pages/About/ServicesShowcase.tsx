@@ -333,7 +333,9 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               style={{ zIndex: i + 1 }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
-              <div className="-mx-4 mb-8 aspect-video sm:-mx-6 md:-mx-8 lg:hidden">
+              {/* held under the header while its text is read, the text passing beneath it, as the
+                  shorter sheets are held whole (those taller than the screen used to let it scroll away) */}
+              <div className="sticky top-16 z-10 -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
               </div>
@@ -439,8 +441,12 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                       <button
                         type="button"
                         onClick={() => {
+                          // to the form, as the page's own "let's talk" does: the smooth scroll forced past
+                          // the disciplines' wheel (which holds the page while it steps), the native one as a fallback
                           const el = document.getElementById("contact");
-                          if (el) scrollToTarget(lenis, el);
+                          if (!el) return;
+                          if (lenis) { lenis.start(); lenis.scrollTo(el, { offset: window.innerWidth < 640 ? 0 : -96, force: true, duration: 1.2 }); }
+                          else el.scrollIntoView({ behavior: "smooth" });
                         }}
                         className={`${SMALL} cursor-pointer rounded-full border border-ink/25 px-5 py-2.5 text-ink transition-[background-color,border-color] duration-300 hover:border-ink/40 hover:bg-ink/[0.05]`}
                       >
