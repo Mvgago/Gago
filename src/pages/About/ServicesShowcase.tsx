@@ -341,8 +341,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               {/* held under the header while its text is read, the text passing beneath it, as the
                   shorter sheets are held whole (those taller than the screen used to let it scroll away) */}
               <div>
-              {/* (sticky itself: a sheet taller than the screen is held above the header, and its example with it) */}
-              <div className="sticky top-16 z-10 -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              <div className="relative -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
               </div>
