@@ -127,7 +127,8 @@ body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec
 @media (max-width: 760px) {
   .cap { left: 22px; top: 20px; font-size: 9px; max-width: 62%; }
   .cap b { font-size: 17px; }
-    .hint { right: 20px; top: 20px; font-size: 10.5px; padding: 5px 10px; }
+  /* the hint on a phone: centred just above the controls, clear of the title and over the tags */
+  .hint { right: auto; left: 50%; top: auto; bottom: 74px; transform: translateX(-50%); z-index: 3; white-space: nowrap; font-size: 10.5px; padding: 5px 10px; }
   .panel { left: 20px; right: 20px; transform: none; bottom: 22px; max-width: none; gap: 6px; padding: 6px; font-size: 10.5px; justify-content: space-between; }
   .credit { left: 20px; bottom: 7px; font-size: 7.5px; } .credits { left: 20px; }
   .group, .sep { display: none; }
@@ -1764,7 +1765,7 @@ const SHOTS = {
   bedroom:  { look: [-9.9, 0.4, 9.7],  az: 0.8,  pol: 0.74, r: 6.2 },  // the main bed, the glass to its terrace
 };
 const viewOf = (room) => { if (!room) return { look: new THREE.Vector3(...HOME.look), az: HOME.az, pol: HOME.pol, r: HOME.r };
-  const v = SHOTS[room.k] || room; return { look: new THREE.Vector3(...v.look), az: v.az, pol: v.pol, r: v.r * (phone ? 1.4 : 1) }; };
+  const v = SHOTS[room.k] || room; return { look: new THREE.Vector3(...v.look), az: v.az, pol: v.pol, r: v.r * (phone ? (room.k === 'sea' ? 0.9 : 1.4) : 1) }; }; // (the sea's shot is at eye level: drawn back on a phone it stood behind a wall)
 function tourGo(i, T = clock.getElapsedTime()) {
   tour.i = (i + TOUR.length) % TOUR.length; tour.holdUntil = 0; const room = TOUR[tour.i];
   focus = room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !!room && !!room.el && x === room.el));
