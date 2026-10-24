@@ -53,17 +53,17 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Film and motion",
         text: "Spaces and brands told in motion, for campaigns and social media, from footage or from renders.",
-        list: ["Concept, filming and editing", "Motion and graphics", "Music production and sound design"],
+        list: ["Idea, script and direction", "Editing, motion and graphics", "Original music and sound design"],
       },
       {
         title: "Interactive 3D and web design",
         text: "Spaces and products in 3D you can walk through, and bespoke websites, fast and finished to the last detail.",
-        list: ["Spaces and products in 3D to explore", "3D renders for campaigns and developments", "Bespoke websites, upkeep and SEO"],
+        list: ["3D viewers for spaces and products", "Renders for campaigns and developments", "Bespoke websites, upkeep and SEO"],
       },
       {
         title: "Spaces and events",
         text: "The brand carried into physical space, where it is seen, touched and walked through.",
-        list: ["Stands for fairs and congresses", "Shops, venues and window displays", "Signage and point-of-sale material"],
+        list: ["Stands for fairs and congresses", "Shops, venues and window displays", "Signage and point of sale"],
       },
       {
         title: "Strategy and identity",
@@ -131,17 +131,17 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Vídeo y motion",
         text: "Espacios y marcas contados en movimiento, para campañas y redes, a partir de rodaje o de renders.",
-        list: ["Concepto, grabación y montaje", "Motion y grafismo", "Producción musical y diseño sonoro"],
+        list: ["Idea, guion y dirección", "Montaje, motion y grafismo", "Música original y diseño sonoro"],
       },
       {
         title: "3D interactivo y diseño web",
         text: "Espacios y productos en 3D que se pueden recorrer, y webs a medida, rápidas y cuidadas hasta el último detalle.",
-        list: ["Espacios y productos en 3D para explorar", "Renders 3D para campañas y promociones", "Webs a medida, mantenimiento y SEO"],
+        list: ["Visores 3D de espacios y productos", "Renders para campañas y promociones", "Webs a medida, mantenimiento y SEO"],
       },
       {
         title: "Espacios y eventos",
         text: "La marca llevada al espacio físico, donde se ve, se toca y se recorre.",
-        list: ["Stands para ferias y congresos", "Imagen de tiendas, locales y escaparates", "Señalética y material de punto de venta"],
+        list: ["Stands para ferias y congresos", "Tiendas, locales y escaparates", "Señalética y punto de venta"],
       },
       {
         title: "Estrategia e identidad",
@@ -209,17 +209,17 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Vidéo et motion design",
         text: "Des lieux et des marques racontés en mouvement, pour campagnes et réseaux, à partir de tournages ou de rendus.",
-        list: ["Concept, tournage et montage", "Motion et graphisme", "Production musicale et design sonore"],
+        list: ["Idée, scénario et réalisation", "Montage, motion et graphisme", "Musique originale et design sonore"],
       },
       {
         title: "3D interactive et design web",
         text: "Des espaces et des produits en 3D à parcourir, et des sites sur mesure, rapides et soignés jusqu’au moindre détail.",
-        list: ["Espaces et produits en 3D à explorer", "Rendus 3D pour campagnes et programmes", "Sites sur mesure, maintenance et SEO"],
+        list: ["Visites 3D d'espaces et de produits", "Rendus pour campagnes et programmes", "Sites sur mesure, maintenance et SEO"],
       },
       {
         title: "Espaces et événements",
         text: "La marque portée dans l'espace physique, là où on la voit, la touche et la parcourt.",
-        list: ["Stands pour salons et congrès", "Image de boutiques, de lieux et de vitrines", "Signalétique et PLV"],
+        list: ["Stands pour salons et congrès", "Boutiques, lieux et vitrines", "Signalétique et PLV"],
       },
       {
         title: "Stratégie et identité",
@@ -287,17 +287,17 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Film und Motion",
         text: "Räume und Marken in Bewegung erzählt, für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
-        list: ["Konzept, Dreh und Schnitt", "Motion und Grafik", "Musikproduktion und Sounddesign"],
+        list: ["Idee, Drehbuch und Regie", "Schnitt, Motion und Grafik", "Eigene Musik und Sounddesign"],
       },
       {
         title: "Interaktives 3D und Webdesign",
         text: "Räume und Produkte in 3D zum Durchwandern und maßgeschneiderte Websites, schnell und bis ins Detail ausgearbeitet.",
-        list: ["Räume und Produkte in 3D zum Erkunden", "3D-Renderings für Kampagnen und Projekte", "Websites nach Maß, Wartung und SEO"],
+        list: ["3D-Viewer für Räume und Produkte", "Renderings für Kampagnen und Projekte", "Websites nach Maß, Wartung und SEO"],
       },
       {
         title: "Räume und Events",
         text: "Die Marke im physischen Raum, wo man sie sieht, berührt und durchschreitet.",
-        list: ["Messe- und Kongressstände", "Läden, Lokale und Schaufenster", "Beschilderung und Point-of-Sale-Material"],
+        list: ["Messe- und Kongressstände", "Läden, Lokale und Schaufenster", "Beschilderung und Point of Sale"],
       },
       {
         title: "Strategie und Identität",
