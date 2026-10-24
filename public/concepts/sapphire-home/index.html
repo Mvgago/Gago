@@ -1612,8 +1612,9 @@ function fit() {
   // and turned a quarter round, so the floor's long side (bedrooms to terrace) runs up the screen and its
   // short side, some 16 m, is what has to fit across
   HOME.pol = tall ? 0.55 : 0.9;
-  HOME.az = tall ? 0.62 + 1.5 : 0.62;
-  HOME.r = tall ? Math.max(30, 9.8 / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (w / h))) : w / h < 1.3 ? 34 : 26.5; // wide screens: closer in, the home filling the frame
+  // bare (the studio page): from the terrace's side, three-quarters on, rather than straight at the glass
+  HOME.az = tall ? 0.62 + 1.5 : BARE ? 1.3 : 0.62;
+  HOME.r = tall ? Math.max(30, 9.8 / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (w / h))) : w / h < 1.3 ? 34 : BARE ? 30 : 26.5; // wide screens: closer in, the home filling the frame (bare a touch back, so the terrace stays whole)
   // tall frames: aimed at the floor's middle; wide ones a little low, so the home sits higher, clear of the controls (none when bare)
   HOME.look[1] = tall ? 0 : BARE ? 0.2 : -0.9;
   if (!focus) { goal.look.set(...HOME.look); controls.target.set(...HOME.look); goal.r = HOME.r; }
@@ -1649,8 +1650,9 @@ function frame() {
   } else if (touring) {
     // the walk has the camera
   } else if (BARE && !reduced) {
-    // bare: a slow, steady turn all the way round, so the example is alive without a hand on it
-    sph.setFromVector3(v3.copy(camera.position).sub(controls.target)); sph.theta += 0.05 * dt;
+    // bare: a slow sway either side of a three-quarter view from the terrace's side, never round to the back
+    sph.setFromVector3(v3.copy(camera.position).sub(controls.target));
+    sph.theta += ((HOME.az + Math.sin(T * 0.12) * 0.32) - sph.theta) * Math.min(1, dt * 1.5);
     camera.position.setFromSpherical(sph).add(controls.target);
   } else if (!reduced && !focus && T > idleAt) {
     sph.setFromVector3(v3.copy(camera.position).sub(controls.target));

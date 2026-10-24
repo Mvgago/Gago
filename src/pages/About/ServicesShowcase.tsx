@@ -174,7 +174,11 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
     const mq = window.matchMedia("(min-width: 1024px)");
     const place = () =>
       items.current.forEach((el) => {
-        if (el) el.style.top = mq.matches ? "" : `${Math.min(64, window.innerHeight - el.offsetHeight)}px`;
+        // held as soon as its example, title, text and list are all on screen (what follows the list, the
+        // closing invitation, may pass under the next sheet); if those fit, right under the header
+        if (!el) return;
+        const list = el.querySelector("ul"), end = list ? list.getBoundingClientRect().bottom - el.getBoundingClientRect().top + 24 : el.offsetHeight;
+        el.style.top = mq.matches ? "" : `${Math.min(64, window.innerHeight - end)}px`;
       });
     place();
     const ro = new ResizeObserver(place);
@@ -335,15 +339,10 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
               {/* held under the header while its text is read, the text passing beneath it, as the
                   shorter sheets are held whole (those taller than the screen used to let it scroll away) */}
-              {/* (the frame is held only over the discipline's title and text: it lets go before the list,
-                  so neither the list nor the closing invitation is ever passed under it) */}
               <div>
-              <div className="sticky top-16 z-10 -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              <div className="relative -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
-                {/* under its edge a soft veil of the page's ground: text passing beneath fades in and out
-                    of it instead of being cut off mid-line */}
-                <div aria-hidden className="pointer-events-none absolute inset-x-0 top-full h-10 bg-gradient-to-b from-[#efeef0] to-[#efeef0]/0" />
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
