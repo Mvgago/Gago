@@ -50,7 +50,10 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
     const el = box.current;
     if (!el) return;
     // a whole screen ahead, so a scene is ready before its discipline is reached
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && setLoad(true), { rootMargin: "100% 0px" });
+    // (on phones and tablets it is let go again once more than a screen away: several scenes held at once
+    // ran a phone out of memory and the page reloaded)
+    const release = window.matchMedia("(max-width: 1023px)").matches;
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? setLoad(true) : release && setLoad(false)), { rootMargin: "100% 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);

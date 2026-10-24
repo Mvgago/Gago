@@ -31,7 +31,16 @@ const DevicesFrame: React.FC<{ src: string; title: string; className?: string; p
       { rootMargin: "200px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    // phones and tablets: let go of it again once it is more than a screen away, so a page with several
+    // scenes never holds them all at once (a phone runs out of memory and reloads the page)
+    const far = window.matchMedia("(max-width: 1023px)").matches
+      ? new IntersectionObserver(([entry]) => !entry.isIntersecting && setNear(false), { rootMargin: "100% 0px" })
+      : null;
+    far?.observe(el);
+    return () => {
+      io.disconnect();
+      far?.disconnect();
+    };
   }, []);
 
   return (
