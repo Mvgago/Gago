@@ -28,7 +28,7 @@ type View = "general" | "pasillo" | "mostrador" | "pantalla";
 type Api = { go: (v: View) => void; spin: (on: boolean) => void };
 
 const VIEWS: Record<View, { pos: [number, number, number]; look: [number, number, number] }> = {
-  // Turned about 22° off the front: the open side still shows, but the stand faces you
+  // Turned about 22Â° off the front: the open side still shows, but the stand faces you
   general: { pos: [4.4, 3.1, 10.9], look: [0, 1.45, 0] },
   pasillo: { pos: [-3.6, 1.65, 8.4], look: [0.4, 1.55, -0.4] },
   mostrador: { pos: [1.9, 1.55, 4.6], look: [0.55, 1.0, 0.75] },
@@ -281,13 +281,13 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
       x.fillRect(SX, SY + 96, SW * 0.66, 4);
       x.fillStyle = "#ffffff";
       x.font = "600 22px Jura, sans-serif";
-      x.fillText("Firma biométrica", SX + 24, SY + 64);
+      x.fillText("Firma biomÃ©trica", SX + 24, SY + 64);
       x.fillStyle = "#1f2326";
       x.font = "600 24px Jura, sans-serif";
-      x.fillText("Firme aquí", SX + 24, SY + 150);
+      x.fillText("Firme aquÃ­", SX + 24, SY + 150);
       x.fillStyle = "#6b7479";
       x.font = "400 17px Jura, sans-serif";
-      x.fillText("María López · contrato 2048", SX + 24, SY + 180);
+      x.fillText("MarÃ­a LÃ³pez Â· contrato 2048", SX + 24, SY + 180);
       // the pad, and the signature drawing itself
       const PDX = SX + 20, PDY = SY + 205, PDW = SW - 40, PDH = 230;
       x.fillStyle = "#ffffff";
@@ -331,7 +331,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
       x.fillStyle = "#ffffff";
       x.font = "600 21px Jura, sans-serif";
       x.textAlign = "center";
-      x.fillText(done ? "✓  Firma verificada" : "Confirmar firma", PDX + PDW / 2, SY + SH - 70);
+      x.fillText(done ? "âœ“  Firma verificada" : "Confirmar firma", PDX + PDW / 2, SY + SH - 70);
       x.textAlign = "left";
       x.restore();
       x.restore();
@@ -348,11 +348,11 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     };
     if (slide === 0) {
       line("Encajamos contigo.", 420, 132, "#ffffff", 0.1);
-      line("La pieza que toda compañía", 540, 64, "#e4e8ea", 0.5);
+      line("La pieza que toda compaÃ±Ã­a", 540, 64, "#e4e8ea", 0.5);
       line("necesita para ser segura.", 625, 64, "#e4e8ea", 0.7);
     } else {
       line("Ciberseguridad a medida", 330, 96, "#ffffff", 0.1);
-      ["Auditoría y consultoría", "Firma biométrica", "Formación de equipos"].forEach((txt, k) => {
+      ["AuditorÃ­a y consultorÃ­a", "Firma biomÃ©trica", "FormaciÃ³n de equipos"].forEach((txt, k) => {
         const e = easeOut((st - 0.6 - k * 0.3) / 0.6) * out;
         x.globalAlpha = e;
         x.fillStyle = ORANGE;
@@ -484,8 +484,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     return s;
   };
 
-  /* ---------- hall and stand: 6 × 4 m corner stand, open to the front and the right ---------- */
-  /* The hall: an exhibition pavilion, empty but for this stand. A closed nave of 60 × 50 m and
+  /* ---------- hall and stand: 6 Ã— 4 m corner stand, open to the front and the right ---------- */
+  /* The hall: an exhibition pavilion, empty but for this stand. A closed nave of 60 Ã— 50 m and
      12 m high: polished concrete with its joints, a concrete plinth and metal cladding on the
      walls, steel columns, lattice trusses with high-bay lamps, an exit sign. The far walls sink
      into shade with distance, so the stand stands in a real room with depth behind it. */
@@ -614,7 +614,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     x.fillStyle = "rgba(52,60,63,0.78)";
     x.font = "500 64px Jura, sans-serif";
     x.textAlign = "center";
-    x.fillText("PABELLÓN", 256, 90);
+    x.fillText("PABELLÃ“N", 256, 90);
     x.font = "300 600px Jura, sans-serif";
     x.fillText("3", 256, 690);
     const t = tex(c);
@@ -752,7 +752,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   const ledRing = roundedRect(W + 0.16, D + 0.16, [0.02, 0.02, 0.98, 0.02]);
   ledRing.holes.push(roundedRect(W + 0.08, D + 0.08, [0.02, 0.02, 0.94, 0.02]));
   slab(ledRing, 0.02, m.ledWarm, P + H - 0.02);
-  // Same proportion as the sheet (2048 × 600), so the logo is never stretched
+  // Same proportion as the sheet (2048 Ã— 600), so the logo is never stretched
   decal(logoSheet(LOGO, "#ffffff", 2048, 600), 0.4 * (2048 / 600), 0.4, [-1.2, P + H + 0.21, D / 2 + 0.125]);
   decal(logoSheet(SYMBOL, "#ffffff", 512, 512), 0.34, 0.34, [W / 2 + 0.125, P + H + 0.21, -0.9], Math.PI / 2);
 
@@ -777,7 +777,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     x.font = "300 74px Jura, sans-serif";
     x.fillText("PAD", 304, 640);
     x.font = "300 30px Jura, sans-serif";
-    ["firma electrónica", "alta precisión", "pantalla hd"].forEach((t, i) => x.fillText(t, 304, 780 + i * 56));
+    ["firma electrÃ³nica", "alta precisiÃ³n", "pantalla hd"].forEach((t, i) => x.fillText(t, 304, 780 + i * 56));
     const totem = new THREE.Group();
     const body = new THREE.Mesh(new THREE.BoxGeometry(0.7, 2.1, 0.22), m.graphiteGloss);
     body.position.y = 1.05;
@@ -1139,7 +1139,8 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
       <div
         aria-hidden
         // small, in the top right corner: the caption keeps the top left (and is hidden on phones)
-        className={`${SMALL} pointer-events-none absolute right-2.5 top-3 sm:right-4 flex items-center gap-2 whitespace-nowrap rounded-full bg-[#1c2124]/45 px-3 py-1.5 normal-case text-platinum backdrop-blur-sm transition-opacity duration-700 ${
+        // (the same pill as on the Sapphire's viewer: dark glass, barely rounded corners, small mono type)
+        className={`pointer-events-none absolute right-2.5 top-3 sm:right-4 flex items-center gap-2 whitespace-nowrap rounded-[2px] bg-[rgba(29,34,48,0.32)] px-3 py-1.5 font-[var(--font-mono)] text-[10px] font-light tracking-[0.08em] text-[#f4f1ec] backdrop-blur-[8px] transition-opacity duration-700 ${
           ready && !touched && !bare ? "opacity-100" : "opacity-0"
         }`}
       >

@@ -25,7 +25,7 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 .label, .hint { position: fixed; top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; color: var(--soft); pointer-events: none; }
 .label { left: 40px; }
 /* the hint as on the Sapphire's viewer: a small dark glass pill with a swaying hand */
-.hint { right: 40px; margin: 0; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 2px; background: rgba(29, 34, 48, 0.5); color: #f4f1ec; font-size: 10px; font-weight: 300; letter-spacing: 0.08em; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: opacity .6s; }
+.hint { right: 40px; margin: 0; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 2px; background: rgba(29, 34, 48, 0.32); color: #f4f1ec; font-size: 10px; font-weight: 300; letter-spacing: 0.08em; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: opacity .6s; }
 .hint svg { width: 15px; height: 15px; animation: sway 1.8s ease-in-out infinite; }
 @keyframes sway { 0%, 100% { transform: translateX(-3px) rotate(-8deg); } 50% { transform: translateX(3px) rotate(8deg); } }
 .line { position: fixed; left: 40px; bottom: 26px; margin: 0; font-family: var(--display); font-weight: 300; font-size: clamp(22px, 3vw, 40px); line-height: 1.05; letter-spacing: 0.01em; pointer-events: none; }

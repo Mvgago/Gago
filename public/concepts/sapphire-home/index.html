@@ -32,7 +32,7 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; -webkit-t
 .cap, .hint { position: fixed; top: 26px; font-family: var(--mono); font-size: 10px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft); pointer-events: none; margin: 0; transition: color 1.2s, opacity .6s; }
 .cap { left: 34px; display: flex; flex-direction: column; gap: 5px; }
 .cap b { font-family: var(--display); font-weight: 300; font-size: 22px; letter-spacing: .02em; text-transform: none; color: var(--ink); transition: color 1.2s; }
-.hint { right: 34px; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 2px; background: rgba(29, 34, 48, 0.5); color: #f4f1ec; text-transform: none; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.hint { right: 34px; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 2px; background: rgba(29, 34, 48, 0.32); color: #f4f1ec; text-transform: none; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .hint svg { width: 15px; height: 15px; animation: sway 1.8s ease-in-out infinite; }
 @keyframes sway { 0%, 100% { transform: translateX(-3px) rotate(-8deg); } 50% { transform: translateX(3px) rotate(8deg); } }
 body.night .cap, body.night .cap b { color: rgba(244, 241, 236, 0.85); }
