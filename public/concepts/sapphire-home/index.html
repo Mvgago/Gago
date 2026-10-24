@@ -240,6 +240,7 @@ const CREDITS = [
   ['Carpet', SKF + '3d-models/carpet-434fcc9211e1434dbee7c5024c191c4c', 'Seismic_Creations', SKF + 'Seismic_Creations', ...BY, true],
   ['Rubber Plant (fig)', SKF + '3d-models/rubber-plant-fig-fc83523315714f8d96534bfaa4e15af1', 'jamieirvin', SKF + 'jamieirvin', ...BY, true],
   ['Palm Plant', SKF + '3d-models/palm-plant-fc5680053bb54ff6bacae64be12200ad', 'SomeKevin', SKF + 'SomeKevin', ...BY, true],
+  ['Faucet and sink', SKF + '3d-models/faucet-and-sink-0d3b52af6ac0485b9e815af87687ee8a', 'dudet87', SKF + 'dudekt87', ...BY, true],
   ['JAMAICA STOOL', SKF + '3d-models/jamaica-stool-acc5711fb4734bdcbeccc3c3753e1412', 'jldaureil', SKF + 'jldaureil', 'CC BY-ND 4.0', 'http://creativecommons.org/licenses/by-nd/4.0/', false],
 ];
 { const W = { es: ['Créditos · modelos 3D', 'Modelos 3D', 'adaptado', 'por'], en: ['Credits · 3D models', '3D models', 'adapted', 'by'],
@@ -1066,14 +1067,34 @@ const kitchenFronts = [];
   const ang = -Math.atan2(dir.y, dir.x);
   const at = (s, off) => a.clone().add(dir.clone().multiplyScalar(s)).add(n.clone().multiplyScalar(off));
   // base run (its front on the plan line, its back against the facade)
-  const base = at(len * 0.5, -0.3);
-  kitchenFronts.push(box(len - 0.6, 0.84, 0.6, M.front, base.x - dir.x * 0.3, 0.42, base.y - dir.y * 0.3, 0.008, ang));
-  box(len - 0.56, 0.035, 0.64, M.marble, base.x - dir.x * 0.3, 0.86, base.y - dir.y * 0.3, 0.004, ang);
+  // (both cut round the sink's bowl, so it reads as a real basin and not a rim on solid stone)
+  const s0 = len * 0.66, hw = 0.25, hd = 0.11;
+  const piece = (s1, s2, o1, o2, h, y, mat) => { const q = at((s1 + s2) / 2, (o1 + o2) / 2); return box(s2 - s1, h, o2 - o1, mat, q.x, y, q.y, mat === M.marble ? 0 : 0.008, ang); }; // (the stone's pieces square-edged, so they meet without a seam)
+  [[0, s0 - hw], [s0 + hw, len - 0.6]].forEach(([s1, s2]) => kitchenFronts.push(piece(s1, s2, -0.6, 0, 0.84, 0.42, M.front)));
+  kitchenFronts.push(piece(s0 - hw, s0 + hw, -0.6, 0, 0.54, 0.27, M.front), piece(s0 - hw, s0 + hw, -0.02, 0, 0.84, 0.42, M.front));
+  [[-0.02, s0 - hw, -0.62, 0.02], [s0 + hw, len - 0.58, -0.62, 0.02], [s0 - hw, s0 + hw, -0.3 + hd, 0.02], [s0 - hw, s0 + hw, -0.62, -0.3 - hd]]
+    .forEach(([s1, s2, o1, o2]) => piece(s1, s2, o1, o2, 0.035, 0.86, M.marble));
   // the tall column, by the glass
   const tall = at(len - 0.3, -0.3); kitchenFronts.push(box(0.6, WALL_H - 0.02, 0.62, M.front, tall.x, (WALL_H - 0.02) / 2, tall.y, 0.008, ang));
   // hob and sink, on the run
   const hob = at(len * 0.32, -0.3); box(0.6, 0.012, 0.5, M.black, hob.x, 0.885, hob.y, 0.004, ang);
-  const sink = at(len * 0.66, -0.3); box(0.55, 0.01, 0.4, M.steel, sink.x, 0.882, sink.y, 0.004, ang);
+  const sink = at(len * 0.66, -0.3), drawnSink = box(0.55, 0.01, 0.4, M.steel, sink.x, 0.882, sink.y, 0.004, ang);
+  // the real sink and tap, once loaded, in the drawn sink's place: its rim on the worktop, the tap to the
+  // wall. "Faucet and sink" by dudet87, CC BY 4.0
+  new GLTFLoader().load('/models/sapphire/sink.glb', (gltf) => {
+    const src = gltf.scene; src.updateMatrixWorld(true);
+    const b = new THREE.Box3().setFromObject(src), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
+    // the rim: the highest point out at the bowl's ends (the tap stands in the middle); the tap: what rises above it
+    const v = new THREE.Vector3(), pts = [];
+    src.traverse((o) => { if (!o.isMesh) return; o.castShadow = true; o.receiveShadow = true; const p = o.geometry.attributes.position;
+      for (let i = 0; i < p.count; i += 3) pts.push(v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld).clone()); });
+    let rim = -Infinity; pts.forEach((q) => { if (Math.abs(q.x - c.x) > s.x * 0.4) rim = Math.max(rim, q.y); });
+    let tz = 0, tn = 0; pts.forEach((q) => { if (q.y > rim + 0.05) { tz += q.z - c.z; tn++; } });
+    const k = 0.55 / s.x, zs = n.x * -dir.y + n.y * dir.x > 0 ? 1 : -1; // (zs: whether the group's z faces into the room)
+    const g = group(sink.x, sink.y, ang + ((tn ? tz / tn : -1) * zs > 0 ? Math.PI : 0));
+    src.scale.setScalar(k); src.position.set(-c.x * k, 0.877 + 0.004 - rim * k, -c.z * k); g.add(src);
+    house.remove(drawnSink); redrawShadows();
+  }, undefined, () => {});
   // the island, measured on the plan: 2.8 × 0.9 m, at the facade's own angle, its marble top left clear
   const ic = new THREE.Vector2(0.74, -0.51), iang = Math.atan2(1.0, 2.61);
   const along = new THREE.Vector2(Math.cos(iang), -Math.sin(iang));
