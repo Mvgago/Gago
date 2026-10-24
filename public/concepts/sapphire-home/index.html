@@ -747,12 +747,16 @@ const BATH_SEEDS = [[[-1.2, 3.0]], [[-5.6, 4.9]], [[-10.3, 4.1], [-12.2, 6.0]], 
         const os = segs.find((o) => dist(to, o) < 0.01 && o !== s), od = os ? [os.b[0] - os.a[0], os.b[1] - os.a[1]] : wd, ol = Math.hypot(...od);
         const farEnd = os && (Math.hypot(os.a[0] - to[0], os.a[1] - to[1]) < 0.01 || Math.hypot(os.b[0] - to[0], os.b[1] - to[1]) < 0.01);
         // at a wall's free end, its own section; landing on a wall's side, the first wall's width carried across
-        const n1 = farEnd ? [-od[1] / ol, od[0] / ol] : n0, t1 = farEnd ? os.th : s.th;
+        // the wall simply carried on, at its own full thickness and in its own direction, until it is inside
+        // the wall across the opening (its centre line, plus half that wall's thickness): no taper, no step
+        const wu = [wd[0] / wl, wd[1] / wl];
+        let reach = (to[0] - p[0]) * wu[0] + (to[1] - p[1]) * wu[1];
+        if (os) { const ou = [od[0] / ol, od[1] / ol], den = wu[0] * ou[1] - wu[1] * ou[0];
+          if (Math.abs(den) > 0.2) reach = ((os.a[0] - p[0]) * ou[1] - (os.a[1] - p[1]) * ou[0]) / den; }
+        reach += (os ? os.th : s.th) / 2;
         const pts = [[p[0] + n0[0] * s.th / 2, p[1] + n0[1] * s.th / 2], [p[0] - n0[0] * s.th / 2, p[1] - n0[1] * s.th / 2],
-          [to[0] - n1[0] * t1 / 2, to[1] - n1[1] * t1 / 2], [to[0] + n1[0] * t1 / 2, to[1] + n1[1] * t1 / 2]];
-        // (the two far corners kept on the same sides as the near ones, so the outline never crosses itself)
-        const cr = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
-        if (Math.sign(cr(pts[0], pts[1], pts[2])) !== Math.sign(cr(pts[1], pts[2], pts[3]))) { const tq = pts[2]; pts[2] = pts[3]; pts[3] = tq; }
+          [p[0] - n0[0] * s.th / 2 + wu[0] * reach, p[1] - n0[1] * s.th / 2 + wu[1] * reach], [p[0] + n0[0] * s.th / 2 + wu[0] * reach, p[1] + n0[1] * s.th / 2 + wu[1] * reach]];
+        void farEnd;
         const shape = new THREE.Shape(pts.map(([x, z]) => new THREE.Vector2(x, -z)));
         const geo = new THREE.ExtrudeGeometry(shape, { depth: WALL_H - DOOR_H, bevelEnabled: false }); geo.rotateX(-Math.PI / 2); geo.translate(0, DOOR_H, 0);
         const head = new THREE.Mesh(geo, [M.wallTop, M.wall]); head.castShadow = head.receiveShadow = true; house.add(head); } }
