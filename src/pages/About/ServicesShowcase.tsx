@@ -97,7 +97,8 @@ const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: 
     {ex.link && (
       <Link
         to={ex.link}
-        className={`${SMALL} absolute bottom-4 left-4 inline-flex items-center rounded-full border border-ink/10 bg-white/70 px-4 py-2 text-ink backdrop-blur-md transition-[background-color,border-color] duration-500 hover:border-ink/25 hover:bg-white/90`}
+        // (kept small and faint, so the scene leads; it firms up on hover)
+        className={`${SMALL} absolute bottom-3 left-3 inline-flex items-center rounded-full border border-ink/5 bg-white/40 px-3 py-1 !text-[11px] text-ink/70 backdrop-blur-sm transition-[background-color,border-color,color] duration-500 hover:border-ink/20 hover:bg-white/80 hover:text-ink`}
       >
         {linkLabel}
       </Link>

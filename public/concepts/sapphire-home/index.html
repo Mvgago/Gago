@@ -1876,6 +1876,9 @@ function fit() {
   HOME.r = tall ? Math.max(30, 9.8 / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (w / h))) : w / h < 1.3 ? 34 : BARE ? 30 : 26.5; // wide screens: closer in, the home filling the frame (bare a touch back, so the terrace stays whole)
   // tall frames: aimed at the floor's middle; wide ones a little low, so the home sits higher, clear of the controls (none when bare)
   HOME.look[1] = tall ? 0 : BARE ? 0.2 : -0.9;
+  // bare: aimed a couple of metres towards the terrace and drawn back a touch, so the terrace is whole at the
+  // front (the far side may meet the edge)
+  if (BARE && !tall) { HOME.look[0] = 0.9; HOME.look[2] = 5.9; HOME.r = w / h < 1.3 ? 37 : 33; }
   if (!focus) { goal.look.set(...HOME.look); controls.target.set(...HOME.look); goal.r = HOME.r; }
 }
 addEventListener('resize', fit); fit();
