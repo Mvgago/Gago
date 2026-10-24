@@ -63,7 +63,9 @@ body.night .credit { color: rgba(244, 241, 236, .3); }
 .tag { position: fixed; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 1px; font-family: var(--display); font-weight: 400; font-size: 11px; letter-spacing: .03em; color: var(--ink); background: rgba(250, 250, 248, .55); border: 1px solid rgba(29, 34, 48, .07); border-radius: 2px; padding: 3px 8px 4px; margin-top: -11px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 3px 10px rgba(30, 36, 50, .05); cursor: pointer; white-space: nowrap; transition: opacity .5s, color .3s, border-color .3s; user-select: none; }
 .tag::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 9px; background: rgba(29, 34, 48, .3); }
 .tag::before { content: ''; position: absolute; left: calc(50% - 1.5px); top: calc(100% + 8px); width: 4px; height: 4px; border-radius: 50%; background: rgba(29, 34, 48, .7); }
-body.night .tag { color: #f4f1ec; background: rgba(28, 32, 42, .82); border-color: rgba(244,241,236,.18); } body.night .tag::after, body.night .tag::before { background: rgba(244,241,236,.7); }
+/* at night the tags step back: the name only, smaller, on a faint dark glass */
+body.night .tag { color: rgba(244,241,236,.9); background: rgba(28, 32, 42, .42); border-color: rgba(244,241,236,.1); box-shadow: none; font-size: 10.5px; padding: 3px 7px; }
+body.night .tag small { display: none; } body.night .tag::after, body.night .tag::before { background: rgba(244,241,236,.7); }
 .tag small { font-family: var(--mono); font-weight: 300; font-size: 8.5px; letter-spacing: .06em; color: var(--soft); }
 .tag:hover, .tag.on { background: rgba(250, 250, 248, .9); }
 .tag:hover { color: var(--sapphire); }
@@ -132,7 +134,10 @@ body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec
   .tourbtn { padding: 0 11px; align-self: stretch; } .tourbtn span { display: none; }
   /* the walk's caption on a phone: a small card just above the controls, name and line only */
   .tourcap { left: 20px; right: auto; bottom: 74px; margin-left: 0; padding: 7px 11px 8px 10px; gap: 1px; max-width: 62vw; }
-  body.touring .bars i { height: 9vh; } body.touring .tourcap { bottom: calc(9vh + 12px); }
+  /* on a phone the lower band holds the controls whole (never shorter than them), and the caption sits
+     clear above both */
+  body.touring .bars i { height: max(9vh, 84px); } body.touring .bars i:first-child { height: 7vh; }
+  body.touring .tourcap { bottom: calc(max(9vh, 84px) + 10px); }
   body.touring .cycle { background: rgba(255,255,255,.1); color: #f4f1ec; } body.touring .cycle small { color: rgba(244,241,236,.6); }
   .tourcap small, .tourcap i { display: none; }
   .tourcap b { font-size: 15px; } .tourcap span { font-size: 9px; }
