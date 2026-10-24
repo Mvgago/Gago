@@ -2,7 +2,7 @@
  * Every visible string of the landing, the index, the header, the footer and
  * the contact menu, in the four site languages.
  *
- * "Designing atmospheres." is the brand line and stays in English everywhere.
+ * The brand line: "Hilando fino." in Spanish; elsewhere "Designing atmospheres." for now.
  * French and German should be read by a native speaker before launch.
  */
 
@@ -57,7 +57,7 @@ const en = {
 export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
-  "hero.title": "Designing atmospheres.",
+  "hero.title": "Hilando fino.",
   "hero.sub": "Identidad|web|3D|vídeo",
   "hero.and": "y",
   "hero.cta": "ver proyectos",
