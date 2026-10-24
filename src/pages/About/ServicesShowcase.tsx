@@ -177,7 +177,17 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
         // held as soon as its example, title, text and list are all on screen (what follows the list, the
         // closing invitation, may pass under the next sheet); if those fit, right under the header
         if (!el) return;
-        const list = el.querySelector("ul"), end = list ? list.getBoundingClientRect().bottom - el.getBoundingClientRect().top + 24 : el.offsetHeight;
+        const list = el.querySelector("ul"), frame = el.querySelector<HTMLElement>("[data-frame]");
+        const measure = () => (list ? list.getBoundingClientRect().bottom - el.getBoundingClientRect().top + 24 : el.offsetHeight);
+        // a sheet that won't fit under the header has its example made just short enough that it does (never
+        // below a third of its width), so it is held whole like the others instead of slipping under the header
+        if (frame) frame.style.height = "";
+        let end = measure();
+        const over = end - (window.innerHeight - 64);
+        if (!mq.matches && frame && over > 0) {
+          frame.style.height = `${Math.max(frame.offsetHeight - over, frame.offsetWidth / 3)}px`;
+          end = measure();
+        }
         el.style.top = mq.matches ? "" : `${Math.min(64, window.innerHeight - end)}px`;
       });
     place();
@@ -341,7 +351,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               {/* held under the header while its text is read, the text passing beneath it, as the
                   shorter sheets are held whole (those taller than the screen used to let it scroll away) */}
               <div>
-              <div className="relative -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              <div data-frame className="relative -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
               </div>
