@@ -837,8 +837,9 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.19, POT, 40), m.graphiteGloss);
     pot.position.set(px, P + POT / 2, pz);
     pot.castShadow = pot.receiveShadow = true;
-    scene.add(pot);
+    // (the pot comes in with its plant: alone, while the leaves load, it read as a black bin)
     new GLTFLoader().load("/models/plant/plant.gltf", (gltf) => {
+      scene.add(pot);
       const plant = gltf.scene;
       // its own clay pot is left out: only the leaves and the soil
       plant.traverse((o) => {
