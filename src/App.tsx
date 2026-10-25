@@ -26,7 +26,9 @@ const LegalPage = lazy(() => import("./pages/Privacy/LegalPage").then((m) => ({ 
 const NotFoundPage = lazy(() => import("./pages/NotFound/NotFoundPage").then((m) => ({ default: m.NotFoundPage })));
 
 const page = (element: React.ReactNode, withFooter = true, still = false) => (
-  <PageTransition still={still} className="relative z-10 flex min-h-screen flex-col">
+  // (the screen's real height on phones, not the taller one under the browser's bars: a short page never
+  // scrolls away from its footer)
+  <PageTransition still={still} className="relative z-10 flex min-h-[100dvh] flex-col">
     <Suspense fallback={null}>
       {element}
       {withFooter && <Footer />}

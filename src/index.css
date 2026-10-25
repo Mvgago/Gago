@@ -33,6 +33,8 @@
     color: var(--color-ink);
     /* clip, not hidden: hidden makes body a scroll box of its own and breaks position: sticky */
     overflow-x: clip;
+    /* no rubber-band past the ends on phones: the page never lifts off its footer and shows the grey behind */
+    overscroll-behavior-y: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
