@@ -232,11 +232,11 @@ export const ProjectsSection: React.FC = () => {
         }}
       />
 
-      {/* The hint in the middle of the screen: the words alone, no pill behind them, a soft shadow so they
-          read over any picture; gone at the first scroll */}
+      {/* The hint, centred high under the header: the words alone, no pill behind them, a soft shadow so
+          they read over any picture; gone at the first scroll */}
       <div
         aria-hidden
-        className={`pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-[var(--font-mono)] text-[11px] font-light tracking-[0.08em] text-[#f4f1ec] [text-shadow:0_1px_10px_rgba(0,0,0,0.55)] transition-opacity duration-700 ${
+        className={`pointer-events-none absolute left-1/2 top-24 z-10 -translate-x-1/2 whitespace-nowrap font-[var(--font-mono)] text-[11px] font-light tracking-[0.08em] text-[#f4f1ec] [text-shadow:0_1px_10px_rgba(0,0,0,0.55)] transition-opacity duration-700 ${
           hint ? "opacity-100" : "opacity-0"
         }`}
       >
