@@ -221,10 +221,10 @@ export const ProjectsSection: React.FC = () => {
         }}
       />
 
-      {/* The hint, as on the 3D viewers: a small dark glass pill, centred low, gone at the first scroll */}
+      {/* The hint, as on the 3D viewers: a small dark glass pill in the middle of the screen, gone at the first scroll */}
       <div
         aria-hidden
-        className={`pointer-events-none absolute left-1/2 top-24 z-10 -translate-x-1/2 whitespace-nowrap rounded-[2px] bg-[rgba(29,34,48,0.32)] px-3 py-1.5 font-[var(--font-mono)] text-[10px] font-light tracking-[0.08em] text-[#f4f1ec] backdrop-blur-[8px] transition-opacity duration-700 ${
+        className={`pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-[2px] bg-[rgba(29,34,48,0.32)] px-3 py-1.5 font-[var(--font-mono)] text-[10px] font-light tracking-[0.08em] text-[#f4f1ec] backdrop-blur-[8px] transition-opacity duration-700 ${
           hint ? "opacity-100" : "opacity-0"
         }`}
       >
