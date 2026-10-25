@@ -77,8 +77,19 @@ const Picture: React.FC<{ image: string }> = ({ image }) => {
   const img = texture.image as { width: number; height: number };
   const { width, height } = usePlane(texture, img.width / img.height);
 
+  // A still is never quite still: it closes in very slowly and draws back again, like a slow push-in on
+  // a camera (only ever larger than the view, so no edge shows)
+  const mesh = useRef<THREE.Mesh>(null);
+  const reduced = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches, []);
+  useFrame(({ clock, invalidate }) => {
+    if (reduced || !mesh.current) return;
+    const k = 1 + 0.045 * (0.5 - 0.5 * Math.cos((clock.getElapsedTime() * Math.PI * 2) / 26));
+    mesh.current.scale.set(k, k, 1);
+    invalidate();
+  });
+
   return (
-    <mesh>
+    <mesh ref={mesh}>
       <planeGeometry args={[width, height]} />
       <meshBasicMaterial map={texture} toneMapped={false} />
     </mesh>

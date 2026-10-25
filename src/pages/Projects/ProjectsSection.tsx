@@ -7,7 +7,7 @@ import { useI18n } from "../../i18n/I18n";
 import type { Lang } from "../../i18n/strings";
 import type { CameraMotion } from "../../components/Gallery/CinematicViewer";
 import { CAPTION, DISPLAY, SMALL } from "../../lib/type";
-import smartRollup from "../../assets/peojects/smart/smart-rollup-wide.jpg";
+import smartBrochures from "../../assets/peojects/smart/smart-brochures-wide.jpg";
 import buendiaSocialWide from "../../assets/peojects/buendia/buendia-social-wide.jpg";
 
 // three.js / React Three Fiber only load on this page
@@ -44,7 +44,7 @@ const scopeOf = (slug: string, lang: Lang) => {
 };
 // Full-bleed here, so some projects get a larger picture of their own than the case's cover (the
 // mascot's cut-out and the site's mockup broke up into jagged edges at this size)
-const WIDE: Record<string, string> = { smarthc: smartRollup, buendia: buendiaSocialWide };
+const WIDE: Record<string, string> = { smarthc: smartBrochures, buendia: buendiaSocialWide };
 const imageOf = (slug: string) => WIDE[slug] ?? cases.find((c) => c.slug === slug)?.cover ?? "";
 
 // Projects shown as film instead of a still (files in public/video): the full film, a lighter
