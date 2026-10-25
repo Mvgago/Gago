@@ -196,6 +196,40 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
   }, []);
 
   const noteFor = (i: number) => (EX[i].video ? s.videoNote : undefined);
+  // The scenes' files fetched ahead, quietly, once the page has loaded and settled (nothing extra on
+  // arrival): their code, the home viewer's page and three.js; the home's models (some 12 MB) only on a
+  // wide screen or a fast connection, never when the phone asks to save data. Each scene is still built
+  // only as it nears the screen, now from files already here
+  useEffect(() => {
+    let timer = 0;
+    const fetchAhead = () => {
+      void import("../../components/Stand/CanneryStand");
+      void import("../../components/Identity/StationeryScene");
+      const net = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+      const roomy = !net?.saveData && (window.matchMedia("(min-width: 1024px)").matches || net?.effectiveType === "4g");
+      const files = ["/concepts/sapphire-home/index.html?bare", "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js"];
+      if (roomy) files.push(...["bed30.glb", "sofa.glb", "carpet.glb", "dining.glb", "petate.glb", "bed3.glb", "lounger.glb", "fig.glb", "palm.glb", "towel.glb", "sink.glb", "carpet3.glb"].map((f) => `/models/sapphire/${f}`));
+      files.forEach((href) => {
+        const l = document.createElement("link");
+        l.rel = "prefetch";
+        l.href = href;
+        document.head.appendChild(l);
+      });
+    };
+    const later = () => {
+      timer = window.setTimeout(() => {
+        const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 500));
+        idle(fetchAhead, { timeout: 4000 });
+      }, 2000);
+    };
+    if (document.readyState === "complete") later();
+    else window.addEventListener("load", later, { once: true });
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("load", later);
+    };
+  }, []);
+
   const lenis = useLenis();
   // A tab brings its discipline to the middle of the screen
   const goTo = (i: number) => {
