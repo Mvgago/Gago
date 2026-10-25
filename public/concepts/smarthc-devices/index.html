@@ -51,7 +51,7 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 @media (max-width: 900px) and (min-width: 641px) { .hint { top: auto; bottom: 30px; right: 24px; } }
 @media (max-width: 640px) {
   .hint { display: none; }
-  .label { left: 16px; top: 14px; }
+  .label { display: none; } /* (on a phone the scene stands clear of words at its top) */
   .line { left: 16px; bottom: 16px; }
 }
 </style>
@@ -752,7 +752,8 @@ function renderContactShadow() {
   [tablet, phone].forEach(d => d.group.children.forEach(m => { if (m.material === glassMat) m.visible = true; }));
 }
 
-/* Post: a faint vignette and grain, multisampled for crisp edges */
+/* Post: a faint vignette and grain, multisampled for crisp edges (not on phones: see the loop) */
+const smallScreen = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
 const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
 composer.addPass(new RenderPass(scene, camera));
 composer.addPass(new OutputPass());
@@ -820,7 +821,8 @@ function fit() {
   const BARE = new URLSearchParams(location.search).has('bare');
   const tall = w / h < .9;
   const dx = wideView ? (BARE ? -.25 : -.12) : 0;
-  const dz = (wideView ? 4.25 : 5.1) * (BARE ? .86 : 1) * (tall ? Math.max(.7, (w / h) * .88) : 1);
+  // (tall frames drawn back a little further than before, so the tablet is never cut at the sides)
+  const dz = (wideView ? 4.25 : 5.1) * (BARE ? .86 : 1) * (tall ? Math.max(.95, (w / h) * 1.15) : 1);
   camera.position.x += (dx + .2) - HOME.x; camera.position.z += dz - HOME.z;
   HOME.set(dx + .2, 1.6, dz); controls.target.set(dx + .05, 1.2, 0);
   if (BARE) camera.position.copy(HOME);
@@ -873,7 +875,9 @@ function frame() {
   controls.update();
   if (frameN % 2 === 0) renderContactShadow();
   finish.uniforms.time.value = T;
-  composer.render();
+  // phones: drawn straight to the screen. The multisampled half-float pass behind the vignette and
+  // grain broke up into coloured specks behind the tablet on iPhones
+  if (smallScreen) renderer.render(scene, camera); else composer.render();
 }
 
 const BARE_VIEW = new URLSearchParams(location.search).has('bare');
