@@ -228,7 +228,15 @@ export const ProjectsSection: React.FC = () => {
           hint ? "opacity-100" : "opacity-0"
         }`}
       >
-        {(touch ? NEXT_HINT_TOUCH : NEXT_HINT)[lang]}
+        <span className="flex items-center gap-2.5">
+          {/* two fine chevrons, one over the other, drifting down: the way the next project comes */}
+          <style>{`@keyframes fh-down{0%{transform:translateY(-3px);opacity:0}35%{opacity:1}100%{transform:translateY(4px);opacity:0}}`}</style>
+          <svg viewBox="0 0 12 14" className="h-3.5 w-3" fill="none" stroke="currentColor" strokeWidth={1.3} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 2.5l4 3.5 4-3.5" style={{ animation: "fh-down 1.6s ease-in-out infinite" }} />
+            <path d="M2 7.5l4 3.5 4-3.5" style={{ animation: "fh-down 1.6s ease-in-out .25s infinite" }} />
+          </svg>
+          {(touch ? NEXT_HINT_TOUCH : NEXT_HINT)[lang]}
+        </span>
       </div>
 
       {/* Everything that is read, in one place */}
