@@ -9,6 +9,7 @@ import type { CameraMotion } from "../../components/Gallery/CinematicViewer";
 import { CAPTION, DISPLAY, SMALL } from "../../lib/type";
 import smartBrochures from "../../assets/peojects/smart/smart-brochures-wide.jpg";
 import buendiaSocialWide from "../../assets/peojects/buendia/buendia-social-wide.jpg";
+import DevicesFrame from "../../components/Devices/DevicesFrame";
 // three.js / React Three Fiber only load on this page
 const CinematicViewer = lazy(() => import("../../components/Gallery/CinematicViewer"));
 
@@ -55,6 +56,12 @@ const FILM: Record<string, { src: string; small: string; poster: string; posterS
     poster: "/video/the-sapphire-poster.webp",
     posterSmall: "/video/the-sapphire-poster-720.webp",
   },
+};
+
+// Projects shown as a live 3D scene instead (pages in public/concepts, the scene alone)
+const SCENE: Record<string, string | undefined> = {
+  buendia: "/concepts/buendia-devices/index.html?bare",
+  smarthc: "/concepts/smarthc-devices/index.html?bare&room",
 };
 
 /** A layer at a given depth: it follows the camera by `depth` px per unit of drift */
@@ -161,9 +168,17 @@ export const ProjectsSection: React.FC = () => {
           animate={{ opacity: 1, transition: { duration: 0.8, ease: EASE_HAUS } }}
           exit={{ opacity: 0, transition: { duration: 0.35, ease: [0.4, 0, 1, 1] } }}
         >
-          <Suspense fallback={null}>
-            <CinematicViewer image={imageOf(active.slug)} film={FILM[active.slug]} onMotion={onMotion} className="absolute inset-0" />
-          </Suspense>
+          {/* Buendía and SmartHC: their own 3D scenes, full-bleed and running on their own (the pointer is
+              left to the page, so scrolling over them still moves on to the next project) */}
+          {SCENE[active.slug] ? (
+            <div className="pointer-events-none absolute inset-0">
+              <DevicesFrame src={SCENE[active.slug]!} title={`${active.title} — 3D`} className="h-full w-full" />
+            </div>
+          ) : (
+            <Suspense fallback={null}>
+              <CinematicViewer image={imageOf(active.slug)} film={FILM[active.slug]} onMotion={onMotion} className="absolute inset-0" />
+            </Suspense>
+          )}
         </motion.div>
       </AnimatePresence>
 

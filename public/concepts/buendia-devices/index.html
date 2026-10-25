@@ -42,6 +42,8 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 <p class="label">Concepto · Diseño digital y campañas en redes</p>
 <p class="hint" id="hint">arrastra para girar</p>
 <p class="line">Europa empieza <span>aquí.</span></p>
+<!-- ?bare: the scene alone, full-bleed on the projects page (no caption, hint or line over it) -->
+<script>if (new URLSearchParams(location.search).has('bare')) document.querySelectorAll('.label, .hint, .line').forEach((e) => (e.style.display = 'none'));</script>
 
 <script type="importmap">
 { "imports": {

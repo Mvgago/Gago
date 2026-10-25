@@ -842,9 +842,11 @@ function fit() {
   const tall = w / h < .9;
   const dx = wideView ? (BARE ? -.25 : -.12) : 0;
   // (tall frames drawn back a little further than before, so the tablet is never cut at the sides)
-  const dz = (wideView ? 4.25 : 5.1) * (BARE ? .86 : 1) * (tall ? Math.max(.95, (w / h) * 1.15) : 1);
+  // ?room: full-bleed on the projects page, behind the project's name: drawn back and the tablet raised
+  const ROOM = new URLSearchParams(location.search).has('room');
+  const dz = (wideView ? 4.25 : 5.1) * (ROOM ? 1.3 : BARE ? .86 : 1) * (tall ? Math.max(.95, (w / h) * 1.15) : 1);
   camera.position.x += (dx + .2) - HOME.x; camera.position.z += dz - HOME.z;
-  HOME.set(dx + .2, 1.6, dz); controls.target.set(dx + .05, 1.2, 0);
+  HOME.set(dx + .2, 1.6, dz); controls.target.set(dx + .05, ROOM ? .95 : 1.2, 0);
   if (BARE) camera.position.copy(HOME);
   camera.updateProjectionMatrix();
   const visH = 2 * CODE_DIST * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), visW = visH * camera.aspect;
