@@ -138,7 +138,8 @@ export const SiteHeader: React.FC = () => {
             aria-expanded={open}
             aria-label={open ? t("index.aria.close") : t("index.aria.open")}
             // Hover, quietly: the graphite lifts a shade lighter, the letters open a touch, the short line grows. No shadow.
-            className={`group relative flex items-center gap-3.5 rounded-full bg-ink/90 px-5 py-2.5 backdrop-blur-md transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
+            // (smaller on phones, where it took too much of the header)
+            className={`group relative flex items-center gap-2.5 rounded-full bg-ink/90 px-3.5 py-2 backdrop-blur-md max-sm:[&_.meta]:text-[11px] sm:gap-3.5 sm:px-5 sm:py-2.5 transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
           >
             {inviting && (
               <>
