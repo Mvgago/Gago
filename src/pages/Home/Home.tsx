@@ -73,7 +73,7 @@ export const Home: React.FC = () => {
             })()}
           </h1>
           {/* what the studio does, the words arriving one after another */}
-          <p className={`${SUBTITLE} mt-3 !font-normal text-white [text-wrap:balance] lg:mt-5`}>
+          <p className={`${SUBTITLE} mt-1 !font-normal text-white [text-wrap:balance] lg:mt-1.5`}>
             {(() => {
               const parts = t("hero.sub").split("|");
               return parts.map((part, i) => (
