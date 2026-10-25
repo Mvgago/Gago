@@ -1,5 +1,5 @@
 ﻿import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { EASE_HAUS } from "../../lib/motion";
 import { cases, CASE_UI, DISCIPLINE } from "../../outils/cases";
@@ -64,6 +64,10 @@ const SCENE: Record<string, string | undefined> = {
   smarthc: "/concepts/smarthc-devices/index.html?bare&room",
 };
 
+// The hint's words: scrolling (or a swipe) brings the next project
+const NEXT_HINT: Record<Lang, string> = { es: "scroll para el siguiente", en: "scroll for the next", fr: "défilez pour le suivant", de: "scrollen für das nächste" };
+const NEXT_HINT_TOUCH: Record<Lang, string> = { es: "desliza para el siguiente", en: "swipe for the next", fr: "glissez pour le suivant", de: "wischen für das nächste" };
+
 /** A layer at a given depth: it follows the camera by `depth` px per unit of drift */
 const Layer: React.FC<{
   mx: MotionValue<number>;
@@ -100,6 +104,21 @@ export const ProjectsSection: React.FC = () => {
 
   // Scrolling moves on to the next project (and back): the wheel, a swipe, the arrow keys. One step per
   // gesture, then a pause, so a long spin of the wheel never runs through them all; past the last, the first
+  // The address follows the project on view, so going back, reloading or sharing the link returns to it
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate(`/projects?p=${WORKS[index].slug}`, { replace: true });
+  }, [index, navigate]);
+
+  // A quiet word, the first moments here, that scrolling moves on to the next project; gone once used
+  const [hint, setHint] = useState(false);
+  const used = useRef(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => !used.current && setHint(true), 1400);
+    return () => window.clearTimeout(id);
+  }, []);
+  const touch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+
   useEffect(() => {
     let lockedUntil = 0, acc = 0, touchY: number | null = null;
     const step = (dir: number) => {
@@ -107,6 +126,8 @@ export const ProjectsSection: React.FC = () => {
       if (now < lockedUntil) return;
       lockedUntil = now + 1100;
       acc = 0;
+      used.current = true;
+      setHint(false);
       setIndex((i) => (i + dir + WORKS.length) % WORKS.length);
     };
     const onWheel = (e: WheelEvent) => {
@@ -199,6 +220,16 @@ export const ProjectsSection: React.FC = () => {
           ].join(", "),
         }}
       />
+
+      {/* The hint, as on the 3D viewers: a small dark glass pill, centred low, gone at the first scroll */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute left-1/2 top-24 z-10 -translate-x-1/2 whitespace-nowrap rounded-[2px] bg-[rgba(29,34,48,0.32)] px-3 py-1.5 font-[var(--font-mono)] text-[10px] font-light tracking-[0.08em] text-[#f4f1ec] backdrop-blur-[8px] transition-opacity duration-700 ${
+          hint ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        {(touch ? NEXT_HINT_TOUCH : NEXT_HINT)[lang]}
+      </div>
 
       {/* Everything that is read, in one place */}
       {/* The project on view bottom left; the index of all the projects apart, bottom right,
