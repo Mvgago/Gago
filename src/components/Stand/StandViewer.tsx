@@ -72,7 +72,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   // so it takes the face as soon as it arrives
   document.fonts.load("300 100px Jura").catch(() => {});
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.matchMedia("(max-width: 767px)").matches ? 1.5 : 2)); // (phones a little softer)
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;

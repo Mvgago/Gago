@@ -39,7 +39,8 @@ const VIEW = { pos: [4.0, 2.1, 9.4] as [number, number, number], look: [0.1, 1.3
 async function build(host: HTMLDivElement, onReady: () => void, paused: { current: boolean } = { current: false }): Promise<() => void> {
   document.fonts.load("300 100px Jura").catch(() => {});
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  // (phones a little softer: the difference barely shows on a small screen, the work halves)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.matchMedia("(max-width: 767px)").matches ? 1.25 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;

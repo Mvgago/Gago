@@ -239,6 +239,15 @@ export const AboutPage: React.FC = () => {
   };
 
 
+  // The white room starts once the page has drawn its words (a frame or two later, half a second at most)
+  const [roomReady, setRoomReady] = useState(false);
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 300));
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
+    const id = idle(() => setRoomReady(true), { timeout: 600 });
+    return () => cancel(id);
+  }, []);
+
   return (
     // No bottom padding: the dark contact block closes the page, the footer follows it
     <main className="relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
@@ -251,9 +260,12 @@ export const AboutPage: React.FC = () => {
         // Both fades apply at once: each point keeps the lesser of the two
         style={{ maskImage: ROOM_FADE, WebkitMaskImage: ROOM_FADE, maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
       >
-        <Suspense fallback={null}>
-          <WhiteRoom className="h-full w-full" />
-        </Suspense>
+        {/* (it comes in a moment after the words: the page can be read and used first) */}
+        {roomReady && (
+          <Suspense fallback={null}>
+            <WhiteRoom className="h-full w-full" />
+          </Suspense>
+        )}
       </div>
 
       {/* Header, as in the other rooms: one quiet line. The logo heads the page,

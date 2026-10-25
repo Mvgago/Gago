@@ -53,7 +53,8 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
     // (on phones and tablets it is let go again once more than a screen away: several scenes held at once
     // ran a phone out of memory and the page reloaded)
     const release = window.matchMedia("(max-width: 1023px)").matches;
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? setLoad(true) : release && setLoad(false)), { rootMargin: "100% 0px" });
+    // (half a screen ahead on phones: ready as it arrives, without building it while another still runs)
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? setLoad(true) : release && setLoad(false)), { rootMargin: release ? "50% 0px" : "100% 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);

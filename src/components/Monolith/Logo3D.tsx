@@ -44,7 +44,7 @@ const Logo3D: React.FC<Props> = ({ className, paused = false }) => {
       return;
     }
     renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio * 1.5, 3)); // extra density: it is small
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio * 1.5, window.matchMedia("(max-width: 767px)").matches ? 2 : 3)); // extra density: it is small
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
     renderer.outputColorSpace = THREE.SRGBColorSpace;

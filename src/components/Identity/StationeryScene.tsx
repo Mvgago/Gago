@@ -46,7 +46,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   const photos = { beach, facade };
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   // drawn at least at 1.5× even on ordinary screens: the small print and the foil stay crisp
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  // (phones a little softer: the difference barely shows on a small screen, the work halves)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.matchMedia("(max-width: 767px)").matches ? 1.25 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.52;

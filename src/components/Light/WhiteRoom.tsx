@@ -69,7 +69,8 @@ const WhiteRoom: React.FC<{ className?: string }> = ({ className = "" }) => {
     } catch {
       return; // no WebGL: the plain wall stays
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    // (phones a little softer: the difference barely shows on a small screen, the work halves)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.matchMedia("(max-width: 767px)").matches ? 1.25 : 1.75));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
