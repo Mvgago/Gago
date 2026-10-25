@@ -495,23 +495,9 @@ export const CaseStudyPage: React.FC = () => {
         </div>
       )}
 
-      {/* One line inviting a similar project, to the contact on "info" */}
-      {c.cta && (
-        <Link
-          to="/about#contact"
-          className={`${ACTION} group mt-24 inline-flex items-center gap-3 text-ink md:mt-32`}
-        >
-          <span className="relative">
-            {c.cta[lang]}
-            <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
-            <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-          </span>
-        </Link>
-      )}
-
-      {/* Whoever has read this far is the one most likely to write: a quiet invitation (where the case has
-          none of its own), then the next project */}
-      {!c.cta && (
+      {/* Whoever has read this far is the one most likely to write: a quiet invitation, the same on every
+          case, then the next project */}
+      {(
       <div className="mt-24 flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between md:mt-32">
         <p className={`${SUBTITLE} text-ink`}>{CASE_UI.talk[lang]}</p>
         <Link to="/about#contact" className={`${ACTION} group inline-flex items-center gap-4 self-start text-ink`}>
