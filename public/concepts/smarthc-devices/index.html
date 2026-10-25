@@ -756,6 +756,12 @@ function renderContactShadow() {
 
 /* Post: a faint vignette and grain, multisampled for crisp edges (not on phones: see the loop) */
 const smallScreen = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
+// phones: a plain pale sky, without the glow and the columns of code (the upper half broke into coloured
+// specks behind the tablet on iPhones)
+if (smallScreen) {
+  backdrop.material = new THREE.MeshBasicMaterial({ color: '#cdd6da', side: THREE.BackSide, depthWrite: false });
+  scene.remove(halo); camera.remove(tech);
+}
 const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
 composer.addPass(new RenderPass(scene, camera));
 composer.addPass(new OutputPass());
