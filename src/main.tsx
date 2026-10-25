@@ -36,7 +36,8 @@ const inView = new IntersectionObserver(
   { rootMargin: '25% 0px' },
 );
 const wake = () => document.querySelectorAll('video').forEach((v) => start(v));
-['touchstart', 'pointerdown', 'scroll'].forEach((ev) => window.addEventListener(ev, wake, { passive: true }));
+// (touchend and click too: in-app browsers such as WhatsApp's only take those as leave to play)
+['touchstart', 'touchend', 'pointerdown', 'click', 'scroll'].forEach((ev) => window.addEventListener(ev, wake, { passive: true }));
 new MutationObserver(() => {
   document.querySelectorAll<HTMLVideoElement>('video:not([data-locked])').forEach((v) => {
     v.setAttribute('controlslist', 'nodownload noremoteplayback');
