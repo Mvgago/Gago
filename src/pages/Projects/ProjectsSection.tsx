@@ -9,8 +9,6 @@ import type { CameraMotion } from "../../components/Gallery/CinematicViewer";
 import { CAPTION, DISPLAY, SMALL } from "../../lib/type";
 import smartBrochures from "../../assets/peojects/smart/smart-brochures-wide.jpg";
 import buendiaSocialWide from "../../assets/peojects/buendia/buendia-social-wide.jpg";
-import BuendiaScene from "../../components/Gallery/BuendiaScene";
-
 // three.js / React Three Fiber only load on this page
 const CinematicViewer = lazy(() => import("../../components/Gallery/CinematicViewer"));
 
@@ -163,14 +161,9 @@ export const ProjectsSection: React.FC = () => {
           animate={{ opacity: 1, transition: { duration: 0.8, ease: EASE_HAUS } }}
           exit={{ opacity: 0, transition: { duration: 0.35, ease: [0.4, 0, 1, 1] } }}
         >
-          {/* Buendía: a scene to step into, its destinations as posts shuffling at different depths */}
-          {active.slug === "buendia" ? (
-            <BuendiaScene className="absolute inset-0" />
-          ) : (
-            <Suspense fallback={null}>
-              <CinematicViewer image={imageOf(active.slug)} film={FILM[active.slug]} onMotion={onMotion} className="absolute inset-0" />
-            </Suspense>
-          )}
+          <Suspense fallback={null}>
+            <CinematicViewer image={imageOf(active.slug)} film={FILM[active.slug]} onMotion={onMotion} className="absolute inset-0" />
+          </Suspense>
         </motion.div>
       </AnimatePresence>
 
