@@ -399,7 +399,10 @@ scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.7;
 
 const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 80);
-const HOME = new THREE.Vector3(0.55, 2.95, 5.0); // a little below the devices, looking up at them
+// ?bare (full-bleed on the projects page, the name over its lower left): drawn back a little, the devices
+// closer together, so neither screen is cut at the edges
+const BARE_FULL = new URLSearchParams(location.search).has('bare');
+const HOME = new THREE.Vector3(0.55, 2.95, BARE_FULL ? 5.9 : 5.0); // a little below the devices, looking up at them
 const START = new THREE.Vector3(1.2, 3.1, 10);
 const HOME0 = HOME.clone(), START0 = START.clone(); // as framed for a wide screen
 camera.position.copy(START);
@@ -691,7 +694,7 @@ function device(w, h, d, r, sw, sh, texW, texH) {
 const tablet = device(2.3, 1.66, .06, .16, 2.17, 1.532, TW, TH);
 const phone = device(.78, 1.6, .075, .16, .716, 1.528, PW, PH);
 // Slightly crossed, with air between them
-const TPOS = new THREE.Vector3(-.6, 3.65, -.25), PPOS = new THREE.Vector3(1.65, 3.5, .7);
+const TPOS = new THREE.Vector3(BARE_FULL ? -.2 : -.6, 3.65, -.25), PPOS = new THREE.Vector3(BARE_FULL ? 1.3 : 1.65, 3.5, .7);
 tablet.group.position.copy(TPOS); tablet.group.rotation.set(-.12, .5, .03);
 phone.group.position.copy(PPOS); phone.group.rotation.set(-.06, -.32, -.09);
 

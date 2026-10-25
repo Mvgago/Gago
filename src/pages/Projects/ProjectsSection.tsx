@@ -52,9 +52,11 @@ const imageOf = (slug: string) => WIDE[slug] ?? cases.find((c) => c.slug === slu
 const FILM: Record<string, { src: string; small: string; poster: string; posterSmall: string } | undefined> = {
   sapphire: {
     src: "/video/the-sapphire.mp4",
-    small: "/video/the-sapphire-720.mp4",
+    // phones: a vertical cut taken from the full film at its own resolution (the 720p film, cropped to a tall
+    // screen and blown up, went soft)
+    small: "/video/the-sapphire-vertical.mp4",
     poster: "/video/the-sapphire-poster.webp",
-    posterSmall: "/video/the-sapphire-poster-720.webp",
+    posterSmall: "/video/the-sapphire-poster-vertical.webp",
   },
 };
 
