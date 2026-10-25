@@ -869,8 +869,10 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     const cast: [string, number, number, number, number][] = [
       ["s260", 0.6, 1.9, 1.78, P],
       ["s206", -1.15, 1.75, 1.76, P],
-      ["s194", 3.9, 3.2, 1.72, 0],
-      ["s261", -3.7, 3.5, 1.8, 0],
+      // (the one seen most, on the right of the aisle, is the one photographed from behind, walking on;
+      // the one facing the camera stands where the general view hardly reaches)
+      ["s261", 3.9, 3.2, 1.8, 0],
+      ["s194", -3.7, 3.5, 1.72, 0],
     ];
     cast.forEach(([name, x, z, h, floor]) => {
       const mat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.42, alphaTest: 0.2, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
