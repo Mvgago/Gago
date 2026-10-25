@@ -231,7 +231,7 @@ export const ProjectsSection: React.FC = () => {
           // Plus a soft pool of graphite in the top-left corner, so the logo holds even
           // when the film passes through bright sky or haze behind it
           background: [
-            "radial-gradient(ellipse 32% 22% at 0% 0%, rgba(47,43,42,0.6) 0%, rgba(47,43,42,0.3) 50%, rgba(47,43,42,0) 100%)",
+            "radial-gradient(ellipse 32% 22% at 0% 0%, rgba(47,43,42,0.32) 0%, rgba(47,43,42,0.14) 50%, rgba(47,43,42,0) 100%)",
             "linear-gradient(180deg, rgba(47,43,42,0.5) 0%, rgba(47,43,42,0) 16%, rgba(47,43,42,0) 55%, rgba(47,43,42,0.3) 76%, rgba(47,43,42,0.68) 100%)",
           ].join(", "),
         }}
@@ -242,7 +242,7 @@ export const ProjectsSection: React.FC = () => {
       <div
         aria-hidden
         className={`pointer-events-none absolute left-1/2 top-24 z-10 -translate-x-1/2 whitespace-nowrap font-[var(--font-mono)] text-[11px] font-light tracking-[0.08em] text-[#f4f1ec] [text-shadow:0_1px_8px_rgba(0,0,0,0.35)] transition-opacity duration-1000 ${
-          hint ? "opacity-70" : "opacity-0"
+          hint ? "opacity-90" : "opacity-0"
         }`}
       >
         <span className="flex items-center gap-2.5">
