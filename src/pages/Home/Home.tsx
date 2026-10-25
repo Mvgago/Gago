@@ -72,26 +72,21 @@ export const Home: React.FC = () => {
           </h1>
         </Link>
 
-        {/* what the studio does, each word its own way in: straight to that discipline on the studio
-            page (identity, web, interactive 3D, film), the words arriving one after another */}
+        {/* what the studio does, as one line and one way in: to the studio page's services, the words
+            arriving one after another */}
         <p className={`${SUBTITLE} fh-manifesto mt-3 !font-normal text-white [text-wrap:balance] lg:mt-5`}>
-          {(() => {
-            const parts = t("hero.sub").split("|"), to = [3, 1, 1, 0];
-            return parts.map((part, i) => (
-              <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.5 + i * 0.12}s both` }}>
-                {i === parts.length - 1 && <span>{t("hero.and")}&nbsp;</span>}
-                <Link
-                  to={`/about#disciplina-${to[i]}`}
-                  className="group/w relative inline-block transition-opacity duration-500 hover:opacity-100 focus-visible:opacity-100 [p:hover_&]:opacity-60"
-                >
+          <Link to="/about#servicios" className="transition-opacity duration-500 hover:opacity-75 focus-visible:opacity-75">
+            {(() => {
+              const parts = t("hero.sub").split("|");
+              return parts.map((part, i) => (
+                <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.5 + i * 0.12}s both` }}>
+                  {i === parts.length - 1 && <span>{t("hero.and")}&nbsp;</span>}
                   {part}
-                  {/* a hairline drawing itself under the word on hover */}
-                  <span aria-hidden className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-700 ease-haus group-hover/w:scale-x-100 group-focus-visible/w:scale-x-100" />
-                </Link>
-                {i < parts.length - 2 ? ",\u00a0" : i === parts.length - 2 ? "\u00a0" : "."}
-              </span>
-            ));
-          })()}
+                  {i < parts.length - 2 ? ",\u00a0" : i === parts.length - 2 ? "\u00a0" : "."}
+                </span>
+              ));
+            })()}
+          </Link>
         </p>
 
         <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12 lg:mt-16">

@@ -183,7 +183,7 @@ export const cases: Case[] = [
     slug: "buendia",
     title: "Buendía Travel",
     client: { en: "Buendía Travel — tourism", es: "Buendía Travel — turismo", fr: "Buendía Travel — tourisme", de: "Buendía Travel — tourismus" },
-    disciplines: ["identity", "social", "web", "comms", "campaign", "video"],
+    disciplines: ["identity", "social", "web", "video"],
     sector: { en: "tourism and travel", es: "turismo y viajes", fr: "tourisme et voyages", de: "tourismus und reisen" },
     lead: {
       en: "Travel agency.",
@@ -197,31 +197,12 @@ export const cases: Case[] = [
       fr: "Buendía Travel avait besoin que sa marque transmette ce qu'elle vend : des expériences, pas des forfaits. Nous avons modernisé son identité et l'avons portée sur un site pensé pour réserver activités et excursions, et sur des catalogues et campagnes qui racontent chaque destination à travers ceux qui la vivent.",
       de: "Buendía Travel brauchte eine Marke, die vermittelt, was sie verkauft: Erlebnisse, keine Pauschalreisen. Wir haben ihre Identität modernisiert und auf eine Website zum Buchen von Aktivitäten und Ausflügen übertragen, sowie auf Kataloge und Kampagnen, die jedes Reiseziel aus der Sicht derer erzählen, die es erleben.",
     },
+    // (the main ones only: a long list goes unread)
     services: [
-      {
-        d: "identity",
-        detail: { en: "modernised logo and visual system", es: "logotipo modernizado y sistema visual", fr: "logo modernisé et système visuel", de: "modernisiertes logo und visuelles system" },
-      },
-      {
-        d: "social",
-        detail: { en: "social media content and SEO and SEM positioning", es: "contenido en redes y posicionamiento SEO y SEM", fr: "contenus pour les réseaux et référencement SEO et SEA", de: "social-media-inhalte und SEO- und SEA-positionierung" },
-      },
-      {
-        d: "web",
-        detail: { en: "booking site for activities and excursions", es: "web de reserva de actividades y excursiones", fr: "site de réservation d'activités et d'excursions", de: "buchungsseite für aktivitäten und ausflüge" },
-      },
-      {
-        d: "comms",
-        detail: { en: "catalogues, guides and printed matter", es: "catálogos, guías y material impreso", fr: "catalogues, guides et imprimés", de: "kataloge, reiseführer und drucksachen" },
-      },
-      {
-        d: "campaign",
-        detail: { en: "seasonal promotions and stories for social media", es: "promociones de temporada y stories para redes", fr: "promotions saisonnières et stories pour les réseaux", de: "saisonaktionen und stories für soziale medien" },
-      },
-      {
-        d: "video",
-        detail: { en: "destination spots: editing, copy and motion", es: "spots de destino: montaje, textos y motion", fr: "spots de destination : montage, textes et motion", de: "reiseziel-spots: schnitt, texte und motion" },
-      },
+      { d: "identity", detail: { en: "logo and visual system", es: "logotipo y sistema visual", fr: "logo et système visuel", de: "logo und visuelles system" } },
+      { d: "social", detail: { en: "social media, SEO and SEM", es: "redes, SEO y SEM", fr: "réseaux, SEO et SEA", de: "social media, SEO und SEA" } },
+      { d: "web", detail: { en: "online bookings", es: "reservas online", fr: "réservations en ligne", de: "online-buchungen" } },
+      { d: "video", detail: { en: "destination spots", es: "spots de destino", fr: "spots de destination", de: "reiseziel-spots" } },
     ],
     cover: buendiaWeb,
     thumb: buendiaStrip,

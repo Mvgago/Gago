@@ -256,7 +256,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
   }, [lenis]);
 
   return (
-    <section className="grid scroll-mt-24 grid-cols-12 gap-x-8">
+    <section id="servicios" className="grid scroll-mt-24 grid-cols-12 gap-x-8">
       <h2 className="sr-only">{s.disciplinesLabel}</h2>
 
       {/* The frame, held while the disciplines pass (large screens) */}
