@@ -4,6 +4,14 @@ import './fonts';
 import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { App } from './App';
+import { Recover, reloadOnce } from './components/Safety/Recover';
+
+// a piece of an older version that is gone (a new one went live while the page was open): load again
+window.addEventListener('vite:preloadError', (e) => {
+  if (reloadOnce()) e.preventDefault();
+});
+// once a page has drawn well, the next failure may reload again
+window.addEventListener('load', () => setTimeout(() => { try { sessionStorage.removeItem('fh-recovered'); } catch { /* none */ } }, 10000));
 
 // No image, film or 3D scene on the site can be saved or copied from the browser: no context menu
 // (save image as, copy image), no dragging out, and videos offer no download
@@ -55,8 +63,10 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
   <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <Recover>
+      <Router>
+        <App />
+      </Router>
+    </Recover>
   </React.StrictMode>
 );
