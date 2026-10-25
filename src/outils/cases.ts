@@ -1,4 +1,4 @@
-﻿import type { Lang } from "../i18n/strings";
+import type { Lang } from "../i18n/strings";
 
 import aleaStrip from "../assets/peojects/alea/alea-strip.jpg.webp";
 import aleaDashboard from "../assets/peojects/alea/alea-dashboard-web.jpg.webp";
@@ -183,7 +183,7 @@ export const cases: Case[] = [
     slug: "buendia",
     title: "Buendía Travel",
     client: { en: "Buendía Travel — tourism", es: "Buendía Travel — turismo", fr: "Buendía Travel — tourisme", de: "Buendía Travel — tourismus" },
-    disciplines: ["identity", "web", "comms", "campaign", "video"],
+    disciplines: ["identity", "social", "web", "comms", "campaign", "video"],
     sector: { en: "tourism and travel", es: "turismo y viajes", fr: "tourisme et voyages", de: "tourismus und reisen" },
     lead: {
       en: "Travel agency.",
@@ -201,6 +201,10 @@ export const cases: Case[] = [
       {
         d: "identity",
         detail: { en: "modernised logo and visual system", es: "logotipo modernizado y sistema visual", fr: "logo modernisé et système visuel", de: "modernisiertes logo und visuelles system" },
+      },
+      {
+        d: "social",
+        detail: { en: "social media content and SEO and SEM positioning", es: "contenido en redes y posicionamiento SEO y SEM", fr: "contenus pour les réseaux et référencement SEO et SEA", de: "social-media-inhalte und SEO- und SEA-positionierung" },
       },
       {
         d: "web",
