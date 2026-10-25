@@ -506,7 +506,9 @@ const backdrop = new THREE.Mesh(new THREE.SphereGeometry(40, 48, 24), new THREE.
   side: THREE.BackSide, depthWrite: false,
   uniforms: { top: { value: new THREE.Color('#dde4e7') }, hor: { value: new THREE.Color('#a9b5ba') } },
   vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-  fragmentShader: 'uniform vec3 top; uniform vec3 hor; varying vec3 vP; void main(){ float h = smoothstep(-0.02, 0.55, vP.y); gl_FragColor = vec4(mix(hor, top, h), 1.0); }',
+  // (encoded for the screen here: drawn straight to it on phones, with no output pass to do it, the sky came
+  // out dark and banded; a whisper of dither keeps the gradient smooth)
+  fragmentShader: 'uniform vec3 top; uniform vec3 hor; varying vec3 vP; float n(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453); } void main(){ float h = smoothstep(-0.02, 0.55, vP.y); gl_FragColor = vec4(mix(hor, top, h), 1.0);\n#include <colorspace_fragment>\n gl_FragColor.rgb += (n(gl_FragCoord.xy) - .5) / 255.; }',
 }));
 scene.add(backdrop);
 const floorTex = (() => {
