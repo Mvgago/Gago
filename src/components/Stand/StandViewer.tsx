@@ -28,8 +28,9 @@ type View = "general" | "pasillo" | "mostrador" | "pantalla";
 type Api = { go: (v: View) => void; spin: (on: boolean) => void };
 
 const VIEWS: Record<View, { pos: [number, number, number]; look: [number, number, number] }> = {
-  // Turned about 22Â° off the front: the open side still shows, but the stand faces you
-  general: { pos: [4.4, 3.1, 10.9], look: [0, 1.45, 0] },
+  // Turned about 22° off the front: the open side still shows, but the stand faces you. At a
+  // visitor's eye height, from the aisle: from above and far it read as a model on a table
+  general: { pos: [3.5, 1.7, 8.7], look: [0, 1.35, 0] },
   pasillo: { pos: [-3.6, 1.65, 8.4], look: [0.4, 1.55, -0.4] },
   mostrador: { pos: [1.9, 1.55, 4.6], look: [0.55, 1.0, 0.75] },
   pantalla: { pos: [1.1, 1.8, 1.9], look: [1.1, 1.8, -2] },
@@ -90,7 +91,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
   scene.environmentIntensity = 0.35;
 
-  const camera = new THREE.PerspectiveCamera(36, 1, 0.05, 100);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 100);
   camera.position.set(...VIEWS.general.pos);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(...VIEWS.general.look);
@@ -281,13 +282,13 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
       x.fillRect(SX, SY + 96, SW * 0.66, 4);
       x.fillStyle = "#ffffff";
       x.font = "600 22px Jura, sans-serif";
-      x.fillText("Firma biomÃ©trica", SX + 24, SY + 64);
+      x.fillText("Firma biométrica", SX + 24, SY + 64);
       x.fillStyle = "#1f2326";
       x.font = "600 24px Jura, sans-serif";
-      x.fillText("Firme aquÃ­", SX + 24, SY + 150);
+      x.fillText("Firme aquí", SX + 24, SY + 150);
       x.fillStyle = "#6b7479";
       x.font = "400 17px Jura, sans-serif";
-      x.fillText("MarÃ­a LÃ³pez Â· contrato 2048", SX + 24, SY + 180);
+      x.fillText("María López · contrato 2048", SX + 24, SY + 180);
       // the pad, and the signature drawing itself
       const PDX = SX + 20, PDY = SY + 205, PDW = SW - 40, PDH = 230;
       x.fillStyle = "#ffffff";
@@ -348,11 +349,11 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     };
     if (slide === 0) {
       line("Encajamos contigo.", 420, 132, "#ffffff", 0.1);
-      line("La pieza que toda compaÃ±Ã­a", 540, 64, "#e4e8ea", 0.5);
+      line("La pieza que toda compañía", 540, 64, "#e4e8ea", 0.5);
       line("necesita para ser segura.", 625, 64, "#e4e8ea", 0.7);
     } else {
       line("Ciberseguridad a medida", 330, 96, "#ffffff", 0.1);
-      ["AuditorÃ­a y consultorÃ­a", "Firma biomÃ©trica", "FormaciÃ³n de equipos"].forEach((txt, k) => {
+      ["Auditoría y consultoría", "Firma biométrica", "Formación de equipos"].forEach((txt, k) => {
         const e = easeOut((st - 0.6 - k * 0.3) / 0.6) * out;
         x.globalAlpha = e;
         x.fillStyle = ORANGE;
@@ -416,19 +417,21 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   /* ---------- materials ---------- */
   const P = 0.12;
   const m = {
-    platform: new THREE.MeshPhysicalMaterial({ color: "#25292c", roughness: 0.22, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.08 }),
+    // (the finishes kept satin rather than glossy: lacquered all over, the stand read as a plastic toy)
+    platform: new THREE.MeshPhysicalMaterial({ color: "#25292c", roughness: 0.42, metalness: 0.1, clearcoat: 0.35, clearcoatRoughness: 0.35 }),
     graphite: new THREE.MeshStandardMaterial({ color: "#2e3236", roughness: 0.62 }),
-    graphiteGloss: new THREE.MeshPhysicalMaterial({ color: GRAPHITE, roughness: 0.25, clearcoat: 0.6 }),
+    graphiteGloss: new THREE.MeshPhysicalMaterial({ color: GRAPHITE, roughness: 0.45, clearcoat: 0.15 }),
     // satin white, as real furniture is: lit by a spot it reads as white, not as a light
     white: new THREE.MeshStandardMaterial({ color: "#bfc3c4", roughness: 0.6 }),
     // The band over the stand, in the brand's orange
-    canopy: new THREE.MeshPhysicalMaterial({ color: ORANGE, roughness: 0.38, clearcoat: 0.6, clearcoatRoughness: 0.2 }),
-    ledOrange: new THREE.MeshStandardMaterial({ color: "#000", emissive: ORANGE, emissiveIntensity: 4 }),
+    canopy: new THREE.MeshPhysicalMaterial({ color: ORANGE, roughness: 0.58, clearcoat: 0.1, clearcoatRoughness: 0.5 }),
+    // (a warm glow rather than a neon line: brighter, it read as a toy's light strip)
+    ledOrange: new THREE.MeshStandardMaterial({ color: "#000", emissive: ORANGE, emissiveIntensity: 2.2 }),
     ledWarm: new THREE.MeshStandardMaterial({ color: "#000", emissive: "#ffe2bd", emissiveIntensity: 1.1 }),
     chrome: new THREE.MeshStandardMaterial({ color: "#c9ced1", roughness: 0.18, metalness: 0.95 }),
     glass: new THREE.MeshPhysicalMaterial({ color: "#e8eef1", roughness: 0.06, transmission: 0.92, thickness: 0.02, ior: 1.5, transparent: true }),
     frost: new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.6, transparent: true, opacity: 0.55 }),
-    counter: new THREE.MeshPhysicalMaterial({ color: "#f4f6f7", roughness: 0.38, emissive: ORANGE, emissiveIntensity: 0.08, clearcoat: 0.5 }),
+    counter: new THREE.MeshPhysicalMaterial({ color: "#f4f6f7", roughness: 0.55, emissive: ORANGE, emissiveIntensity: 0.08, clearcoat: 0.12 }),
     concrete: new THREE.MeshStandardMaterial({ map: concreteTex(1536, 896, 384, [124, 133, 138]), roughness: 0.88 }),
     concreteSide: new THREE.MeshStandardMaterial({ map: concreteTex(1024, 896, 384, [150, 158, 162]), roughness: 0.88 }),
   };
@@ -484,8 +487,8 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     return s;
   };
 
-  /* ---------- hall and stand: 6 Ã— 4 m corner stand, open to the front and the right ---------- */
-  /* The hall: an exhibition pavilion, empty but for this stand. A closed nave of 60 Ã— 50 m and
+  /* ---------- hall and stand: 6 × 4 m corner stand, open to the front and the right ---------- */
+  /* The hall: an exhibition pavilion, empty but for this stand. A closed nave of 60 × 50 m and
      12 m high: polished concrete with its joints, a concrete plinth and metal cladding on the
      walls, steel columns, lattice trusses with high-bay lamps, an exit sign. The far walls sink
      into shade with distance, so the stand stands in a real room with depth behind it. */
@@ -614,7 +617,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     x.fillStyle = "rgba(52,60,63,0.78)";
     x.font = "500 64px Jura, sans-serif";
     x.textAlign = "center";
-    x.fillText("PABELLÃ“N", 256, 90);
+    x.fillText("PABELLÓN", 256, 90);
     x.font = "300 600px Jura, sans-serif";
     x.fillText("3", 256, 690);
     const t = tex(c);
@@ -752,7 +755,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   const ledRing = roundedRect(W + 0.16, D + 0.16, [0.02, 0.02, 0.98, 0.02]);
   ledRing.holes.push(roundedRect(W + 0.08, D + 0.08, [0.02, 0.02, 0.94, 0.02]));
   slab(ledRing, 0.02, m.ledWarm, P + H - 0.02);
-  // Same proportion as the sheet (2048 Ã— 600), so the logo is never stretched
+  // Same proportion as the sheet (2048 × 600), so the logo is never stretched
   decal(logoSheet(LOGO, "#ffffff", 2048, 600), 0.4 * (2048 / 600), 0.4, [-1.2, P + H + 0.21, D / 2 + 0.125]);
   decal(logoSheet(SYMBOL, "#ffffff", 512, 512), 0.34, 0.34, [W / 2 + 0.125, P + H + 0.21, -0.9], Math.PI / 2);
 
@@ -777,7 +780,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     x.font = "300 74px Jura, sans-serif";
     x.fillText("PAD", 304, 640);
     x.font = "300 30px Jura, sans-serif";
-    ["firma electrÃ³nica", "alta precisiÃ³n", "pantalla hd"].forEach((t, i) => x.fillText(t, 304, 780 + i * 56));
+    ["firma electrónica", "alta precisión", "pantalla hd"].forEach((t, i) => x.fillText(t, 304, 780 + i * 56));
     const totem = new THREE.Group();
     const body = new THREE.Mesh(new THREE.BoxGeometry(0.7, 2.1, 0.22), m.graphiteGloss);
     body.position.y = 1.05;
