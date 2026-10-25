@@ -758,8 +758,20 @@ function renderContactShadow() {
 const smallScreen = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
 // phones: a plain pale sky, without the glow and the columns of code (the upper half broke into coloured
 // specks behind the tablet on iPhones)
+// The wall drawn like the floor: the same pale gradient and fine grid, as a canvas texture
 if (smallScreen) {
-  backdrop.material = new THREE.MeshBasicMaterial({ color: '#cdd6da', side: THREE.BackSide, depthWrite: false });
+  const c = document.createElement('canvas'); c.width = 2048; c.height = 1024; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, 1024);
+  g.addColorStop(0, '#dde4e7'); g.addColorStop(.42, '#c9d2d6'); g.addColorStop(.5, '#a9b5ba'); g.addColorStop(1, '#a9b5ba');
+  x.fillStyle = g; x.fillRect(0, 0, 2048, 1024);
+  for (let i = 0; i <= 128; i++) {
+    const p = i * 16, major = i % 8 === 0;
+    x.strokeStyle = major ? 'rgba(224,135,0,0.16)' : 'rgba(43,47,51,0.05)'; x.lineWidth = major ? 1.2 : 1;
+    x.beginPath(); x.moveTo(p, 0); x.lineTo(p, 512); x.stroke();
+    if (i <= 32) { x.beginPath(); x.moveTo(0, p); x.lineTo(2048, p); x.stroke(); }
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso;
+  backdrop.material = new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, depthWrite: false });
   scene.remove(halo); camera.remove(tech);
 }
 const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
