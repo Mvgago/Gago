@@ -114,8 +114,13 @@ export const ProjectsSection: React.FC = () => {
   const [hint, setHint] = useState(false);
   const used = useRef(false);
   useEffect(() => {
+    // shown for two seconds, then it fades on its own
     const id = window.setTimeout(() => !used.current && setHint(true), 1400);
-    return () => window.clearTimeout(id);
+    const off = window.setTimeout(() => setHint(false), 3400);
+    return () => {
+      window.clearTimeout(id);
+      window.clearTimeout(off);
+    };
   }, []);
   const touch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
 
@@ -236,8 +241,8 @@ export const ProjectsSection: React.FC = () => {
           they read over any picture; gone at the first scroll */}
       <div
         aria-hidden
-        className={`pointer-events-none absolute left-1/2 top-24 z-10 -translate-x-1/2 whitespace-nowrap font-[var(--font-mono)] text-[11px] font-light tracking-[0.08em] text-[#f4f1ec] [text-shadow:0_1px_10px_rgba(0,0,0,0.55)] transition-opacity duration-700 ${
-          hint ? "opacity-100" : "opacity-0"
+        className={`pointer-events-none absolute left-1/2 top-24 z-10 -translate-x-1/2 whitespace-nowrap font-[var(--font-mono)] text-[11px] font-light tracking-[0.08em] text-[#f4f1ec] [text-shadow:0_1px_8px_rgba(0,0,0,0.35)] transition-opacity duration-1000 ${
+          hint ? "opacity-70" : "opacity-0"
         }`}
       >
         <span className="flex items-center gap-2.5">
