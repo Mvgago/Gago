@@ -5,7 +5,9 @@ import React, { useEffect, useRef, useState } from "react";
  * It loads only as it nears the screen, and is told to pause whenever it scrolls out of view,
  * so a heavy scene never runs in the background.
  */
-const DevicesFrame: React.FC<{ src: string; title: string; className?: string; paused?: boolean; allowed?: boolean; id?: string }> = ({ src, title, className = "", paused = false, allowed = true, id }) => {
+const DevicesFrame: React.FC<{ src: string; title: string; className?: string; paused?: boolean; allowed?: boolean; id?: string; poster?: string }> = ({ src, title, className = "", paused = false, allowed = true, id, poster }) => {
+  // a still of the scene, shown at once and dissolved once the scene has had a moment to draw itself
+  const [drawn, setDrawn] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
   const [near, setNear] = useState(false);
@@ -51,8 +53,20 @@ const DevicesFrame: React.FC<{ src: string; title: string; className?: string; p
           src={src}
           title={title}
           // once its page is up, it is told at once whether it is on view (the earlier word came before it existed)
-          onLoad={() => frame.current?.contentWindow?.postMessage({ fhVisible: inView.current && !pausedRef.current }, window.location.origin)}
+          onLoad={() => {
+            frame.current?.contentWindow?.postMessage({ fhVisible: inView.current && !pausedRef.current }, window.location.origin);
+            window.setTimeout(() => setDrawn(true), 1600);
+          }}
           className="absolute inset-0 h-full w-full border-0"
+        />
+      )}
+      {poster && (
+        <img
+          src={poster}
+          alt=""
+          aria-hidden
+          draggable={false}
+          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${drawn ? "opacity-0" : "opacity-100"}`}
         />
       )}
     </div>

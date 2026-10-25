@@ -104,6 +104,25 @@ export const ProjectsSection: React.FC = () => {
 
   // Scrolling moves on to the next project (and back): the wheel, a swipe, the arrow keys. One step per
   // gesture, then a pause, so a long spin of the wheel never runs through them all; past the last, the first
+  // The 3D scenes made ready ahead: on wide screens both are built in the background once the page has
+  // settled; on phones (short of memory) only their files are fetched ahead, so they start sooner
+  const [warm, setWarm] = useState(false);
+  useEffect(() => {
+    const wide = !window.matchMedia("(max-width: 1023px)").matches;
+    const id = window.setTimeout(() => {
+      if (wide) return setWarm(true);
+      const links = [...Object.values(SCENE), "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js"].map((href) => {
+        const l = document.createElement("link");
+        l.rel = "prefetch";
+        l.href = href!;
+        document.head.appendChild(l);
+        return l;
+      });
+      return () => links.forEach((l) => l.remove());
+    }, 1500);
+    return () => window.clearTimeout(id);
+  }, []);
+
   // The address follows the project on view, so going back, reloading or sharing the link returns to it
   const navigate = useNavigate();
   useEffect(() => {
@@ -205,19 +224,28 @@ export const ProjectsSection: React.FC = () => {
           animate={{ opacity: 1, transition: { duration: 0.8, ease: EASE_HAUS } }}
           exit={{ opacity: 0, transition: { duration: 0.35, ease: [0.4, 0, 1, 1] } }}
         >
-          {/* Buendía and SmartHC: their own 3D scenes, full-bleed and running on their own (the pointer is
-              left to the page, so scrolling over them still moves on to the next project) */}
-          {SCENE[active.slug] ? (
-            <div className="pointer-events-none absolute inset-0">
-              <DevicesFrame src={SCENE[active.slug]!} title={`${active.title} — 3D`} className="h-full w-full" />
-            </div>
-          ) : (
+          {!SCENE[active.slug] && (
             <Suspense fallback={null}>
               <CinematicViewer image={imageOf(active.slug)} film={FILM[active.slug]} onMotion={onMotion} className="absolute inset-0" />
             </Suspense>
           )}
         </motion.div>
       </AnimatePresence>
+
+      {/* Buendía and SmartHC: their own 3D scenes, full-bleed and running on their own (the pointer is left to
+          the page, so scrolling over them still moves on to the next project). On wide screens both are built
+          in the background soon after arriving, held still and unseen, so each is ready when its turn comes */}
+      {Object.entries(SCENE).map(([slug, src]) =>
+        active.slug === slug || warm ? (
+          <div
+            key={slug}
+            className={`pointer-events-none absolute inset-0 transition-opacity duration-700 ${active.slug === slug ? "opacity-100" : "opacity-0"}`}
+            style={{ filter: GRADE }}
+          >
+            <DevicesFrame src={src!} title={`${WORKS.find((w) => w.slug === slug)?.title} — 3D`} poster={`/concepts/posters/${slug}.webp`} paused={active.slug !== slug} className="h-full w-full" />
+          </div>
+        ) : null,
+      )}
 
       {/* A fine grain over the film: it gives the eye texture to rest on, so compression
           softness reads as atmosphere */}
