@@ -20,7 +20,8 @@ import buendiaWeb from "../assets/peojects/buendia/buendia-web-web.jpg.webp";
 import buendiaLaptop from "../assets/peojects/buendia/buendia-laptop-web.jpg.webp";
 import buendiaBook from "../assets/peojects/buendia/buendia-book-web.jpg.webp";
 import buendiaCatalogue from "../assets/peojects/buendia/buendia-catalogue-web.jpg.webp";
-import buendiaSocial from "../assets/peojects/buendia/buendia-social-web.jpg.webp";import sapWeb from "../assets/peojects/saphire/saphire.jpg.webp";
+import buendiaSocial from "../assets/peojects/buendia/buendia-social-web.jpg.webp";
+import buendiaPresence from "../assets/peojects/buendia/buendia-presence.png";import sapWeb from "../assets/peojects/saphire/saphire.jpg.webp";
 import sapKey from "../assets/peojects/saphire/saphire-key.jpg.webp";
 import sapAxo from "../assets/peojects/saphire/saphire-axo.jpg.webp";
 import sapPlan from "../assets/peojects/saphire/saphire-plan.jpg.webp";
@@ -211,13 +212,15 @@ export const cases: Case[] = [
     // mostly under titles to make a clean loop)
     headerFrame: "/concepts/buendia-devices/index.html",
     // Then pairs of the same height: the site beside the site on the laptop, the catalogue in hand
-    // beside a spread; the campaign on its own, wide
+    // beside a spread, the campaign on social media beside its presence growing (an illustration of the
+    // curve, no figures: marked as such on the picture)
     images: [
       { src: buendiaWeb, pair: true },
       { src: buendiaLaptop },
       { src: buendiaCatalogue, pair: true },
       { src: buendiaBook },
-      { src: buendiaSocial },
+      { src: buendiaSocial, pair: true },
+      { src: buendiaPresence },
     ],
   },
   {
