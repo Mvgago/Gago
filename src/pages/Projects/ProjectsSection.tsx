@@ -2,11 +2,11 @@
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { EASE_HAUS } from "../../lib/motion";
-import { cases, DISCIPLINE } from "../../outils/cases";
+import { cases, CASE_UI, DISCIPLINE } from "../../outils/cases";
 import { useI18n } from "../../i18n/I18n";
 import type { Lang } from "../../i18n/strings";
 import type { CameraMotion } from "../../components/Gallery/CinematicViewer";
-import { CAPTION, DISPLAY, SMALL } from "../../lib/type";
+import { ACTION, CAPTION, DISPLAY, SMALL } from "../../lib/type";
 import smartBrochures from "../../assets/peojects/smart/smart-brochures-wide.jpg";
 import buendiaSocialWide from "../../assets/peojects/buendia/buendia-social-wide.jpg";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
@@ -226,6 +226,16 @@ export const ProjectsSection: React.FC = () => {
                 className={`${DISPLAY} pointer-events-auto mt-3 inline-block text-[#f7f4f0] transition-opacity duration-500 hover:opacity-80`}
               >
                 {active.title}
+              </Link>
+              {/* a plain way in, so it is clear the name opens the project (on phones above all) */}
+              <Link
+                to={`/projects/${active.slug}`}
+                className={`${ACTION} group pointer-events-auto mt-5 flex w-fit items-center gap-4 text-platinum/85 transition-colors duration-500 hover:text-[#f7f4f0]`}
+              >
+                <span className="transition-[letter-spacing] duration-700 ease-haus group-hover:tracking-[0.12em]">{CASE_UI.open[lang]}</span>
+                <span aria-hidden className="relative block h-px w-16">
+                  <span className="absolute inset-y-0 left-0 w-full origin-left bg-current opacity-60 transition-all duration-700 ease-haus group-hover:scale-x-[1.3] group-hover:opacity-100" />
+                </span>
               </Link>
             </Layer>
           </motion.div>

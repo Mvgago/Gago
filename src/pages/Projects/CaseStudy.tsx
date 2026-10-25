@@ -100,7 +100,8 @@ const ProjectsMenu: React.FC<{ current: string; list: Case[]; lang: Lang }> = ({
           })}
           <li className="mx-4 mt-2 border-t border-ink/10 pt-2">
             <Link
-              to="/projects"
+              // back to the projects page on this same project, not the first
+              to={`/projects?p=${current}`}
               onClick={() => setOpen(false)}
               className="-mx-4 flex items-center py-2 pl-11 text-ink/60 transition-colors duration-300 hover:bg-ink/[0.05] hover:text-ink"
             >
@@ -508,10 +509,21 @@ export const CaseStudyPage: React.FC = () => {
         </Link>
       )}
 
+      {/* Whoever has read this far is the one most likely to write: a quiet invitation, then the next project */}
+      <div className={`flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between ${c.cta ? "mt-16 md:mt-20" : "mt-24 md:mt-32"}`}>
+        <p className={`${SUBTITLE} text-ink`}>{CASE_UI.talk[lang]}</p>
+        <Link to="/about#contact" className={`${ACTION} group inline-flex items-center gap-4 self-start text-ink`}>
+          <span className="transition-[letter-spacing] duration-700 ease-haus group-hover:tracking-[0.12em]">{CASE_UI.talkCta[lang]}</span>
+          <span aria-hidden className="relative block h-px w-16">
+            <span className="absolute inset-y-0 left-0 w-full origin-left bg-current opacity-60 transition-all duration-700 ease-haus group-hover:scale-x-[1.3] group-hover:opacity-100" />
+          </span>
+        </Link>
+      </div>
+
       {/* The next project */}
       <Link
         to={`/projects/${next.slug}`}
-        className={`group block border-t border-ink/10 pt-10 ${c.cta ? "mt-16 md:mt-20" : "mt-24 md:mt-32"}`}
+        className="group mt-16 block border-t border-ink/10 pt-10 md:mt-20"
       >
         <span className={`${SMALL} text-graphite`}>{CASE_UI.next[lang]}</span>
         <span className="mt-4 flex items-baseline justify-between gap-6">

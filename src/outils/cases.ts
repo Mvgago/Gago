@@ -123,7 +123,7 @@ export type Case = {
 };
 
 /** The labels of the case pages */
-export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "nextShort" | "all" | "count" | "page" | "recreation" | "view3d", Text> = {
+export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "nextShort" | "all" | "count" | "page" | "recreation" | "view3d" | "talk" | "talkCta" | "open", Text> = {
   nextShort: { en: "next", es: "siguiente", fr: "suivant", de: "weiter" },
   recreation: {
     en: "3D recreation · Congress stand",
@@ -138,6 +138,9 @@ export const CASE_UI: Record<"client" | "sector" | "year" | "scope" | "next" | "
   // Named as what can be hired, not what was done: each case reads as an offer
   scope: { en: "services", es: "servicios", fr: "services", de: "leistungen" },
   next: { en: "next project", es: "siguiente proyecto", fr: "projet suivant", de: "nächstes projekt" },
+  talk: { en: "Got a project like this one?", es: "¿Tienes un proyecto parecido?", fr: "Un projet de ce genre ?", de: "Ein ähnliches Projekt?" },
+  talkCta: { en: "let's talk", es: "hablemos", fr: "parlons-en", de: "sprechen wir" },
+  open: { en: "see the project", es: "ver proyecto", fr: "voir le projet", de: "projekt ansehen" },
   all: { en: "all projects", es: "todos los proyectos", fr: "tous les projets", de: "alle projekte" },
   count: { en: "projects", es: "proyectos", fr: "projets", de: "projekte" },
   page: { en: "projects page", es: "página de proyectos", fr: "page des projets", de: "projektseite" },
