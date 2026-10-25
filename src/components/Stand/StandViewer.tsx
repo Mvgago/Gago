@@ -868,7 +868,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     // [image, x, z, height, floor]: one at the counter reading, one by the high table, two in the aisle
     const cast: [string, number, number, number, number][] = [
       ["s260", 0.6, 1.9, 1.78, P],
-      ["s206", -1.15, 1.75, 1.76, P],
+      ["s206", -1.5, 2.95, 1.76, 0], // (out on the aisle in front, clear of the stools)
       // (the one seen most, on the right of the aisle, is the one photographed from behind, walking on;
       // the one facing the camera stands where the general view hardly reaches)
       ["s261", 3.9, 3.2, 1.8, 0],
