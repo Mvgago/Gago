@@ -31,12 +31,25 @@ export const SiteHeader: React.FC = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);
 
-  // Fetch the index sculpture in the background once the landing has settled.
+  // The 3D logo and the index sculpture wait until the page has loaded and settled: the 2D mark holds
+  // the corner meanwhile, so three.js never competes with the first view (on phones it doubled the
+  // time before the page could be used)
+  const [logo3d, setLogo3d] = useState(false);
   useEffect(() => {
-    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 2500));
-    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
-    const id = idle(() => void preloadLogoSpace(), { timeout: 4000 });
-    return () => cancel(id);
+    let id = 0;
+    const later = () => {
+      id = window.setTimeout(() => {
+        setLogo3d(true);
+        const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 2500));
+        idle(() => void preloadLogoSpace(), { timeout: 6000 });
+      }, 1800);
+    };
+    if (document.readyState === "complete") later();
+    else window.addEventListener("load", later, { once: true });
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener("load", later);
+    };
   }, []);
 
   // Each time the landing loads, the control invites a touch: a couple of seconds in, waves leave
@@ -119,9 +132,13 @@ export const SiteHeader: React.FC = () => {
                 "opacity-[0.82] delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-200 max-sm:opacity-100 max-sm:[filter:brightness(1.18)]"
           }`}
         >
-          <Suspense fallback={<Monolith tilt={false} tone="warm" reveal={false} />}>
-            <Logo3D className="w-full" paused={open} />
-          </Suspense>
+          {logo3d ? (
+            <Suspense fallback={<Monolith tilt={false} tone="warm" reveal={false} />}>
+              <Logo3D className="w-full" paused={open} />
+            </Suspense>
+          ) : (
+            <Monolith tilt={false} tone="warm" reveal={false} />
+          )}
         </Link>
         </div>
 

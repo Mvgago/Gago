@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -13,19 +13,24 @@ import { BackToTop } from "./components/BackToTop/BackToTop";
 import { SmoothScroll, scrollToTarget, useLenis } from "./components/SmoothScroll/SmoothScroll";
 
 import { Home } from "./pages/Home/Home";
-import { ProjectsSection } from "./pages/Projects/ProjectsSection";
-import { AboutPage } from "./pages/About/AboutPage";
-import { ArtworkPage } from "./pages/Artwork/ArtworkPage";
-import { CaseStudyPage } from "./pages/Projects/CaseStudy";
-import { PrivacyPage } from "./pages/Privacy/PrivacyPage";
-import { LegalPage } from "./pages/Privacy/LegalPage";
-import { NotFoundPage } from "./pages/NotFound/NotFoundPage";
 import { usePageMeta } from "./hooks/usePageMeta";
+
+// The landing comes in the first download; every other page is fetched when it is visited (all of
+// them in the first download kept a phone busy for seconds before the landing could be used)
+const ProjectsSection = lazy(() => import("./pages/Projects/ProjectsSection").then((m) => ({ default: m.ProjectsSection })));
+const AboutPage = lazy(() => import("./pages/About/AboutPage").then((m) => ({ default: m.AboutPage })));
+const ArtworkPage = lazy(() => import("./pages/Artwork/ArtworkPage").then((m) => ({ default: m.ArtworkPage })));
+const CaseStudyPage = lazy(() => import("./pages/Projects/CaseStudy").then((m) => ({ default: m.CaseStudyPage })));
+const PrivacyPage = lazy(() => import("./pages/Privacy/PrivacyPage").then((m) => ({ default: m.PrivacyPage })));
+const LegalPage = lazy(() => import("./pages/Privacy/LegalPage").then((m) => ({ default: m.LegalPage })));
+const NotFoundPage = lazy(() => import("./pages/NotFound/NotFoundPage").then((m) => ({ default: m.NotFoundPage })));
 
 const page = (element: React.ReactNode, withFooter = true, still = false) => (
   <PageTransition still={still} className="relative z-10 flex min-h-screen flex-col">
-    {element}
-    {withFooter && <Footer />}
+    <Suspense fallback={null}>
+      {element}
+      {withFooter && <Footer />}
+    </Suspense>
   </PageTransition>
 );
 
