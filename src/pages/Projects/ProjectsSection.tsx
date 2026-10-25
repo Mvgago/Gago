@@ -171,6 +171,17 @@ export const ProjectsSection: React.FC = () => {
         waiting = true;
       }
     };
+    // the page itself never scrolls or bounces here (on phones it slid up and showed a grey gap below): the
+    // swipe only moves on to the next project
+    const html = document.documentElement;
+    const before = { overflow: html.style.overflow, overscroll: html.style.overscrollBehavior, body: document.body.style.overscrollBehavior };
+    html.style.overflow = "hidden";
+    html.style.overscrollBehavior = "none";
+    document.body.style.overscrollBehavior = "none";
+    window.scrollTo(0, 0);
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.cancelable) e.preventDefault();
+    };
     const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
     const onTouchEnd = (e: TouchEvent) => {
       if (touchY === null) return;
@@ -184,9 +195,14 @@ export const ProjectsSection: React.FC = () => {
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("keydown", onKey);
     return () => {
+      html.style.overflow = before.overflow;
+      html.style.overscrollBehavior = before.overscroll;
+      document.body.style.overscrollBehavior = before.body;
+      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchend", onTouchEnd);
@@ -208,7 +224,8 @@ export const ProjectsSection: React.FC = () => {
   return (
     // The one dark room of the site: the same warm graphite as the contact block on
     // "info", so it reads as part of the house, not another website
-    <main className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#2f2b2a] text-platinum">
+    // (exactly the screen on phones: a minimum height made it taller than a short phone and left a gap)
+    <main className="relative h-[100dvh] w-full overflow-hidden bg-[#2f2b2a] text-platinum sm:h-[100svh] sm:min-h-[640px]">
       <h1 className="sr-only">{t("section.projects")}</h1>
 
       {/* The work, full-bleed. Between two projects the picture dips into the room's graphite
