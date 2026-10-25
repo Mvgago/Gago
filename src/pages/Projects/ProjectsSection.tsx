@@ -259,7 +259,7 @@ export const ProjectsSection: React.FC = () => {
             className={`pointer-events-none absolute inset-0 transition-opacity duration-700 ${active.slug === slug ? "opacity-100" : "opacity-0"}`}
             style={{ filter: GRADE }}
           >
-            <DevicesFrame src={src!} title={`${WORKS.find((w) => w.slug === slug)?.title} — 3D`} poster={`/concepts/posters/${slug}.webp`} paused={active.slug !== slug} className="h-full w-full" />
+            <DevicesFrame src={src!} title={`${WORKS.find((w) => w.slug === slug)?.title} — 3D`} reveal paused={active.slug !== slug} className="h-full w-full" />
           </div>
         ) : null,
       )}

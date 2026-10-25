@@ -5,8 +5,9 @@ import React, { useEffect, useRef, useState } from "react";
  * It loads only as it nears the screen, and is told to pause whenever it scrolls out of view,
  * so a heavy scene never runs in the background.
  */
-const DevicesFrame: React.FC<{ src: string; title: string; className?: string; paused?: boolean; allowed?: boolean; id?: string; poster?: string }> = ({ src, title, className = "", paused = false, allowed = true, id, poster }) => {
-  // a still of the scene, shown at once and dissolved once the scene has had a moment to draw itself
+const DevicesFrame: React.FC<{ src: string; title: string; className?: string; paused?: boolean; allowed?: boolean; id?: string; reveal?: boolean }> = ({ src, title, className = "", paused = false, allowed = true, id, reveal = false }) => {
+  // reveal: no ground of its own; the scene fades in over the page once it has had a moment to draw
+  // itself (a still in its place never matched the live framing at every screen size)
   const [drawn, setDrawn] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
@@ -46,7 +47,7 @@ const DevicesFrame: React.FC<{ src: string; title: string; className?: string; p
   }, []);
 
   return (
-    <div ref={box} id={id} className={`relative overflow-hidden bg-[#d5dcdf] ${className}`}>
+    <div ref={box} id={id} className={`relative overflow-hidden ${reveal ? "" : "bg-[#d5dcdf]"} ${className}`}>
       {load && (
         <iframe
           ref={frame}
@@ -55,18 +56,9 @@ const DevicesFrame: React.FC<{ src: string; title: string; className?: string; p
           // once its page is up, it is told at once whether it is on view (the earlier word came before it existed)
           onLoad={() => {
             frame.current?.contentWindow?.postMessage({ fhVisible: inView.current && !pausedRef.current }, window.location.origin);
-            window.setTimeout(() => setDrawn(true), 1600);
+            window.setTimeout(() => setDrawn(true), 1200);
           }}
-          className="absolute inset-0 h-full w-full border-0"
-        />
-      )}
-      {poster && (
-        <img
-          src={poster}
-          alt=""
-          aria-hidden
-          draggable={false}
-          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${drawn ? "opacity-0" : "opacity-100"}`}
+          className={`absolute inset-0 h-full w-full border-0 ${reveal ? `transition-opacity duration-1000 ${drawn ? "opacity-100" : "opacity-0"}` : ""}`}
         />
       )}
     </div>
