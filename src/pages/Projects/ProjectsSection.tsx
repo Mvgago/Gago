@@ -130,11 +130,22 @@ export const ProjectsSection: React.FC = () => {
       setHint(false);
       setIndex((i) => (i + dir + WORKS.length) % WORKS.length);
     };
+    // A wheel or trackpad keeps sending its spin for a while after the hand stops: after a step, nothing
+    // more is taken until the wheel has gone quiet (it ran on and skipped a project)
+    let lastWheel = 0, waiting = false;
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      if (performance.now() < lockedUntil) return;
+      const now = performance.now(), gap = now - lastWheel;
+      lastWheel = now;
+      if (waiting) {
+        if (gap > 240 && now >= lockedUntil) waiting = false;
+        else return;
+      }
       acc += e.deltaY;
-      if (Math.abs(acc) > 40) step(Math.sign(acc));
+      if (Math.abs(acc) > 40) {
+        step(Math.sign(acc));
+        waiting = true;
+      }
     };
     const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
     const onTouchEnd = (e: TouchEvent) => {
