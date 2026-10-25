@@ -509,8 +509,10 @@ export const CaseStudyPage: React.FC = () => {
         </Link>
       )}
 
-      {/* Whoever has read this far is the one most likely to write: a quiet invitation, then the next project */}
-      <div className={`flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between ${c.cta ? "mt-16 md:mt-20" : "mt-24 md:mt-32"}`}>
+      {/* Whoever has read this far is the one most likely to write: a quiet invitation (where the case has
+          none of its own), then the next project */}
+      {!c.cta && (
+      <div className="mt-24 flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between md:mt-32">
         <p className={`${SUBTITLE} text-ink`}>{CASE_UI.talk[lang]}</p>
         <Link to="/about#contact" className={`${ACTION} group inline-flex items-center gap-4 self-start text-ink`}>
           <span className="transition-[letter-spacing] duration-700 ease-haus group-hover:tracking-[0.12em]">{CASE_UI.talkCta[lang]}</span>
@@ -519,6 +521,7 @@ export const CaseStudyPage: React.FC = () => {
           </span>
         </Link>
       </div>
+      )}
 
       {/* The next project */}
       <Link
