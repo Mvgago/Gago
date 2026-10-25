@@ -68,7 +68,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Strategy and identity",
         text: "What a brand is, who it speaks to and how it looks: one clear idea behind everything it does.",
-        list: ["Brand positioning, SEO and SEM", "Story and bespoke visual identity", "Brand guidelines and applications"],
+        list: ["Brand story and positioning", "Visual identity and brand guidelines", "SEO, SEM and social content"],
       },
     ],
     seenIn: "in projects",
@@ -146,7 +146,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Estrategia e identidad",
         text: "Qué es una marca, a quién habla y cómo se ve: una idea clara detrás de todo lo que hace.",
-        list: ["Posicionamiento de marca, SEO y SEM", "Relato e identidad visual a medida", "Guía de marca y aplicaciones"],
+        list: ["Relato y posicionamiento de marca", "Identidad visual y guía de marca", "SEO, SEM y contenido en redes"],
       },
     ],
     seenIn: "en proyectos",
@@ -224,7 +224,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Stratégie et identité",
         text: "Ce qu'est une marque, à qui elle parle et à quoi elle ressemble : une idée claire derrière tout ce qu'elle fait.",
-        list: ["Positionnement, SEO et SEA", "Récit et identité visuelle sur mesure", "Charte de marque et déclinaisons"],
+        list: ["Récit et positionnement de marque", "Identité visuelle et charte de marque", "SEO, SEA et contenus pour les réseaux"],
       },
     ],
     seenIn: "dans les projets",
@@ -302,7 +302,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Strategie und Identität",
         text: "Was eine Marke ist, wen sie anspricht und wie sie aussieht: eine klare Idee hinter allem, was sie tut.",
-        list: ["Positionierung, SEO und SEA", "Geschichte und visuelle Identität nach Maß", "Markenrichtlinien und Anwendungen"],
+        list: ["Markengeschichte und Positionierung", "Visuelle Identität und Markenrichtlinien", "SEO, SEA und Social-Media-Inhalte"],
       },
     ],
     seenIn: "in projekten",

@@ -212,8 +212,8 @@ export const cases: Case[] = [
     // mostly under titles to make a clean loop)
     headerFrame: "/concepts/buendia-devices/index.html",
     // Then pairs of the same height: the site beside the site on the laptop, the catalogue in hand
-    // beside a spread, the campaign on social media beside its presence growing (an illustration of the
-    // curve, no figures: marked as such on the picture)
+    // beside a spread, the campaign on social media beside its digital presence: search (paid and organic),
+    // posts, highlights and bookings, drawn from its own pieces
     images: [
       { src: buendiaWeb, pair: true },
       { src: buendiaLaptop },
