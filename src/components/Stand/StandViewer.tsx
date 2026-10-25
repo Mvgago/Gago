@@ -859,6 +859,64 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
   }
   decal(logoSheet(LOGO, GRAPHITE, 4096, 1200), 1.5, 0.44, [0.55, P + 0.58, 1.122]);
 
+  // Visitors, as presences: photographic cut-outs (Skalgubbar, free for visualising unbuilt spaces,
+  // skalgubbar.se), people dressed as at a congress, drained of colour, pale and half see-through, so
+  // they give the stand its real size and a little life without ever drawing the eye
+  const people: THREE.Mesh[] = [];
+  {
+    const loader = new THREE.TextureLoader();
+    // [image, x, z, height, floor]: one at the counter reading, one by the high table, two in the aisle
+    const cast: [string, number, number, number, number][] = [
+      ["s260", 0.6, 1.9, 1.78, P],
+      ["s206", -1.15, 1.75, 1.76, P],
+      ["s194", 3.9, 3.2, 1.72, 0],
+      ["s261", -3.7, 3.5, 1.8, 0],
+    ];
+    cast.forEach(([name, x, z, h, floor]) => {
+      const mat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.42, alphaTest: 0.2, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
+      mat.onBeforeCompile = (sh) => {
+        sh.fragmentShader = sh.fragmentShader.replace(
+          "#include <map_fragment>",
+          `#include <map_fragment>
+          float lum = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
+          diffuseColor.rgb = mix(vec3(lum), vec3(0.88, 0.89, 0.9), 0.35);`,
+        );
+      };
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
+      plane.visible = false;
+      plane.renderOrder = 3;
+      scene.add(plane);
+      people.push(plane);
+      loader.load(`/concepts/stand-people/${name}.webp`, (t) => {
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = aniso;
+        const img = t.image as HTMLImageElement;
+        // where the figure really starts and ends in its picture, so the feet sit on the floor
+        const SW = 64, SH = Math.round((64 * img.height) / img.width);
+        const [pc, px] = canvas(SW, SH);
+        px.drawImage(img, 0, 0, SW, SH);
+        const a = px.getImageData(0, 0, SW, SH).data;
+        let top = 0, bot = SH - 1;
+        const solid = (r: number) => {
+          for (let c = 0; c < SW; c++) if (a[(r * SW + c) * 4 + 3] > 140) return true;
+          return false;
+        };
+        while (top < SH && !solid(top)) top++;
+        while (bot > 0 && !solid(bot)) bot--;
+        pc.width = 0;
+        const topF = top / SH, botF = (bot + 1) / SH;
+        const Hp = h / (botF - topF), Wp = (Hp * img.width) / img.height;
+        plane.scale.set(Wp, Hp, 1);
+        plane.position.set(x, floor - Hp * (1 - botF) + Hp / 2 - 0.01, z);
+        mat.map = t;
+        mat.needsUpdate = true;
+        plane.visible = true;
+      });
+    });
+  }
+  // each turns to face the camera, so it never shows its edge
+  const facePeople = () => people.forEach((p) => (p.rotation.y = Math.atan2(camera.position.x - p.position.x, camera.position.z - p.position.z)));
+
   // A high table with three stools on the open front-left
   const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.04, 48), m.white);
   bar.position.set(-1.75, P + 1.06, 1.15);
@@ -1020,6 +1078,7 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
       if (t === 1) glide = null;
     }
     controls.update();
+    facePeople();
     composer.render();
   };
 
@@ -1155,6 +1214,10 @@ const StandViewer: React.FC<{ poster?: string; label?: string; className?: strin
       </div>
       {/* the caption, from tablets up: on phones the picture stays clear of words */}
       {label && !bare && <p className={`${SMALL} pointer-events-none absolute left-4 top-3 hidden normal-case sm:block text-[#2f3a3d]/70`}>{label}</p>}
+      {/* the people's credit, as their licence asks: as quiet as a caption can be */}
+      <a href="https://skalgubbar.se" target="_blank" rel="noopener noreferrer" className="absolute bottom-2.5 left-3 font-[var(--font-mono)] text-[9px] tracking-[0.06em] text-white/45 transition-colors hover:text-white/80 sm:left-4">
+        personas · skalgubbar.se
+      </a>
       {!bare && <nav aria-label="Vistas" // One line always: tighter on phones, scrolling sideways if it still doesn't fit
         className={`${SMALL} absolute inset-x-0 bottom-0 flex gap-x-3 overflow-x-auto [&>*:first-child]:ml-auto px-3 pb-2.5 pt-8 [scrollbar-width:none] sm:gap-x-5 sm:px-4 sm:pb-3 [&::-webkit-scrollbar]:hidden`} style={{ background: "linear-gradient(to top, rgba(28,33,36,0.55), transparent)" }}>
         {(Object.keys(VIEWS) as View[]).map((v) => (
