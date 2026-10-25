@@ -298,7 +298,8 @@ export const ProjectsSection: React.FC = () => {
             {/* The words hold still: only the picture behind them follows the pointer */}
             <Layer mx={mx} my={my} depth={0}>
               {/* where we are among the projects: scrolling moves on to the next */}
-              <p className={`${SMALL} mb-2 tabular-nums text-platinum/60`}>
+              {/* (not on phones: the list under the name already shows where we are) */}
+              <p className={`${SMALL} mb-2 hidden tabular-nums text-platinum/60 sm:block`}>
                 {String(index + 1).padStart(2, "0")} / {String(WORKS.length).padStart(2, "0")}
               </p>
               {/* phones: the name alone over the film; the sector and the work wait for wider screens */}
