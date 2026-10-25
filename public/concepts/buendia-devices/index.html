@@ -31,7 +31,7 @@ body { background: var(--ground); color: var(--ink); overflow: hidden; }
 @media (max-width: 900px) and (min-width: 641px) { .hint { top: auto; bottom: 30px; right: 24px; } }
 @media (max-width: 640px) {
   .hint { display: none; }
-  .label { left: 16px; top: 14px; }
+  .label { display: none; } /* (on a phone the scene stands clear of words at its top) */
   .line { left: 16px; bottom: 16px; }
 }
 </style>
