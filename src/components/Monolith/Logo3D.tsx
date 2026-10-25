@@ -59,6 +59,13 @@ const Logo3D: React.FC<Props> = ({ className, paused = false }) => {
       pointerEvents: "none",
     });
     el.appendChild(renderer.domElement);
+    // A page with several 3D scenes can run past the browser's limit, which then drops the oldest
+    // context (often this one): the 2D mark takes its place rather than leaving the corner empty
+    const onLost = (e: Event) => {
+      e.preventDefault();
+      setNoWebGL(true);
+    };
+    renderer.domElement.addEventListener("webglcontextlost", onLost);
 
     const scene = new THREE.Scene();
     const env = brandEnvironment(renderer);
@@ -121,6 +128,7 @@ const Logo3D: React.FC<Props> = ({ className, paused = false }) => {
 
     return () => {
       cancelAnimationFrame(raf);
+      renderer.domElement.removeEventListener("webglcontextlost", onLost);
       ro.disconnect();
       mark.dispose();
       material.map?.dispose();
