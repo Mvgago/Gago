@@ -86,6 +86,46 @@ export const ProjectsSection: React.FC = () => {
   const cancelPick = () => window.clearTimeout(intent.current);
   useEffect(() => () => window.clearTimeout(intent.current), []);
 
+  // Scrolling moves on to the next project (and back): the wheel, a swipe, the arrow keys. One step per
+  // gesture, then a pause, so a long spin of the wheel never runs through them all; past the last, the first
+  useEffect(() => {
+    let lockedUntil = 0, acc = 0, touchY: number | null = null;
+    const step = (dir: number) => {
+      const now = performance.now();
+      if (now < lockedUntil) return;
+      lockedUntil = now + 1100;
+      acc = 0;
+      setIndex((i) => (i + dir + WORKS.length) % WORKS.length);
+    };
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (performance.now() < lockedUntil) return;
+      acc += e.deltaY;
+      if (Math.abs(acc) > 40) step(Math.sign(acc));
+    };
+    const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0].clientY);
+    const onTouchEnd = (e: TouchEvent) => {
+      if (touchY === null) return;
+      const dy = touchY - e.changedTouches[0].clientY;
+      touchY = null;
+      if (Math.abs(dy) > 50) step(Math.sign(dy));
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (["ArrowDown", "PageDown", " "].includes(e.key)) { e.preventDefault(); step(1); }
+      else if (["ArrowUp", "PageUp"].includes(e.key)) { e.preventDefault(); step(-1); }
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
   // The camera's damped drift, written by the viewer each frame it moves; read by the type layers
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -153,6 +193,10 @@ export const ProjectsSection: React.FC = () => {
           >
             {/* The words hold still: only the picture behind them follows the pointer */}
             <Layer mx={mx} my={my} depth={0}>
+              {/* where we are among the projects: scrolling moves on to the next */}
+              <p className={`${SMALL} mb-2 tabular-nums text-platinum/60`}>
+                {String(index + 1).padStart(2, "0")} / {String(WORKS.length).padStart(2, "0")}
+              </p>
               {/* phones: the name alone over the film; the sector and the work wait for wider screens */}
               <p className={`${CAPTION} hidden lowercase text-platinum/70 sm:block`}>
                 {scopeOf(active.slug, lang)}
