@@ -225,13 +225,13 @@ export const cases: Case[] = [
     // Amsterdam behind (the Asturias spot (2019) was tried there, but its shots are too short and
     // mostly under titles to make a clean loop)
     headerFrame: "/concepts/buendia-devices/index.html",
-    // Then the site, wide, and pairs of the same height: the catalogue in hand beside a spread, the
-    // site beside the campaign
+    // Then pairs of the same height: the site beside the site on the laptop, the catalogue in hand
+    // beside a spread; the campaign on its own, wide
     images: [
-      { src: buendiaWeb },
+      { src: buendiaWeb, pair: true },
+      { src: buendiaLaptop },
       { src: buendiaCatalogue, pair: true },
       { src: buendiaBook },
-      { src: buendiaLaptop, pair: true },
       { src: buendiaSocial },
     ],
   },
