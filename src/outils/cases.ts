@@ -21,7 +21,8 @@ import buendiaLaptop from "../assets/peojects/buendia/buendia-laptop-web.jpg.web
 import buendiaBook from "../assets/peojects/buendia/buendia-book-web.jpg.webp";
 import buendiaCatalogue from "../assets/peojects/buendia/buendia-catalogue-web.jpg.webp";
 import buendiaSocial from "../assets/peojects/buendia/buendia-social-web.jpg.webp";
-import buendiaPresence from "../assets/peojects/buendia/buendia-presence.png";import sapWeb from "../assets/peojects/saphire/saphire.jpg.webp";
+import buendiaPresence from "../assets/peojects/buendia/buendia-presence.png";
+import buendiaMerch from "../assets/peojects/buendia/buendia-merch.webp";import sapWeb from "../assets/peojects/saphire/saphire.jpg.webp";
 import sapKey from "../assets/peojects/saphire/saphire-key.jpg.webp";
 import sapAxo from "../assets/peojects/saphire/saphire-axo.jpg.webp";
 import sapPlan from "../assets/peojects/saphire/saphire-plan.jpg.webp";
@@ -215,15 +216,17 @@ export const cases: Case[] = [
     // mostly under titles to make a clean loop)
     headerFrame: "/concepts/buendia-devices/index.html",
     // Then pairs of the same height: the site beside the site on the laptop, the catalogue in hand
-    // beside a spread, the campaign on social media beside its digital presence: search (paid and organic),
-    // posts, highlights and bookings, drawn from its own pieces
+    // beside a spread, the campaign on social media wide; last, its digital presence (search, posts, bookings)
+    // beside the brand out in the street, on an umbrella and a sweatshirt (a small picture, shown whole
+    // on white at its own size rather than blown up)
     images: [
       { src: buendiaWeb, pair: true },
       { src: buendiaLaptop },
       { src: buendiaCatalogue, pair: true },
       { src: buendiaBook },
-      { src: buendiaSocial, pair: true },
-      { src: buendiaPresence },
+      { src: buendiaSocial },
+      { src: buendiaPresence, pair: true },
+      { src: buendiaMerch, fit: "contain" },
     ],
   },
   {
