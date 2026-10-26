@@ -218,8 +218,7 @@ export const cases: Case[] = [
     headerFrame: "/concepts/buendia-devices/index.html",
     // Then pairs of the same height: the site beside the site on the laptop, the catalogue in hand
     // beside a spread, the campaign on social media wide; last, its digital presence (search, posts, bookings)
-    // beside the brand out in the street, on an umbrella and a sweatshirt (a small picture, shown whole
-    // on white at its own size rather than blown up)
+    // beside the brand out in the street, on an umbrella and a sweatshirt
     images: [
       { src: buendiaWeb, pair: true },
       { src: buendiaLaptop },
@@ -227,7 +226,7 @@ export const cases: Case[] = [
       { src: buendiaBook },
       { src: buendiaSocial },
       { src: buendiaPresence, pair: true },
-      { src: buendiaMerch, fit: "contain" },
+      { src: buendiaMerch },
     ],
   },
   {
