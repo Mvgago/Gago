@@ -52,13 +52,13 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplines: [
       {
         title: "Film and motion",
-        text: "Spaces and brands told in motion, for campaigns and social media, from footage or from renders.",
+        text: "Brands and spaces told in motion for campaigns and social media, with footage, 3D or generative AI.",
         list: ["Art direction and production", "Editing, motion and generative video", "Original music and sound design"],
       },
       {
         title: "Interactive 3D and web design",
-        text: "Spaces and products in 3D you can walk through, and bespoke websites, fast and finished to the last detail.",
-        list: ["3D viewers for spaces and products", "Renders for campaigns and developments", "Bespoke websites, upkeep and SEO"],
+        text: "Spaces and products in 3D you can walk through, and bespoke websites, fast and intuitive.",
+        list: ["3D viewers for spaces and products", "Renders for campaigns and developments", "Bespoke websites and upkeep"],
       },
       {
         title: "Spaces and events",
@@ -130,13 +130,13 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplines: [
       {
         title: "Vídeo y motion",
-        text: "Espacios y marcas contados en movimiento, para campañas y redes, a partir de rodaje o de renders.",
+        text: "Marcas y espacios contados en movimiento para campañas y redes, con rodaje, 3D o IA generativa.",
         list: ["Dirección de arte y producción", "Montaje, motion y vídeo generativo", "Música original y diseño sonoro"],
       },
       {
         title: "3D interactivo y diseño web",
-        text: "Espacios y productos en 3D que se pueden recorrer, y webs a medida, rápidas y cuidadas hasta el último detalle.",
-        list: ["Visores 3D de espacios y productos", "Renders para campañas y promociones", "Webs a medida, mantenimiento y SEO"],
+        text: "Espacios y productos en 3D que se pueden recorrer, y webs a medida, rápidas e intuitivas.",
+        list: ["Visores 3D de espacios y productos", "Renders para campañas y promociones", "Webs a medida y mantenimiento"],
       },
       {
         title: "Espacios y eventos",
@@ -208,13 +208,13 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplines: [
       {
         title: "Vidéo et motion design",
-        text: "Des lieux et des marques racontés en mouvement, pour campagnes et réseaux, à partir de tournages ou de rendus.",
+        text: "Des marques et des lieux racontés en mouvement pour campagnes et réseaux, par le tournage, la 3D ou l’IA générative.",
         list: ["Direction artistique et production", "Montage, motion et vidéo générative", "Musique originale et design sonore"],
       },
       {
         title: "3D interactive et design web",
-        text: "Des espaces et des produits en 3D à parcourir, et des sites sur mesure, rapides et soignés jusqu’au moindre détail.",
-        list: ["Visites 3D d'espaces et de produits", "Rendus pour campagnes et programmes", "Sites sur mesure, maintenance et SEO"],
+        text: "Des espaces et des produits en 3D à parcourir, et des sites sur mesure, rapides et intuitifs.",
+        list: ["Visites 3D d'espaces et de produits", "Rendus pour campagnes et programmes", "Sites sur mesure et maintenance"],
       },
       {
         title: "Espaces et événements",
@@ -286,13 +286,13 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplines: [
       {
         title: "Film und Motion",
-        text: "Räume und Marken in Bewegung erzählt, für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
+        text: "Marken und Räume in Bewegung erzählt, für Kampagnen und Social Media, mit Dreh, 3D oder generativer KI.",
         list: ["Art Direction und Produktion", "Schnitt, Motion und generatives Video", "Eigene Musik und Sounddesign"],
       },
       {
         title: "Interaktives 3D und Webdesign",
-        text: "Räume und Produkte in 3D zum Durchwandern und maßgeschneiderte Websites, schnell und bis ins Detail ausgearbeitet.",
-        list: ["3D-Viewer für Räume und Produkte", "Renderings für Kampagnen und Projekte", "Websites nach Maß, Wartung und SEO"],
+        text: "Räume und Produkte in 3D zum Durchwandern und maßgeschneiderte Websites, schnell und intuitiv.",
+        list: ["3D-Viewer für Räume und Produkte", "Renderings für Kampagnen und Projekte", "Websites nach Maß und Wartung"],
       },
       {
         title: "Räume und Events",
