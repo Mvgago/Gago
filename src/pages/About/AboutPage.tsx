@@ -345,18 +345,6 @@ export const AboutPage: React.FC = () => {
         </div>
       </Section>
 
-      {/* The ways to work together, laid out as the process above: the three under the frame's column, the
-          title beside them, so how to start reads as the next step after how the work is done */}
-      <Section>
-        <div className="col-span-12 lg:order-2 lg:col-span-5 xl:col-span-4">
-          <p className={`${SMALL} text-graphite`}>{s.waysLabel}</p>
-          <h2 className={`${TITLE} mt-4 text-ink`}>{s.waysTitle}</h2>
-        </div>
-        <div className="col-span-12 mt-12 lg:order-1 lg:col-span-7 lg:mt-0 xl:col-span-8">
-          <ProcessSteps steps={s.ways.map((w) => ({ title: w.k, text: w.v }))} />
-        </div>
-      </Section>
-
       {/* The work, quietly: three small cases on the left; on the right, the invitation to talk */}
       <Section>
         <div className="col-span-12 lg:col-span-7 xl:col-span-8">

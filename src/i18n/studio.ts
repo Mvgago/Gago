@@ -25,9 +25,6 @@ export type Studio = {
   workTitle: string;
   workAll: string;
   closing: string; closingNote: string;
-  /** the ways to work together, under the closing line: a short label and one line each */
-  ways: { k: string; v: string }[];
-  waysLabel: string; waysTitle: string;
   process: Item[];
   /** Under each discipline: the cases where it can be seen */
   seenIn: string;
@@ -90,9 +87,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projects",
     workTitle: "Recent work",
     workAll: "see all projects",
-    closing: "It all starts with a conversation.", closingNote: "A small studio, no go-betweens: the idea, the design and the conversation, in the same hands.",
-    ways: [{ k: "Full project", v: "From idea to delivery: identity, web, 3D and film, under one direction." }, { k: "A single piece", v: "A website, a film or a 3D viewer, to add to what you already have." }, { k: "Ongoing", v: "Content, upkeep and evolution, month by month." }],
-    waysLabel: "formats", waysTitle: "Working together",
+    closing: "It all starts with a conversation.", closingNote: "A small studio, no go-betweens. Whole projects, single pieces or month-by-month support, always in the same hands.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -170,9 +165,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
-    closing: "Todo empieza con una conversación.", closingNote: "Un estudio pequeño, sin intermediarios: la idea, el diseño y la conversación, en las mismas manos.",
-    ways: [{ k: "Proyecto completo", v: "De la idea a la entrega: identidad, web, 3D y vídeo, con una sola dirección." }, { k: "Una pieza", v: "Una web, un vídeo o un visor 3D, para sumar a lo que ya tienes." }, { k: "Continuidad", v: "Contenido, mantenimiento y evolución, mes a mes." }],
-    waysLabel: "formatos", waysTitle: "Cómo trabajar juntos",
+    closing: "Todo empieza con una conversación.", closingNote: "Un estudio pequeño, sin intermediarios. Proyectos completos, piezas concretas o acompañamiento mes a mes, siempre en las mismas manos.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -250,9 +243,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projets",
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
-    closing: "Tout commence par une conversation.", closingNote: "Un petit studio, sans intermédiaires : l'idée, le design et la conversation, entre les mêmes mains.",
-    ways: [{ k: "Projet complet", v: "De l'idée à la livraison : identité, web, 3D et vidéo, sous une seule direction." }, { k: "Une pièce", v: "Un site, une vidéo ou une visite 3D, pour compléter l'existant." }, { k: "Dans la durée", v: "Contenus, maintenance et évolution, mois après mois." }],
-    waysLabel: "formats", waysTitle: "Travailler ensemble",
+    closing: "Tout commence par une conversation.", closingNote: "Un petit studio, sans intermédiaires. Projets complets, pièces ponctuelles ou accompagnement au mois, toujours entre les mêmes mains.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -330,9 +321,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
-    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Ein kleines Studio, ohne Umwege: Idee, Gestaltung und Gespräch, in denselben Händen.",
-    ways: [{ k: "Gesamtprojekt", v: "Von der Idee bis zur Übergabe: Identität, Web, 3D und Film aus einer Hand." }, { k: "Einzelstück", v: "Eine Website, ein Film oder ein 3D-Viewer, als Ergänzung zum Bestehenden." }, { k: "Laufend", v: "Inhalte, Wartung und Weiterentwicklung, Monat für Monat." }],
-    waysLabel: "Formate", waysTitle: "Zusammenarbeiten",
+    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Ein kleines Studio, ohne Umwege. Gesamtprojekte, einzelne Stücke oder monatliche Begleitung, immer in denselben Händen.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
