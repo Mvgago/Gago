@@ -5,10 +5,10 @@ import { INSTAGRAM } from "./ContactMenu";
  * The studio's social profiles as hairline glyphs, drawn in the text colour
  * with the same thin stroke as the mono type, so they read as part of the line.
  *
- * A profile with an empty URL is not shown: fill in LINKEDIN once the
- * profile exists and its icon appears next to Instagram.
+ * A profile with an empty URL is not shown. LINKEDIN is set ahead of the page itself: the studio's
+ * company page is to be created at exactly this address (linkedin.com/company/fugahaus).
  */
-export const LINKEDIN = "";
+export const LINKEDIN = "https://www.linkedin.com/company/fugahaus/";
 
 type Profile = { href: string; label: string; icon: React.ReactNode };
 
