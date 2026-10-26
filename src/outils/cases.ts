@@ -397,9 +397,8 @@ export const cases: Case[] = [
       { src: smDetailLogo },
       { src: smPrint, pair: true, cards: [smCardA, smCardB] },
       { src: smDetailGuides },
-      // last, quietly: the brochures beside a few silent seconds of the corporate film (its titles cut out)
-      { src: smBrochuresWide, pair: true },
-      { src: "", video: "/video/smarthc-office.mp4", videoSpeed: 1 },
+      // last, wide: the brochures on securing online sales
+      { src: smBrochuresWide },
     ],
 
   },
