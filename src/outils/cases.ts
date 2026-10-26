@@ -44,8 +44,6 @@ import smCardB from "../assets/peojects/smart/smart-card-b.webp";
 import smBrochure from "../assets/peojects/smart/smart-brochure.jpg.webp";
 import smDetailLogo from "../assets/peojects/smart/smart-detail-logo.jpg.webp";
 import smDetailGuides from "../assets/peojects/smart/smart-detail-guides.jpg.webp";
-import smBrochuresWide from "../assets/peojects/smart/smart-brochures-wide.jpg";
-
 /**
  * The selected projects: a few, chosen and told the same way — one image to
  * open, one sentence, what was done, then the work, large.
@@ -397,8 +395,6 @@ export const cases: Case[] = [
       { src: smDetailLogo },
       { src: smPrint, pair: true, cards: [smCardA, smCardB] },
       { src: smDetailGuides },
-      // last, wide: the brochures on securing online sales
-      { src: smBrochuresWide },
     ],
 
   },
