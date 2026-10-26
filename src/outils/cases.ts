@@ -16,7 +16,7 @@ import santaPalette from "../assets/peojects/santa/santa (5).jpg.webp";
 import santaMark from "../assets/peojects/santa/santa (6).jpg.webp";
 import santaStationery from "../assets/peojects/santa/santa (8).jpg.webp";import buendiaStrip from "../assets/peojects/buendia/buendia-strip.jpg.webp";
 import smStrip from "../assets/peojects/smart/smart-strip.jpg.webp";
-import buendiaWeb from "../assets/peojects/buendia/buendia-web-web.jpg.webp";
+
 import buendiaLaptop from "../assets/peojects/buendia/buendia-laptop-web.jpg.webp";
 import buendiaBook from "../assets/peojects/buendia/buendia-book-web.jpg.webp";
 import buendiaCatalogue from "../assets/peojects/buendia/buendia-catalogue-web.jpg.webp";
@@ -208,7 +208,7 @@ export const cases: Case[] = [
       { d: "web", detail: { en: "online bookings", es: "reservas online", fr: "réservations en ligne", de: "online-buchungen" } },
       { d: "video", detail: { en: "destination spots", es: "spots de destino", fr: "spots de destination", de: "reiseziel-spots" } },
     ],
-    cover: buendiaWeb,
+    cover: buendiaLaptop,
     thumb: buendiaStrip,
     // Beside the words, first: the 3D scene, the site booking a trip and the campaign on the phone,
     // Amsterdam behind (the Asturias spot (2019) was tried there, but its shots are too short and
@@ -218,7 +218,7 @@ export const cases: Case[] = [
     // beside a spread, the campaign on social media wide; last, its digital presence (search, posts, bookings)
     // beside the brand out in the street, on an umbrella and a sweatshirt
     images: [
-      { src: buendiaWeb, pair: true },
+      // the site as it went live (green header, its spiral b), wide; the earlier design is left out
       { src: buendiaLaptop },
       { src: buendiaCatalogue, pair: true },
       { src: buendiaBook },
