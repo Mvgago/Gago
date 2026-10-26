@@ -222,7 +222,9 @@ export const cases: Case[] = [
       { src: buendiaLaptop },
       { src: buendiaCatalogue, pair: true },
       { src: buendiaBook },
-      { src: buendiaSocial },
+      // the campaign on social media beside its destination spot (Asturias), silent and looping
+      { src: buendiaSocial, pair: true },
+      { src: "", video: "/video/buendia-asturias.mp4", videoSpeed: 1 },
       { src: buendiaPresence, pair: true },
       { src: buendiaMerch },
     ],
