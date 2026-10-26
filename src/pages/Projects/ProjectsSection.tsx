@@ -7,8 +7,6 @@ import { useI18n } from "../../i18n/I18n";
 import type { Lang } from "../../i18n/strings";
 import type { CameraMotion } from "../../components/Gallery/CinematicViewer";
 import { ACTION, CAPTION, DISPLAY, SMALL } from "../../lib/type";
-import smartBrochures from "../../assets/peojects/smart/smart-brochures-wide.jpg";
-import buendiaSocialWide from "../../assets/peojects/buendia/buendia-social-wide.jpg";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 // three.js / React Three Fiber only load on this page
 const CinematicViewer = lazy(() => import("../../components/Gallery/CinematicViewer"));
@@ -42,10 +40,7 @@ const scopeOf = (slug: string, lang: Lang) => {
   const work = (c?.disciplines ?? []).map((d) => DISCIPLINE[d][lang]).join(" · ");
   return c?.sector ? `${c.sector[lang]} — ${work}` : work;
 };
-// Full-bleed here, so some projects get a larger picture of their own than the case's cover (the
-// mascot's cut-out and the site's mockup broke up into jagged edges at this size)
-const WIDE: Record<string, string> = { smarthc: smartBrochures, buendia: buendiaSocialWide };
-const imageOf = (slug: string) => WIDE[slug] ?? cases.find((c) => c.slug === slug)?.cover ?? "";
+const imageOf = (slug: string) => cases.find((c) => c.slug === slug)?.cover ?? "";
 
 // Projects shown as film instead of a still (files in public/video): the full film, a lighter
 // one for phones, and the film's own first frame, shown until it plays so nothing jumps
