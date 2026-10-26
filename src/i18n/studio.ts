@@ -53,7 +53,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Film and motion",
         text: "Spaces and brands told in motion, for campaigns and social media, from footage or from renders.",
-        list: ["Art direction and production", "Editing, motion and graphics", "Original music and sound design"],
+        list: ["Art direction and production", "Editing, motion and generative video", "Original music and sound design"],
       },
       {
         title: "Interactive 3D and web design",
@@ -131,7 +131,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Vídeo y motion",
         text: "Espacios y marcas contados en movimiento, para campañas y redes, a partir de rodaje o de renders.",
-        list: ["Dirección de arte y producción", "Montaje, motion y grafismo", "Música original y diseño sonoro"],
+        list: ["Dirección de arte y producción", "Montaje, motion y vídeo generativo", "Música original y diseño sonoro"],
       },
       {
         title: "3D interactivo y diseño web",
@@ -209,7 +209,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Vidéo et motion design",
         text: "Des lieux et des marques racontés en mouvement, pour campagnes et réseaux, à partir de tournages ou de rendus.",
-        list: ["Direction artistique et production", "Montage, motion et graphisme", "Musique originale et design sonore"],
+        list: ["Direction artistique et production", "Montage, motion et vidéo générative", "Musique originale et design sonore"],
       },
       {
         title: "3D interactive et design web",
@@ -287,7 +287,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Film und Motion",
         text: "Räume und Marken in Bewegung erzählt, für Kampagnen und Social Media, aus Drehmaterial oder aus Renderings.",
-        list: ["Art Direction und Produktion", "Schnitt, Motion und Grafik", "Eigene Musik und Sounddesign"],
+        list: ["Art Direction und Produktion", "Schnitt, Motion und generatives Video", "Eigene Musik und Sounddesign"],
       },
       {
         title: "Interaktives 3D und Webdesign",
