@@ -25,6 +25,8 @@ export type Studio = {
   workTitle: string;
   workAll: string;
   closing: string; closingNote: string;
+  /** the ways to work together, under the closing line: a short label and one line each */
+  ways: { k: string; v: string }[];
   process: Item[];
   /** Under each discipline: the cases where it can be seen */
   seenIn: string;
@@ -88,6 +90,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workTitle: "Recent work",
     workAll: "see all projects",
     closing: "It all starts with a conversation.", closingNote: "A small studio, no go-betweens: the idea, the design and the conversation, in the same hands.",
+    ways: [{ k: "full project", v: "From idea to delivery: identity, web, 3D and film, under one direction." }, { k: "a single piece", v: "A website, a film or a 3D viewer, to add to what you already have." }, { k: "ongoing", v: "Content, upkeep and evolution, month by month." }],
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -166,6 +169,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
     closing: "Todo empieza con una conversación.", closingNote: "Un estudio pequeño, sin intermediarios: la idea, el diseño y la conversación, en las mismas manos.",
+    ways: [{ k: "proyecto completo", v: "De la idea a la entrega: identidad, web, 3D y vídeo, con una sola dirección." }, { k: "una pieza", v: "Una web, un vídeo o un visor 3D, para sumar a lo que ya tienes." }, { k: "continuidad", v: "Contenido, mantenimiento y evolución, mes a mes." }],
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -244,6 +248,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
     closing: "Tout commence par une conversation.", closingNote: "Un petit studio, sans intermédiaires : l'idée, le design et la conversation, entre les mêmes mains.",
+    ways: [{ k: "projet complet", v: "De l'idée à la livraison : identité, web, 3D et vidéo, sous une seule direction." }, { k: "une pièce", v: "Un site, une vidéo ou une visite 3D, pour compléter l'existant." }, { k: "dans la durée", v: "Contenus, maintenance et évolution, mois après mois." }],
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -322,6 +327,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
     closing: "Alles beginnt mit einem Gespräch.", closingNote: "Ein kleines Studio, ohne Umwege: Idee, Gestaltung und Gespräch, in denselben Händen.",
+    ways: [{ k: "Gesamtprojekt", v: "Von der Idee bis zur Übergabe: Identität, Web, 3D und Film aus einer Hand." }, { k: "ein Einzelstück", v: "Eine Website, ein Film oder ein 3D-Viewer, als Ergänzung zum Bestehenden." }, { k: "laufend", v: "Inhalte, Wartung und Weiterentwicklung, Monat für Monat." }],
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },

@@ -394,6 +394,15 @@ export const AboutPage: React.FC = () => {
           <p className={`${TITLE} text-ink`}>{s.closing}</p>
           {/* who you would be talking to: no face, just how it works */}
           <p className={`${BODY} mt-5 max-w-[36ch] text-graphite`}>{s.closingNote}</p>
+          {/* the ways to work together: hairline rows, as the disciplines' lists, a short label and one line */}
+          <ul className="mt-8 max-w-[44ch] border-t border-ink/10">
+            {s.ways.map((w) => (
+              <li key={w.k} className="grid grid-cols-[8.5rem_1fr] gap-x-4 border-b border-ink/10 py-3.5 max-sm:grid-cols-1 max-sm:gap-y-1">
+                <span className={`${SMALL} pt-0.5 text-ink`}>{w.k}</span>
+                <span className="font-geo text-[14px] leading-relaxed tracking-[0.01em] text-graphite">{w.v}</span>
+              </li>
+            ))}
+          </ul>
           <a
             href="#contact"
             onClick={(e) => {
