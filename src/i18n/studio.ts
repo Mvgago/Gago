@@ -58,7 +58,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Interactive 3D and web design",
         text: "Spaces and products in 3D you can walk through, and bespoke websites, fast and intuitive.",
-        list: ["3D viewers for spaces and products", "Renders for campaigns and developments", "Bespoke websites and upkeep"],
+        list: ["3D viewers for spaces and products", "Renders for campaigns and developments", "UX/UI design, bespoke websites and upkeep"],
       },
       {
         title: "Spaces and events",
@@ -136,7 +136,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "3D interactivo y diseño web",
         text: "Espacios y productos en 3D que se pueden recorrer, y webs a medida, rápidas e intuitivas.",
-        list: ["Visores 3D de espacios y productos", "Renders para campañas y promociones", "Webs a medida y mantenimiento"],
+        list: ["Visores 3D de espacios y productos", "Renders para campañas y promociones", "Diseño UX/UI, webs a medida y mantenimiento"],
       },
       {
         title: "Espacios y eventos",
@@ -214,7 +214,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "3D interactive et design web",
         text: "Des espaces et des produits en 3D à parcourir, et des sites sur mesure, rapides et intuitifs.",
-        list: ["Visites 3D d'espaces et de produits", "Rendus pour campagnes et programmes", "Sites sur mesure et maintenance"],
+        list: ["Visites 3D d'espaces et de produits", "Rendus pour campagnes et programmes", "Design UX/UI, sites sur mesure et maintenance"],
       },
       {
         title: "Espaces et événements",
@@ -292,7 +292,7 @@ export const STUDIO: Record<Lang, Studio> = {
       {
         title: "Interaktives 3D und Webdesign",
         text: "Räume und Produkte in 3D zum Durchwandern und maßgeschneiderte Websites, schnell und intuitiv.",
-        list: ["3D-Viewer für Räume und Produkte", "Renderings für Kampagnen und Projekte", "Websites nach Maß und Wartung"],
+        list: ["3D-Viewer für Räume und Produkte", "Renderings für Kampagnen und Projekte", "UX/UI-Design, Websites nach Maß und Wartung"],
       },
       {
         title: "Räume und Events",
