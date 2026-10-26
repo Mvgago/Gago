@@ -34,6 +34,8 @@ export type Studio = {
   scrollHint: string;
   endTitle: string;
   endTalk: string;
+  /** beside the invitation to talk: the way to the projects */
+  endWork: string;
   voiceLabel: string;
   /** `{name}` is replaced with the project's name. */
   voice: string;
@@ -75,7 +77,7 @@ export const STUDIO: Record<Lang, Studio> = {
     videoNote: "In-house production.",
     scrollHint: "scroll to see each discipline",
     endTitle: "Shall we make something together?",
-    endTalk: "let's talk",
+    endTalk: "let's talk", endWork: "see the work",
     processLabel: "process",
     processTitle: "How we work",
     labSoundLabel: "sound",
@@ -153,7 +155,7 @@ export const STUDIO: Record<Lang, Studio> = {
     videoNote: "Producción propia.",
     scrollHint: "desliza para ver cada disciplina",
     endTitle: "¿Hacemos algo juntos?",
-    endTalk: "hablemos",
+    endTalk: "hablemos", endWork: "ver el trabajo",
     processLabel: "proceso",
     processTitle: "Cómo trabajamos",
     labSoundLabel: "sonido",
@@ -231,7 +233,7 @@ export const STUDIO: Record<Lang, Studio> = {
     videoNote: "Production maison.",
     scrollHint: "faites défiler pour voir chaque discipline",
     endTitle: "On fait quelque chose ensemble ?",
-    endTalk: "parlons-en",
+    endTalk: "parlons-en", endWork: "voir le travail",
     processLabel: "processus",
     processTitle: "Notre méthode",
     labSoundLabel: "son",
@@ -309,7 +311,7 @@ export const STUDIO: Record<Lang, Studio> = {
     videoNote: "Eigenproduktion.",
     scrollHint: "scrollen, um jede Disziplin zu sehen",
     endTitle: "Machen wir etwas zusammen?",
-    endTalk: "sprechen wir",
+    endTalk: "sprechen wir", endWork: "die Arbeiten ansehen",
     processLabel: "prozess",
     processTitle: "Wie wir arbeiten",
     labSoundLabel: "klang",

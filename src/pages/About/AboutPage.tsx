@@ -277,11 +277,19 @@ export const AboutPage: React.FC = () => {
         custom={1}
         className={`${SMALL} flex flex-col gap-2 text-graphite sm:flex-row sm:items-baseline sm:justify-between`}
       >
-        <h1>
-          {/* phones: the name of the room alone */}
-          <span className="text-ink">{t("section.studio")}</span>
-          <span className="hidden sm:inline"> — {t("section.studio.caption")}</span>
-        </h1>
+        <span className="flex items-baseline gap-4">
+          <h1>
+            {/* phones: the name of the room alone */}
+            <span className="text-ink">{t("section.studio")}</span>
+            <span className="hidden sm:inline"> — {t("section.studio.caption")}</span>
+          </h1>
+          {/* straight to the work, from the very top */}
+          <Link to="/projects" className="group relative text-ink">
+            {s.endWork}
+            <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
+            <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+          </Link>
+        </span>
         {/* On the right, one line: open to new projects, and it is the way down to the contact form
             (wide screens only: on a phone it only crowded the page's top) */}
         <a

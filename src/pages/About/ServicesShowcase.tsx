@@ -502,6 +502,12 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                       >
                         {s.endTalk}
                       </button>
+                      {/* and beside it, for whoever wants to see before talking: the projects */}
+                      <Link to="/projects" className={`${SMALL} group relative text-ink`}>
+                        {s.endWork}
+                        <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
+                        <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+                      </Link>
                     </div>
                   </div>
                 )}
