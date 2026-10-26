@@ -79,7 +79,7 @@ const es: Record<Key, string> = {
   "artwork.next": "siguiente",
 
   "section.projects": "proyectos",
-  "section.artwork": "laboratorio",
+  "section.artwork": "lab",
   "section.contact": "contacto",
   "section.contact.caption": "empezar un proyecto",
   "section.studio": "estudio",

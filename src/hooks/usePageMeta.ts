@@ -27,7 +27,7 @@ const PAGES: Record<string, Record<string, [string, string]>> = {
     de: ["Projekte — Fuga Haus", "Projekte in Identität, Web, 3D und Kommunikation."],
   },
   "/artwork": {
-    es: ["Laboratorio — Fuga Haus", "Ilustración, fotografía y sonido: piezas del estudio y Fuga Sei."],
+    es: ["Lab — Fuga Haus", "Ilustración, fotografía y sonido: piezas del estudio y Fuga Sei."],
     en: ["Lab — Fuga Haus", "Illustration, photography and sound: the studio's pieces and Fuga Sei."],
     fr: ["Laboratoire — Fuga Haus", "Illustration, photographie et son : les pièces du studio et Fuga Sei."],
     de: ["Labor — Fuga Haus", "Illustration, Fotografie und Klang: Arbeiten des Studios und Fuga Sei."],
