@@ -385,6 +385,8 @@ function island(ctx) { ctx.fillStyle = '#050607'; rr(ctx, PW / 2 - 70, 28, 140, 
 
 /* ?ui: the tablet's page alone, flat, at its own size (Lisboa booked), for stills of the site elsewhere */
 if (new URLSearchParams(location.search).has('ui')) {
+  // the greens as the lit screen shows them on the tablet, a step lighter than the flat values
+  C.green = '#8fc757'; C.greenDeep = '#6fae3f';
   const c = document.createElement('canvas'); c.width = TW; c.height = TH;
   tabletUI(c.getContext('2d'), 9.4);
   document.body.innerHTML = ''; document.body.style.margin = '0'; document.body.appendChild(c);
