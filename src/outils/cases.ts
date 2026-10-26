@@ -44,6 +44,7 @@ import smCardB from "../assets/peojects/smart/smart-card-b.webp";
 import smBrochure from "../assets/peojects/smart/smart-brochure.jpg.webp";
 import smDetailLogo from "../assets/peojects/smart/smart-detail-logo.jpg.webp";
 import smDetailGuides from "../assets/peojects/smart/smart-detail-guides.jpg.webp";
+import smBrochuresWide from "../assets/peojects/smart/smart-brochures-wide.jpg";
 
 /**
  * The selected projects: a few, chosen and told the same way — one image to
@@ -397,6 +398,9 @@ export const cases: Case[] = [
       { src: smDetailLogo },
       { src: smPrint, pair: true, cards: [smCardA, smCardB] },
       { src: smDetailGuides },
+      // last, quietly: the brochures beside a few silent seconds of the corporate film (its titles cut out)
+      { src: smBrochuresWide, pair: true },
+      { src: "", video: "/video/smarthc-office.mp4", videoSpeed: 1 },
     ],
 
   },
