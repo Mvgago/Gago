@@ -383,6 +383,14 @@ function roundScreen(ctx, w, h, r) {
 }
 function island(ctx) { ctx.fillStyle = '#050607'; rr(ctx, PW / 2 - 70, 28, 140, 40, 20); ctx.fill(); }
 
+/* ?ui: the tablet's page alone, flat, at its own size (Lisboa booked), for stills of the site elsewhere */
+if (new URLSearchParams(location.search).has('ui')) {
+  const c = document.createElement('canvas'); c.width = TW; c.height = TH;
+  tabletUI(c.getContext('2d'), 9.4);
+  document.body.innerHTML = ''; document.body.style.margin = '0'; document.body.appendChild(c);
+  await new Promise(() => {});
+}
+
 /* ================= 3D scene ================= */
 const stage = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
