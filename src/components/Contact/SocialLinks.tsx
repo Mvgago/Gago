@@ -8,7 +8,7 @@ import { INSTAGRAM } from "./ContactMenu";
  * A profile with an empty URL is not shown. LINKEDIN is set ahead of the page itself: the studio's
  * company page is to be created at exactly this address (linkedin.com/company/fugahaus).
  */
-export const LINKEDIN = "https://www.linkedin.com/company/fugahaus/";
+export const LINKEDIN = "https://www.linkedin.com/company/fuga-haus";
 
 type Profile = { href: string; label: string; icon: React.ReactNode };
 
