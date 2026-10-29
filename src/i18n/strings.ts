@@ -12,6 +12,7 @@ export type Lang = (typeof LANGS)[number];
 const en = {
   "hero.title": "Finely spun.",
   "hero.sub": "Identity|web|3D|film",
+  "hero.sub2": "Identity|web|3D|film",
   "hero.and": "and",
   "hero.cta": "see projects",
   "hero.services": "services",
@@ -58,7 +59,8 @@ export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
   "hero.title": "Hilando fino.",
-  "hero.sub": "Diseño y desarrollo de experiencias digitales.",
+  "hero.sub": "Experiencias digitales interactivas",
+  "hero.sub2": "Dirección Arte · Desarrollo Web · 3D",
   "hero.and": "y",
   "hero.cta": "ver proyectos",
   "hero.services": "servicios",

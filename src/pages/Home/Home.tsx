@@ -5,7 +5,7 @@ import { rise } from "../../lib/motion";
 import { ContactMenu } from "../../components/Contact/ContactMenu";
 import { SocialLinks } from "../../components/Contact/SocialLinks";
 import { useI18n } from "../../i18n/I18n";
-import { ACTION, DISPLAY, SMALL, SUBTITLE } from "../../lib/type";
+import { ACTION, DISPLAY, SMALL, SUBTITLE, SUBTITLE2 } from "../../lib/type";
 
 /**
  * Hero as an empty, lit room. The brand lives in the header corner,
@@ -79,7 +79,17 @@ export const Home: React.FC = () => {
               const parts = t("hero.sub").split("|");
               return parts.map((part, i) => (
                 <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.5 + i * 0.12}s both` }}>
-                  {i === parts.length - 1 && <span>{t("hero.and")}&nbsp;</span>}
+                  {part}
+                  {i < parts.length - 2 ? ",\u00a0" : i === parts.length - 2 ? "\u00a0" : "."}
+                </span>
+              ));
+            })()}
+          </p>
+          <p key={t("hero.sub2")} className={`${SUBTITLE2} mt-1 !font-normal text-white [text-wrap:balance] lg:mt-1.5`}>
+            {(() => {
+              const parts = t("hero.sub2").split("|");
+              return parts.map((part, i) => (
+                <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.5 + i * 0.12}s both` }}>
                   {part}
                   {i < parts.length - 2 ? ",\u00a0" : i === parts.length - 2 ? "\u00a0" : "."}
                 </span>

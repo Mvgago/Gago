@@ -131,24 +131,24 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
-        title: "Vídeo y motion",
-        text: "Marcas y espacios contados en movimiento para campañas y redes, con rodaje, 3D o IA generativa.",
-        list: ["Dirección de arte y producción", "Montaje, motion y vídeo generativo", "Música original y diseño sonoro"],
+        title: "Narrativa audiovisual",
+        text: "Marcas, productos y espacios contados en movimiento para campañas y lanzamientos. Combinamos dirección de arte, rodaje, 3D y herramientas generativas según cada proyecto.",
+        list: ["Dirección de arte y producción", "Edición, motion y vídeo generativo", "Atmósfera sonora y diseño musical"],
       },
       {
-        title: "3D interactivo y diseño web",
-        text: "Espacios y productos en 3D que se pueden recorrer, y webs a medida, rápidas e intuitivas.",
-        list: ["Visores 3D de espacios y productos", "Renders para campañas y promociones", "Diseño UX/UI, webs a medida y mantenimiento"],
+        title: "Diseño web y 3D interactivo",
+        text: "Experiencias 3D interactivas para explorar productos y espacios, y webs a medida que combinan diseño, interacción y desarrollo.",
+        list: ["Visores 3D de espacios y productos", "Diseño UX/UI y desarrollo web a medida", "Mantenimiento y evolución de sitios web"],
       },
       {
         title: "Espacios y eventos",
-        text: "La marca llevada al espacio físico, donde se ve, se toca y se recorre.",
-        list: ["Stands para ferias y congresos", "Tiendas, locales y escaparates", "Señalética y punto de venta"],
+        text: "Diseñamos espacios físicos que trasladan la identidad de una marca a ferias, tiendas y puntos de venta.",
+        list: ["Diseño de stands para ferias y congresos", "Diseño de tiendas, locales y escaparates", "Señalética y punto de venta"],
       },
       {
         title: "Estrategia e identidad",
-        text: "Qué es una marca, a quién habla y cómo se ve: una idea clara detrás de todo lo que hace.",
-        list: ["Relato y propuesta de valor", "Identidad visual y guía de marca", "SEO, SEM y contenido digital"],
+        text: "Definimos qué hace única a una marca, cómo se expresa y cómo se presenta en cada punto de contacto.",
+        list: ["Estrategia y propuesta de valor", "Identidad visual y sistema de marca", "Posicionamiento y presencia digital"],
       },
     ],
     seenIn: "en proyectos",
@@ -167,7 +167,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
-    closing: "Todo empieza con una conversación.", closingNote: "Un estudio pequeño, sin intermediarios. Proyectos completos, piezas concretas o acompañamiento mes a mes, siempre en las mismas manos.",
+    closing: "Todo empieza con una conversación.", closingNote: "Un estudio independiente, sin intermediarios. De principio a fin, la misma mirada y el mismo cuidado, tanto en proyectos completos como en encargos puntuales o colaboraciones continuadas.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },

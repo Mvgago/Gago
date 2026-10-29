@@ -18,6 +18,8 @@ export const LEAD = "font-geo text-[1.6rem] font-normal leading-[1.25] tracking-
 export const SUBTITLE =
   "font-geo text-[1.15rem] font-light leading-snug tracking-[0.01em] sm:text-[1.3rem] lg:text-[1.55rem]";
 
+export const SUBTITLE2 =
+  "font-geo text-[0.85rem] font-light leading-snug tracking-[0.01em] sm:text-[1rem] lg:text-[1.2rem]";
 /** The title of an item inside a page: a discipline, a step, a piece */
 export const HEADING = "font-geo text-[1.1rem] font-light leading-snug tracking-[0.02em]";
 

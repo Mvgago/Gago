@@ -454,8 +454,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                           <span
                             className={`flex items-baseline gap-5 transition-[opacity,transform] duration-700 ease-haus ${on ? "translate-y-0 opacity-100" : "lg:translate-y-2 lg:opacity-0"}`}
                             style={{ transitionDelay: delay }}
-                          >
-                            <span className={`${SMALL} w-6 shrink-0 text-graphite transition-colors duration-300 group-hover/svc:text-ink`}>{String(k + 1).padStart(2, "0")}</span>
+                          > 
                             <span className="font-geo text-[1.12rem] font-normal leading-snug tracking-[0.01em] text-ink transition-transform duration-500 ease-haus group-hover/svc:translate-x-1.5">
                               {item}
                             </span>
