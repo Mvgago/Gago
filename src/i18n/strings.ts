@@ -59,7 +59,7 @@ export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
   "hero.title": "Hilando fino.",
-  "hero.sub": "Experiencias digitales interactivas",
+  "hero.sub": "Arquitectura web y entornos digitales",
   "hero.sub2": "Diseño · Desarrollo Web · 3D",
   "hero.and": "y",
   "hero.cta": "ver proyectos",
