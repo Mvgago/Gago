@@ -106,6 +106,8 @@ const es: Record<Key, string> = {
 const fr: Record<Key, string> = {
   "hero.title": "Au fil près.",
   "hero.sub": "Identité|web|3D|vidéo",
+    "hero.sub2": "Diseño · Desarrollo Web · 3D",
+
   "hero.and": "et",
   "hero.cta": "voir les projets",
   "hero.services": "services",
@@ -151,6 +153,8 @@ const fr: Record<Key, string> = {
 const de: Record<Key, string> = {
   "hero.title": "Fein gesponnen.",
   "hero.sub": "Identität|Web|3D|Film",
+    "hero.sub2": "Diseño · Desarrollo Web · 3D",
+
   "hero.and": "und",
   "hero.cta": "projekte ansehen",
   "hero.services": "Leistungen",
