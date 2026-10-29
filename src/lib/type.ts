@@ -16,7 +16,7 @@ export const LEAD = "font-geo text-[1.6rem] font-normal leading-[1.25] tracking-
 
 /** The line under a title: the landing's subtitle, a project's lead */
 export const SUBTITLE =
-  "font-geo text-[3rem] font-light leading-snug tracking-[0.01em] sm:text-[1.3rem] lg:text-[1.55rem]";
+  "font-geo text-[2rem] font-light leading-snug tracking-[0.01em] sm:text-[1.3rem] lg:text-[1.55rem]";
 
 export const SUBTITLE2 =
   "font-geo text-[1rem] font-light leading-snug tracking-[0.01em] sm:text-[1rem] lg:text-[1.2rem]";
