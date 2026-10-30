@@ -5,7 +5,7 @@ import { rise } from "../../lib/motion";
 import { ContactMenu } from "../../components/Contact/ContactMenu";
 import { SocialLinks } from "../../components/Contact/SocialLinks";
 import { useI18n } from "../../i18n/I18n";
-import { ACTION, DISPLAY, SMALL, SUBTITLE, SUBTITLE2 } from "../../lib/type";
+import { ACTION, DISPLAY, SMALL, SUBTITLE } from "../../lib/type";
 
 /**
  * Hero as an empty, lit room. The brand lives in the header corner,
@@ -55,8 +55,9 @@ export const Home: React.FC = () => {
         {/* one piece, one way in: the lema and the services under it lead together to the studio's
             services, and lift together on hover */}
         <Link to="/about#servicios" className="fh-manifesto group block origin-bottom-left transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] will-change-transform hover:scale-[1.02] focus-visible:scale-[1.02]">
-          {/* regular weight, as the two lines under it: in light the lema read thinner than they did */}
-          <h1 className={`${DISPLAY} !font-normal`}>
+          {/* Three voices, each its own: the lema, the brightest and largest; the sentence that finishes
+              it, set back; and the disciplines as quiet labels in the site's small type, apart */}
+          <h1 className={`${DISPLAY} !font-normal text-white`}>
             {/* Always two lines, on every screen: the lema reads as one block with the subtitle, broken at
                 the space nearest its middle so the two lines carry a like weight */}
             {(() => {
@@ -75,7 +76,7 @@ export const Home: React.FC = () => {
           </h1>
           {/* who the studio is for: the lema's second half, a sentence of its own that reads on from it */}
           {/* (keyed by its words, so a change of language plays the whole arrival again) */}
-          <p key={t("hero.sub")} className={`${SUBTITLE} mt-1 !font-normal text-white [text-wrap:balance] lg:mt-1.5`}>
+          <p key={t("hero.sub")} className={`${SUBTITLE} mt-2 !font-normal text-white/70 [text-wrap:balance] lg:mt-3`}>
             <span className="block overflow-hidden pb-[0.08em]">
               <span className="block" style={{ animation: "fh-line 1.4s cubic-bezier(.22,1,.36,1) 1.25s both" }}>
                 {t("hero.sub")}.
@@ -84,7 +85,7 @@ export const Home: React.FC = () => {
           </p>
           {/* what the studio does, small and set apart, like the caption under a piece: the disciplines
               in lower case, divided by middle dots, arriving one after another */}
-          <p key={t("hero.sub2")} className={`${SUBTITLE2} mt-3 !font-normal text-white [text-wrap:balance] lg:mt-4`}>
+          <p key={t("hero.sub2")} className="mt-7 font-mono text-[12px] font-normal tracking-[0.08em] text-white/80 sm:text-[13px] lg:mt-9">
             {(() => {
               const parts = t("hero.sub2").split("|");
               return parts.map((part, i) => (
