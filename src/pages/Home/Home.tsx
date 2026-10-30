@@ -56,7 +56,7 @@ export const Home: React.FC = () => {
             services, and lift together on hover */}
         <Link to="/about#servicios" className="fh-manifesto group block origin-bottom-left transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] will-change-transform hover:scale-[1.02] focus-visible:scale-[1.02]">
           {/* Three voices, each its own: the lema, the brightest and largest; the sentence that finishes
-              it, set back; and the disciplines as quiet labels in the site's small type, apart */}
+              it, a touch softer; and the disciplines as quiet labels in the site's small type, apart */}
           <h1 className={`${DISPLAY} !font-normal text-white`}>
             {/* Always two lines, on every screen: the lema reads as one block with the subtitle, broken at
                 the space nearest its middle so the two lines carry a like weight */}
@@ -76,7 +76,7 @@ export const Home: React.FC = () => {
           </h1>
           {/* who the studio is for: the lema's second half, a sentence of its own that reads on from it */}
           {/* (keyed by its words, so a change of language plays the whole arrival again) */}
-          <p key={t("hero.sub")} className={`${SUBTITLE} mt-2 !font-normal text-white/70 [text-wrap:balance] lg:mt-3`}>
+          <p key={t("hero.sub")} className={`${SUBTITLE} mt-2 !font-normal text-white/90 [text-wrap:balance] lg:mt-3`}>
             <span className="block overflow-hidden pb-[0.08em]">
               <span className="block" style={{ animation: "fh-line 1.4s cubic-bezier(.22,1,.36,1) 1.25s both" }}>
                 {t("hero.sub")}.
