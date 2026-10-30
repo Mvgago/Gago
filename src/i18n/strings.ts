@@ -11,7 +11,7 @@ export type Lang = (typeof LANGS)[number];
 
 const en = {
   "hero.title": "Finely spun.",
-  "hero.sub": "identity|spaces|web|3D|film",
+  "hero.sub": "spaces|web|3D|film",
   "hero.sub2": "For brands you can inhabit",
   "hero.and": "and",
   "hero.cta": "see projects",
@@ -59,7 +59,7 @@ export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
   "hero.title": "Hilando fino.",
-  "hero.sub": "identidad|espacios|web|3D|film",
+  "hero.sub": "espacios|web|3D|film",
   "hero.sub2": "Para marcas que se habitan",
   "hero.and": "y",
   "hero.cta": "ver proyectos",
@@ -105,7 +105,7 @@ const es: Record<Key, string> = {
 
 const fr: Record<Key, string> = {
   "hero.title": "Au fil près.",
-  "hero.sub": "identité|espaces|web|3D|film",
+  "hero.sub": "espaces|web|3D|film",
   "hero.sub2": "Pour des marques qui s'habitent",
 
   "hero.and": "et",
@@ -152,7 +152,7 @@ const fr: Record<Key, string> = {
 
 const de: Record<Key, string> = {
   "hero.title": "Fein gesponnen.",
-  "hero.sub": "Identität|Räume|Web|3D|Film",
+  "hero.sub": "Räume|Web|3D|Film",
   "hero.sub2": "Für Marken, in denen man wohnt",
 
   "hero.and": "und",
