@@ -374,16 +374,16 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               // above each after the first, so it is clear where one ends and the next begins
               // On phones and tablets each is a sheet of its own, a screen tall: held in place once read
               // through, while the next slides up over it, so two disciplines never run together
-              className={`sticky -mx-4 flex min-h-[calc(100svh-64px)] flex-col bg-[#efeef0] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              className={`sticky -mx-4 flex min-h-[calc(100svh-64px)] flex-col bg-[#efeef0] px-4 pb-8 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
               style={{ zIndex: i + 1 }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
               {/* held under the header while its text is read, the text passing beneath it, as the
                   shorter sheets are held whole (those taller than the screen used to let it scroll away) */}
-              <div>
-              {/* (no taller than about a quarter of the screen, so the discipline's title, text and three
-                  services fit whole beneath it) */}
-              <div className="relative -mx-4 mb-6 aspect-video max-h-[26svh] w-[calc(100%+2rem)] bg-[#efeef0] sm:-mx-6 sm:w-[calc(100%+3rem)] md:-mx-8 md:w-[calc(100%+4rem)] lg:hidden">
+              {/* phones and tablets: the sheet is one screen, the text and its three services at their own height
+                  and the example filling whatever room is left above them, so nothing is cut and no gap is left */}
+              <div className="max-lg:flex max-lg:flex-1 max-lg:flex-col">
+              <div className="relative -mx-4 mb-6 min-h-[24svh] flex-1 bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
               </div>
