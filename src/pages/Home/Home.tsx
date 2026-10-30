@@ -107,7 +107,7 @@ export const Home: React.FC = () => {
           </p>
         </Link>
 
-        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-7 lg:mt-20">
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12 lg:mt-20">
           <Link
             to="/projects"
             className={`${ACTION} group inline-flex items-center gap-4 text-silver transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
