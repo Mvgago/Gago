@@ -88,7 +88,8 @@ export const Home: React.FC = () => {
           {/* what the studio does, small and set apart, like the caption under a piece: the disciplines
               in lower case, divided by middle dots, arriving one after another */}
           {/* in the very type of "ver proyectos", so the labels and the way in read as one family */}
-          <p key={t("hero.sub2")} className={`${ACTION} mt-5 !normal-case text-silver lg:mt-7`}>
+          {/* (lighter and quieter than it, though: a caption, so "ver proyectos" stays the one thing to do) */}
+          <p key={t("hero.sub2")} className={`${ACTION} mt-4 !font-normal !normal-case text-silver opacity-65 lg:mt-6`}>
             {(() => {
               const parts = t("hero.sub2").split("|");
               return parts.map((part, i) => (
@@ -106,7 +107,7 @@ export const Home: React.FC = () => {
           </p>
         </Link>
 
-        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-14 lg:mt-20">
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-10 lg:mt-20">
           <Link
             to="/projects"
             className={`${ACTION} group inline-flex items-center gap-4 text-silver transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
