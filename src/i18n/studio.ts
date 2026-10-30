@@ -89,7 +89,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projects",
     workTitle: "Recent work",
     workAll: "see all projects",
-    closing: "It all starts with a conversation.", closingNote: "One creative direction for your whole brand. We listen, give it shape and stay with every project to the end, with the consistency that makes a brand recognisable.",
+    closing: "It all starts with a conversation.", closingNote: "One creative direction for your whole brand. We listen, give it shape and stay with every project from start to finish, so every detail adds up and your brand is remembered.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -167,7 +167,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
-    closing: "Todo empieza con una conversación.", closingNote: "Una sola dirección creativa para toda tu marca. Escuchamos, damos forma y acompañamos cada proyecto hasta el final, con la coherencia que hace que una marca se reconozca.",
+    closing: "Todo empieza con una conversación.", closingNote: "Una sola dirección creativa para toda tu marca. Escuchamos, damos forma y acompañamos cada proyecto de principio a fin, para que cada detalle sume y tu marca se recuerde.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -245,7 +245,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projets",
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
-    closing: "Tout commence par une conversation.", closingNote: "Une seule direction créative pour toute votre marque. Nous écoutons, donnons forme et accompagnons chaque projet jusqu'au bout, avec la cohérence qui rend une marque reconnaissable.",
+    closing: "Tout commence par une conversation.", closingNote: "Une seule direction créative pour toute votre marque. Nous écoutons, donnons forme et accompagnons chaque projet du début à la fin, pour que chaque détail compte et que l'on se souvienne de votre marque.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -323,7 +323,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
-    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Eine kreative Leitung für Ihre gesamte Marke. Wir hören zu, geben Form und begleiten jedes Projekt bis zum Schluss, mit der Stimmigkeit, an der man eine Marke erkennt.",
+    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Eine kreative Leitung für Ihre gesamte Marke. Wir hören zu, geben Form und begleiten jedes Projekt von Anfang bis Ende, damit jedes Detail zählt und Ihre Marke in Erinnerung bleibt.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
