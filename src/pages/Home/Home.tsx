@@ -47,7 +47,7 @@ export const Home: React.FC = () => {
 
     {/* (phones and tablets: the address and icons set well apart below, as the screen's foot, so the
         manifesto sits higher and "see the projects" stands alone as the one thing to do) */}
-    <section className="relative flex flex-col gap-9 px-4 pb-5 sm:gap-16 sm:px-6 sm:pb-8 lg:flex-row lg:gap-5 lg:items-end lg:justify-between lg:px-8 lg:pb-8">
+    <section className="relative flex flex-col gap-14 px-4 pb-5 sm:gap-16 sm:px-6 sm:pb-8 lg:flex-row lg:gap-5 lg:items-end lg:justify-between lg:px-8 lg:pb-8">
       {/* Manifesto */}
       <div className="max-w-xl lg:max-w-3xl">
         {/* The lema and the line under it are one way in: both lead to what the studio does.
@@ -107,7 +107,7 @@ export const Home: React.FC = () => {
           </p>
         </Link>
 
-        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-12 lg:mt-20">
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-[4.5rem] lg:mt-20">
           <Link
             to="/projects"
             className={`${ACTION} group inline-flex items-center gap-4 text-silver transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
