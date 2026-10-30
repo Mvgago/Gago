@@ -383,7 +383,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               {/* phones and tablets: the sheet is one screen, the text and its three services at their own height
                   and the example filling whatever room is left above them, so nothing is cut and no gap is left */}
               <div className="max-lg:flex max-lg:flex-1 max-lg:flex-col">
-              <div className="relative -mx-4 mb-6 min-h-[24svh] flex-1 bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              {/* (never much taller than its own landscape shape, so a film is not cut away at the sides) */}
+              <div className="relative -mx-4 mb-6 max-h-[64vw] min-h-[24svh] flex-1 bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {/* (set over the whole box: a height in % inside a flexible box resolves to nothing) */}
                 {EX[i] && (
