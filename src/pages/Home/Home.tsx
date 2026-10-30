@@ -124,16 +124,13 @@ export const Home: React.FC = () => {
 
       {/* Availability and contact: one quiet line, bottom right */}
       <motion.p
-        className={`${SMALL} relative flex w-full flex-col items-end gap-1 text-graphite [text-shadow:none] sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
+        className={`${SMALL} relative flex w-full flex-col items-start gap-1 text-graphite [text-shadow:none] max-lg:text-silver max-lg:opacity-60 sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2.4, delay: 1.8 }}
       >
         {/* the address first; the availability under it leads to the contact form as well */}
-        {/* (phones: the address left out, the landing kept to its one way in; the profiles alone, bottom right) */}
-        <span className="hidden sm:inline">
-          <ContactMenu />
-        </span>
+        <ContactMenu />
         <span aria-hidden className="hidden sm:inline">·</span>
         {/* (not on phones: the address and Instagram are enough down there) */}
         <Link to="/about#contact" className="hidden transition-colors duration-300 hover:text-ink sm:inline">
@@ -141,7 +138,7 @@ export const Home: React.FC = () => {
         </Link>
         <span aria-hidden className="hidden sm:inline">·</span>
         {/* phones: Instagram in the bottom right corner, apart from the lines on the left */}
-        <span className="sm:static">
+        <span className="absolute bottom-0 right-0 sm:static">
           <SocialLinks className="hover:text-ink" />
         </span>
       </motion.p>
