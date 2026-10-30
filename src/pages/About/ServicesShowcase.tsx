@@ -393,7 +393,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   </div>
                 )}
               </div>
-              <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
+              <div className={`transition-opacity duration-700 max-lg:mt-auto ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
                     four already read, drawing itself on as the discipline arrives */}
                 {/* phones: the place in the four as a plain figure, the ring took too much room */}
