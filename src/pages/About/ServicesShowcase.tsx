@@ -385,7 +385,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div>
               {/* (as tall as the screen allows beside the text, and never much taller than its own landscape
                   shape, so a film is not cut away at the sides; the text and services follow straight on) */}
-              <div className="relative -mx-4 mb-6 h-[min(76vw,42svh)] bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              <div className="relative -mx-4 mb-4 h-[min(76vw,42svh)] bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {/* (set over the whole box: a height in % inside a flexible box resolves to nothing) */}
                 {EX[i] && (
@@ -398,7 +398,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
                     four already read, drawing itself on as the discipline arrives */}
                 {/* phones: the place in the four as a plain figure, the ring took too much room */}
-                <p className={`${SMALL} text-graphite lg:hidden`}>
+                <p className={`${SMALL} !text-[11px] text-graphite lg:hidden`}>
                   {String(i + 1).padStart(2, "0")} / {String(s.disciplines.length).padStart(2, "0")}
                 </p>
                 <div className="hidden items-center gap-3 lg:flex" aria-label={`${i + 1} / ${s.disciplines.length}`}>
@@ -424,7 +424,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   </span>
                 </div>
                 {/* as the discipline arrives its title rises word by word out of an unseen mask */}
-                <h3 className={`${TITLE} mt-5 text-ink`} aria-label={d.title}>
+                <h3 className={`${TITLE} mt-2 text-ink lg:mt-5`} aria-label={d.title}>
                   {d.title.split(" ").map((w, k) => (
                     <React.Fragment key={k}>
                       {k > 0 && " "}
@@ -439,7 +439,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     </React.Fragment>
                   ))}
                 </h3>
-                <p className={`${BODY} mt-6 max-w-[42ch] text-ink/80`}>{d.text}</p>
+                <p className={`${BODY} mt-4 max-w-[42ch] text-ink/80 lg:mt-6`}>{d.text}</p>
               </div>
               </div>
               {/* from here on the frame has let go: the list, and the invitation after the last, are read whole */}
@@ -450,7 +450,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   // itself across; on hover a line fills in ink and its words step a touch to the right
                   // (tighter on phones, so each sheet fits under the header whole)
                   // (phones: no rules between them, just air, so the three read as a calm list)
-                  <ul className="mt-7 max-w-[44ch] space-y-1 lg:mt-9 lg:space-y-0">
+                  <ul className="mt-5 max-w-[44ch] space-y-1 lg:mt-9 lg:space-y-0">
                     {d.list.map((item, k) => {
                       const on = i === active;
                       const delay = on ? `${250 + k * 130}ms` : "0ms";
