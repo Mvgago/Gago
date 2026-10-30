@@ -45,7 +45,7 @@ export const Home: React.FC = () => {
     {/* The centre: intentionally empty. Only light. */}
     <div className="flex-1" aria-hidden />
 
-    <section className="relative flex flex-col gap-10 px-4 pb-8 sm:px-6 sm:pb-10 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:pb-12">
+    <section className="relative flex flex-col gap-5 px-4 pb-6 sm:px-6 sm:pb-8 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:pb-8">
       {/* Manifesto */}
       <div className="max-w-xl lg:max-w-3xl">
         {/* The lema and the line under it are one way in: both lead to what the studio does.
@@ -103,7 +103,7 @@ export const Home: React.FC = () => {
           </p>
         </Link>
 
-        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-8 lg:mt-10">
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-14 lg:mt-20">
           <Link
             to="/projects"
             className={`${ACTION} group inline-flex items-center gap-4 text-silver transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
