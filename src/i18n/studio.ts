@@ -49,7 +49,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "In music, a fugue is one theme carried by several voices until they become a single piece. That is how we work a brand: one clear idea, recognised in the space, on the screen and in every image, and lived as a whole.",
+      "In music, a fugue is one theme carried by several voices until they become a single piece. That is how we work a brand: many voices, one idea, and a whole you recognise at once.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -89,7 +89,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projects",
     workTitle: "Recent work",
     workAll: "see all projects",
-    closing: "It all starts with a conversation.", closingNote: "One creative direction for your whole brand, so it looks, feels and speaks the same way. We listen, give it shape and stay with every project to the end, never losing the consistency that makes a brand recognisable.",
+    closing: "It all starts with a conversation.", closingNote: "One creative direction for your whole brand. We listen, give it shape and stay with every project to the end, with the consistency that makes a brand recognisable.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -127,7 +127,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "En música, una fuga es un tema que pasa por varias voces hasta convertirse en una sola pieza. Así trabajamos una marca: una idea clara que se reconoce en el espacio, en la pantalla y en cada imagen, y que se vive como un todo.",
+      "En música, una fuga es un tema que pasa por varias voces hasta convertirse en una sola pieza. Así trabajamos una marca: muchas voces, una sola idea, y un todo que se reconoce al instante.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
@@ -167,7 +167,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
-    closing: "Todo empieza con una conversación.", closingNote: "Una sola dirección creativa para toda tu marca, para que se vea, se viva y se cuente de la misma manera. Escuchamos, damos forma y acompañamos cada proyecto hasta el final, sin perder nunca la coherencia que hace que una marca se reconozca.",
+    closing: "Todo empieza con una conversación.", closingNote: "Una sola dirección creativa para toda tu marca. Escuchamos, damos forma y acompañamos cada proyecto hasta el final, con la coherencia que hace que una marca se reconozca.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -205,7 +205,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "En musique, une fugue est un thème porté par plusieurs voix jusqu'à ne former qu'une seule pièce. C'est ainsi que nous travaillons une marque : une idée claire, reconnaissable dans l'espace, à l'écran et dans chaque image, et vécue comme un tout.",
+      "En musique, une fugue est un thème porté par plusieurs voix jusqu'à ne former qu'une seule pièce. C'est ainsi que nous travaillons une marque : plusieurs voix, une seule idée, et un tout que l'on reconnaît aussitôt.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -245,7 +245,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projets",
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
-    closing: "Tout commence par une conversation.", closingNote: "Une seule direction créative pour toute votre marque, pour qu'elle se voie, se vive et se raconte de la même façon. Nous écoutons, donnons forme et accompagnons chaque projet jusqu'au bout, sans jamais perdre la cohérence qui rend une marque reconnaissable.",
+    closing: "Tout commence par une conversation.", closingNote: "Une seule direction créative pour toute votre marque. Nous écoutons, donnons forme et accompagnons chaque projet jusqu'au bout, avec la cohérence qui rend une marque reconnaissable.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -283,7 +283,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "In der Musik ist eine Fuge ein Thema, das durch mehrere Stimmen wandert, bis daraus ein einziges Stück wird. So arbeiten wir an einer Marke: eine klare Idee, erkennbar im Raum, auf dem Bildschirm und in jedem Bild, und als Ganzes erlebt.",
+      "In der Musik ist eine Fuge ein Thema, das durch mehrere Stimmen wandert, bis daraus ein einziges Stück wird. So arbeiten wir an einer Marke: viele Stimmen, eine Idee, und ein Ganzes, das man sofort erkennt.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
@@ -323,7 +323,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
-    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Eine kreative Leitung für Ihre gesamte Marke, damit sie überall gleich aussieht, sich gleich anfühlt und gleich erzählt. Wir hören zu, geben Form und begleiten jedes Projekt bis zum Schluss, ohne die Stimmigkeit zu verlieren, an der man eine Marke erkennt.",
+    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Eine kreative Leitung für Ihre gesamte Marke. Wir hören zu, geben Form und begleiten jedes Projekt bis zum Schluss, mit der Stimmigkeit, an der man eine Marke erkennt.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
