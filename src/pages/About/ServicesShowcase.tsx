@@ -374,7 +374,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               // above each after the first, so it is clear where one ends and the next begins
               // On phones and tablets each is a sheet of its own, a screen tall: held in place once read
               // through, while the next slides up over it, so two disciplines never run together
-              className={`sticky -mx-4 flex min-h-[calc(100svh-64px)] flex-col bg-[#efeef0] px-4 pb-14 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              className={`sticky -mx-4 flex min-h-[calc(100svh-64px)] flex-col bg-[#efeef0] px-4 pb-20 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
               style={{ zIndex: i + 1 }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
