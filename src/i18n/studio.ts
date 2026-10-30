@@ -11,6 +11,8 @@ type Item = { title: string; text: string; /** what the client receives */ list?
 export type Studio = {
   statement: string;
   disciplinesLabel: string;
+  /** Under the statement: the way down to the disciplines */
+  discover: string;
   disciplines: Item[];
   processLabel: string;
   processTitle: string;
@@ -51,6 +53,7 @@ export const STUDIO: Record<Lang, Studio> = {
     statement:
       "In music, a fugue weaves different voices into a single composition. That is how we work at Fuga Haus: we bring together disciplines, ideas and languages to create brands and spaces with an identity of their own.",
     disciplinesLabel: "disciplines",
+    discover: "discover our disciplines",
     disciplines: [
       {
         title: "Film and motion",
@@ -129,6 +132,7 @@ export const STUDIO: Record<Lang, Studio> = {
     statement:
       "En música, una fuga entrelaza distintas voces en una sola composición. Así trabajamos en Fuga Haus: unimos disciplinas, ideas y lenguajes para crear marcas y espacios con identidad propia.",
     disciplinesLabel: "disciplinas",
+    discover: "descubre nuestras disciplinas",
     disciplines: [
       {
         title: "Vídeo y motion",
@@ -207,6 +211,7 @@ export const STUDIO: Record<Lang, Studio> = {
     statement:
       "En musique, une fugue entrelace des voix différentes en une seule composition. C'est ainsi que nous travaillons chez Fuga Haus : nous réunissons disciplines, idées et langages pour créer des marques et des espaces à l'identité propre.",
     disciplinesLabel: "disciplines",
+    discover: "découvrez nos disciplines",
     disciplines: [
       {
         title: "Vidéo et motion design",
@@ -285,6 +290,7 @@ export const STUDIO: Record<Lang, Studio> = {
     statement:
       "In der Musik verflicht eine Fuge verschiedene Stimmen zu einer einzigen Komposition. So arbeiten wir bei Fuga Haus: Wir verbinden Disziplinen, Ideen und Ausdrucksformen, um Marken und Räume mit eigener Identität zu schaffen.",
     disciplinesLabel: "disziplinen",
+    discover: "unsere Disziplinen entdecken",
     disciplines: [
       {
         title: "Film und Motion",

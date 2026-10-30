@@ -328,6 +328,24 @@ export const AboutPage: React.FC = () => {
 
       </div>
 
+      {/* the way down to the disciplines: under the statement on phones, beside it on large screens */}
+      <motion.div variants={rise} initial="hidden" animate="shown" custom={4} className="-mt-8 lg:col-span-3 lg:mt-0 lg:justify-self-end">
+        <a
+          href="#servicios"
+          onClick={(e) => {
+            e.preventDefault();
+            const target = document.getElementById("servicios");
+            if (target) scrollToTarget(lenis, target, { offset: -96 });
+          }}
+          className={`${ACTION} group relative inline-flex items-center gap-2 text-ink`}
+        >
+          {s.discover}
+          <span aria-hidden className="transition-transform duration-500 ease-haus group-hover:translate-y-0.5">↓</span>
+          <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
+          <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+        </a>
+      </motion.div>
+
       </div>
 
       {/* What the studio does, shown: an example for each discipline, held while it is read */}
