@@ -129,7 +129,9 @@ export const Home: React.FC = () => {
         {/* the address first; the availability under it leads to the contact form as well */}
         <ContactMenu />
         <span aria-hidden className="hidden sm:inline">·</span>
-        <Link to="/about#contact" className="transition-colors duration-300 hover:text-ink">
+        {/* (not on phones: the address and Instagram are enough down there) */}
+        <Link to="/about#contact" className="hidden transition-colors duration-300 hover:text-ink sm:inline">
+
           {t("availability")} — {new Date().getFullYear()}
         </Link>
         <span aria-hidden className="hidden sm:inline">·</span>
