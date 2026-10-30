@@ -11,8 +11,8 @@ export type Lang = (typeof LANGS)[number];
 
 const en = {
   "hero.title": "Finely spun.",
-  "hero.sub": "Identity|spaces|3D|film",
-  "hero.sub2": "For brands you can inhabit",
+  "hero.sub": "For brands you can inhabit",
+  "hero.sub2": "identity|spaces|web|3D|film",
   "hero.and": "and",
   "hero.cta": "see projects",
   "hero.services": "services",
@@ -52,15 +52,15 @@ const en = {
   "footer.together": "let's work together",
   "lang.label": "Language",
   "privacy": "privacy",
-  "meta.description": "Fuga Haus is a brand and space studio: identity, spaces, interactive 3D and film for brands you can inhabit.",
+  "meta.description": "Fuga Haus is a brand and space studio: identity, spaces, web, interactive 3D and film for brands you can inhabit.",
 };
 
 export type Key = keyof typeof en;
 
 const es: Record<Key, string> = {
   "hero.title": "Hilando fino.",
-  "hero.sub": "Identidad|espacios|3D|film",
-  "hero.sub2": "Para marcas que se habitan",
+  "hero.sub": "Para marcas que se habitan",
+  "hero.sub2": "identidad|espacios|web|3D|film",
   "hero.and": "y",
   "hero.cta": "ver proyectos",
   "hero.services": "servicios",
@@ -100,13 +100,13 @@ const es: Record<Key, string> = {
   "footer.together": "trabajemos juntos",
   "lang.label": "Idioma",
   "privacy": "privacidad",
-  "meta.description": "Fuga Haus es un estudio de marca y espacio: identidad, espacios, 3D interactivo y film para marcas que se habitan.",
+  "meta.description": "Fuga Haus es un estudio de marca y espacio: identidad, espacios, web, 3D interactivo y film para marcas que se habitan.",
 };
 
 const fr: Record<Key, string> = {
   "hero.title": "Au fil près.",
-  "hero.sub": "Identité|espaces|3D|film",
-  "hero.sub2": "Pour des marques qui s'habitent",
+  "hero.sub": "Pour des marques qui s'habitent",
+  "hero.sub2": "identité|espaces|web|3D|film",
 
   "hero.and": "et",
   "hero.cta": "voir les projets",
@@ -147,13 +147,13 @@ const fr: Record<Key, string> = {
   "footer.together": "travaillons ensemble",
   "lang.label": "Langue",
   "privacy": "confidentialité",
-  "meta.description": "Fuga Haus est un studio de marque et d'espace : identité, espaces, 3D interactive et film pour des marques qui s'habitent.",
+  "meta.description": "Fuga Haus est un studio de marque et d'espace : identité, espaces, web, 3D interactive et film pour des marques qui s'habitent.",
 };
 
 const de: Record<Key, string> = {
   "hero.title": "Fein gesponnen.",
-  "hero.sub": "Identität|Räume|3D|Film",
-  "hero.sub2": "Für Marken, in denen man wohnt",
+  "hero.sub": "Für Marken, in denen man wohnt",
+  "hero.sub2": "Identität|Räume|Web|3D|Film",
 
   "hero.and": "und",
   "hero.cta": "projekte ansehen",
@@ -194,7 +194,7 @@ const de: Record<Key, string> = {
   "footer.together": "lass uns zusammenarbeiten",
   "lang.label": "Sprache",
   "privacy": "datenschutz",
-  "meta.description": "Fuga Haus ist ein Studio für Marke und Raum: Identität, Räume, interaktives 3D und Film für Marken, in denen man wohnt.",
+  "meta.description": "Fuga Haus ist ein Studio für Marke und Raum: Identität, Räume, Web, interaktives 3D und Film für Marken, in denen man wohnt.",
 };
 
 export const STRINGS: Record<Lang, Record<Key, string>> = { en, es, fr, de };

@@ -85,13 +85,20 @@ export const Home: React.FC = () => {
               ));
             })()}
           </p>
-          <p key={t("hero.sub2")} className={`${SUBTITLE2} mt-1 !font-normal text-white [text-wrap:balance] lg:mt-1.5`}>
+          {/* what the studio does, small, like the caption under a piece: the disciplines set apart by
+              middle dots, no full stop, arriving one after another once the line above has */}
+          <p key={t("hero.sub2")} className={`${SUBTITLE2} mt-2 !font-normal text-white [text-wrap:balance] lg:mt-3`}>
             {(() => {
               const parts = t("hero.sub2").split("|");
               return parts.map((part, i) => (
-                <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.5 + i * 0.12}s both` }}>
+                <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.75 + i * 0.12}s both` }}>
                   {part}
-                  {i < parts.length - 2 ? ",\u00a0" : i === parts.length - 2 ? "\u00a0" : "."}
+                  {i < parts.length - 1 && (
+                    <>
+                      <span aria-hidden className="px-[0.45em] opacity-60">\u00b7</span>
+                      <span className="sr-only">, </span>
+                    </>
+                  )}
                 </span>
               ));
             })()}
