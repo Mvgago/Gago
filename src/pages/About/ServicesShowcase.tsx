@@ -381,7 +381,9 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               {/* held under the header while its text is read, the text passing beneath it, as the
                   shorter sheets are held whole (those taller than the screen used to let it scroll away) */}
               <div>
-              <div className="relative -mx-4 mb-8 aspect-video bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              {/* (no taller than about a quarter of the screen, so the discipline's title, text and three
+                  services fit whole beneath it) */}
+              <div className="relative -mx-4 mb-6 aspect-video max-h-[26svh] w-[calc(100%+2rem)] bg-[#efeef0] sm:-mx-6 sm:w-[calc(100%+3rem)] md:-mx-8 md:w-[calc(100%+4rem)] lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {EX[i] && <Frame ex={EX[i]} linkLabel={linkLabel} />}
               </div>
