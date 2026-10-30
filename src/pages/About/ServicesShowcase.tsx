@@ -384,7 +384,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   and the example filling whatever room is left above them, so nothing is cut and no gap is left */}
               <div className="max-lg:flex max-lg:flex-1 max-lg:flex-col">
               {/* (never much taller than its own landscape shape, so a film is not cut away at the sides) */}
-              <div className="relative -mx-4 mb-6 max-h-[64vw] min-h-[24svh] flex-1 bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              <div className="relative -mx-4 mb-6 max-h-[76vw] min-h-[24svh] flex-1 bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {/* (set over the whole box: a height in % inside a flexible box resolves to nothing) */}
                 {EX[i] && (
@@ -393,7 +393,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   </div>
                 )}
               </div>
-              <div className={`transition-opacity duration-700 max-lg:mt-auto ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
+              <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
                     four already read, drawing itself on as the discipline arrives */}
                 {/* phones: the place in the four as a plain figure, the ring took too much room */}
@@ -448,16 +448,17 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                   // As the discipline arrives its services come in one after another, each line drawing
                   // itself across; on hover a line fills in ink and its words step a touch to the right
                   // (tighter on phones, so each sheet fits under the header whole)
-                  <ul className="mt-6 max-w-[44ch] lg:mt-9">
+                  // (phones: no rules between them, just air, so the three read as a calm list)
+                  <ul className="mt-7 max-w-[44ch] space-y-1 lg:mt-9 lg:space-y-0">
                     {d.list.map((item, k) => {
                       const on = i === active;
                       const delay = on ? `${250 + k * 130}ms` : "0ms";
                       return (
-                        <li key={item} className="group/svc relative py-2.5 lg:py-4">
-                          <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-ink/15" />
+                        <li key={item} className="group/svc relative py-2 lg:py-4">
+                          <span aria-hidden className="absolute inset-x-0 top-0 hidden h-px bg-ink/15 lg:block" />
                           <span
                             aria-hidden
-                            className={`absolute left-0 top-0 h-px origin-left bg-ink/45 transition-transform duration-[900ms] ease-haus group-hover/svc:bg-ink ${on ? "scale-x-100" : "lg:scale-x-0"}`}
+                            className={`absolute left-0 top-0 hidden h-px origin-left bg-ink/45 lg:block transition-transform duration-[900ms] ease-haus group-hover/svc:bg-ink ${on ? "scale-x-100" : "lg:scale-x-0"}`}
                             style={{ transitionDelay: delay, width: "100%" }}
                           />
                           <span
@@ -468,7 +469,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                               {item}
                             </span>
                           </span>
-                          {k === d.list!.length - 1 && <span aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-ink/15" />}
+                          {k === d.list!.length - 1 && <span aria-hidden className="absolute inset-x-0 bottom-0 hidden h-px bg-ink/15 lg:block" />}
                         </li>
                       );
                     })}
