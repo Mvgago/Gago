@@ -49,7 +49,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "A fugue is one theme sung in several voices. That is how we work a brand: one clear idea, recognised in the place, on the screen and in every image, until it all becomes one experience.",
+      "In music, a fugue is one theme carried by several voices until they become a single piece. That is how we work a brand: one clear idea, recognised in the space, on the screen and in every image, and lived as a whole.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -127,7 +127,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Una fuga es un mismo tema que suena en varias voces. Así trabajamos una marca: una idea clara que se reconoce en el lugar, en la pantalla y en cada imagen, hasta formar una sola experiencia.",
+      "En música, una fuga es un tema que pasa por varias voces hasta convertirse en una sola pieza. Así trabajamos una marca: una idea clara que se reconoce en el espacio, en la pantalla y en cada imagen, y que se vive como un todo.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
@@ -205,7 +205,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Une fugue, c'est un même thème qui résonne à plusieurs voix. C'est ainsi que nous travaillons une marque : une idée claire, reconnaissable dans le lieu, à l'écran et dans chaque image, jusqu'à former une seule expérience.",
+      "En musique, une fugue est un thème porté par plusieurs voix jusqu'à ne former qu'une seule pièce. C'est ainsi que nous travaillons une marque : une idée claire, reconnaissable dans l'espace, à l'écran et dans chaque image, et vécue comme un tout.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -283,7 +283,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Eine Fuge ist ein Thema, das in mehreren Stimmen erklingt. So arbeiten wir an einer Marke: eine klare Idee, erkennbar am Ort, auf dem Bildschirm und in jedem Bild, bis alles zu einem einzigen Erlebnis wird.",
+      "In der Musik ist eine Fuge ein Thema, das durch mehrere Stimmen wandert, bis daraus ein einziges Stück wird. So arbeiten wir an einer Marke: eine klare Idee, erkennbar im Raum, auf dem Bildschirm und in jedem Bild, und als Ganzes erlebt.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
