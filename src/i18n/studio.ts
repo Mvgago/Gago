@@ -49,7 +49,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "In music, a fugue weaves several voices together until they form a single piece. That is how we see a brand: different disciplines that together create a consistent, recognisable identity.",
+      "In music, a fugue weaves different voices into a single composition. That is how we work at Fuga Haus: we bring together disciplines, ideas and languages to create brands and spaces with an identity of their own.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -127,7 +127,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "En música, una fuga entrelaza varias voces hasta formar una sola pieza. Así entendemos una marca: distintas disciplinas que, juntas, crean una identidad coherente y reconocible.",
+      "En música, una fuga entrelaza distintas voces en una sola composición. Así trabajamos en Fuga Haus: unimos disciplinas, ideas y lenguajes para crear marcas y espacios con identidad propia.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
@@ -205,7 +205,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "En musique, une fugue entrelace plusieurs voix jusqu'à former une seule pièce. C'est ainsi que nous concevons une marque : des disciplines différentes qui, ensemble, créent une identité cohérente et reconnaissable.",
+      "En musique, une fugue entrelace des voix différentes en une seule composition. C'est ainsi que nous travaillons chez Fuga Haus : nous réunissons disciplines, idées et langages pour créer des marques et des espaces à l'identité propre.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -283,7 +283,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "In der Musik verflicht eine Fuge mehrere Stimmen, bis sie ein einziges Stück bilden. So verstehen wir eine Marke: verschiedene Disziplinen, die gemeinsam eine stimmige, wiedererkennbare Identität schaffen.",
+      "In der Musik verflicht eine Fuge verschiedene Stimmen zu einer einzigen Komposition. So arbeiten wir bei Fuga Haus: Wir verbinden Disziplinen, Ideen und Ausdrucksformen, um Marken und Räume mit eigener Identität zu schaffen.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
