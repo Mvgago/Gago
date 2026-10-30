@@ -49,7 +49,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "In music, a fugue is one theme carried by several voices until they become a single piece. That is how we work a brand: many voices, one idea, and a whole you recognise at once.",
+      "In music, a fugue weaves several voices together until they form a single piece. That is how we see a brand: different disciplines that together create a consistent, recognisable identity.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -127,7 +127,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "En música, una fuga es un tema que pasa por varias voces hasta convertirse en una sola pieza. Así trabajamos una marca: muchas voces, una sola idea, y un todo que se reconoce al instante.",
+      "En música, una fuga entrelaza varias voces hasta formar una sola pieza. Así entendemos una marca: distintas disciplinas que, juntas, crean una identidad coherente y reconocible.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
@@ -205,7 +205,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "En musique, une fugue est un thème porté par plusieurs voix jusqu'à ne former qu'une seule pièce. C'est ainsi que nous travaillons une marque : plusieurs voix, une seule idée, et un tout que l'on reconnaît aussitôt.",
+      "En musique, une fugue entrelace plusieurs voix jusqu'à former une seule pièce. C'est ainsi que nous concevons une marque : des disciplines différentes qui, ensemble, créent une identité cohérente et reconnaissable.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -283,7 +283,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "In der Musik ist eine Fuge ein Thema, das durch mehrere Stimmen wandert, bis daraus ein einziges Stück wird. So arbeiten wir an einer Marke: viele Stimmen, eine Idee, und ein Ganzes, das man sofort erkennt.",
+      "In der Musik verflicht eine Fuge mehrere Stimmen, bis sie ein einziges Stück bilden. So verstehen wir eine Marke: verschiedene Disziplinen, die gemeinsam eine stimmige, wiedererkennbare Identität schaffen.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
