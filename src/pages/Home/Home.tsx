@@ -74,7 +74,8 @@ export const Home: React.FC = () => {
           </h1>
           {/* what the studio does, the words arriving one after another, set apart by middle dots */}
           {/* (keyed by its words, so a change of language plays the whole arrival again, every word) */}
-          <p key={t("hero.sub")} className={`${SUBTITLE} mt-1 !font-normal text-white [text-wrap:balance] lg:mt-1.5`}>
+          {/* on phones a touch smaller, so the five disciplines stand on one line even on narrow screens */}
+          <p key={t("hero.sub")} className={`${SUBTITLE} mt-1 !font-normal text-white [text-wrap:balance] max-sm:text-[1.1rem] lg:mt-1.5`}>
             {(() => {
               const parts = t("hero.sub").split("|");
               return parts.map((part, i) => (
