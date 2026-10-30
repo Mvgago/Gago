@@ -87,9 +87,9 @@ export const Home: React.FC = () => {
           </p>
           {/* what the studio does, small and set apart, like the caption under a piece: the disciplines
               in lower case, divided by middle dots, arriving one after another */}
-          {/* in the very type of "ver proyectos", so the labels and the way in read as one family */}
-          {/* (lighter and quieter than it, though: a caption, so "ver proyectos" stays the one thing to do) */}
-          <p key={t("hero.sub2")} className={`${ACTION} mt-4 !font-normal !normal-case text-silver opacity-65 lg:mt-6`}>
+          {/* in the sentence's own type, smaller and quieter: part of the text above, so the mono type is
+              left to "ver proyectos" alone, the one thing to do */}
+          <p key={t("hero.sub2")} className="mt-3 font-geo text-[15px] font-normal tracking-[0.02em] text-white/60 lg:mt-5 lg:text-[17px]">
             {(() => {
               const parts = t("hero.sub2").split("|");
               return parts.map((part, i) => (
