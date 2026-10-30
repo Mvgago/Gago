@@ -107,7 +107,7 @@ export const Home: React.FC = () => {
           </p>
         </Link>
 
-        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-10 lg:mt-20">
+        <motion.div variants={rise} initial="hidden" animate="shown" custom={10} className="mt-7 lg:mt-20">
           <Link
             to="/projects"
             className={`${ACTION} group inline-flex items-center gap-4 text-silver transition-colors duration-500 hover:text-silver focus-visible:text-silver`}
@@ -124,7 +124,7 @@ export const Home: React.FC = () => {
 
       {/* Availability and contact: one quiet line, bottom right */}
       <motion.p
-        className={`${SMALL} relative flex w-full flex-col items-start gap-1 text-graphite [text-shadow:none] max-lg:opacity-70 sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
+        className={`${SMALL} relative flex w-full flex-col items-start gap-1 text-graphite [text-shadow:none] max-lg:text-silver max-lg:opacity-60 sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2.4, delay: 1.8 }}
