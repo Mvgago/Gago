@@ -70,13 +70,14 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
 };
 
 
-// In the order of the disciplines: film and motion, 3D and web, spaces and events, strategy and identity.
+// In the order of the disciplines: film and narrative, spaces and events, 3D and web, strategy and identity.
+// The film stays first: it is light, and it is what the first screen shows before anything is moved.
 // The 3D scenes run on their own; the pointer is left to the page so scrolling over them never sticks
 const EXAMPLES: Example[] = [
   { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
+  { scene: "stand", seen: ["smarthc"] },
   // the flat of The Sapphire to walk round: a space in 3D, the discipline's first promise
   { frame: "/concepts/sapphire-home/index.html?bare", seen: ["sapphire", "smarthc", "buendia"], link: "/projects/sapphire#vivienda-3d" },
-  { scene: "stand", seen: ["smarthc"] },
   { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 

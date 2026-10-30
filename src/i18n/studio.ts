@@ -49,28 +49,28 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "Independent design studio. Strategy, identity and visual language for brands that want to be told beyond words. Less noise, more intent.",
+      "A fugue is one theme sung in several voices. That is how we see a brand: a single idea heard in the space, on the screen and in the light. Less noise, more intent.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
-        title: "Film and motion",
-        text: "Brands and spaces told in motion for campaigns and social media, with footage, 3D or generative AI.",
-        list: ["Art direction and production", "Editing, motion and generative video", "Original music and sound design"],
-      },
-      {
-        title: "Interactive 3D and web design",
-        text: "Spaces and products in 3D you can walk through, and bespoke websites, fast and intuitive.",
-        list: ["3D viewers for spaces and products", "Renders for campaigns and developments", "UX/UI design, bespoke websites and upkeep"],
+        title: "Film and narrative",
+        text: "Real places, products and people told in motion, and completed in 3D where they don't exist yet.",
+        list: ["Direction and location shooting", "3D integrated into live footage", "Editing, motion and original sound"],
       },
       {
         title: "Spaces and events",
-        text: "The brand carried into physical space, where it is seen, touched and walked through.",
-        list: ["Stands for fairs and congresses", "Shops, venues and window displays", "Signage and point of sale"],
+        text: "The brand carried to where it is lived: stands, shops, venues and events. We design the space and its digital layer together, and follow it through production.",
+        list: ["Stands for fairs and congresses", "Shops, venues and window displays", "Signage, applied graphics and interactive installations"],
+      },
+      {
+        title: "3D and web",
+        text: "Spaces and products in 3D you can walk through, and bespoke websites that help sell: fast, clear and true to the real thing.",
+        list: ["3D viewers and configurators", "UX/UI design and bespoke web development", "Upkeep, accessibility and ongoing evolution"],
       },
       {
         title: "Strategy and identity",
-        text: "What a brand is, who it speaks to and how it looks: one clear idea behind everything it does.",
-        list: ["Story and value proposition", "Visual identity and brand guidelines", "SEO, SEM and digital content"],
+        text: "The thread that ties it all together: what makes a brand unique, and how it is recognised in every place and on every screen.",
+        list: ["Strategy and value proposition", "Identity and brand system", "Guidelines for on-brand content, AI-made included"],
       },
     ],
     seenIn: "in projects",
@@ -89,12 +89,12 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projects",
     workTitle: "Recent work",
     workAll: "see all projects",
-    closing: "It all starts with a conversation.", closingNote: "A small studio, no go-betweens. Whole projects, single pieces or month-by-month support, always in the same hands.",
+    closing: "It all starts with a conversation.", closingNote: "One point of contact from start to finish. We design and direct, and bring in trusted workshops and collaborators when a project calls for it: whole projects, single pieces or ongoing support.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
       { title: "Build", text: "Design and development, with clear reviews at every stage." },
-      { title: "Refine", text: "The details that make everything feel finished." },
+      { title: "Refine and follow through", text: "The details that make everything feel finished, and support after launch." },
     ],
     voiceLabel: "own voice",
     voice:
@@ -127,28 +127,28 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Estudio de diseño independiente. Estrategia, identidad y lenguaje visual para marcas que quieren contarse más allá de las palabras. Menos ruido, más intención.",
+      "Una fuga es un mismo tema que suena en varias voces. Así entendemos una marca: una sola idea que se oye en el espacio, en la pantalla y en la luz. Menos ruido, más intención.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
-        title: "Narrativa audiovisual",
-        text: "Marcas, productos y espacios contados en movimiento para campañas y lanzamientos. Combinamos dirección de arte, rodaje, 3D y herramientas generativas según cada proyecto.",
-        list: ["Dirección de arte y producción", "Edición, motion y vídeo generativo", "Atmósfera sonora y diseño musical"],
-      },
-      {
-        title: "Diseño web y 3D interactivo",
-        text: "Experiencias 3D interactivas para explorar productos y espacios, y webs a medida que combinan diseño, interacción y desarrollo.",
-        list: ["Visores 3D de espacios y productos", "Diseño UX/UI y desarrollo web a medida", "Mantenimiento y evolución de sitios web"],
+        title: "Rodaje y narrativa",
+        text: "Contamos en movimiento lugares, productos y personas reales, y los completamos con 3D cuando aún no existen.",
+        list: ["Dirección y rodaje en localización", "Integración 3D sobre imagen real", "Edición, motion y sonido original"],
       },
       {
         title: "Espacios y eventos",
-        text: "Diseñamos espacios físicos que trasladan la identidad de una marca a ferias, tiendas y puntos de venta.",
-        list: ["Diseño de stands para ferias y congresos", "Diseño de tiendas, locales y escaparates", "Señalética y punto de venta"],
+        text: "Llevamos la marca al lugar donde se vive: stands, tiendas, locales y eventos. Diseñamos el espacio y su capa digital juntos, y acompañamos su producción.",
+        list: ["Stands para ferias y congresos", "Tiendas, locales y escaparates", "Señalética, gráfica aplicada e instalaciones interactivas"],
+      },
+      {
+        title: "3D y web",
+        text: "Espacios y productos en 3D que se recorren, y webs a medida que ayudan a vender: rápidas, claras y fieles a lo real.",
+        list: ["Visores y configuradores 3D", "Diseño UX/UI y desarrollo web a medida", "Mantenimiento, accesibilidad y evolución"],
       },
       {
         title: "Estrategia e identidad",
-        text: "Definimos qué hace única a una marca, cómo se expresa y cómo se presenta en cada punto de contacto.",
-        list: ["Estrategia y propuesta de valor", "Identidad visual y sistema de marca", "Posicionamiento y presencia digital"],
+        text: "El hilo que lo une todo: qué hace única a una marca y cómo se reconoce en cada lugar y en cada pantalla.",
+        list: ["Estrategia y propuesta de valor", "Identidad y sistema de marca", "Guías para crear contenido de marca, también con IA"],
       },
     ],
     seenIn: "en proyectos",
@@ -167,12 +167,12 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
-    closing: "Todo empieza con una conversación.", closingNote: "Un estudio independiente, sin intermediarios. De principio a fin, la misma mirada y el mismo cuidado, tanto en proyectos completos como en encargos puntuales o colaboraciones continuadas.",
+    closing: "Todo empieza con una conversación.", closingNote: "Un solo interlocutor de principio a fin. Diseñamos y dirigimos, y sumamos talleres y colaboradores de confianza cuando el proyecto lo pide: proyectos completos, encargos puntuales o colaboraciones continuadas.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
       { title: "Construir", text: "Diseño y desarrollo, con revisiones claras en cada etapa." },
-      { title: "Afinar", text: "Los detalles que hacen que todo se sienta terminado." },
+      { title: "Afinar y acompañar", text: "Los detalles que hacen que todo se sienta terminado, y el seguimiento después del lanzamiento." },
     ],
     voiceLabel: "voz propia",
     voice:
@@ -205,28 +205,28 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Studio de design indépendant. Stratégie, identité et langage visuel pour les marques qui veulent se raconter au-delà des mots. Moins de bruit, plus d'intention.",
+      "Une fugue, c'est un même thème qui résonne à plusieurs voix. C'est ainsi que nous voyons une marque : une seule idée qui s'entend dans l'espace, à l'écran et dans la lumière. Moins de bruit, plus d'intention.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
-        title: "Vidéo et motion design",
-        text: "Des marques et des lieux racontés en mouvement pour campagnes et réseaux, par le tournage, la 3D ou l’IA générative.",
-        list: ["Direction artistique et production", "Montage, motion et vidéo générative", "Musique originale et design sonore"],
-      },
-      {
-        title: "3D interactive et design web",
-        text: "Des espaces et des produits en 3D à parcourir, et des sites sur mesure, rapides et intuitifs.",
-        list: ["Visites 3D d'espaces et de produits", "Rendus pour campagnes et programmes", "Design UX/UI, sites sur mesure et maintenance"],
+        title: "Tournage et récit",
+        text: "Des lieux, des produits et des personnes réels racontés en mouvement, et complétés en 3D quand ils n'existent pas encore.",
+        list: ["Réalisation et tournage en décor réel", "Intégration 3D sur images réelles", "Montage, motion et son original"],
       },
       {
         title: "Espaces et événements",
-        text: "La marque portée dans l'espace physique, là où on la voit, la touche et la parcourt.",
-        list: ["Stands pour salons et congrès", "Boutiques, lieux et vitrines", "Signalétique et PLV"],
+        text: "La marque portée là où elle se vit : stands, boutiques, lieux et événements. Nous concevons l'espace et sa couche numérique ensemble, et accompagnons sa production.",
+        list: ["Stands pour salons et congrès", "Boutiques, lieux et vitrines", "Signalétique, graphisme appliqué et installations interactives"],
+      },
+      {
+        title: "3D et web",
+        text: "Des espaces et des produits en 3D que l'on parcourt, et des sites sur mesure qui aident à vendre : rapides, clairs et fidèles au réel.",
+        list: ["Visionneuses et configurateurs 3D", "Design UX/UI et développement web sur mesure", "Maintenance, accessibilité et évolution"],
       },
       {
         title: "Stratégie et identité",
-        text: "Ce qu'est une marque, à qui elle parle et à quoi elle ressemble : une idée claire derrière tout ce qu'elle fait.",
-        list: ["Récit et proposition de valeur", "Identité visuelle et charte de marque", "SEO, SEA et contenus numériques"],
+        text: "Le fil qui relie tout : ce qui rend une marque unique, et comment on la reconnaît en chaque lieu et sur chaque écran.",
+        list: ["Stratégie et proposition de valeur", "Identité et système de marque", "Guides pour créer du contenu de marque, IA comprise"],
       },
     ],
     seenIn: "dans les projets",
@@ -245,12 +245,12 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projets",
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
-    closing: "Tout commence par une conversation.", closingNote: "Un petit studio, sans intermédiaires. Projets complets, pièces ponctuelles ou accompagnement au mois, toujours entre les mêmes mains.",
+    closing: "Tout commence par une conversation.", closingNote: "Un seul interlocuteur du début à la fin. Nous concevons et dirigeons, et faisons appel à des ateliers et des collaborateurs de confiance quand le projet le demande : projets complets, pièces ponctuelles ou accompagnement suivi.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
       { title: "Construire", text: "Design et développement, avec des validations claires à chaque étape." },
-      { title: "Affiner", text: "Les détails qui donnent le sentiment d'un travail abouti." },
+      { title: "Affiner et accompagner", text: "Les détails qui donnent le sentiment d'un travail abouti, et le suivi après le lancement." },
     ],
     voiceLabel: "voix propre",
     voice:
@@ -283,28 +283,28 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Unabhängiges Designstudio. Strategie, Identität und Bildsprache für Marken, die sich jenseits der Worte erzählen wollen. Weniger Rauschen, mehr Absicht.",
+      "Eine Fuge ist ein Thema, das in mehreren Stimmen erklingt. So verstehen wir eine Marke: eine einzige Idee, hörbar im Raum, auf dem Bildschirm und im Licht. Weniger Lärm, mehr Absicht.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
-        title: "Film und Motion",
-        text: "Marken und Räume in Bewegung erzählt, für Kampagnen und Social Media, mit Dreh, 3D oder generativer KI.",
-        list: ["Art Direction und Produktion", "Schnitt, Motion und generatives Video", "Eigene Musik und Sounddesign"],
-      },
-      {
-        title: "Interaktives 3D und Webdesign",
-        text: "Räume und Produkte in 3D zum Durchwandern und maßgeschneiderte Websites, schnell und intuitiv.",
-        list: ["3D-Viewer für Räume und Produkte", "Renderings für Kampagnen und Projekte", "UX/UI-Design, Websites nach Maß und Wartung"],
+        title: "Dreh und Erzählung",
+        text: "Echte Orte, Produkte und Menschen in Bewegung erzählt, und in 3D ergänzt, wo sie noch nicht existieren.",
+        list: ["Regie und Dreh vor Ort", "3D-Integration in reale Aufnahmen", "Schnitt, Motion und eigener Sound"],
       },
       {
         title: "Räume und Events",
-        text: "Die Marke im physischen Raum, wo man sie sieht, berührt und durchschreitet.",
-        list: ["Messe- und Kongressstände", "Läden, Lokale und Schaufenster", "Beschilderung und Point of Sale"],
+        text: "Die Marke dorthin gebracht, wo sie erlebt wird: Messestände, Läden, Orte und Events. Wir gestalten den Raum und seine digitale Ebene zusammen und begleiten die Umsetzung.",
+        list: ["Stände für Messen und Kongresse", "Läden, Orte und Schaufenster", "Leitsysteme, angewandte Grafik und interaktive Installationen"],
+      },
+      {
+        title: "3D und Web",
+        text: "Räume und Produkte in 3D zum Durchwandern, und maßgeschneiderte Websites, die beim Verkaufen helfen: schnell, klar und treu zum Original.",
+        list: ["3D-Viewer und Konfiguratoren", "UX/UI-Design und individuelle Webentwicklung", "Pflege, Barrierefreiheit und Weiterentwicklung"],
       },
       {
         title: "Strategie und Identität",
-        text: "Was eine Marke ist, wen sie anspricht und wie sie aussieht: eine klare Idee hinter allem, was sie tut.",
-        list: ["Geschichte und Wertversprechen", "Visuelle Identität und Markenrichtlinien", "SEO, SEA und digitale Inhalte"],
+        text: "Der Faden, der alles verbindet: was eine Marke einzigartig macht und wie man sie an jedem Ort und auf jedem Bildschirm erkennt.",
+        list: ["Strategie und Wertversprechen", "Identität und Markensystem", "Leitfäden für Markeninhalte, auch mit KI erstellt"],
       },
     ],
     seenIn: "in projekten",
@@ -323,12 +323,12 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
-    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Ein kleines Studio, ohne Umwege. Gesamtprojekte, einzelne Stücke oder monatliche Begleitung, immer in denselben Händen.",
+    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Ein Ansprechpartner von Anfang bis Ende. Wir gestalten und leiten, und holen vertraute Werkstätten und Partner dazu, wenn das Projekt es verlangt: Gesamtprojekte, einzelne Stücke oder laufende Begleitung.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
       { title: "Bauen", text: "Design und Entwicklung, mit klaren Abstimmungen in jeder Phase." },
-      { title: "Verfeinern", text: "Die Details, durch die alles vollendet wirkt." },
+      { title: "Verfeinern und begleiten", text: "Die Details, durch die alles vollendet wirkt, und die Betreuung nach dem Start." },
     ],
     voiceLabel: "eigene stimme",
     voice:

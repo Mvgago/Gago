@@ -80,7 +80,7 @@ export const Home: React.FC = () => {
               return parts.map((part, i) => (
                 <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.5 + i * 0.12}s both` }}>
                   {part}
-                  {i < parts.length - 2 ? ",\u00a0" : i === parts.length - 2 ? "\u00a0" : "."}
+                  {i < parts.length - 2 ? ",\u00a0" : i === parts.length - 2 ? `\u00a0${t("hero.and")}\u00a0` : "."}
                 </span>
               ));
             })()}
