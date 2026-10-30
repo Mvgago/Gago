@@ -45,7 +45,9 @@ export const Home: React.FC = () => {
     {/* The centre: intentionally empty. Only light. */}
     <div className="flex-1" aria-hidden />
 
-    <section className="relative flex flex-col gap-5 px-4 pb-6 sm:px-6 sm:pb-8 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:pb-8">
+    {/* (phones and tablets: the address and icons set well apart below, as the screen's foot, so the
+        manifesto sits higher and "see the projects" stands alone as the one thing to do) */}
+    <section className="relative flex flex-col gap-16 px-4 pb-5 sm:px-6 sm:pb-8 lg:flex-row lg:gap-5 lg:items-end lg:justify-between lg:px-8 lg:pb-8">
       {/* Manifesto */}
       <div className="max-w-xl lg:max-w-3xl">
         {/* The lema and the line under it are one way in: both lead to what the studio does.
@@ -121,7 +123,7 @@ export const Home: React.FC = () => {
 
       {/* Availability and contact: one quiet line, bottom right */}
       <motion.p
-        className={`${SMALL} relative flex w-full flex-col items-start gap-1 text-graphite [text-shadow:none] sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
+        className={`${SMALL} relative flex w-full flex-col items-start gap-1 text-graphite [text-shadow:none] max-lg:opacity-70 sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2.4, delay: 1.8 }}
@@ -131,7 +133,6 @@ export const Home: React.FC = () => {
         <span aria-hidden className="hidden sm:inline">·</span>
         {/* (not on phones: the address and Instagram are enough down there) */}
         <Link to="/about#contact" className="hidden transition-colors duration-300 hover:text-ink sm:inline">
-
           {t("availability")} — {new Date().getFullYear()}
         </Link>
         <span aria-hidden className="hidden sm:inline">·</span>
