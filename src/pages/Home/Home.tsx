@@ -124,7 +124,7 @@ export const Home: React.FC = () => {
 
       {/* Availability and contact: one quiet line, bottom right */}
       <motion.p
-        className={`${SMALL} relative flex w-full flex-col items-start gap-1 text-graphite [text-shadow:none] max-lg:text-silver max-lg:opacity-60 sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
+        className={`${SMALL} relative flex w-full flex-col items-start gap-1 text-graphite [text-shadow:none] sm:w-auto sm:flex-row sm:items-center sm:gap-3`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2.4, delay: 1.8 }}
