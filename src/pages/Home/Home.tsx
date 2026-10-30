@@ -95,7 +95,7 @@ export const Home: React.FC = () => {
                   {part}
                   {i < parts.length - 1 && (
                     <>
-                      <span aria-hidden className="px-[0.45em] opacity-60">\u00b7</span>
+                      <span aria-hidden className="px-[0.45em] opacity-60">{"\u00b7"}</span>
                       <span className="sr-only">, </span>
                     </>
                   )}
