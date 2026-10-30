@@ -89,7 +89,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projects",
     workTitle: "Recent work",
     workAll: "see all projects",
-    closing: "It all starts with a conversation.", closingNote: "One point of contact from start to finish. We design and direct, and bring in trusted workshops and collaborators when a project calls for it: whole projects, single pieces or ongoing support.",
+    closing: "It all starts with a conversation.", closingNote: "Identity, space, web and 3D under one creative direction, so your brand looks, feels and speaks the same everywhere: from logo to stand, from shop to screen.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -167,7 +167,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
-    closing: "Todo empieza con una conversación.", closingNote: "Un solo interlocutor de principio a fin. Diseñamos y dirigimos, y sumamos talleres y colaboradores de confianza cuando el proyecto lo pide: proyectos completos, encargos puntuales o colaboraciones continuadas.",
+    closing: "Todo empieza con una conversación.", closingNote: "Identidad, espacio, web y 3D bajo una misma dirección creativa, para que tu marca se vea, se recorra y se cuente igual en todas partes: del logo al stand, de la tienda a la pantalla.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -245,7 +245,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projets",
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
-    closing: "Tout commence par une conversation.", closingNote: "Un seul interlocuteur du début à la fin. Nous concevons et dirigeons, et faisons appel à des ateliers et des collaborateurs de confiance quand le projet le demande : projets complets, pièces ponctuelles ou accompagnement suivi.",
+    closing: "Tout commence par une conversation.", closingNote: "Identité, espace, web et 3D sous une même direction créative, pour que votre marque se voie, se vive et se raconte de la même façon partout : du logo au stand, de la boutique à l'écran.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -323,7 +323,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
-    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Ein Ansprechpartner von Anfang bis Ende. Wir gestalten und leiten, und holen vertraute Werkstätten und Partner dazu, wenn das Projekt es verlangt: Gesamtprojekte, einzelne Stücke oder laufende Begleitung.",
+    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Identität, Raum, Web und 3D unter einer kreativen Leitung, damit Ihre Marke überall gleich aussieht, sich gleich anfühlt und gleich erzählt: vom Logo bis zum Messestand, vom Laden bis zum Bildschirm.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
