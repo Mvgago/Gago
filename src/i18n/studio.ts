@@ -49,7 +49,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "A fugue is one theme sung in several voices. That is how we work a brand: one clear idea, recognised in the place, on the screen and in every image.",
+      "A fugue is one theme sung in several voices. That is how we work a brand: one clear idea, recognised in the place, on the screen and in every image, until it all becomes one experience.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -127,7 +127,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Una fuga es un mismo tema que suena en varias voces. Así trabajamos una marca: una idea clara que se reconoce en el lugar, en la pantalla y en cada imagen.",
+      "Una fuga es un mismo tema que suena en varias voces. Así trabajamos una marca: una idea clara que se reconoce en el lugar, en la pantalla y en cada imagen, hasta formar una sola experiencia.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
@@ -205,7 +205,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Une fugue, c'est un même thème qui résonne à plusieurs voix. C'est ainsi que nous travaillons une marque : une idée claire, reconnaissable dans le lieu, à l'écran et dans chaque image.",
+      "Une fugue, c'est un même thème qui résonne à plusieurs voix. C'est ainsi que nous travaillons une marque : une idée claire, reconnaissable dans le lieu, à l'écran et dans chaque image, jusqu'à former une seule expérience.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
@@ -283,7 +283,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Eine Fuge ist ein Thema, das in mehreren Stimmen erklingt. So arbeiten wir an einer Marke: eine klare Idee, erkennbar am Ort, auf dem Bildschirm und in jedem Bild.",
+      "Eine Fuge ist ein Thema, das in mehreren Stimmen erklingt. So arbeiten wir an einer Marke: eine klare Idee, erkennbar am Ort, auf dem Bildschirm und in jedem Bild, bis alles zu einem einzigen Erlebnis wird.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
