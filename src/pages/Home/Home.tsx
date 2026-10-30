@@ -85,7 +85,8 @@ export const Home: React.FC = () => {
           </p>
           {/* what the studio does, small and set apart, like the caption under a piece: the disciplines
               in lower case, divided by middle dots, arriving one after another */}
-          <p key={t("hero.sub2")} className="mt-7 font-mono text-[12px] font-normal tracking-[0.08em] text-white/80 sm:text-[13px] lg:mt-9">
+          {/* in the very type of "ver proyectos", so the labels and the way in read as one family */}
+          <p key={t("hero.sub2")} className={`${ACTION} mt-4 !normal-case text-silver lg:mt-5`}>
             {(() => {
               const parts = t("hero.sub2").split("|");
               return parts.map((part, i) => (
