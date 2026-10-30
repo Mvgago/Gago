@@ -455,7 +455,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                       const on = i === active;
                       const delay = on ? `${250 + k * 130}ms` : "0ms";
                       return (
-                        <li key={item} className="group/svc relative py-2 lg:py-4">
+                        <li key={item} className="group/svc relative py-1.5 lg:py-4">
                           <span aria-hidden className="absolute inset-x-0 top-0 hidden h-px bg-ink/15 lg:block" />
                           <span
                             aria-hidden
@@ -463,10 +463,12 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                             style={{ transitionDelay: delay, width: "100%" }}
                           />
                           <span
-                            className={`flex items-baseline gap-5 transition-[opacity,transform] duration-700 ease-haus ${on ? "translate-y-0 opacity-100" : "lg:translate-y-2 lg:opacity-0"}`}
+                            className={`flex items-baseline gap-3 transition-[opacity,transform] lg:gap-5 duration-700 ease-haus ${on ? "translate-y-0 opacity-100" : "lg:translate-y-2 lg:opacity-0"}`}
                             style={{ transitionDelay: delay }}
-                          > 
-                            <span className="font-geo text-[1.12rem] font-normal leading-snug tracking-[0.01em] text-ink transition-transform duration-500 ease-haus group-hover/svc:translate-x-1.5">
+                          >
+                            {/* phones: a short hairline before each, so they read as a list, not as headings */}
+                            <span aria-hidden className="h-px w-4 shrink-0 translate-y-[-0.3em] self-end bg-ink/40 lg:hidden" />
+                            <span className="font-geo text-[0.98rem] font-normal leading-snug tracking-[0.01em] text-ink/85 transition-transform duration-500 ease-haus group-hover/svc:translate-x-1.5 lg:text-[1.12rem] lg:text-ink">
                               {item}
                             </span>
                           </span>
