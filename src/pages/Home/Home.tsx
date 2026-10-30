@@ -55,7 +55,8 @@ export const Home: React.FC = () => {
         {/* one piece, one way in: the lema and the services under it lead together to the studio's
             services, and lift together on hover */}
         <Link to="/about#servicios" className="fh-manifesto group block origin-bottom-left transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] will-change-transform hover:scale-[1.02] focus-visible:scale-[1.02]">
-          <h1 className={`${DISPLAY} `}>
+          {/* regular weight, as the two lines under it: in light the lema read thinner than they did */}
+          <h1 className={`${DISPLAY} !font-normal`}>
             {/* Always two lines, on every screen: the lema reads as one block with the subtitle, broken at
                 the space nearest its middle so the two lines carry a like weight */}
             {(() => {
