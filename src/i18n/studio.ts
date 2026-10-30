@@ -131,7 +131,7 @@ export const STUDIO: Record<Lang, Studio> = {
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
-        title: "Narrativa audiovisual",
+        title: "Vídeo y motion",
         text: "Marcas, productos y espacios contados en movimiento para campañas y lanzamientos. Combinamos dirección de arte, rodaje, 3D y herramientas generativas según cada proyecto.",
         list: ["Dirección de arte y producción", "Edición, motion y vídeo generativo", "Atmósfera sonora y diseño musical"],
       },
