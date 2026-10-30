@@ -89,7 +89,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projects",
     workTitle: "Recent work",
     workAll: "see all projects",
-    closing: "It all starts with a conversation.", closingNote: "Identity, space, web and 3D under one creative direction, so your brand looks, feels and speaks the same everywhere: from logo to stand, from shop to screen.",
+    closing: "It all starts with a conversation.", closingNote: "One creative direction for your whole brand, so it looks, feels and speaks the same wherever it appears.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
@@ -167,7 +167,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
     workAll: "ver todos los proyectos",
-    closing: "Todo empieza con una conversación.", closingNote: "Identidad, espacio, web y 3D bajo una misma dirección creativa, para que tu marca se vea, se recorra y se cuente igual en todas partes: del logo al stand, de la tienda a la pantalla.",
+    closing: "Todo empieza con una conversación.", closingNote: "Una sola dirección creativa para toda tu marca: que se vea, se viva y se cuente igual allí donde aparezca.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
@@ -245,7 +245,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projets",
     workTitle: "Travaux récents",
     workAll: "voir tous les projets",
-    closing: "Tout commence par une conversation.", closingNote: "Identité, espace, web et 3D sous une même direction créative, pour que votre marque se voie, se vive et se raconte de la même façon partout : du logo au stand, de la boutique à l'écran.",
+    closing: "Tout commence par une conversation.", closingNote: "Une seule direction créative pour toute votre marque, pour qu'elle se voie, se vive et se raconte de la même façon partout où elle apparaît.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
@@ -323,7 +323,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
     workAll: "alle projekte ansehen",
-    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Identität, Raum, Web und 3D unter einer kreativen Leitung, damit Ihre Marke überall gleich aussieht, sich gleich anfühlt und gleich erzählt: vom Logo bis zum Messestand, vom Laden bis zum Bildschirm.",
+    closing: "Alles beginnt mit einem Gespräch.", closingNote: "Eine kreative Leitung für Ihre gesamte Marke, damit sie überall gleich aussieht, sich gleich anfühlt und gleich erzählt.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
