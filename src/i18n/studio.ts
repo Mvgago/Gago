@@ -49,12 +49,12 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "A fugue is one theme sung in several voices. That is how we see a brand: a single idea heard in the space, on the screen and in the light. Less noise, more intent.",
+      "A fugue is one theme sung in several voices. That is how we work a brand: one clear idea, recognised in the place, on the screen and in every image.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
         title: "Film and narrative",
-        text: "Real places, products and people told in motion, and completed in 3D where they don't exist yet.",
+        text: "Places, products and people told in motion: campaigns, pieces for social media and film for spaces.",
         list: ["Direction and location shooting", "3D integrated into live footage", "Editing, motion and original sound"],
       },
       {
@@ -127,12 +127,12 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Una fuga es un mismo tema que suena en varias voces. Así entendemos una marca: una sola idea que se oye en el espacio, en la pantalla y en la luz. Menos ruido, más intención.",
+      "Una fuga es un mismo tema que suena en varias voces. Así trabajamos una marca: una idea clara que se reconoce en el lugar, en la pantalla y en cada imagen.",
     disciplinesLabel: "disciplinas",
     disciplines: [
       {
         title: "Rodaje y narrativa",
-        text: "Contamos en movimiento lugares, productos y personas reales, y los completamos con 3D cuando aún no existen.",
+        text: "Lugares, productos y personas contados en movimiento: campañas, piezas para redes y vídeo para espacios.",
         list: ["Dirección y rodaje en localización", "Integración 3D sobre imagen real", "Edición, motion y sonido original"],
       },
       {
@@ -205,12 +205,12 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Une fugue, c'est un même thème qui résonne à plusieurs voix. C'est ainsi que nous voyons une marque : une seule idée qui s'entend dans l'espace, à l'écran et dans la lumière. Moins de bruit, plus d'intention.",
+      "Une fugue, c'est un même thème qui résonne à plusieurs voix. C'est ainsi que nous travaillons une marque : une idée claire, reconnaissable dans le lieu, à l'écran et dans chaque image.",
     disciplinesLabel: "disciplines",
     disciplines: [
       {
         title: "Tournage et récit",
-        text: "Des lieux, des produits et des personnes réels racontés en mouvement, et complétés en 3D quand ils n'existent pas encore.",
+        text: "Des lieux, des produits et des personnes racontés en mouvement : campagnes, contenus pour les réseaux et vidéo pour les espaces.",
         list: ["Réalisation et tournage en décor réel", "Intégration 3D sur images réelles", "Montage, motion et son original"],
       },
       {
@@ -283,12 +283,12 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Eine Fuge ist ein Thema, das in mehreren Stimmen erklingt. So verstehen wir eine Marke: eine einzige Idee, hörbar im Raum, auf dem Bildschirm und im Licht. Weniger Lärm, mehr Absicht.",
+      "Eine Fuge ist ein Thema, das in mehreren Stimmen erklingt. So arbeiten wir an einer Marke: eine klare Idee, erkennbar am Ort, auf dem Bildschirm und in jedem Bild.",
     disciplinesLabel: "disziplinen",
     disciplines: [
       {
         title: "Dreh und Erzählung",
-        text: "Echte Orte, Produkte und Menschen in Bewegung erzählt, und in 3D ergänzt, wo sie noch nicht existieren.",
+        text: "Orte, Produkte und Menschen in Bewegung erzählt: Kampagnen, Inhalte für Social Media und Film für Räume.",
         list: ["Regie und Dreh vor Ort", "3D-Integration in reale Aufnahmen", "Schnitt, Motion und eigener Sound"],
       },
       {
