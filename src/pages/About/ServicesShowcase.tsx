@@ -467,7 +467,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                             style={{ transitionDelay: delay }}
                           >
                             {/* phones: a short hairline before each, so they read as a list, not as headings */}
-                            <span aria-hidden className="h-px w-4 shrink-0 translate-y-[-0.3em] self-end bg-ink/40 lg:hidden" />
+                            <span aria-hidden className="h-px w-4 shrink-0 self-center bg-ink/40 lg:hidden" />
                             <span className="font-geo text-[0.98rem] font-normal leading-snug tracking-[0.01em] text-ink/85 transition-transform duration-500 ease-haus group-hover/svc:translate-x-1.5 lg:text-[1.12rem] lg:text-ink">
                               {item}
                             </span>
