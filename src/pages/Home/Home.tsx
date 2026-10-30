@@ -72,7 +72,7 @@ export const Home: React.FC = () => {
               ));
             })()}
           </h1>
-          {/* what the studio does, the words arriving one after another */}
+          {/* what the studio does, the words arriving one after another, set apart by middle dots */}
           {/* (keyed by its words, so a change of language plays the whole arrival again, every word) */}
           <p key={t("hero.sub")} className={`${SUBTITLE} mt-1 !font-normal text-white [text-wrap:balance] lg:mt-1.5`}>
             {(() => {
@@ -80,28 +80,21 @@ export const Home: React.FC = () => {
               return parts.map((part, i) => (
                 <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.5 + i * 0.12}s both` }}>
                   {part}
-                  {i < parts.length - 2 ? ",\u00a0" : i === parts.length - 2 ? `\u00a0${t("hero.and")}\u00a0` : "."}
-                </span>
-              ));
-            })()}
-          </p>
-          {/* what the studio does, small, like the caption under a piece: the disciplines set apart by
-              middle dots, no full stop, arriving one after another once the line above has */}
-          <p key={t("hero.sub2")} className={`${SUBTITLE2} mt-2 !font-normal text-white [text-wrap:balance] lg:mt-3`}>
-            {(() => {
-              const parts = t("hero.sub2").split("|");
-              return parts.map((part, i) => (
-                <span key={part} className="inline-block" style={{ animation: `fh-word 1s cubic-bezier(.22,1,.36,1) ${1.75 + i * 0.12}s both` }}>
-                  {part}
                   {i < parts.length - 1 && (
                     <>
-                      <span aria-hidden className="px-[0.45em] opacity-60">{"\u00b7"}</span>
+                      <span aria-hidden className="px-[0.4em] opacity-60">{"\u00b7"}</span>
                       <span className="sr-only">, </span>
                     </>
                   )}
                 </span>
               ));
             })()}
+          </p>
+          {/* and who it is for, smaller, arriving once the disciplines have */}
+          <p key={t("hero.sub2")} className={`${SUBTITLE2} mt-2 !font-normal text-white [text-wrap:balance] lg:mt-3`}>
+            <span className="inline-block" style={{ animation: "fh-word 1s cubic-bezier(.22,1,.36,1) 2.2s both" }}>
+              {t("hero.sub2")}.
+            </span>
           </p>
         </Link>
 
