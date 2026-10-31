@@ -196,10 +196,10 @@ export const cases: Case[] = [
       de: "Reiseunternehmen.",
     },
     body: {
-      es: "Buendía Travel necesitaba que su marca transmitiera lo que vende: experiencias, no paquetes. Modernizamos su identidad y la llevamos a una web pensada para reservar actividades y excursiones, y a catálogos y campañas que cuentan cada destino desde quien lo vive.",
-      en: "Buendía Travel needed its brand to convey what it sells: experiences, not packages. We modernised its identity and carried it into a website built for booking activities and excursions, and into catalogues and campaigns that tell each destination through those who live it.",
-      fr: "Buendía Travel avait besoin que sa marque transmette ce qu'elle vend : des expériences, pas des forfaits. Nous avons modernisé son identité et l'avons portée sur un site pensé pour réserver activités et excursions, et sur des catalogues et campagnes qui racontent chaque destination à travers ceux qui la vivent.",
-      de: "Buendía Travel brauchte eine Marke, die vermittelt, was sie verkauft: Erlebnisse, keine Pauschalreisen. Wir haben ihre Identität modernisiert und auf eine Website zum Buchen von Aktivitäten und Ausflügen übertragen, sowie auf Kataloge und Kampagnen, die jedes Reiseziel aus der Sicht derer erzählen, die es erleben.",
+      es: "Buendía Travel necesitaba que su marca transmitiera lo que vende: experiencias, no paquetes. Unificamos una imagen dispersa y le dimos una voz propia, cercana e ingeniosa, de la web de reservas a los catálogos y campañas que cuentan cada destino desde quien lo vive. Una sola marca, reconocible en cada canal.",
+      en: "Buendía Travel needed its brand to convey what it sells: experiences, not packages. We brought a scattered image together and gave it a voice of its own, warm and witty, from the booking site to the catalogues and campaigns that tell each destination through those who live it. One brand, recognisable on every channel.",
+      fr: "Buendía Travel avait besoin que sa marque transmette ce qu'elle vend : des expériences, pas des forfaits. Nous avons unifié une image dispersée et lui avons donné une voix propre, proche et pleine d'esprit, du site de réservation aux catalogues et campagnes qui racontent chaque destination à travers ceux qui la vivent. Une seule marque, reconnaissable sur chaque canal.",
+      de: "Buendía Travel brauchte eine Marke, die vermittelt, was sie verkauft: Erlebnisse, keine Pauschalreisen. Wir haben ein zerstreutes Erscheinungsbild vereint und ihm eine eigene Stimme gegeben, nahbar und geistreich, von der Buchungswebsite bis zu den Katalogen und Kampagnen, die jedes Reiseziel aus der Sicht derer erzählen, die es erleben. Eine Marke, wiedererkennbar auf jedem Kanal.",
     },
     // (the main ones only: a long list goes unread)
     services: [
