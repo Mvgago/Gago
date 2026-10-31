@@ -337,10 +337,10 @@ export const cases: Case[] = [
       de: "Cybersicherheitsberatung.",
     },
     body: {
-      es: "SmartHC necesitaba renovar su imagen y encontrar una dirección clara. Definimos su posicionamiento y una línea visual propia que da coherencia a todo lo que comunica, del catálogo al stand de congreso.",
-      en: "SmartHC needed to renew its image and find a clear direction. We defined its positioning and a visual language of its own that brings coherence to everything it communicates, from the catalogue to the congress stand.",
-      fr: "SmartHC avait besoin de renouveler son image et de trouver une direction claire. Nous avons défini son positionnement et une ligne visuelle propre qui donne de la cohérence à tout ce qu'elle communique, du catalogue au stand de congrès.",
-      de: "SmartHC brauchte ein neues Erscheinungsbild und eine klare Richtung. Wir haben ihre Positionierung und eine eigene visuelle Linie definiert, die allem, was sie kommuniziert, Kohärenz gibt, vom Katalog bis zum Kongressstand.",
+      es: "SmartHC tenía una imagen sin personalidad y unos servicios dispersos. Los unificamos bajo una marca moderna, limpia y seria, con una comunicación didáctica que hace comprensible un sector complejo. Del catálogo al stand de congreso, acercó la ciberseguridad al usuario final y trajo nuevos clientes y partners.",
+      en: "SmartHC had an image with no personality and scattered services. We brought them together under a modern, clean and serious brand, with educational communication that makes a complex sector easy to grasp. From the catalogue to the congress stand, it brought cybersecurity closer to end users and won new clients and partners.",
+      fr: "SmartHC avait une image sans personnalité et des services dispersés. Nous les avons réunis sous une marque moderne, épurée et sérieuse, avec une communication pédagogique qui rend accessible un secteur complexe. Du catalogue au stand de congrès, elle a rapproché la cybersécurité de l'utilisateur final et apporté de nouveaux clients et partenaires.",
+      de: "SmartHC hatte ein Erscheinungsbild ohne Persönlichkeit und verstreute Leistungen. Wir haben sie unter einer modernen, klaren und seriösen Marke vereint, mit einer verständlichen Kommunikation, die eine komplexe Branche greifbar macht. Vom Katalog bis zum Kongressstand brachte sie Cybersicherheit näher an die Endnutzer und gewann neue Kunden und Partner.",
     },
     services: [
       {
