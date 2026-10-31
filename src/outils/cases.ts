@@ -244,10 +244,10 @@ export const cases: Case[] = [
       de: "Wohnanlage an der Costa del Sol.",
     },
     body: {
-      es: "Para vender The Sapphire sobre plano era necesario construir una visión antes de la primera piedra. Desarrollamos la identidad, el relato y el ecosistema digital de la promoción —sitio web, campaña audiovisual y planos interactivos—, permitiendo a los futuros propietarios habitar la arquitectura mucho antes de su construcción.",
-      en: "Selling The Sapphire off-plan meant building a vision before the first stone was laid. We developed the development's identity, narrative and digital ecosystem — website, audiovisual campaign and interactive floor plans — allowing future owners to inhabit the architecture long before it was built.",
-      fr: "Vendre The Sapphire sur plan exigeait de construire une vision avant la première pierre. Nous avons développé l'identité, le récit et l'écosystème numérique du programme — site web, campagne audiovisuelle et plans interactifs —, permettant aux futurs propriétaires d'habiter l'architecture bien avant sa construction.",
-      de: "Um The Sapphire vom Plan zu verkaufen, musste vor dem ersten Stein eine Vision entstehen. Wir haben Identität, Erzählung und das digitale Ökosystem des Projekts entwickelt — Website, audiovisuelle Kampagne und interaktive Grundrisse — und so den künftigen Eigentümern ermöglicht, die Architektur lange vor ihrem Bau zu bewohnen.",
+      es: "Para vender The Sapphire sobre plano era necesario construir una visión antes de la primera piedra. Desarrollamos la identidad, el relato y el ecosistema digital de la promoción —sitio web, campaña audiovisual y planos interactivos—. Sin piso piloto ni obra que visitar, fueron la sala de ventas. La promoción se vendió sobre plano.",
+      en: "Selling The Sapphire off-plan meant building a vision before the first stone was laid. We developed the development's identity, narrative and digital ecosystem — website, audiovisual campaign and interactive floor plans. With no show flat and no site to visit, they became the sales room. The development sold off-plan.",
+      fr: "Vendre The Sapphire sur plan exigeait de construire une vision avant la première pierre. Nous avons développé l'identité, le récit et l'écosystème numérique du programme — site web, campagne audiovisuelle et plans interactifs. Sans appartement témoin ni chantier à visiter, ils sont devenus la salle de vente. Le programme s'est vendu sur plan.",
+      de: "Um The Sapphire vom Plan zu verkaufen, musste vor dem ersten Stein eine Vision entstehen. Wir haben Identität, Erzählung und das digitale Ökosystem des Projekts entwickelt — Website, audiovisuelle Kampagne und interaktive Grundrisse. Ohne Musterwohnung und ohne Baustelle zum Besichtigen wurden sie zum Verkaufsraum. Das Projekt wurde vom Plan verkauft.",
     },
     services: [
       {
