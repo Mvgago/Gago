@@ -225,8 +225,9 @@ export const cases: Case[] = [
       // the campaign on social media beside its destination spot (Asturias), silent and looping
       { src: buendiaSocial, pair: true },
       { src: "", video: "/video/buendia-asturias.mp4", videoSpeed: 1 },
-      { src: buendiaPresence, pair: true },
-      { src: buendiaMerch },
+      // (the brand in the street first, so on phones it follows straight on from the spot)
+      { src: buendiaMerch, pair: true },
+      { src: buendiaPresence },
     ],
   },
   {
