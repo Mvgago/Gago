@@ -8,6 +8,8 @@ import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothSc
 import { LightWall } from "../../components/Light/LightWall";
 import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
+
+const WORK_ORDER = ["sapphire", "buendia", "smarthc"];
 import buendiaCatalogue from "../../assets/peojects/buendia/buendia-catalogue-web.jpg.webp";
 import buendiaSocial from "../../assets/peojects/buendia/buendia-social-web.jpg.webp";
 import sapWeb from "../../assets/peojects/saphire/saphire.jpg.webp";
@@ -375,8 +377,10 @@ export const AboutPage: React.FC = () => {
           {/* phones: a strip to slide through with the finger, each case nearly the screen's width */}
           {/* the cases' names stay out of search results (data-nosnippet), as their pages do */}
           <ul data-nosnippet className="-mx-4 flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] sm:-mx-6 sm:grid sm:grid-cols-3 sm:overflow-visible md:-ml-8 md:mr-0 [&::-webkit-scrollbar]:hidden">
+            {/* in the same order as the projects page */}
             {cases
               .filter((c) => !c.hidden)
+              .sort((a, b) => WORK_ORDER.indexOf(a.slug) - WORK_ORDER.indexOf(b.slug))
               .slice(0, 3)
               .map((c, k) => (
                 <li key={c.slug} className="w-[84%] shrink-0 snap-start sm:w-auto">

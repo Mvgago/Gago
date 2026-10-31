@@ -30,8 +30,8 @@ type Work = { slug: string; title: string };
 
 const WORKS: Work[] = [
   { slug: "sapphire", title: "The Sapphire" },
-  { slug: "smarthc", title: "Smart Human Capital" },
   { slug: "buendia", title: "Buendía Travel" },
+  { slug: "smarthc", title: "Smart Human Capital" },
 ];
 
 // The sector first, so the range of clients shows at a glance, then what was done
