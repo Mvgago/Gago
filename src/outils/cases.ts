@@ -304,10 +304,10 @@ export const cases: Case[] = [
     },
     // what the brand is and how it works: no client, no results
     body: {
-      es: "Una marca para un tostadero instalado en una antigua nave de molienda. La identidad sale de su oficio: la curva de tueste, la gráfica que todo tostador vigila, es el sistema visual, y cada origen tiene la suya. Un sello que gira como el tambor de la tostadora y una tipografía ancha y rotunda la hacen industrial, pero cálida.",
-      en: "A brand for a roastery set in an old flour mill. The identity comes from the craft: the roast curve, the graph every roaster watches, is the visual system, and each origin has its own. A seal that turns like the roaster's drum and a broad, solid typeface make it industrial, but warm.",
-      fr: "Une marque pour une torréfaction installée dans une ancienne minoterie. L'identité naît du métier : la courbe de torréfaction, le graphique que tout torréfacteur surveille, devient le système visuel, et chaque origine a la sienne. Un sceau qui tourne comme le tambour du torréfacteur et une typographie large et affirmée la rendent industrielle, mais chaleureuse.",
-      de: "Eine Marke für eine Rösterei in einer alten Mühle. Die Identität kommt aus dem Handwerk: Die Röstkurve, die Grafik, die jeder Röster im Blick hat, ist das visuelle System, und jede Herkunft hat ihre eigene. Ein Siegel, das sich wie die Trommel des Rösters dreht, und eine breite, kräftige Schrift machen sie industriell, aber warm.",
+      es: "Una marca para un tostadero de barrio, con barra y tienda. La identidad sale de su oficio: la curva de tueste, la gráfica que todo tostador vigila, es el sistema visual, y cada origen tiene la suya. Un sello que gira como el tambor de la tostadora y una tipografía ancha y rotunda la hacen industrial, pero cálida.",
+      en: "A brand for a neighbourhood roastery, with a bar and a shop. The identity comes from the craft: the roast curve, the graph every roaster watches, is the visual system, and each origin has its own. A seal that turns like the roaster's drum and a broad, solid typeface make it industrial, but warm.",
+      fr: "Une marque pour une torréfaction de quartier, avec comptoir et boutique. L'identité naît du métier : la courbe de torréfaction, le graphique que tout torréfacteur surveille, devient le système visuel, et chaque origine a la sienne. Un sceau qui tourne comme le tambour du torréfacteur et une typographie large et affirmée la rendent industrielle, mais chaleureuse.",
+      de: "Eine Marke für eine Rösterei im Viertel, mit Bar und Laden. Die Identität kommt aus dem Handwerk: Die Röstkurve, die Grafik, die jeder Röster im Blick hat, ist das visuelle System, und jede Herkunft hat ihre eigene. Ein Siegel, das sich wie die Trommel des Rösters dreht, und eine breite, kräftige Schrift machen sie industriell, aber warm.",
     },
     services: [
       {
@@ -346,7 +346,7 @@ export const cases: Case[] = [
       // the street and the screen: the blade sign (a blank sign photographed, painted and lettered), beside the
       // site on a phone over roasted beans
       { src: tolvaSign, pair: true },
-      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6" },
+      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=7" },
       // to close, two uprights, whole (Pexels): ground coffee falling into the filter, what goes down a hopper,
       // and the coffee poured into a cup with Tolva's seal raised on it (its own mark removed)
       { src: tolvaPour, pair: true, fit: "natural" },
