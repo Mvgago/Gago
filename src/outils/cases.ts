@@ -10,6 +10,7 @@ import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
 import tolvaWindow from "../assets/peojects/tolva/tolva-window.webp";
+import tolvaSign from "../assets/peojects/tolva/tolva-sign.webp";
 import tolvaPour from "../assets/peojects/tolva/tolva-pour.webp";
 import tolvaServe from "../assets/peojects/tolva/tolva-serve.webp";
 import santaRender from "../assets/peojects/santa/santa-render.jpg.webp";
@@ -327,9 +328,9 @@ export const cases: Case[] = [
     images: [
       // the mark in cream over the grinder at work (Pexels film), wide
       { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1 },
-      // half width each: the round blade sign out from a sunlit wall (3D), beside a shop window in the sun
-      // (Pexels): the place, at street level
-      { src: "", viewer: "devices", frame: "/concepts/tolva-sign/index.html?v=1", pair: true },
+      // half width each: the blade sign out over the street (a blank sign photographed, painted in the brand's
+      // rust with the logo laid on in perspective), beside a shop window in the sun (Pexels): the place
+      { src: tolvaSign, pair: true },
       { src: tolvaWindow },
       // half width each: the brand's stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
