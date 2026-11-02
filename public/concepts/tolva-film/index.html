@@ -19,6 +19,8 @@
     opacity: 0; transition: opacity 1.4s ease, transform 1.4s cubic-bezier(.2,.8,.2,1);
   }
   .mark.on { opacity: 1; transform: translate(-50%, 0); }
+  /* ?bare: the film alone (the projects page names the project itself) */
+  .bare .mark, .bare .foot { display: none; }
   .mark svg { display: block; width: clamp(44px, 4.4vw, 70px); margin: 0 auto 1.1vh; }
   .mark .name { font-weight: 800; font-size: clamp(22px, 2.6vw, 42px); line-height: 1; letter-spacing: .02em; }
   .mark .sub { margin-top: 1vh; font-weight: 700; font-size: clamp(8px, .72vw, 12px); letter-spacing: .42em; margin-right: -.42em; opacity: .85; }
@@ -40,6 +42,7 @@
     <div class="sub">TOSTADERO · BARRA · TIENDA</div>
   </div>
 <script>
+  if (new URLSearchParams(location.search).has("bare")) document.documentElement.classList.add("bare");
   const v = document.getElementById("v"), mark = document.getElementById("mark");
   const show = () => setTimeout(() => mark.classList.add("on"), 1600);
   document.fonts.ready.then(show);

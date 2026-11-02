@@ -71,7 +71,8 @@ const SCENE: Record<string, string | undefined> = {
   // (v: bumped when the scene changes, so a cached copy is never shown)
   buendia: "/concepts/buendia-devices/index.html?bare&v=3",
   smarthc: "/concepts/smarthc-devices/index.html?bare&room&v=3",
-  tolva: "/concepts/tolva/index.html?v=13",
+  // (the latte-art film alone: the page names the project itself)
+  tolva: "/concepts/tolva-film/index.html?bare&v=1",
 };
 
 // Projects shown as their drawing drawing itself, then the photograph (the case's opening drawing)
