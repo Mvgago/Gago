@@ -8,23 +8,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet" />
 <style>
-  /* The brand's stories, running past on a dark band, one after another, without end.
+  /* The brand's stories on a slowly turning ring: the one facing you largest and brightest, those round the
+     back small and dim. It can be dragged round, and a card under the pointer comes forward, larger.
      Inside a card, 1em is 1% of its width, so every story scales as one piece. */
   :root {
     --rust: #b45e45; --charcoal: #232220; --coffee: #75574b; --mocha: #d9d0bf; --paper: #ece6d8; --cream: #f7f3ec;
-    --h: min(78vh, 128vw);
+    --h: min(64vh, 110vw);
     --w: calc(var(--h) * 9 / 16);
   }
   * { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; }
-  body { background: #1d1c1a; overflow: hidden; display: grid; align-items: center; font-family: Syne, sans-serif; }
-  .belt { display: flex; gap: calc(var(--w) * .07); width: max-content; animation: run 60s linear infinite; }
-  .paused .belt { animation-play-state: paused; }
-  @keyframes run { to { transform: translateX(-50%); } }
-  .set { display: flex; gap: calc(var(--w) * .07); }
+  body { background: #1d1c1a; overflow: hidden; font-family: Syne, sans-serif; cursor: grab; user-select: none; touch-action: pan-y; }
+  body.dragging { cursor: grabbing; }
+  .stage { position: absolute; inset: 0; perspective: calc(var(--w) * 6); perspective-origin: 50% 45%; }
+  .ring { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
 
   .story {
-    position: relative; width: var(--w); height: var(--h); flex: none; overflow: hidden;
+    position: absolute; left: calc(var(--w) / -2); top: calc(var(--h) / -2);
+    backface-visibility: hidden;
+    width: var(--w); height: var(--h); flex: none; overflow: hidden;
     border-radius: calc(var(--w) * .035); color: var(--cream);
     font-size: calc(var(--w) * .01);
     background-size: cover; background-position: center;
@@ -55,8 +57,8 @@
 </style>
 </head>
 <body>
-  <div class="belt">
-    <div class="set" id="set">
+  <div class="stage">
+    <div class="ring" id="ring">
 
       <!-- 1 · the new origin, on its bag -->
       <article class="story paper">
@@ -209,13 +211,62 @@
     </div>
   </div>
 <script>
-  // the set twice over, so the belt runs on with no seam
-  const set = document.getElementById("set");
-  set.parentNode.appendChild(set.cloneNode(true)).setAttribute("aria-hidden", "true");
+  const cards = [...document.querySelectorAll(".story")];
+  const N = cards.length, STEP = 360 / N;
+  let angle = 0, vel = 0, visible = true, hovered = null, dragging = null;
+  const grow = cards.map(() => 0); // each card's hover growth, eased
+
+  // the ring's radius: the cards stand side by side with a small gap round it
+  let R = 0;
+  const measure = () => {
+    const w = cards[0].offsetWidth;
+    R = (w * 1.12) / (2 * Math.tan(Math.PI / N));
+  };
+  measure(); addEventListener("resize", measure);
+
+  cards.forEach((c, i) => {
+    c.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse" && !dragging) hovered = i; });
+    c.addEventListener("pointerleave", () => { if (hovered === i) hovered = null; });
+  });
+
+  // dragged round with the pointer (sideways only, so a phone still scrolls the page), then coasting
+  addEventListener("pointerdown", (e) => { dragging = { x: e.clientX, a: angle, t: performance.now(), last: e.clientX }; hovered = null; document.body.classList.add("dragging"); });
+  addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const now = performance.now(), dx = e.clientX - dragging.last;
+    vel = (dx * .22) / Math.max(1, now - dragging.t) * 1000;
+    dragging.t = now; dragging.last = e.clientX;
+    angle = dragging.a + (e.clientX - dragging.x) * .22;
+  });
+  const release = () => { dragging = null; document.body.classList.remove("dragging"); };
+  addEventListener("pointerup", release); addEventListener("pointercancel", release);
+
+  let last = performance.now();
+  (function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    if (visible) {
+      if (!dragging) {
+        // a slow turn of its own, which waits while a card is held under the pointer; a throw coasts out
+        vel *= Math.pow(.04, dt);
+        angle += (hovered === null ? -7 : 0) * dt + vel * dt;
+      }
+      cards.forEach((c, i) => {
+        grow[i] += ((hovered === i ? 1 : 0) - grow[i]) * Math.min(1, dt * 9);
+        const a = angle + i * STEP;
+        const facing = Math.cos(a * Math.PI / 180); // 1 straight ahead, -1 round the back
+        const g = grow[i];
+        c.style.transform = `rotateY(${a}deg) translateZ(${R + g * R * .14}px) scale(${1 + g * .14})`;
+        c.style.filter = `brightness(${(.32 + .68 * Math.max(0, facing)) + g * .08})`;
+        c.style.zIndex = String(Math.round(facing * 100) + (hovered === i ? 200 : 0));
+      });
+    }
+    requestAnimationFrame(frame);
+  })(last);
+
   // framed in the site: held still while off screen
   addEventListener("message", (e) => {
     if (e.origin !== location.origin || typeof e.data?.fhVisible !== "boolean") return;
-    document.documentElement.classList.toggle("paused", !e.data.fhVisible);
+    visible = e.data.fhVisible;
   });
 </script>
 </body>
