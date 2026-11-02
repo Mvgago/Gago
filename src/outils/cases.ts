@@ -11,6 +11,7 @@ import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
 import tolvaWindow from "../assets/peojects/tolva/tolva-window.webp";
 import tolvaSign from "../assets/peojects/tolva/tolva-sign.webp";
+import tolvaIced from "../assets/peojects/tolva/tolva-iced.webp";
 import tolvaPour from "../assets/peojects/tolva/tolva-pour.webp";
 import tolvaServe from "../assets/peojects/tolva/tolva-serve.webp";
 import santaRender from "../assets/peojects/santa/santa-render.jpg.webp";
@@ -334,6 +335,8 @@ export const cases: Case[] = [
       // rust with the logo laid on in perspective), beside a shop window in the sun (Pexels): the place
       { src: tolvaSign, pair: true },
       { src: tolvaWindow },
+      // a bright breath between the darker pieces: an iced coffee on a sunlit table, wide (Pexels, cropped 3:2)
+      { src: tolvaIced },
       // half width each: the brand's stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
       { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
