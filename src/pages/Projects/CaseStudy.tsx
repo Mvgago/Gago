@@ -136,7 +136,8 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
 const MOVING: Record<string, { video?: string; frame?: string } | undefined> = {
   sapphire: { video: "/video/the-sapphire-720.mp4" },
   buendia: { frame: "/concepts/buendia-devices/index.html?bare&v=3" },
-  smarthc: { frame: "/concepts/smarthc-devices/index.html?bare&room&v=3" },
+  // (its 3D scene is framed for a full screen, off-centre for the words beside it: in a card, its 3D character)
+  smarthc: { video: "/video/smarthc.mp4" },
   tolva: { frame: "/concepts/tolva/index.html?v=5" },
 };
 
