@@ -23,8 +23,9 @@ export const SiteHeader: React.FC = () => {
   // On the light inner rooms, once the page scrolls, the header takes the wall's
   // colour behind it, so content never shows through under the logo.
   const onLight = isLightRoom(pathname);
-  // a case page on a phone: its opening runs up under the header, so the header keeps out of its way (a smaller
-  // mark and index, no language)
+  // phones, everywhere but the landing: a smaller mark and index, so the header keeps out of the page's way;
+  // the language too is left out over a case's opening
+  const compact = pathname !== "/";
   const onCase = pathname.startsWith("/projects/");
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -127,7 +128,7 @@ export const SiteHeader: React.FC = () => {
           to="/"
           aria-label="Fuga Haus — home"
           tabIndex={open ? -1 : undefined}
-          className={`block ${onCase ? "w-[4.5rem] sm:w-28" : "w-28"} transition-opacity md:w-36 ${
+          className={`block ${compact ? "w-[4.5rem] sm:w-28" : "w-28"} transition-opacity md:w-36 ${
             open
               ? "pointer-events-none opacity-0 duration-200"
               : // Phones: the mark is small and its hairline bars fade into the mauve,
@@ -159,7 +160,7 @@ export const SiteHeader: React.FC = () => {
             aria-label={open ? t("index.aria.close") : t("index.aria.open")}
             // Hover, quietly: the graphite lifts a shade lighter, the letters open a touch, the short line grows. No shadow.
             // (smaller on phones, where it took too much of the header)
-            className={`group relative flex items-center gap-2.5 rounded-full bg-ink/90 px-3.5 py-2 backdrop-blur-md max-sm:[&_.meta]:text-[11px] ${onCase ? "max-sm:gap-2 max-sm:px-2.5 max-sm:py-1.5 max-sm:[&_.meta]:text-[10px]" : ""} sm:gap-3.5 sm:px-5 sm:py-2.5 transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
+            className={`group relative flex items-center gap-2.5 rounded-full bg-ink/90 px-3.5 py-2 backdrop-blur-md max-sm:[&_.meta]:text-[11px] ${compact ? "max-sm:gap-2 max-sm:px-2.5 max-sm:py-1.5 max-sm:[&_.meta]:text-[10px]" : ""} sm:gap-3.5 sm:px-5 sm:py-2.5 transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
           >
             {inviting && (
               <>
