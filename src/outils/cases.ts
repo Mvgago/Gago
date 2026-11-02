@@ -328,27 +328,28 @@ export const cases: Case[] = [
     cover: tolvaStill,
     // an opening as in a brand film: latte art drawing itself (Pexels), nothing over it
     headerFrame: "/concepts/tolva-film/index.html?bare&v=1",
+    // One wide piece to open, then pairs of one height, each a chapter (the system, the craft, the place, the
+    // screen), and two uprights to close
     images: [
-      // half width each: the mark in cream over the grinder at work (Pexels film), beside the site on a phone
-      // over roasted beans, scrolling on its own
-      { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1, pair: true },
-      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6" },
-      // half width each: the blade sign out over the street (a blank sign photographed, painted in the brand's
-      // rust with the logo laid on in perspective), beside a shop window in the sun (Pexels): the place
-      // the craft, half width each: beans turning in the cooling tray, the arm sweeping round like the seal,
-      // then a bag being sealed (Pexels; the bag, another roastery's, recoloured and relabelled as Tolva's)
-      { src: tolvaRoast, pair: true },
-      { src: tolvaBag },
-      { src: tolvaSign, pair: true },
-      // the place inside: the bar at the back, globe lamps, someone at work at a table (Pexels)
-      { src: tolvaRoom },
-      // a bright breath between the darker pieces: an iced coffee on a sunlit table, wide (Pexels, cropped 3:2)
-      { src: tolvaIced },
-      // half width each: the brand's stories on their arc, beside the palette laying itself out
+      // the mark: in cream over the grinder at work (Pexels film), wide
+      { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1 },
+      // the system: the stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
       { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
-      // to close, two uprights, whole, side by side (Pexels): ground coffee falling into the filter, what goes
-      // down a hopper, and the coffee poured into a cup with Tolva's seal raised on it (its own mark removed)
+      // the craft: beans turning in the cooling tray, the arm sweeping round like the seal, then a bag being
+      // sealed (Pexels; the bag, another roastery's, recoloured in the brand's rust, its label cleared)
+      { src: tolvaRoast, pair: true },
+      { src: tolvaBag },
+      // the place: the blade sign out over the street (a blank sign photographed, painted and lettered), and
+      // inside, the bar at the back and the globe lamps (Pexels)
+      { src: tolvaSign, pair: true },
+      { src: tolvaRoom },
+      // the screen: the site on a phone over roasted beans, scrolling on its own, beside an iced coffee on a
+      // sunlit table (Pexels)
+      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6", pair: true },
+      { src: tolvaIced },
+      // to close, two uprights, whole (Pexels): ground coffee falling into the filter, what goes down a hopper,
+      // and the coffee poured into a cup with Tolva's seal raised on it (its own mark removed)
       { src: tolvaPour, pair: true, fit: "natural" },
       { src: tolvaServe, fit: "natural" },
     ],
