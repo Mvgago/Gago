@@ -22,7 +22,7 @@
   body.dragging { cursor: grabbing; }
   /* behind the cards, a café's interior (Pexels), dimmed with a neutral veil so the stories stand out */
   body::before {
-    content: ""; position: fixed; inset: 0;
+    content: ""; position: fixed; inset: -24px; filter: blur(7px);
     background: linear-gradient(rgba(22,20,18,.72), rgba(22,20,18,.72)), url(cafe.jpg) center / cover no-repeat;
   }
   .stage { position: absolute; inset: 0; perspective: calc(var(--w) * 6); perspective-origin: 50% 45%; }

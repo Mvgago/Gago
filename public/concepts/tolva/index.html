@@ -26,6 +26,8 @@
   /* behind the mark, ground coffee in the portafilter under the grinder, in warm light (Pexels footage) */
   .bg { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; opacity: .5; filter: brightness(.66); }
   .plain .bg { display: none; }
+  /* a warm grey under the film, so its shadows read grey rather than black */
+  html:not(.plain) body { background: #46423e; }
   /* the film shown as it is: no warm lamp or wash over it */
   body::after, .bulb { display: none; }
   /* a light warm wash over the café, under the words (it tinted them when it lay on top) */
@@ -36,7 +38,7 @@
   /* only light shade now: enough at the edges to hold the frame, little in the middle */
   .shade {
     position: fixed; inset: 0; pointer-events: none;
-    background: radial-gradient(120% 90% at 50% 45%, rgba(28,24,20,.34), rgba(18,16,14,.7) 88%);
+    background: radial-gradient(120% 90% at 50% 45%, rgba(58,55,52,.12), rgba(52,50,47,.45) 88%);
   }
   .line, .tagline { text-shadow: 0 2px 30px rgba(40,18,6,.35); }
   /* a lamp over the roaster: the warm light */
