@@ -319,7 +319,7 @@ export const cases: Case[] = [
     },
     cover: tolvaStill,
     // the site on a phone over roasted beans turning close up: the brand at work, not a large logo
-    headerFrame: "/concepts/tolva-phone/index.html?v=3",
+    headerFrame: "/concepts/tolva-phone/index.html?v=4",
     images: [
       // half width each: the mark on paper (seal, name, roast curve), beside the palette laying itself out
       { src: tolvaSheet, pair: true },
