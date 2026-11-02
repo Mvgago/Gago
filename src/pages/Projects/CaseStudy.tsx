@@ -135,13 +135,15 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
 
 // What each project is shown by in that row: the work in motion (the film, the live 3D scene, the drawing
 // drawing itself) rather than a still, since motion and 3D are what sets the work apart
-const MOVING: Record<string, { video?: string; frame?: string } | undefined> = {
-  sapphire: { video: "/video/the-sapphire-720.mp4" },
-  buendia: { frame: "/concepts/buendia-devices/index.html?bare&v=3" },
+// Kept light so the row comes up at once: six-second clips at card size (public/video/previews), each over its
+// own first frame, shown the moment the card is drawn; the film or the scene takes over once it can play
+const MOVING: Record<string, { video?: string; frame?: string; poster: string } | undefined> = {
+  sapphire: { video: "/video/previews/sapphire.mp4", poster: "/video/previews/sapphire.jpg" },
+  buendia: { frame: "/concepts/buendia-devices/index.html?bare&v=3", poster: "/video/previews/buendia.jpg" },
   // (its 3D scene is framed for a full screen, off-centre for the words beside it: in a card, its 3D character)
-  smarthc: { video: "/video/smarthc.mp4" },
+  smarthc: { video: "/video/previews/smarthc.mp4", poster: "/video/previews/smarthc.jpg" },
   // (the latte-art film, as on the projects page and the case's opening)
-  tolva: { video: "/concepts/tolva-film/latte.mp4" },
+  tolva: { video: "/video/previews/tolva.mp4", poster: "/video/previews/tolva.jpg" },
 };
 
 const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ after, shown, lang }) => {
@@ -189,8 +191,11 @@ const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ aft
             className="group relative aspect-[16/9] w-[78vw] shrink-0 overflow-hidden rounded-[3px] bg-[#ecebe8] sm:w-[46vw] lg:w-[36vw]"
           >
             <span className="pointer-events-none absolute inset-0 transition-transform duration-1000 ease-haus group-hover:scale-[1.03]">
+              {MOVING[k.slug] && (
+                <img src={MOVING[k.slug]!.poster} alt="" {...protect} className="absolute inset-0 h-full w-full object-cover" />
+              )}
               {MOVING[k.slug]?.video ? (
-                <video src={MOVING[k.slug]!.video} muted loop playsInline autoPlay preload="metadata" aria-label={k.title} className="h-full w-full object-cover" />
+                <video src={MOVING[k.slug]!.video} poster={MOVING[k.slug]!.poster} muted loop playsInline autoPlay preload="auto" aria-label={k.title} className="relative h-full w-full object-cover" />
               ) : MOVING[k.slug]?.frame ? (
                 // (built only once the card nears the screen, held still when it leaves)
                 <DevicesFrame src={MOVING[k.slug]!.frame!} title={`${k.title} — 3D`} reveal className="h-full w-full" />
