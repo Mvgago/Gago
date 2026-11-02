@@ -14,6 +14,12 @@ const CinematicViewer = lazy(() => import("../../components/Gallery/CinematicVie
 
 // One grade for every project, film or still: a touch darker and firmer than the file
 const GRADE = "brightness(0.8) contrast(1.08) saturate(0.9)";
+// (Buendía's scene runs greener than the rest: a point less colour)
+// (Gracia Prados' drawing is on pale paper: darkened like the rest, it turned to a muddy grey)
+const GRADE_OF: Record<string, string | undefined> = {
+  buendia: "brightness(0.8) contrast(1.08) saturate(0.78)",
+  "gracia-prados": "brightness(0.98) contrast(1.04)",
+};
 
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
@@ -59,8 +65,9 @@ const FILM: Record<string, { src: string; small: string; poster: string; posterS
 
 // Projects shown as a live 3D scene instead (pages in public/concepts, the scene alone)
 const SCENE: Record<string, string | undefined> = {
-  buendia: "/concepts/buendia-devices/index.html?bare",
-  smarthc: "/concepts/smarthc-devices/index.html?bare&room",
+  // (v: bumped when the scene changes, so a cached copy is never shown)
+  buendia: "/concepts/buendia-devices/index.html?bare&v=3",
+  smarthc: "/concepts/smarthc-devices/index.html?bare&room&v=3",
 };
 
 // Projects shown as their drawing drawing itself, then the photograph (the case's opening drawing)
@@ -240,7 +247,7 @@ export const ProjectsSection: React.FC = () => {
         <motion.div
           key={active.slug}
           className="absolute inset-0"
-          style={{ filter: GRADE }}
+          style={{ filter: GRADE_OF[active.slug] ?? GRADE }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.8, ease: EASE_HAUS } }}
           exit={{ opacity: 0, transition: { duration: 0.35, ease: [0.4, 0, 1, 1] } }}
@@ -264,7 +271,7 @@ export const ProjectsSection: React.FC = () => {
           <div
             key={slug}
             className={`pointer-events-none absolute inset-0 transition-opacity duration-700 ${active.slug === slug ? "opacity-100" : "opacity-0"}`}
-            style={{ filter: GRADE }}
+            style={{ filter: GRADE_OF[slug] ?? GRADE }}
           >
             <DevicesFrame src={src!} title={`${WORKS.find((w) => w.slug === slug)?.title} — 3D`} reveal paused={active.slug !== slug} className="h-full w-full" />
           </div>
@@ -359,8 +366,9 @@ export const ProjectsSection: React.FC = () => {
                     onPointerLeave={cancelPick}
                     onFocus={() => setIndex(i)}
                     aria-current={i === index ? "true" : undefined}
-                    className={`inline-flex items-center gap-3 transition-colors duration-500 ${
-                      i === index ? "text-[#f7f4f0]" : "text-platinum/50 hover:text-platinum/85"
+                    // phones: the one on view larger, the others small, so the list reads as where you are
+                    className={`inline-flex items-center gap-3 transition-[color,font-size] duration-500 ${
+                      i === index ? "text-[#f7f4f0] max-md:text-[19px]" : "text-platinum/50 hover:text-platinum/85 max-md:text-[12px]"
                     }`}
                   >
                     {/* The one on view is marked with a short line, drawn in */}

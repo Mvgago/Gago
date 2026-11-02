@@ -383,7 +383,7 @@ export const CaseStudyPage: React.FC = () => {
                 key={r}
                 // the home's viewer can be linked to directly (from the studio page)
                 id={row[0].frame?.includes("sapphire-home") ? "vivienda-3d" : undefined}
-                src={row[0].frame ?? "/concepts/smarthc-devices/index.html"}
+                src={row[0].frame ?? "/concepts/smarthc-devices/index.html?v=3"}
                 title={`${c.title} — 3D`}
                 // a home to walk round takes the screen: edge to edge and nearly the viewport's height
                 className={row[0].frame?.includes("sapphire-home") ? "h-[82svh] min-h-[480px] w-full" : "aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[16/8]"}

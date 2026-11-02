@@ -607,11 +607,12 @@ const mesh = new THREE.Group();
 const scan = new THREE.Group(); // (kept empty: no scan line)
 const panels = [];
 
-/* Devices: brushed aluminium, black glass front, a screen that emits its own light */
-const shellMat = new THREE.MeshPhysicalMaterial({ transparent: true, color: '#b9bfc4', metalness: 1, roughness: .32, clearcoat: .25, clearcoatRoughness: .3 });
+/* Devices: a champagne aluminium edge and squarer corners (not Buendía's grey, rounder tablet: one of its
+   own, warm like the brand's gold), black glass front, a screen that emits its own light */
+const shellMat = new THREE.MeshPhysicalMaterial({ transparent: true, color: '#d8c7a0', metalness: 1, roughness: .34, clearcoat: .25, clearcoatRoughness: .3 });
 const bezelMat = new THREE.MeshPhysicalMaterial({ transparent: true, color: '#08090a', metalness: .1, roughness: .1, clearcoat: 1 });
 const glassMat = new THREE.MeshPhysicalMaterial({ color: '#ffffff', metalness: 0, roughness: .03, clearcoat: 1, clearcoatRoughness: .02, transparent: true, opacity: .04, depthWrite: false, envMapIntensity: .3 });
-const btnMat = new THREE.MeshStandardMaterial({ transparent: true, color: '#aab0b5', metalness: 1, roughness: .3 });
+const btnMat = new THREE.MeshStandardMaterial({ transparent: true, color: '#cdbb92', metalness: 1, roughness: .3 });
 function device(w, h, d, r, sw, sh, texW, texH) {
   const g = new THREE.Group();
   // The body as a rounded rectangle in plan (a rounded box would cap its radius at half the
@@ -639,7 +640,7 @@ function device(w, h, d, r, sw, sh, texW, texH) {
   scene.add(g);
   return { group: g, screen: scr, ctx: c.getContext('2d'), tex };
 }
-const tablet = device(2.3, 1.66, .06, .16, 2.17, 1.532, TW, TH);
+const tablet = device(2.3, 1.66, .06, .09, 2.17, 1.532, TW, TH);
 const pen = (() => {
   const g = new THREE.Group(), L = 1.25, R0 = .03;
   const bodyM = new THREE.MeshPhysicalMaterial({ color: '#2a2e32', metalness: .35, roughness: .28, clearcoat: .8, clearcoatRoughness: .15 });
@@ -869,7 +870,7 @@ function frame() {
   frameN++;
   if (frameN % 2 === 0) {
     if (frameN % 4 === 0) { drawCode(T, Math.min(.2, T - codeLast)); codeLast = T; codeTex.needsUpdate = true; }
-    tabletUI(tablet.ctx, T); roundScreen(tablet.ctx, TW, TH, 54); tablet.tex.needsUpdate = true;
+    tabletUI(tablet.ctx, T); roundScreen(tablet.ctx, TW, TH, 26); tablet.tex.needsUpdate = true;
     cardsFrame(T);
     if (userStrokes.length === 0 && T % 10 < .6) penTip = null;
     phoneUI(phone.ctx, T); island(phone.ctx); roundScreen(phone.ctx, PW, PH, 78); phone.tex.needsUpdate = true;

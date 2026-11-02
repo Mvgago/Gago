@@ -416,7 +416,7 @@ const HOME = new THREE.Vector3(0.55, 2.95, BARE_FULL ? 5.9 : 5.0); // a little b
 const START = new THREE.Vector3(1.2, 3.1, 10);
 const HOME0 = HOME.clone(), START0 = START.clone(); // as framed for a wide screen
 // (bare, on a wide screen: closer, the devices larger; narrow frames keep the framing above)
-const HOME_NEAR = new THREE.Vector3(0.55, 2.95, 4.7);
+const HOME_NEAR = new THREE.Vector3(0.55, 2.95, 5.2);
 camera.position.copy(START);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0.45, 3.62, 0.15); // eye level: the palazzi behind, the ground far below the devices
