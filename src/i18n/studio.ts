@@ -51,7 +51,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "As in a musical fugue, independent voices weave together to make a single piece. We bring identity, web, film and space under one conceptual direction, turning each project's vision into an experience that is coherent and singular.",
+      "As in a musical fugue, independent voices weave together to make a single piece. We bring identity, web, film and space under one conceptual direction, so that each project is told as a single story.",
     disciplinesLabel: "disciplines",
     discover: "discover our disciplines",
     disciplines: [
@@ -130,7 +130,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Como en una fuga musical, distintas voces independientes se entrelazan para crear una sola pieza. Unimos identidad, web, vídeo y espacio bajo una misma dirección conceptual, transformando la visión de cada proyecto en una experiencia coherente y singular.",
+      "Como en una fuga musical, distintas voces independientes se entrelazan para crear una sola pieza. Unimos identidad, web, vídeo y espacio bajo una misma dirección conceptual, para que cada proyecto se cuente como una sola historia.",
     disciplinesLabel: "disciplinas",
     discover: "descubre nuestras disciplinas",
     disciplines: [
@@ -209,7 +209,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Comme dans une fugue, des voix indépendantes s'entrelacent pour former une seule pièce. Nous réunissons identité, web, vidéo et espace sous une même direction conceptuelle, pour faire de la vision de chaque projet une expérience cohérente et singulière.",
+      "Comme dans une fugue, des voix indépendantes s'entrelacent pour former une seule pièce. Nous réunissons identité, web, vidéo et espace sous une même direction conceptuelle, pour que chaque projet se raconte comme une seule histoire.",
     disciplinesLabel: "disciplines",
     discover: "découvrez nos disciplines",
     disciplines: [
@@ -288,7 +288,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Wie in einer Fuge verflechten sich unabhängige Stimmen zu einem einzigen Stück. Wir vereinen Identität, Web, Film und Raum unter einer konzeptionellen Leitung und machen aus der Vision jedes Projekts ein stimmiges, unverwechselbares Erlebnis.",
+      "Wie in einer Fuge verflechten sich unabhängige Stimmen zu einem einzigen Stück. Wir vereinen Identität, Web, Film und Raum unter einer konzeptionellen Leitung, damit jedes Projekt als eine einzige Geschichte erzählt wird.",
     disciplinesLabel: "disziplinen",
     discover: "unsere Disziplinen entdecken",
     disciplines: [
