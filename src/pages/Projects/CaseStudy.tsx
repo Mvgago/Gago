@@ -49,32 +49,48 @@ const CONTEXT: Record<Lang, string> = { es: "Contexto", en: "Context", fr: "Cont
  * in a tight grotesque, dark on the pale wall: the idea of the project as a headline on the left, the story and
  * the facts on the right
  */
-const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => (
+// The editorial opening in two voices, to compare: the site's own (Jura, labels in mono) by default, and a
+// tight grotesque with ?grot in the address
+const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
+  const grot = new URLSearchParams(useLocation().search).has("grot");
+  const t = grot
+    ? {
+        wrap: "font-grot",
+        label: "text-[13px] font-medium",
+        head: "text-[2rem] font-semibold leading-[1.06] tracking-[-0.015em] md:text-[2.6rem]",
+        body: "text-[1.15rem] font-normal leading-[1.32] tracking-[-0.01em] md:text-[1.3rem]",
+        facts: "text-[14px]",
+      }
+    : {
+        wrap: "font-geo",
+        label: SMALL,
+        head: "text-[2rem] font-medium leading-[1.08] tracking-[0.005em] md:text-[2.7rem]",
+        body: "text-[1.1rem] font-normal leading-[1.4] tracking-[0.01em] md:text-[1.25rem]",
+        facts: SMALL,
+      };
+  return (
   <>
     <motion.figure
       className="-mx-4 overflow-hidden sm:-mx-6 md:-mx-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.1, ease: EASE_HAUS } }}
     >
+      {/* (short of the full screen, so the whole mark shows under the header) */}
       {c.headerFrame ? (
-        <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="aspect-[4/5] max-h-[88vh] w-full sm:aspect-[16/9]" />
+        <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="aspect-[4/5] max-h-[76vh] w-full sm:aspect-[16/9]" />
       ) : (
-        <img src={c.cover} alt={c.title} {...protect} className="block aspect-[16/9] max-h-[88vh] w-full object-cover" />
+        <img src={c.cover} alt={c.title} {...protect} className="block aspect-[16/9] max-h-[76vh] w-full object-cover" />
       )}
     </motion.figure>
-    <header className="grid gap-y-10 pb-20 pt-8 font-grot text-ink md:grid-cols-12 md:gap-x-10 md:pb-28 md:pt-10">
+    <header className={`grid gap-y-10 pb-20 pt-8 text-ink md:grid-cols-12 md:gap-x-10 md:pb-28 md:pt-10 ${t.wrap}`}>
       <motion.div variants={rise} initial="hidden" animate="shown" custom={1} className="md:col-span-6">
-        <p className="text-[13px] font-medium">{c.title}</p>
-        <h1 className="mt-2 max-w-[22ch] text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] md:text-[2.6rem]">
-          {(c.statement ?? c.lead)[lang]}
-        </h1>
+        <p className={t.label}>{c.title}</p>
+        <h1 className={`mt-3 max-w-[22ch] ${t.head}`}>{(c.statement ?? c.lead)[lang]}</h1>
       </motion.div>
       <motion.div variants={rise} initial="hidden" animate="shown" custom={2} className="md:col-span-6">
-        <p className="text-[13px] font-medium">{CONTEXT[lang]}</p>
-        {c.body && (
-          <p className="mt-2 max-w-[48ch] text-[1.15rem] font-normal leading-[1.32] tracking-[-0.01em] md:text-[1.3rem]">{c.body[lang]}</p>
-        )}
-        <dl className="mt-8 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 border-t border-ink/15 pt-4 text-[14px]">
+        <p className={t.label}>{grot ? CONTEXT[lang] : CONTEXT[lang].toLowerCase()}</p>
+        {c.body && <p className={`mt-3 max-w-[50ch] ${t.body}`}>{c.body[lang]}</p>}
+        <dl className={`mt-8 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 border-t border-ink/15 pt-4 ${t.facts}`}>
           <dt className="text-ink/55">{c.sector ? CASE_UI.sector[lang] : CASE_UI.client[lang]}</dt>
           <dd>{(c.sector ?? c.client)[lang]}</dd>
           <dt className="text-ink/55">{CASE_UI.scope[lang]}</dt>
@@ -91,7 +107,8 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => (
       </motion.div>
     </header>
   </>
-);
+  );
+};
 
 // What each project is shown by in that row: the work in motion (the film, the live 3D scene, the drawing
 // drawing itself) rather than a still, since motion and 3D are what sets the work apart
