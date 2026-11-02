@@ -42,6 +42,57 @@ const AllProjects: React.FC<{ current: string; lang: Lang }> = ({ current, lang 
  * On to the rest of the work: "next" on the left, then every other project from the next one on, side by side
  * as pictures, each with its name on a small tag; the row runs off the edge and scrolls sideways
  */
+const CONTEXT: Record<Lang, string> = { es: "Contexto", en: "Context", fr: "Contexte", de: "Kontext" };
+
+/**
+ * The editorial opening (on trial on one case): the work first, edge to edge and large; under it, two columns
+ * in a tight grotesque, dark on the pale wall: the idea of the project as a headline on the left, the story and
+ * the facts on the right
+ */
+const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => (
+  <>
+    <motion.figure
+      className="-mx-4 overflow-hidden sm:-mx-6 md:-mx-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.1, ease: EASE_HAUS } }}
+    >
+      {c.headerFrame ? (
+        <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="aspect-[4/5] max-h-[88vh] w-full sm:aspect-[16/9]" />
+      ) : (
+        <img src={c.cover} alt={c.title} {...protect} className="block aspect-[16/9] max-h-[88vh] w-full object-cover" />
+      )}
+    </motion.figure>
+    <header className="grid gap-y-10 pb-20 pt-8 font-grot text-ink md:grid-cols-12 md:gap-x-10 md:pb-28 md:pt-10">
+      <motion.div variants={rise} initial="hidden" animate="shown" custom={1} className="md:col-span-6">
+        <p className="text-[13px] font-medium">{c.title}</p>
+        <h1 className="mt-2 max-w-[22ch] text-[2rem] font-semibold leading-[1.04] tracking-[-0.025em] md:text-[2.6rem]">
+          {(c.statement ?? c.lead)[lang]}
+        </h1>
+      </motion.div>
+      <motion.div variants={rise} initial="hidden" animate="shown" custom={2} className="md:col-span-6">
+        <p className="text-[13px] font-medium">{CONTEXT[lang]}</p>
+        {c.body && (
+          <p className="mt-2 max-w-[48ch] text-[1.15rem] font-normal leading-[1.32] tracking-[-0.01em] md:text-[1.3rem]">{c.body[lang]}</p>
+        )}
+        <dl className="mt-8 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 border-t border-ink/15 pt-4 text-[14px]">
+          <dt className="text-ink/55">{c.sector ? CASE_UI.sector[lang] : CASE_UI.client[lang]}</dt>
+          <dd>{(c.sector ?? c.client)[lang]}</dd>
+          <dt className="text-ink/55">{CASE_UI.scope[lang]}</dt>
+          <dd>
+            {c.services
+              ? c.services.map((s) => (
+                  <span key={s.d} className="block">
+                    {DISCIPLINE[s.d][lang]} <span className="text-ink/55">— {s.detail[lang]}</span>
+                  </span>
+                ))
+              : c.disciplines.map((d) => DISCIPLINE[d][lang]).join(" · ")}
+          </dd>
+        </dl>
+      </motion.div>
+    </header>
+  </>
+);
+
 // What each project is shown by in that row: the work in motion (the film, the live 3D scene, the drawing
 // drawing itself) rather than a still, since motion and 3D are what sets the work apart
 const MOVING: Record<string, { video?: string; frame?: string } | undefined> = {
@@ -286,6 +337,8 @@ export const CaseStudyPage: React.FC = () => {
         {/* Only the way back to all the projects up here: the way on to the next case is at the foot of the page */}
         <AllProjects current={c.slug} lang={lang} />
       </motion.nav>
+      {c.layout === "editorial" ? <Editorial c={c} lang={lang} /> : (
+      <>
       {/* Side by side, the first screen holds everything, whole and still: the words and
           the services on the left, the film or the cover on the right, framed, small enough
           to stay sharp. Otherwise the words come first and the cover follows at full width. */}
@@ -397,6 +450,8 @@ export const CaseStudyPage: React.FC = () => {
       ) : (
         // phones: the same gap after the opening picture as between all the others, so they read as one strip
         <div className={side ? "h-4 md:h-32" : "h-4 md:h-6"} />
+      )}
+      </>
       )}
 
       {/* The work, large */}

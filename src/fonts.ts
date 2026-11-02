@@ -14,3 +14,8 @@ import "@fontsource/jura/300.css";
 import "@fontsource/jura/400.css";
 import "@fontsource/jura/500.css";
 
+// Inter Tight: the editorial case pages (a tight grotesque, on trial on one case)
+import "@fontsource/inter-tight/400.css";
+import "@fontsource/inter-tight/500.css";
+import "@fontsource/inter-tight/600.css";
+

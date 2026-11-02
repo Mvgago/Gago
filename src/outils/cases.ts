@@ -125,6 +125,10 @@ export type Case = {
   headerReveal?: { src: string; order: string; w: number; h: number; paper: string };
   /** Opens the case with an interactive concept page (public/concepts/…) framed beside the words */
   headerFrame?: string;
+  /** "editorial": the work full width first, then a statement and the story side by side in a tight grotesque */
+  layout?: "editorial";
+  /** The editorial layout's headline: the idea of the project, not its name */
+  statement?: Text;
   /** "contain": show the whole cover on a pale mount (square or small covers) */
   coverFit?: "contain";
   /** A calm image for the index strip, with no text or interface in it (defaults to the cover) */
@@ -271,6 +275,13 @@ export const cases: Case[] = [
       es: "Tostadero de café de especialidad.",
       fr: "Torréfacteur de café de spécialité.",
       de: "Rösterei für Spezialitätenkaffee.",
+    },
+    layout: "editorial",
+    statement: {
+      es: "Del grano a la marca. Un tostadero contado desde su oficio.",
+      en: "From the bean to the brand. A roastery told through its craft.",
+      fr: "Du grain à la marque. Une torréfaction racontée par son métier.",
+      de: "Von der Bohne zur Marke. Eine Rösterei, erzählt aus ihrem Handwerk.",
     },
     // what the brand is and how it works: no client, no results
     body: {
