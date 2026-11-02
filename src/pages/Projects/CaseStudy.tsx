@@ -58,14 +58,14 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
     ? {
         wrap: "font-grot",
         label: "text-[13px] font-medium",
-        head: "text-[2rem] font-semibold leading-[1.06] tracking-[-0.015em] md:text-[2.6rem]",
+        head: "text-[1.45rem] font-semibold leading-[1.1] tracking-[-0.015em] md:text-[2.1rem]",
         body: "text-[1.15rem] font-normal leading-[1.32] tracking-[-0.01em] md:text-[1.3rem]",
         facts: "text-[14px]",
       }
     : {
         wrap: "font-geo",
         label: SMALL,
-        head: "text-[2rem] font-medium leading-[1.08] tracking-[0.005em] md:text-[2.7rem]",
+        head: "text-[1.45rem] font-medium leading-[1.12] tracking-[0.005em] md:text-[2.1rem]",
         body: "text-[1.1rem] font-normal leading-[1.4] tracking-[0.01em] md:text-[1.25rem]",
         facts: SMALL,
       };
