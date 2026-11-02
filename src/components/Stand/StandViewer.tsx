@@ -998,6 +998,12 @@ async function build(host: HTMLDivElement, onReady: () => void): Promise<{ api: 
     const h = host.clientHeight;
     if (!w || !h) return;
     camera.aspect = w / h;
+    // narrower than 16:10 (a tall phone frame): the view widened to keep the stand's whole width, as a wide
+    // frame sees it, instead of the same height and the sides cut away (it came in far too close)
+    const ref = 1.6, base = 40;
+    camera.fov = camera.aspect >= ref
+      ? base
+      : Math.min(78, THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(base / 2)) * (ref / camera.aspect))));
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
