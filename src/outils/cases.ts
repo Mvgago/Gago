@@ -9,6 +9,7 @@ import aleaLaptop from "../assets/peojects/alea/alea.png.webp";
 import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip from "../assets/peojects/santa/santa-strip.jpg.webp";
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
+import santaRender from "../assets/peojects/santa/santa-render.jpg.webp";
 import santaTerrace from "../assets/peojects/santa/santa (2).jpg.webp";
 import santaDevices from "../assets/peojects/santa/santa (3).jpg.webp";
 import santaSketch from "../assets/peojects/santa/santa (4).jpg.webp";
@@ -253,8 +254,9 @@ export const cases: Case[] = [
       // first the brand on screens beside a home: the line and the name draw themselves out of the dome, as on
       // the site's opening
       { src: santaDevices, pair: true, reveal: { order: santaScreensOrder, w: 1700, h: 1275, paper: "#f7f7f7", cover: true, focus: 0.41, duration: 3 } },
-      // beside them the building: the dome the brand is drawn from
-      { src: santaFacade },
+      // beside them the building, half finished, half wireframe: the rooftop homes drawn onto the old block
+      // (the facade itself already opens the case)
+      { src: santaRender },
       // both whole, at their own (shared) proportion; the mark draws itself from the spire down
       { src: santaMark, pair: true, fit: "natural", reveal: { order: santaMarkOrder, w: 2047, h: 989, paper: "#ffffff" } },
       // the colours spread out from the first one, then the versions of the mark fill in
