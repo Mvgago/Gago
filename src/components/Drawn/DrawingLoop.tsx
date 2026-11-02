@@ -6,7 +6,7 @@ import React, { useEffect, useRef } from "react";
  * is blank again and the drawing starts over. Round and round while it is on view.
  */
 const K = 24;
-const DRAW = 4.5, HOLD = 1.5, FADE = 1.6, PHOTO = 4.4, REST = 0.4;
+const DRAW = 4.5, HOLD = 1.5, FADE = 3, PHOTO = 4.4, REST = 0.4;
 const CYCLE = DRAW + HOLD + FADE + PHOTO + FADE + REST;
 const ease = (p: number) => p * p * (3 - 2 * p);
 
@@ -72,7 +72,15 @@ export const DrawingLoop: React.FC<{
         </defs>
         <image href={src} width={w} height={h} filter={`url(#${id})`} />
       </svg>
-      <img ref={top} src={photo} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" style={{ opacity: 0 }} />
+      {/* the photograph barely softened; it is the long dissolve that lets the one pass into the other */}
+      <img
+        ref={top}
+        src={photo}
+        alt=""
+        draggable={false}
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ opacity: 0, filter: "saturate(0.88) contrast(0.94) brightness(1.04)" }}
+      />
     </div>
   );
 };

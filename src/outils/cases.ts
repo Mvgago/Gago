@@ -9,10 +9,14 @@ import aleaLaptop from "../assets/peojects/alea/alea.png.webp";
 import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip from "../assets/peojects/santa/santa-strip.jpg.webp";
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import santaTerrace from "../assets/peojects/santa/santa (2).jpg.webp";
-import santaInterior from "../assets/peojects/santa/santa (1).jpg.webp";
 import santaDevices from "../assets/peojects/santa/santa (3).jpg.webp";
 import santaSketch from "../assets/peojects/santa/santa (4).jpg.webp";
 import santaMap from "../assets/peojects/santa/santa-map.jpg.webp";
+import santaBedroom from "../assets/peojects/santa/santa-bedroom.jpg.webp";
+import santaLiving from "../assets/peojects/santa/santa-living.jpg.webp";
+import santaKitchen from "../assets/peojects/santa/santa-kitchen.jpg.webp";
+import santaLamp from "../assets/peojects/santa/santa-lamp.jpg.webp";
+import santaDetail from "../assets/peojects/santa/santa-detail.jpg.webp";
 import santaMapOrder from "../assets/peojects/santa/santa-map-order.png";
 import santaMarkOrder from "../assets/peojects/santa/santa-mark-order.png";
 import santaScreensOrder from "../assets/peojects/santa/santa-screens-order.png";
@@ -174,7 +178,7 @@ export const cases: Case[] = [
     slug: "gracia-prados",
     title: "Gracia Prados 14",
     client: { en: "Gracia Prados 14 — residential", es: "Gracia Prados 14 — residencial", fr: "Gracia Prados 14 — résidentiel", de: "Gracia Prados 14 — wohnbau" },
-    disciplines: ["identity", "web"],
+    disciplines: ["identity", "web", "direction"],
     sector: { en: "residential refurbishment", es: "rehabilitación residencial", fr: "réhabilitation résidentielle", de: "wohnsanierung" },
     lead: {
       en: "Residential refurbishment in Madrid.",
@@ -183,10 +187,10 @@ export const cases: Case[] = [
       de: "Wohnsanierung in Madrid.",
     },
     body: {
-      es: "Gracia Prados 14 es un edificio con historia, rehabilitado en viviendas y áticos dúplex. Para contarlo no hacía falta inventar nada: su cúpula ya era lo que todo el mundo reconocía desde la calle. La convertimos en la marca, un único trazo que nace del edificio y recorre el logotipo, la web y la papelería. Así, cada pieza habla de la casa antes que de los metros. La marca hizo el resto: las viviendas se vendieron en muy poco tiempo.",
-      en: "Gracia Prados 14 is a building with a past, refurbished into flats and duplex penthouses. Telling its story needed nothing invented: its dome was already what everyone recognised from the street. We made it the brand, a single line drawn from the building that runs through the logo, the website and the stationery. So every piece speaks of the home before the square metres. The brand did the rest: the homes sold in very little time.",
-      fr: "Gracia Prados 14 est un immeuble chargé d'histoire, réhabilité en appartements et attiques en duplex. Pour le raconter, il n'y avait rien à inventer : sa coupole était déjà ce que tout le monde reconnaissait depuis la rue. Nous en avons fait la marque, un trait unique né de l'immeuble qui parcourt le logo, le site et la papeterie. Ainsi, chaque pièce parle du lieu avant de parler de mètres carrés. La marque a fait le reste : les logements se sont vendus en très peu de temps.",
-      de: "Gracia Prados 14 ist ein Gebäude mit Geschichte, saniert zu Wohnungen und Duplex-Penthäusern. Um es zu erzählen, musste nichts erfunden werden: Seine Kuppel war schon das, was jeder von der Straße aus erkannte. Wir machten sie zur Marke, eine einzige Linie, die aus dem Gebäude entsteht und sich durch Logo, Website und Geschäftsausstattung zieht. So spricht jedes Stück vom Zuhause, bevor es um Quadratmeter geht. Den Rest erledigte die Marke: Die Wohnungen waren in kürzester Zeit verkauft.",
+      es: "Gracia Prados 14 es un edificio con historia, rehabilitado en viviendas y áticos dúplex. Para contarlo no hacía falta inventar nada: su cúpula ya era lo que todo el mundo reconocía desde la calle. La convertimos en la marca, un único trazo que nace del edificio y recorre el logotipo, la web y la papelería. Así, cada pieza habla de la casa antes que de los metros. La web y los renders se convirtieron en la herramienta principal de venta del equipo comercial.",
+      en: "Gracia Prados 14 is a building with a past, refurbished into flats and duplex penthouses. Telling its story needed nothing invented: its dome was already what everyone recognised from the street. We made it the brand, a single line drawn from the building that runs through the logo, the website and the stationery. So every piece speaks of the home before the square metres. The website and the renders became the sales team's main tool.",
+      fr: "Gracia Prados 14 est un immeuble chargé d'histoire, réhabilité en appartements et attiques en duplex. Pour le raconter, il n'y avait rien à inventer : sa coupole était déjà ce que tout le monde reconnaissait depuis la rue. Nous en avons fait la marque, un trait unique né de l'immeuble qui parcourt le logo, le site et la papeterie. Ainsi, chaque pièce parle du lieu avant de parler de mètres carrés. Le site et les rendus sont devenus le principal outil de vente de l'équipe commerciale.",
+      de: "Gracia Prados 14 ist ein Gebäude mit Geschichte, saniert zu Wohnungen und Duplex-Penthäusern. Um es zu erzählen, musste nichts erfunden werden: Seine Kuppel war schon das, was jeder von der Straße aus erkannte. Wir machten sie zur Marke, eine einzige Linie, die aus dem Gebäude entsteht und sich durch Logo, Website und Geschäftsausstattung zieht. So spricht jedes Stück vom Zuhause, bevor es um Quadratmeter geht. Website und Renderings wurden zum wichtigsten Verkaufswerkzeug des Vertriebsteams.",
     },
     services: [
       {
@@ -207,6 +211,15 @@ export const cases: Case[] = [
           de: "verkaufswebsite: wohnungen, grundrisse und ausstattung",
         },
       },
+      {
+        d: "direction",
+        detail: {
+          en: "renders: lighting and furnishing",
+          es: "renders: iluminación y mobiliario",
+          fr: "rendus : lumière et mobilier",
+          de: "renderings: licht und einrichtung",
+        },
+      },
     ],
     cta: {
       en: "A building with a story to tell? Let's talk",
@@ -225,16 +238,20 @@ export const cases: Case[] = [
       // first the brand on screens beside a home: the line and the name draw themselves out of the dome, as on
       // the site's opening
       { src: santaDevices, pair: true, reveal: { order: santaScreensOrder, w: 1700, h: 1275, paper: "#f7f7f7", cover: true, focus: 0.41, duration: 3 } },
-      { src: santaInterior },
-      // the building, wide: the dome the brand is drawn from
+      // beside them the building: the dome the brand is drawn from
       { src: santaFacade },
       // both whole, at their own (shared) proportion; the mark draws itself from the spire down
       { src: santaMark, pair: true, fit: "natural", reveal: { order: santaMarkOrder, w: 2047, h: 989, paper: "#ffffff" } },
       // the colours spread out from the first one, then the versions of the mark fill in
       { src: santaPalette, fit: "natural", reveal: { order: santaPaletteOrder, w: 2047, h: 989, paper: "#ffffff" } },
       { src: santaSketch },
-      // the living room again, wide this time
-      { src: santaInterior },
+      // Then the homes, in frames of the development's film: the living room, wide, the kitchen beside its
+      // lamp, the kitchen and its detail (already a diptych), the bedroom
+      { src: santaLiving },
+      { src: santaKitchen, pair: true },
+      { src: santaLamp },
+      { src: santaDetail },
+      { src: santaBedroom },
       // the terrace at dusk, wide, to close
       { src: santaTerrace },
     ],
@@ -353,7 +370,8 @@ export const cases: Case[] = [
       de: "Ein Projekt, das es noch nicht gibt? Sprechen wir darüber",
     },
     cover: sapRender,
-    video: "/video/the-sapphire.mp4",
+    // the whole film, opening on the facade (the projects page has its own cut, starting on the terrace)
+    video: "/video/the-sapphire-full.mp4",
     coverFocus: "50% 62%",
     // A rhythm, not a scroll of full screens: only two pieces wide, the rest in pairs of
     // matching proportions (the web mockup is soft at full width, sharp at half)
