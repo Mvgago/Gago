@@ -26,6 +26,12 @@
   /* behind the mark, ground coffee in the portafilter under the grinder, in warm light (Pexels footage) */
   .bg { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; opacity: .5; filter: brightness(.66); }
   .plain .bg { display: none; }
+  /* ?cafe: in place of the grinder, a café's interior (Pexels) well out of focus, as through frosted glass */
+  .cafe .bg { display: none; }
+  .cafe body::before {
+    content: ""; position: fixed; inset: -40px; z-index: 0;
+    background: url(cafe.jpg) center / cover no-repeat; filter: blur(14px) brightness(.92);
+  }
   /* a warm grey under the film, so its shadows read grey rather than black */
   html:not(.plain) body { background: #46423e; }
   /* the film shown as it is: no warm lamp or wash over it */
@@ -172,6 +178,7 @@
   }
   if (new URLSearchParams(location.search).has("beans")) document.documentElement.classList.add("beans-only");
   // ?bg=rrggbb: on a flat brand colour instead of the café (for the pieces made from it)
+  if (new URLSearchParams(location.search).has("cafe")) document.documentElement.classList.add("cafe");
   const BG = new URLSearchParams(location.search).get("bg");
   if (BG) {
     document.documentElement.classList.add("plain");
