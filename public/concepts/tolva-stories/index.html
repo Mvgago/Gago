@@ -6,9 +6,10 @@
 <meta name="robots" content="noindex" />
 <title>Tolva — stories</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet" />
 <style>
-  /* The brand's stories, running past on a dark band, one after another, without end */
+  /* The brand's stories, running past on a dark band, one after another, without end.
+     Inside a card, 1em is 1% of its width, so every story scales as one piece. */
   :root {
     --rust: #b45e45; --charcoal: #232220; --coffee: #75574b; --mocha: #d9d0bf; --paper: #ece6d8; --cream: #f7f3ec;
     --h: min(78vh, 128vw);
@@ -17,7 +18,7 @@
   * { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; }
   body { background: #1d1c1a; overflow: hidden; display: grid; align-items: center; font-family: Syne, sans-serif; }
-  .belt { display: flex; gap: calc(var(--w) * .07); width: max-content; animation: run 46s linear infinite; }
+  .belt { display: flex; gap: calc(var(--w) * .07); width: max-content; animation: run 60s linear infinite; }
   .paused .belt { animation-play-state: paused; }
   @keyframes run { to { transform: translateX(-50%); } }
   .set { display: flex; gap: calc(var(--w) * .07); }
@@ -25,100 +26,186 @@
   .story {
     position: relative; width: var(--w); height: var(--h); flex: none; overflow: hidden;
     border-radius: calc(var(--w) * .035); color: var(--cream);
-    font-size: calc(var(--w) * .01); /* 1em = 1% of the card's width */
+    font-size: calc(var(--w) * .01);
     background-size: cover; background-position: center;
   }
-  /* a story's own chrome: the progress bars, the account */
-  .story::before {
-    content: ""; position: absolute; left: 4em; right: 4em; top: 3.5em; height: .45em; border-radius: 1em;
-    background: linear-gradient(90deg, currentColor 0 30%, transparent 30% 34%, color-mix(in srgb, currentColor 35%, transparent) 34% 64%, transparent 64% 68%, color-mix(in srgb, currentColor 35%, transparent) 68%);
-    opacity: .9;
-  }
-  .who { position: absolute; left: 7%; top: 9%; display: flex; align-items: center; gap: 2.4em; font-weight: 700; font-size: 3.4em; }
-  .who i { width: 2.2em; height: 2.2em; border-radius: 50%; background: var(--rust); display: grid; place-items: center; font-style: normal; color: var(--cream); font-size: .8em; }
-  .who span { opacity: .55; font-weight: 400; }
   .rust { background-color: var(--rust); }
   .charcoal { background-color: var(--charcoal); }
   .coffee { background-color: var(--coffee); }
   .paper { background-color: var(--paper); color: var(--charcoal); }
   .mocha { background-color: var(--mocha); color: var(--charcoal); }
-  .paper .who i, .mocha .who i, .rust .who i { background: var(--charcoal); }
 
-  .big { position: absolute; left: 7%; right: 7%; font-weight: 800; text-transform: uppercase; line-height: .9; letter-spacing: -.01em; }
-  .small { position: absolute; left: 7%; right: 7%; font-weight: 700; font-size: 3.6em; letter-spacing: .3em; text-transform: uppercase; }
-  .center { display: grid; place-items: center; position: absolute; inset: 0; }
-  .curve { position: absolute; left: 7em; right: 7em; overflow: visible; }
-  .curve path { fill: none; stroke-width: 1.4; }
+  /* a story's own chrome: the progress bars, the account */
+  .story::before {
+    content: ""; position: absolute; left: 4%; right: 4%; top: 2%; height: .45em; border-radius: 1em; opacity: .9;
+    background: linear-gradient(90deg, currentColor 0 30%, transparent 30% 34%, color-mix(in srgb, currentColor 35%, transparent) 34% 64%, transparent 64% 68%, color-mix(in srgb, currentColor 35%, transparent) 68%);
+  }
+  .who { position: absolute; left: 7%; top: 5.5%; display: flex; align-items: center; gap: .7em; font-weight: 700; font-size: 3.4em; }
+  .who i { width: 2.1em; height: 2.1em; border-radius: 50%; background: var(--charcoal); display: grid; place-items: center; font-style: normal; color: var(--cream); font-size: .75em; }
+  .charcoal .who i, .coffee .who i { background: var(--rust); }
+  .who span { opacity: .55; font-weight: 400; }
+
+  .abs { position: absolute; left: 7%; right: 7%; }
+  .big { font-weight: 800; text-transform: uppercase; line-height: .9; letter-spacing: -.01em; }
+  .kick { font-weight: 700; font-size: 3.2em; letter-spacing: .32em; text-transform: uppercase; }
+  .txt { font-weight: 500; font-size: 3.6em; line-height: 1.3; }
+  .dim { opacity: .6; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .rule { border-top: .25em solid currentColor; opacity: .25; }
 </style>
 </head>
 <body>
-  <div class="belt" id="belt">
+  <div class="belt">
     <div class="set" id="set">
-      <!-- the beans on burnt orange, the name over them -->
-      <article class="story rust" style="background-image:url(beans-rust.jpg)">
-        <div class="who"><i>T</i>tolva <span>2 h</span></div>
-        <p class="big" style="top:24%;font-size:16em">Tolva</p>
-        <p class="small" style="bottom:8%">Tostadero de café</p>
-      </article>
-      <!-- the seal, alone on paper -->
+
+      <!-- 1 · the new origin, on its bag -->
       <article class="story paper">
-        <div class="who"><i>T</i>tolva <span>5 h</span></div>
-        <div class="center">
-          <svg viewBox="0 0 120 120" style="width:56em" aria-hidden="true">
-            <defs><path id="r1" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0" /></defs>
-            <circle cx="60" cy="60" r="57" fill="none" stroke="#232220" stroke-width="1.6" />
-            <circle cx="60" cy="60" r="38" fill="none" stroke="#232220" stroke-width="1" />
-            <text font-family="Syne" font-weight="700" font-size="8.5" fill="#232220"><textPath href="#r1" textLength="290" lengthAdjust="spacing">TOLVA · TOSTADERO DE CAFÉ ·</textPath></text>
-            <ellipse cx="53" cy="60" rx="9" ry="13" fill="#b45e45" transform="rotate(-14 53 60)" />
-            <ellipse cx="68" cy="62" rx="8.5" ry="12" fill="#75574b" transform="rotate(10 68 62)" />
-            <path d="M53 49 C 49.5 55, 56.5 64, 53 71" fill="none" stroke="#ece6d8" stroke-width="1.6" stroke-linecap="round" transform="rotate(-14 53 60)" />
-          </svg>
-        </div>
-        <p class="small" style="bottom:8%;text-align:center;font-size:3em">Desde la nave de molienda</p>
-      </article>
-      <!-- this week's roast and its curve -->
-      <article class="story charcoal">
-        <div class="who"><i>T</i>tolva <span>1 d</span></div>
-        <p class="big" style="top:20%;font-size:13em">Tueste<br />de la<br />semana</p>
-        <svg class="curve" style="top:62%" viewBox="0 0 600 140" aria-hidden="true">
-          <path stroke="#b45e45" stroke-width="4" d="M0 30 C 40 30, 70 125, 140 125 C 240 125, 360 70, 470 45 C 530 32, 570 26, 600 24" />
-          <circle cx="600" cy="24" r="9" fill="#b45e45" />
+        <div class="who"><i>T</i>tolva <span>2 h</span></div>
+        <p class="abs kick" style="top:12%">Nuevo origen</p>
+        <svg class="abs" style="top:18%;width:74%;left:13%" viewBox="0 0 200 270" aria-hidden="true">
+          <!-- the bag: folded top, a valve, the label -->
+          <path d="M20 22 L180 22 L188 262 L12 262 Z" fill="#b45e45" />
+          <path d="M20 22 L180 22 L178 40 L22 40 Z" fill="#9d4f39" />
+          <rect x="18" y="8" width="164" height="16" rx="2" fill="#8f4834" />
+          <circle cx="100" cy="62" r="5" fill="#8f4834" />
+          <rect x="34" y="84" width="132" height="158" fill="#ece6d8" />
+          <text x="100" y="118" text-anchor="middle" font-family="Syne" font-weight="800" font-size="27" fill="#232220">TOLVA</text>
+          <text x="100" y="134" text-anchor="middle" font-family="Syne" font-weight="700" font-size="6.5" letter-spacing="2" fill="#232220">TOSTADERO DE CAFÉ</text>
+          <line x1="48" y1="146" x2="152" y2="146" stroke="#232220" stroke-opacity=".25" />
+          <text x="48" y="162" font-family="Syne" font-weight="800" font-size="12" fill="#232220">ETIOPÍA</text>
+          <text x="48" y="174" font-family="Syne" font-weight="500" font-size="7" fill="#232220">Guji · Lavado · 1.900 m</text>
+          <path d="M48 214 C 58 214, 62 230, 76 230 C 96 230, 120 214, 152 206" fill="none" stroke="#b45e45" stroke-width="2" />
+          <circle cx="152" cy="206" r="2.6" fill="#b45e45" />
+          <text x="48" y="234" font-family="Syne" font-weight="700" font-size="7" fill="#232220">250 g</text>
+          <text x="152" y="234" text-anchor="end" font-family="Syne" font-weight="500" font-size="6" fill="#232220">FILTRO</text>
         </svg>
-        <p class="small" style="bottom:8%">Etiopía · Guji</p>
+        <div class="abs row" style="bottom:7%"><p class="big" style="font-size:7em">Etiopía<br />Guji</p><p class="txt">14,90 €</p></div>
       </article>
-      <!-- each origin, its own curve -->
+
+      <!-- 2 · today's roast, by the numbers -->
+      <article class="story charcoal">
+        <div class="who"><i>T</i>tolva <span>5 h</span></div>
+        <p class="abs kick" style="top:12%;color:#d0663a">Tueste de hoy</p>
+        <p class="abs big" style="top:16.5%;font-size:21em;letter-spacing:-.03em">11:40</p>
+        <p class="abs txt dim" style="top:30%">minutos en el tambor</p>
+        <svg class="abs" style="top:38%" viewBox="0 0 600 260" aria-hidden="true">
+          <g stroke="#f7f3ec" stroke-opacity=".12"><line x1="0" y1="60" x2="600" y2="60" /><line x1="0" y1="130" x2="600" y2="130" /><line x1="0" y1="200" x2="600" y2="200" /></g>
+          <path d="M0 40 C 40 40, 60 210, 130 210 C 240 210, 360 120, 470 80 C 530 60, 570 52, 600 48" fill="none" stroke="#b45e45" stroke-width="5" />
+          <circle cx="130" cy="210" r="9" fill="#f7f3ec" /><circle cx="430" cy="93" r="9" fill="#f7f3ec" /><circle cx="600" cy="48" r="9" fill="#b45e45" />
+          <text x="130" y="248" text-anchor="middle" font-family="Syne" font-weight="700" font-size="22" fill="#f7f3ec">fondo</text>
+          <text x="430" y="138" text-anchor="middle" font-family="Syne" font-weight="700" font-size="22" fill="#f7f3ec">1.er crack</text>
+        </svg>
+        <div class="abs" style="bottom:7%;display:grid;grid-template-columns:1fr 1fr;gap:3.5em 4em">
+          <div><p class="txt dim">Carga</p><p class="big" style="font-size:8em">200°</p></div>
+          <div><p class="txt dim">Crack</p><p class="big" style="font-size:8em">9:10</p></div>
+          <div><p class="txt dim">Salida</p><p class="big" style="font-size:8em">208°</p></div>
+          <div><p class="txt dim">Desarrollo</p><p class="big" style="font-size:8em">18%</p></div>
+        </div>
+      </article>
+
+      <!-- 3 · the beans on burnt orange, the name over them, a date stamp -->
+      <article class="story rust" style="background-image:url(beans-rust.jpg)">
+        <div class="who"><i>T</i>tolva <span>1 d</span></div>
+        <p class="abs big" style="top:12%;font-size:16em">Tolva</p>
+        <svg class="abs" style="top:58%;left:56%;width:34%;transform:rotate(-12deg)" viewBox="0 0 120 120" aria-hidden="true">
+          <defs><path id="st" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" /></defs>
+          <circle cx="60" cy="60" r="56" fill="none" stroke="#f7f3ec" stroke-width="2.4" />
+          <text font-family="Syne" font-weight="700" font-size="11" fill="#f7f3ec"><textPath href="#st" textLength="272" lengthAdjust="spacing">RECIÉN TOSTADO · RECIÉN TOSTADO ·</textPath></text>
+          <text x="60" y="58" text-anchor="middle" font-family="Syne" font-weight="800" font-size="17" fill="#f7f3ec">02·11</text>
+          <text x="60" y="76" text-anchor="middle" font-family="Syne" font-weight="700" font-size="9" fill="#f7f3ec">7:30 H</text>
+        </svg>
+        <p class="abs kick" style="bottom:7%">Tostado esta mañana</p>
+      </article>
+
+      <!-- 4 · tasting notes, roast level -->
       <article class="story coffee">
         <div class="who"><i>T</i>tolva <span>2 d</span></div>
-        <p class="big" style="top:20%;font-size:12em">Cada<br />origen,<br />su curva.</p>
-        <svg class="curve" style="top:56%" viewBox="0 0 600 260" aria-hidden="true">
-          <path stroke="#f7f3ec" stroke-width="3.5" d="M0 30 C 40 30, 70 110, 140 110 C 240 110, 360 60, 600 24" />
-          <path stroke="#d9d0bf" stroke-width="3.5" opacity=".75" d="M0 110 C 50 110, 80 200, 160 200 C 280 200, 400 140, 600 100" />
-          <path stroke="#b45e45" stroke-width="3.5" d="M0 190 C 30 190, 60 250, 120 250 C 230 250, 380 220, 600 175" />
-        </svg>
-        <p class="small" style="bottom:8%">Colombia · Kenia · Brasil</p>
+        <p class="abs kick" style="top:12%">Notas de cata</p>
+        <div class="abs" style="top:18%;display:flex;flex-direction:column;gap:2.5em">
+          <div class="row" style="align-items:center"><p class="big" style="font-size:8.5em">Cacao</p><i style="width:9em;height:9em;border-radius:50%;background:#3b2418"></i></div>
+          <div class="row" style="align-items:center"><p class="big" style="font-size:8.5em">Naranja</p><i style="width:9em;height:9em;border-radius:50%;background:#e8833a"></i></div>
+          <div class="row" style="align-items:center"><p class="big" style="font-size:8.5em">Panela</p><i style="width:9em;height:9em;border-radius:50%;background:#c99a5b"></i></div>
+        </div>
+        <div class="abs" style="bottom:20%">
+          <div class="row"><p class="txt">Tueste</p><p class="txt dim">medio</p></div>
+          <div style="position:relative;margin-top:2.5em;height:1.6em;border-radius:1em;background:linear-gradient(90deg,#d9b48c,#8a5634,#2a1810)">
+            <i style="position:absolute;left:46%;top:50%;width:5.5em;height:5.5em;border-radius:50%;background:#f7f3ec;transform:translate(-50%,-50%);box-shadow:0 .6em 1.6em rgba(0,0,0,.3)"></i>
+          </div>
+          <div class="row" style="margin-top:2em"><p class="txt dim" style="font-size:2.8em">claro</p><p class="txt dim" style="font-size:2.8em">oscuro</p></div>
+        </div>
+        <p class="abs kick" style="bottom:7%">Colombia · Huila</p>
       </article>
-      <!-- the beans on charcoal: fresh this morning -->
-      <article class="story charcoal" style="background-image:url(beans-charcoal.jpg)">
+
+      <!-- 5 · a poll -->
+      <article class="story rust">
+        <div class="who"><i>T</i>tolva <span>2 d</span></div>
+        <p class="abs big" style="top:20%;font-size:9.2em">¿Filtro<br />o<br />espresso?</p>
+        <div class="abs" style="bottom:16%;background:#f7f3ec;color:#232220;border-radius:3.5em;padding:5em;box-shadow:0 1.6em 4em rgba(0,0,0,.18)">
+          <p class="txt" style="font-weight:700;text-align:center">Tu primer café del día</p>
+          <div style="margin-top:4em;display:flex;flex-direction:column;gap:2.5em">
+            <div style="position:relative;border-radius:2em;overflow:hidden;background:#ece6d8;padding:3em 4em"><i style="position:absolute;inset:0 38% 0 0;background:#e9b9a6"></i><div class="row" style="position:relative"><p class="txt" style="font-weight:700">Filtro</p><p class="txt" style="font-weight:700">62%</p></div></div>
+            <div style="position:relative;border-radius:2em;overflow:hidden;background:#ece6d8;padding:3em 4em"><i style="position:absolute;inset:0 62% 0 0;background:#d9d0bf"></i><div class="row" style="position:relative"><p class="txt" style="font-weight:700">Espresso</p><p class="txt" style="font-weight:700">38%</p></div></div>
+          </div>
+        </div>
+        <p class="abs kick" style="bottom:7%">1.284 votos</p>
+      </article>
+
+      <!-- 6 · the bar's menu -->
+      <article class="story paper">
         <div class="who"><i>T</i>tolva <span>3 d</span></div>
-        <p class="big" style="bottom:17%;font-size:10.5em">Recién<br />tostado</p>
-        <p class="small" style="bottom:8%">Esta mañana, 7:30</p>
-      </article>
-      <!-- the palette -->
-      <article class="story mocha">
-        <div class="who"><i>T</i>tolva <span>4 d</span></div>
-        <div style="position:absolute;left:7%;right:7%;top:17%;bottom:6%;display:flex;flex-direction:column;gap:2.2em">
-          <div style="flex:2.2;background:#b45e45;border-radius:1.6em;color:#f7f3ec;padding:3em;font-size:3em;font-weight:700">BURNT ORANGE</div>
-          <div style="flex:1;background:#232220;border-radius:1.6em;color:#f7f3ec;padding:3em;font-size:3em;font-weight:700">CHARCOAL</div>
-          <div style="flex:1;background:#75574b;border-radius:1.6em;color:#f7f3ec;padding:3em;font-size:3em;font-weight:700">COFFEE</div>
-          <div style="flex:1;background:#ece6d8;border-radius:1.6em;color:#232220;padding:3em;font-size:3em;font-weight:700">PAPER</div>
+        <p class="abs big" style="top:13%;font-size:14em">La<br />barra</p>
+        <div class="abs" style="top:40%;display:flex;flex-direction:column;gap:3.4em">
+          <div class="row"><p class="txt" style="font-weight:700">Espresso</p><p class="txt">1,80</p></div>
+          <div class="rule"></div>
+          <div class="row"><p class="txt" style="font-weight:700">Cortado</p><p class="txt">2,00</p></div>
+          <div class="rule"></div>
+          <div class="row"><p class="txt" style="font-weight:700">Flat white</p><p class="txt">3,00</p></div>
+          <div class="rule"></div>
+          <div class="row"><p class="txt" style="font-weight:700">Filtro V60 <span class="dim" style="font-weight:500">· del día</span></p><p class="txt">3,20</p></div>
+          <div class="rule"></div>
+          <div class="row"><p class="txt" style="font-weight:700">Cold brew</p><p class="txt">3,50</p></div>
+        </div>
+        <div class="abs row" style="bottom:7%;align-items:center">
+          <p class="kick" style="font-size:2.8em">Tostadero · Barra · Tienda</p>
+          <svg style="width:13em" viewBox="0 0 120 120" aria-hidden="true">
+            <defs><path id="sm" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0" /></defs>
+            <circle cx="60" cy="60" r="57" fill="none" stroke="#232220" stroke-width="2.4" />
+            <text font-family="Syne" font-weight="700" font-size="9" fill="#232220"><textPath href="#sm" textLength="290" lengthAdjust="spacing">TOLVA · TOSTADERO DE CAFÉ ·</textPath></text>
+            <ellipse cx="54" cy="60" rx="10" ry="14" fill="#b45e45" transform="rotate(-14 54 60)" />
+            <ellipse cx="69" cy="62" rx="9" ry="13" fill="#75574b" transform="rotate(10 69 62)" />
+          </svg>
         </div>
       </article>
-      <!-- come for your coffee -->
-      <article class="story rust">
-        <div class="who"><i>T</i>tolva <span>5 d</span></div>
-        <p class="big" style="top:28%;font-size:14em">Ven a<br />por tu<br />café</p>
-        <p class="small" style="bottom:8%;font-size:3em">Tostadero · Barra · Tienda</p>
+
+      <!-- 7 · the beans on charcoal, this week's three origins -->
+      <article class="story charcoal" style="background-image:url(beans-charcoal.jpg)">
+        <div class="who"><i>T</i>tolva <span>4 d</span></div>
+        <p class="abs kick" style="top:12%">Esta semana en la tienda</p>
+        <div class="abs" style="bottom:7%;display:flex;flex-direction:column;gap:2.6em">
+          <div class="row"><p class="big" style="font-size:8em">Etiopía</p><p class="txt">14,90</p></div>
+          <div class="rule"></div>
+          <div class="row"><p class="big" style="font-size:8em">Colombia</p><p class="txt">13,50</p></div>
+          <div class="rule"></div>
+          <div class="row"><p class="big" style="font-size:8em">Kenia</p><p class="txt">16,20</p></div>
+        </div>
       </article>
+
+      <!-- 8 · an open cupping: the ticket -->
+      <article class="story mocha">
+        <div class="who"><i>T</i>tolva <span>5 d</span></div>
+        <p class="abs big" style="top:13%;font-size:11.5em">Cata<br />abierta</p>
+        <div class="abs" style="top:41%;background:#232220;color:#f7f3ec;border-radius:3em;overflow:hidden">
+          <div style="padding:6em 6em 5em">
+            <p class="kick" style="color:#d0663a">Entrada</p>
+            <p class="big" style="font-size:10em;margin-top:.25em">Sáb 16</p>
+            <p class="txt" style="margin-top:1em">noviembre · 11:00 h</p>
+          </div>
+          <div style="border-top:.5em dashed rgba(247,243,236,.25);margin:0 4em"></div>
+          <div class="row" style="padding:5em 6em 6em"><div><p class="txt dim">Plazas</p><p class="big" style="font-size:7em">12</p></div><div style="text-align:right"><p class="txt dim">Precio</p><p class="big" style="font-size:7em">Gratis</p></div></div>
+        </div>
+        <p class="abs kick" style="bottom:7%">Reserva en el perfil</p>
+      </article>
+
     </div>
   </div>
 <script>
