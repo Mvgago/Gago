@@ -51,7 +51,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "In music, a fugue weaves different voices into a single composition. That is how we work at Fuga Haus: we bring together disciplines, ideas and languages to create brands and spaces with an identity of their own.",
+      "In a fugue, different voices weave together into a single piece. We do the same with identity, web, film and space: each brand told as one story.",
     disciplinesLabel: "disciplines",
     discover: "discover our disciplines",
     disciplines: [
@@ -130,7 +130,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "En música, una fuga entrelaza distintas voces en una sola composición. Así trabajamos en Fuga Haus: unimos disciplinas, ideas y lenguajes para crear marcas y espacios con identidad propia.",
+      "En una fuga, distintas voces se entrelazan en una sola pieza. Nosotros hacemos lo mismo con la identidad, la web, el vídeo y el espacio: cada marca, contada como una sola historia.",
     disciplinesLabel: "disciplinas",
     discover: "descubre nuestras disciplinas",
     disciplines: [
@@ -209,7 +209,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "En musique, une fugue entrelace des voix différentes en une seule composition. C'est ainsi que nous travaillons chez Fuga Haus : nous réunissons disciplines, idées et langages pour créer des marques et des espaces à l'identité propre.",
+      "Dans une fugue, des voix différentes s'entrelacent en une seule pièce. Nous faisons de même avec l'identité, le web, la vidéo et l'espace : chaque marque, racontée comme une seule histoire.",
     disciplinesLabel: "disciplines",
     discover: "découvrez nos disciplines",
     disciplines: [
@@ -288,7 +288,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "In der Musik verflicht eine Fuge verschiedene Stimmen zu einer einzigen Komposition. So arbeiten wir bei Fuga Haus: Wir verbinden Disziplinen, Ideen und Ausdrucksformen, um Marken und Räume mit eigener Identität zu schaffen.",
+      "In einer Fuge verflechten sich verschiedene Stimmen zu einem einzigen Stück. Wir machen dasselbe mit Identität, Web, Film und Raum: jede Marke, erzählt als eine einzige Geschichte.",
     disciplinesLabel: "disziplinen",
     discover: "unsere Disziplinen entdecken",
     disciplines: [

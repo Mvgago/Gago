@@ -311,7 +311,7 @@ export const AboutPage: React.FC = () => {
         animate="shown"
         custom={3}
         // the page's headline, large and dark, as a case opens on its statement
-        className="font-geo text-[1.55rem] font-medium leading-[1.14] tracking-[0.005em] text-ink lg:text-[2.25rem]"
+        className="font-geo text-[1.2rem] font-normal leading-[1.3] tracking-[0.005em] text-ink lg:text-[1.55rem]"
       >
         {/* Two lines, each whole: what the studio is, then its principle, set back in grey */}
         {(() => {
