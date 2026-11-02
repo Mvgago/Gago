@@ -20,6 +20,11 @@
   html, body { height: 100%; }
   body { background: #1d1c1a; overflow: hidden; font-family: Syne, sans-serif; cursor: grab; user-select: none; touch-action: pan-y; }
   body.dragging { cursor: grabbing; }
+  /* behind the cards, a café's interior (Pexels), dimmed with a neutral veil so the stories stand out */
+  body::before {
+    content: ""; position: fixed; inset: 0;
+    background: linear-gradient(rgba(22,20,18,.72), rgba(22,20,18,.72)), url(cafe.jpg) center / cover no-repeat;
+  }
   .stage { position: absolute; inset: 0; perspective: calc(var(--w) * 6); perspective-origin: 50% 45%; }
   .ring { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
 
