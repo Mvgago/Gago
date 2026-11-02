@@ -51,7 +51,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "In a fugue, different voices weave together into a single piece. We do the same with identity, web, film and space: each brand told as one story.",
+      "As in a musical fugue, independent voices weave together to make a single piece. We bring identity, web, film and space under one conceptual direction, turning each project's vision into an experience that is coherent and singular.",
     disciplinesLabel: "disciplines",
     discover: "discover our disciplines",
     disciplines: [
@@ -130,7 +130,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "En una fuga, distintas voces se entrelazan en una sola pieza. Nosotros hacemos lo mismo con la identidad, la web, el vídeo y el espacio: cada marca, contada como una sola historia.",
+      "Como en una fuga musical, distintas voces independientes se entrelazan para crear una sola pieza. Unimos identidad, web, vídeo y espacio bajo una misma dirección conceptual, transformando la visión de cada proyecto en una experiencia coherente y singular.",
     disciplinesLabel: "disciplinas",
     discover: "descubre nuestras disciplinas",
     disciplines: [
@@ -209,7 +209,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Dans une fugue, des voix différentes s'entrelacent en une seule pièce. Nous faisons de même avec l'identité, le web, la vidéo et l'espace : chaque marque, racontée comme une seule histoire.",
+      "Comme dans une fugue, des voix indépendantes s'entrelacent pour former une seule pièce. Nous réunissons identité, web, vidéo et espace sous une même direction conceptuelle, pour faire de la vision de chaque projet une expérience cohérente et singulière.",
     disciplinesLabel: "disciplines",
     discover: "découvrez nos disciplines",
     disciplines: [
@@ -288,7 +288,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "In einer Fuge verflechten sich verschiedene Stimmen zu einem einzigen Stück. Wir machen dasselbe mit Identität, Web, Film und Raum: jede Marke, erzählt als eine einzige Geschichte.",
+      "Wie in einer Fuge verflechten sich unabhängige Stimmen zu einem einzigen Stück. Wir vereinen Identität, Web, Film und Raum unter einer konzeptionellen Leitung und machen aus der Vision jedes Projekts ein stimmiges, unverwechselbares Erlebnis.",
     disciplinesLabel: "disziplinen",
     discover: "unsere Disziplinen entdecken",
     disciplines: [
