@@ -98,6 +98,8 @@
   /* ?beans: the beans alone, large, over the café: no mark, name or words (a preview among other projects) */
   .beans-only .seal { visibility: hidden; width: min(48vw, 72vh); margin: 0; }
   .beans-only .line, .beans-only .tagline, .beans-only .curve { display: none; }
+  .plain body { background: var(--plain); }
+  .plain body::before, .plain body::after, .plain .shade, .plain .bulb, .plain .grain { display: none; }
   /* ?still: the finished frame at once, for a cover image */
   .still *, .still *::before { transition: none !important; animation: none !important; }
   .still .plate { transform: rotate(var(--r)); }
@@ -168,6 +170,12 @@
     later(t + 500, () => $("curve").classList.add("on"));
   }
   if (new URLSearchParams(location.search).has("beans")) document.documentElement.classList.add("beans-only");
+  // ?bg=rrggbb: on a flat brand colour instead of the café (for the pieces made from it)
+  const BG = new URLSearchParams(location.search).get("bg");
+  if (BG) {
+    document.documentElement.classList.add("plain");
+    document.documentElement.style.setProperty("--plain", "#" + BG);
+  }
   const STILL = new URLSearchParams(location.search).has("still");
   if (STILL) {
     document.documentElement.classList.add("still");
