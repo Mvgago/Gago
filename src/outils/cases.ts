@@ -332,12 +332,12 @@ export const cases: Case[] = [
     // screen), and two uprights to close
     images: [
       // the mark: in cream over the grinder at work (Pexels film), wide
-      { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1 },
+      { src: "", video: "/video/tolva-sheet.mp4?v=2", videoSpeed: 1 },
       // the system: the stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
       { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
       // the craft: beans turning in the cooling tray, the arm sweeping round like the seal, then a bag being
-      // sealed (Pexels; the bag, another roastery's, recoloured in the brand's rust, its label cleared)
+      // poured from a kraft bag into the grinder's hopper, Tolva's origin label on it (Pexels; the old sticker replaced)
       { src: tolvaRoast, pair: true },
       { src: tolvaBag },
       // the place: the blade sign out over the street (a blank sign photographed, painted and lettered), and
