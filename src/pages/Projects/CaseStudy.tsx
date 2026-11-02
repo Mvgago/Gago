@@ -138,7 +138,8 @@ const MOVING: Record<string, { video?: string; frame?: string } | undefined> = {
   buendia: { frame: "/concepts/buendia-devices/index.html?bare&v=3" },
   // (its 3D scene is framed for a full screen, off-centre for the words beside it: in a card, its 3D character)
   smarthc: { video: "/video/smarthc.mp4" },
-  tolva: { frame: "/concepts/tolva/index.html?v=5" },
+  // (the beans alone: no other card opens on a logo)
+  tolva: { frame: "/concepts/tolva/index.html?beans&v=6" },
 };
 
 const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ after, shown, lang }) => {
