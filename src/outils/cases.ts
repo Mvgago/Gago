@@ -324,8 +324,8 @@ export const cases: Case[] = [
       de: "Ein Unternehmen, das ein Bild mit Charakter braucht? Sprechen wir darüber",
     },
     cover: tolvaStill,
-    // the mark building itself over a café's interior, well out of focus (Pexels)
-    headerFrame: "/concepts/tolva/index.html?cafe&v=14",
+    // an opening as in a brand film: latte art drawing itself (Pexels), the mark small and low over it
+    headerFrame: "/concepts/tolva-film/index.html?v=1",
     images: [
       // half width each: the mark in cream over the grinder at work (Pexels film), beside the site on a phone
       // over roasted beans, scrolling on its own

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Tolva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+<style>
+  /* An opening, as in a brand film: the latte art drawing itself (Pexels footage), and Tolva's mark small,
+     low and centred, coming in once the pour is under way */
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1411; font-family: Syne, sans-serif; color: #f4ece0; }
+  video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* a soft dark pool at the foot, so the mark reads over the cup */
+  .foot { position: fixed; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 55%, rgba(18,12,9,.55) 100%); }
+  .mark {
+    position: fixed; left: 50%; bottom: 7vh; transform: translate(-50%, 10px); text-align: center;
+    opacity: 0; transition: opacity 1.4s ease, transform 1.4s cubic-bezier(.2,.8,.2,1);
+  }
+  .mark.on { opacity: 1; transform: translate(-50%, 0); }
+  .mark svg { display: block; width: clamp(44px, 4.4vw, 70px); margin: 0 auto 1.1vh; }
+  .mark .name { font-weight: 800; font-size: clamp(22px, 2.6vw, 42px); line-height: 1; letter-spacing: .02em; }
+  .mark .sub { margin-top: 1vh; font-weight: 700; font-size: clamp(8px, .72vw, 12px); letter-spacing: .42em; margin-right: -.42em; opacity: .85; }
+</style>
+</head>
+<body>
+  <video id="v" src="latte.mp4" poster="poster.jpg" muted loop playsinline autoplay aria-hidden="true"></video>
+  <div class="foot"></div>
+  <div class="mark" id="mark">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <defs><path id="r" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0" /></defs>
+      <circle cx="60" cy="60" r="57" fill="none" stroke="#f4ece0" stroke-width="2.4" />
+      <circle cx="60" cy="60" r="38" fill="none" stroke="#f4ece0" stroke-width="1.6" />
+      <text font-family="Syne" font-weight="700" font-size="9" fill="#f4ece0"><textPath href="#r" textLength="290" lengthAdjust="spacing">TOLVA · TOSTADERO DE CAFÉ ·</textPath></text>
+      <ellipse cx="53" cy="60" rx="8.5" ry="12" fill="#f4ece0" transform="rotate(-14 53 60)" />
+      <ellipse cx="67" cy="62" rx="8" ry="11" fill="#f4ece0" opacity=".75" transform="rotate(10 67 62)" />
+    </svg>
+    <div class="name">TOLVA</div>
+    <div class="sub">TOSTADERO · BARRA · TIENDA</div>
+  </div>
+<script>
+  const v = document.getElementById("v"), mark = document.getElementById("mark");
+  const show = () => setTimeout(() => mark.classList.add("on"), 1600);
+  document.fonts.ready.then(show);
+  // framed in the site: the film held still while away, the mark brought in again on return
+  addEventListener("message", (e) => {
+    if (e.origin !== location.origin || typeof e.data?.fhVisible !== "boolean") return;
+    if (e.data.fhVisible) { v.play().catch(() => {}); } else { v.pause(); }
+  });
+</script>
+</body>
+</html>
