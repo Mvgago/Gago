@@ -370,9 +370,9 @@ export const ProjectsSection: React.FC = () => {
                     onPointerLeave={cancelPick}
                     onFocus={() => setIndex(i)}
                     aria-current={i === index ? "true" : undefined}
-                    // phones: the one on view larger, the others small, so the list reads as where you are
+                    // the one on view larger, the others small, so the list reads as where you are
                     className={`inline-flex items-center gap-3 transition-[color,font-size] duration-500 ${
-                      i === index ? "text-[#f7f4f0] max-md:text-[19px]" : "text-platinum/50 hover:text-platinum/85 max-md:text-[12px]"
+                      i === index ? "text-[19px] text-[#f7f4f0] md:text-[22px]" : "text-[12px] text-platinum/50 hover:text-platinum/85 md:text-[13px]"
                     }`}
                   >
                     {/* The one on view is marked with a short line, drawn in */}

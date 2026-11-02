@@ -9,7 +9,7 @@ import aleaLaptop from "../assets/peojects/alea/alea.png.webp";
 import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip from "../assets/peojects/santa/santa-strip.jpg.webp";
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
-import tolvaBeansRust from "../assets/peojects/tolva/tolva-beans-rust.webp";
+import tolvaSheet from "../assets/peojects/tolva/tolva-sheet.webp";
 import santaRender from "../assets/peojects/santa/santa-render.jpg.webp";
 import santaTerrace from "../assets/peojects/santa/santa (2).jpg.webp";
 import santaDevices from "../assets/peojects/santa/santa (3).jpg.webp";
@@ -321,9 +321,11 @@ export const cases: Case[] = [
     // the mark building itself, live: the beans turning in the seal
     headerFrame: "/concepts/tolva/index.html?v=5",
     images: [
-      // half width each: the two beans on the brand's burnt orange, beside the palette laying itself out
-      { src: tolvaBeansRust, pair: true },
+      // half width each: the mark on paper (seal, name, roast curve), beside the palette laying itself out
+      { src: tolvaSheet, pair: true },
       { src: "", video: "/video/tolva-palette.mp4", videoSpeed: 1 },
+      // the brand's stories running past on a dark band, without end
+      { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=1" },
     ],
   },
   {
