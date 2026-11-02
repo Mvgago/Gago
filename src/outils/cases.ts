@@ -542,16 +542,16 @@ export const cases: Case[] = [
       },
     ],
     cover: smMascot,
-    // The first screen is the stand, to turn round right away
-    headerViewer: "stand",
+    // The first screen is the signing tablet, full width; the stand follows the words
+    headerFrame: "/concepts/smarthc-devices/index.html?bare&center&v=4",
     thumb: smStrip,
     pick: smDetailLogo,
     coverFocus: "50% 55%",
     // Three pairs of the same height: the presentation beside the product sheet, then
     // each printed piece beside a close-up of it
     images: [
-      // Right under the stand, wide: a concept piece, the product told in an interactive 3D scene
-      { src: "", viewer: "devices" },
+      // Right under the words, wide: the congress stand, to turn round
+      { src: "", viewer: "stand" },
       // The character in motion (slowed to half with interpolated frames, looped forward
       // and back, at its own calm pace) beside the presentation
       { src: smScreens, pair: true },

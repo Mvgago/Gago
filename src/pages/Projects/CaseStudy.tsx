@@ -526,6 +526,11 @@ export const CaseStudyPage: React.FC = () => {
                   ),
                 )}
               </div>
+            ) : row[0].viewer === "stand" ? (
+              // The stand to turn round, wide
+              <Suspense key={r} fallback={<div className="aspect-[4/5] w-full bg-[#a9b8ba] sm:aspect-[16/10] lg:aspect-[16/8]" />}>
+                <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[16/8]" />
+              </Suspense>
             ) : row[0].viewer === "devices" ? (
               // The interactive product scene, wide: taller on phones so the devices stay large
               <DevicesFrame

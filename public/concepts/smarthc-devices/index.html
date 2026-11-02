@@ -841,7 +841,8 @@ function fit() {
   // tall frames (phones): the camera comes in, so the tablet fills the width instead of floating small
   const BARE = new URLSearchParams(location.search).has('bare');
   const tall = w / h < .9;
-  const dx = wideView ? (BARE ? -.25 : -.12) : 0;
+  // ?center: full-bleed with nothing beside it (a case's opening): the tablet in the middle
+  const dx = wideView && !new URLSearchParams(location.search).has('center') ? (BARE ? -.25 : -.12) : 0;
   // (tall frames drawn back a little further than before, so the tablet is never cut at the sides)
   // ?room: full-bleed on the projects page, behind the project's name: drawn back and the tablet raised
   const ROOM = new URLSearchParams(location.search).has('room');
