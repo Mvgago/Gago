@@ -326,7 +326,7 @@ export const cases: Case[] = [
       { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1, pair: true },
       { src: tolvaWindow },
       // the brand's stories running past on a dark band, without end
-      { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=9" },
+      { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10" },
     ],
   },
   {
