@@ -1,6 +1,7 @@
 import { DrawnImage, SAPPHIRE_MARK } from "../../components/Drawn/DrawnImage";
 import { CardsConveyor } from "../../components/Cards/CardsConveyor";
 import { RevealImage } from "../../components/Drawn/RevealImage";
+import { DrawingLoop } from "../../components/Drawn/DrawingLoop";
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import SocialPhone from "../../components/Social/SocialPhone";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
@@ -41,6 +42,15 @@ const AllProjects: React.FC<{ current: string; lang: Lang }> = ({ current, lang 
  * On to the rest of the work: "next" on the left, then every other project from the next one on, side by side
  * as pictures, each with its name on a small tag; the row runs off the edge and scrolls sideways
  */
+// What each project is shown by in that row: the work in motion (the film, the live 3D scene, the drawing
+// drawing itself) rather than a still, since motion and 3D are what sets the work apart
+const MOVING: Record<string, { video?: string; frame?: string } | undefined> = {
+  sapphire: { video: "/video/the-sapphire-720.mp4" },
+  buendia: { frame: "/concepts/buendia-devices/index.html?bare&v=3" },
+  smarthc: { frame: "/concepts/smarthc-devices/index.html?bare&room&v=3" },
+  tolva: { frame: "/concepts/tolva/index.html?v=5" },
+};
+
 const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ after, shown, lang }) => {
   const rest = shown.map((_, k) => shown[(after + 1 + k) % shown.length]).slice(0, shown.length - 1);
   return (
@@ -53,14 +63,25 @@ const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ aft
             to={`/projects/${k.slug}`}
             className="group relative aspect-[16/9] w-[78vw] shrink-0 overflow-hidden rounded-[3px] bg-[#ecebe8] sm:w-[46vw] lg:w-[36vw]"
           >
-            <img
-              src={k.pick ?? k.thumb ?? k.cover}
-              alt={k.title}
-              loading="lazy"
-              {...protect}
-              className="h-full w-full object-cover transition-transform duration-1000 ease-haus group-hover:scale-[1.03]"
-              style={{ objectPosition: k.pick ? undefined : k.coverFocus }}
-            />
+            <span className="pointer-events-none absolute inset-0 transition-transform duration-1000 ease-haus group-hover:scale-[1.03]">
+              {MOVING[k.slug]?.video ? (
+                <video src={MOVING[k.slug]!.video} muted loop playsInline autoPlay preload="metadata" aria-label={k.title} className="h-full w-full object-cover" />
+              ) : MOVING[k.slug]?.frame ? (
+                // (built only once the card nears the screen, held still when it leaves)
+                <DevicesFrame src={MOVING[k.slug]!.frame!} title={`${k.title} — 3D`} reveal className="h-full w-full" />
+              ) : k.headerReveal ? (
+                <DrawingLoop drawing={k.headerReveal} photo={k.cover} className="absolute inset-0" />
+              ) : (
+                <img
+                  src={k.pick ?? k.thumb ?? k.cover}
+                  alt={k.title}
+                  loading="lazy"
+                  {...protect}
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: k.pick ? undefined : k.coverFocus }}
+                />
+              )}
+            </span>
             <span className={`${SMALL} absolute left-2 top-2 rounded-[3px] bg-[#ecebe8]/85 px-2 py-1 text-ink backdrop-blur-sm`}>
               {k.title}
             </span>

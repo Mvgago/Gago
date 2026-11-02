@@ -10,7 +10,7 @@
 <style>
   :root {
     --wall: #1b1916;      /* the old mill's walls, soot and roast */
-    --cream: #f1e8d6;
+    --cream: #f7f3ec;
     --rust: #d0663a;
   }
   * { box-sizing: border-box; margin: 0; }
@@ -28,16 +28,19 @@
   body::before {
     content: ""; position: fixed; inset: -20px;
     background: url(glass.jpg) center / cover no-repeat;
-    filter: saturate(.9);
+    filter: brightness(1.12);
   }
+  /* a light warm wash over the café, under the words (it tinted them when it lay on top) */
   body::after {
-    content: ""; position: fixed; inset: 0; pointer-events: none;
-    background: linear-gradient(180deg, rgba(255,240,220,.07), rgba(255,240,220,.02) 60%, rgba(255,240,220,.06));
+    content: ""; position: fixed; inset: 0; pointer-events: none; mix-blend-mode: soft-light; z-index: 0;
+    background: linear-gradient(180deg, rgba(255,175,110,.28), rgba(240,140,80,.2));
   }
+  /* only light shade now: enough at the edges to hold the frame, little in the middle */
   .shade {
     position: fixed; inset: 0; pointer-events: none;
-    background: radial-gradient(120% 90% at 50% 45%, rgba(22,16,11,.58), rgba(14,10,7,.88) 85%);
+    background: radial-gradient(120% 90% at 50% 45%, rgba(60,30,12,.32), rgba(34,18,8,.68) 88%);
   }
+  .line, .tagline { text-shadow: 0 2px 30px rgba(40,18,6,.35); }
   /* a lamp over the roaster: the warm light */
   .bulb {
     position: fixed; inset: 0; pointer-events: none; mix-blend-mode: soft-light;
@@ -48,7 +51,7 @@
   @keyframes flicker { 0%{opacity:0} 8%{opacity:.8} 11%{opacity:.2} 16%{opacity:1} 19%{opacity:.5} 24%,100%{opacity:1} }
   .grain { position: fixed; inset: -50%; pointer-events: none; opacity: .08; filter: url(#grain); }
 
-  .stage { position: relative; text-align: center; }
+  .stage { position: relative; z-index: 2; text-align: center; }
 
   /* the seal: the name round the rim, two beans at its centre */
   .markwrap { position: relative; width: fit-content; margin: 0 auto; }
@@ -113,10 +116,10 @@
       <canvas id="beans"></canvas>
       <svg class="seal" id="seal" viewBox="0 0 120 120" aria-hidden="true">
         <defs><path id="ring" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0" /></defs>
-        <circle cx="60" cy="60" r="57" fill="none" stroke="var(--rust)" stroke-width="1.6" />
-        <circle cx="60" cy="60" r="38" fill="none" stroke="var(--rust)" stroke-width="1" />
+        <circle cx="60" cy="60" r="57" fill="none" stroke="var(--cream)" stroke-width="1.6" />
+        <circle cx="60" cy="60" r="38" fill="none" stroke="var(--cream)" stroke-width="1" />
         <g class="spin">
-          <text font-family="Syne" font-weight="700" font-size="8.5" fill="var(--rust)">
+          <text font-family="Syne" font-weight="700" font-size="8.5" fill="var(--cream)">
             <textPath href="#ring" textLength="290" lengthAdjust="spacing">TOLVA · TOSTADERO DE CAFÉ ·</textPath>
           </text>
         </g>

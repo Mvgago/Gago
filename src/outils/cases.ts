@@ -298,7 +298,7 @@ export const cases: Case[] = [
     },
     cover: tolvaStill,
     // the mark building itself, live: the beans turning in the seal
-    headerFrame: "/concepts/tolva/index.html?v=3",
+    headerFrame: "/concepts/tolva/index.html?v=5",
     images: [],
   },
   {
