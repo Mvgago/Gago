@@ -53,6 +53,9 @@ const CONTEXT: Record<Lang, string> = { es: "Contexto", en: "Context", fr: "Cont
 // tight grotesque with ?grot in the address
 const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
   const grot = new URLSearchParams(useLocation().search).has("grot");
+  // phones: the film's own upright cut where there is one (the wide film, cropped to a tall screen, lost the building)
+  const [narrow] = useState(() => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches);
+  const film = narrow && c.videoSmall ? c.videoSmall : c.video;
   const t = grot
     ? {
         wrap: "font-grot",
@@ -91,7 +94,7 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
         </div>
       ) : c.video ? (
         <video
-          src={c.video}
+          src={film}
           aria-label={c.title}
           muted
           loop

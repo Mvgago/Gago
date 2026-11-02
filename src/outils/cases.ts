@@ -124,6 +124,8 @@ export type Case = {
   cover: string;
   /** A film to open the case with instead of the cover (a file in public/video) */
   video?: string;
+  /** Phones: the film's upright cut, in place of the wide one at the top of the case */
+  videoSmall?: string;
   /** The film's proportion, as CSS aspect-ratio (defaults to 16 / 9) */
   videoRatio?: string;
   /** Playback speed (defaults to 1.35, the projects page's pace) */
@@ -487,6 +489,7 @@ export const cases: Case[] = [
     pick: sapAerial,
     // the whole film, opening on the facade (the projects page has its own cut, starting on the terrace)
     video: "/video/the-sapphire-full.mp4",
+    videoSmall: "/video/the-sapphire-vertical.mp4",
     coverFocus: "50% 62%",
     // A rhythm, not a scroll of full screens: only two pieces wide, the rest in pairs of
     // matching proportions (the web mockup is soft at full width, sharp at half)
