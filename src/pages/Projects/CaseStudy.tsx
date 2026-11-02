@@ -75,11 +75,11 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.1, ease: EASE_HAUS } }}
     >
-      {/* (short of the full screen, so the whole mark shows under the header) */}
+      {/* from the top of the page, under the header: the mark sits in the middle, well clear of it */}
       {c.headerFrame ? (
-        <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="aspect-[4/5] max-h-[76vh] w-full sm:aspect-[16/9]" />
+        <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="h-[86svh] w-full" />
       ) : (
-        <img src={c.cover} alt={c.title} {...protect} className="block aspect-[16/9] max-h-[76vh] w-full object-cover" />
+        <img src={c.cover} alt={c.title} {...protect} className="block h-[86svh] w-full object-cover" />
       )}
     </motion.figure>
     <header className={`grid gap-y-10 pb-20 pt-8 text-ink md:grid-cols-12 md:gap-x-10 md:pb-28 md:pt-10 ${t.wrap}`}>
@@ -340,12 +340,13 @@ export const CaseStudyPage: React.FC = () => {
   const side = Boolean(c.video || c.services || c.headerViewer || c.headerFrame || c.headerReveal);
 
   return (
-    <main className="px-4 pb-16 pt-28 sm:px-6 md:px-8 md:pt-32">
+    // (editorial: the work runs up under the header, nothing above it but the logo and the index)
+    <main className={`px-4 pb-16 sm:px-6 md:px-8 ${c.layout === "editorial" ? "" : "pt-28 md:pt-32"}`}>
       <ScrollToHash />
       <LightWall />
 
       {/* One line: back to the index, where we are, on to the next project */}
-      <motion.nav
+      {c.layout !== "editorial" && <motion.nav
         variants={rise}
         initial="hidden"
         animate="shown"
@@ -353,7 +354,7 @@ export const CaseStudyPage: React.FC = () => {
       >
         {/* Only the way back to all the projects up here: the way on to the next case is at the foot of the page */}
         <AllProjects current={c.slug} lang={lang} />
-      </motion.nav>
+      </motion.nav>}
       {c.layout === "editorial" ? <Editorial c={c} lang={lang} /> : (
       <>
       {/* Side by side, the first screen holds everything, whole and still: the words and
