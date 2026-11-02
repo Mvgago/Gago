@@ -160,7 +160,8 @@ const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ aft
                 // (built only once the card nears the screen, held still when it leaves)
                 <DevicesFrame src={MOVING[k.slug]!.frame!} title={`${k.title} — 3D`} reveal className="h-full w-full" />
               ) : k.headerReveal ? (
-                <DrawingLoop drawing={k.headerReveal} photo={k.cover} className="absolute inset-0" />
+                // (the drawing alone here, no photograph after it)
+                <DrawingLoop drawing={k.headerReveal} className="absolute inset-0" />
               ) : (
                 <img
                   src={k.pick ?? k.thumb ?? k.cover}

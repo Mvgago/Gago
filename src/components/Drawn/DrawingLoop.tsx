@@ -19,7 +19,8 @@ const inked = (hex: string) =>
 
 export const DrawingLoop: React.FC<{
   drawing: { src: string; order: string; w: number; h: number; paper: string };
-  photo: string;
+  /** Left out, the drawing alone: it draws, holds, fades and draws again */
+  photo?: string;
   className?: string;
 }> = ({ drawing, photo, className = "" }) => {
   const { src, order, w, h, paper } = drawing;
@@ -36,7 +37,15 @@ export const DrawingLoop: React.FC<{
       if (!t0) t0 = now;
       const s = ((now - t0) / 1000) % CYCLE;
       let drawn: number, shown: number;
-      if (s < DRAW) { drawn = 1 - Math.pow(1 - s / DRAW, 2.2); shown = 0; }
+      if (!photo) {
+        // the drawing alone: drawn, held through what would have been the photograph's time, faded out
+        shown = 0;
+        drawn = s < DRAW ? 1 - Math.pow(1 - s / DRAW, 2.2)
+          : s < CYCLE - REST - FADE ? 1
+          : s < CYCLE - REST ? 1 - ease((s - (CYCLE - REST - FADE)) / FADE)
+          : 0;
+      }
+      else if (s < DRAW) { drawn = 1 - Math.pow(1 - s / DRAW, 2.2); shown = 0; }
       else if (s < DRAW + HOLD) { drawn = 1; shown = 0; }
       else if (s < DRAW + HOLD + FADE) { drawn = 1; shown = ease((s - DRAW - HOLD) / FADE); }
       // under the photograph the sheet is wiped, ready to start again
@@ -48,8 +57,9 @@ export const DrawingLoop: React.FC<{
       raf = requestAnimationFrame(tick);
     };
     // both pictures in hand before the pen moves
-    let left = 3;
-    for (const u of [src, order, photo]) {
+    const files = photo ? [src, order, photo] : [src, order];
+    let left = files.length;
+    for (const u of files) {
       const im = new Image();
       im.onload = im.onerror = () => { if (--left === 0) raf = requestAnimationFrame(tick); };
       im.src = u;
@@ -95,14 +105,14 @@ export const DrawingLoop: React.FC<{
         style={{ mixBlendMode: "multiply", opacity: 0.55, filter: "brightness(1.22) contrast(0.5)" }}
       />
       {/* the photograph barely softened; it is the long dissolve that lets the one pass into the other */}
-      <img
+      {photo && <img
         ref={top}
         src={photo}
         alt=""
         draggable={false}
         className="absolute inset-0 h-full w-full object-cover"
         style={{ opacity: 0, filter: "saturate(0.88) contrast(0.94) brightness(1.04)" }}
-      />
+      />}
     </div>
   );
 };
