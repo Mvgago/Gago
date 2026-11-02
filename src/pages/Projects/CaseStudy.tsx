@@ -78,6 +78,15 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
       {/* from the top of the page, under the header: the mark sits in the middle, well clear of it */}
       {c.headerFrame ? (
         <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="h-[86svh] w-full" />
+      ) : c.headerViewer === "stand" ? (
+        <Suspense fallback={<div className="h-[86svh] w-full" />}>
+          <StandViewer label={CASE_UI.recreation[lang]} className="h-[86svh] w-full" />
+        </Suspense>
+      ) : c.headerReveal ? (
+        // the drawing drawing itself, then the building over it, as on the projects page
+        <div className="relative h-[86svh] w-full">
+          <DrawingLoop drawing={c.headerReveal} photo={c.cover} className="absolute inset-0" />
+        </div>
       ) : c.video ? (
         <video
           src={c.video}

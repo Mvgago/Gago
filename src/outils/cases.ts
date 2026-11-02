@@ -184,6 +184,13 @@ export const cases: Case[] = [
   {
     slug: "gracia-prados",
     title: "Gracia Prados 14",
+    layout: "editorial",
+    statement: {
+      es: "Una marca que ya estaba en la fachada. Un edificio contado desde su cúpula.",
+      en: "A brand that was already on the facade. A building told through its dome.",
+      fr: "Une marque qui était déjà sur la façade. Un immeuble raconté par sa coupole.",
+      de: "Eine Marke, die schon an der Fassade stand. Ein Gebäude, erzählt aus seiner Kuppel.",
+    },
     client: { en: "Gracia Prados 14 — residential", es: "Gracia Prados 14 — residencial", fr: "Gracia Prados 14 — résidentiel", de: "Gracia Prados 14 — wohnbau" },
     disciplines: ["identity", "web", "direction"],
     sector: { en: "residential refurbishment", es: "rehabilitación residencial", fr: "réhabilitation résidentielle", de: "wohnsanierung" },
@@ -315,6 +322,13 @@ export const cases: Case[] = [
   {
     slug: "buendia",
     title: "Buendía Travel",
+    layout: "editorial",
+    statement: {
+      es: "Viajar antes de hacer la maleta. Una agencia contada desde quien vive cada destino.",
+      en: "Travelling before packing a bag. An agency told by those who live each destination.",
+      fr: "Voyager avant de faire sa valise. Une agence racontée par ceux qui vivent chaque destination.",
+      de: "Reisen, bevor der Koffer gepackt ist. Eine Agentur, erzählt von denen, die jedes Reiseziel leben.",
+    },
     client: { en: "Buendía Travel — tourism", es: "Buendía Travel — turismo", fr: "Buendía Travel — tourisme", de: "Buendía Travel — tourismus" },
     disciplines: ["identity", "social", "web", "video"],
     sector: { en: "tourism and travel", es: "turismo y viajes", fr: "tourisme et voyages", de: "tourismus und reisen" },
@@ -466,6 +480,13 @@ export const cases: Case[] = [
   {
     slug: "smarthc",
     title: "Smart Human Capital",
+    layout: "editorial",
+    statement: {
+      es: "Hacer comprensible lo invisible. La ciberseguridad contada para quien no es experto.",
+      en: "Making the invisible understandable. Cybersecurity told for those who aren't experts.",
+      fr: "Rendre l'invisible compréhensible. La cybersécurité racontée pour ceux qui ne sont pas experts.",
+      de: "Das Unsichtbare verständlich machen. Cybersicherheit, erzählt für alle, die keine Experten sind.",
+    },
     client: { en: "SmartHC — security consultancy", es: "SmartHC — consultoría de seguridad", fr: "SmartHC — conseil en sécurité", de: "SmartHC — sicherheitsberatung" },
     disciplines: ["identity", "comms", "events", "social"],
     sector: { en: "tech consultancy", es: "consultoría tecnológica", fr: "conseil technologique", de: "technologieberatung" },
