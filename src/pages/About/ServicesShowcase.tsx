@@ -558,43 +558,34 @@ export const ServicesEditorial: React.FC<{ s: Studio }> = ({ s }) => {
   return (
     <section id="servicios" className="scroll-mt-24">
       <h2 className="sr-only">{s.disciplinesLabel}</h2>
-      {s.disciplines.map((d, i) => (
-        <article key={d.title} id={`disciplina-${i}`} className={i > 0 ? "mt-20 md:mt-28" : ""}>
-          {/* the example, edge to edge, a little short of the full screen so the words follow on */}
-          {EXAMPLES[i] && (
-            <motion.div
-              className="relative -mx-4 h-[62vw] max-h-[74svh] sm:-mx-6 md:-mx-8 md:h-[56vw]"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1, transition: { duration: 0.9, ease: EASE_HAUS } }}
-              viewport={{ once: true, margin: "-10% 0px" }}
-            >
-              <Frame ex={EXAMPLES[i]} note={EXAMPLES[i].video ? s.videoNote : undefined} linkLabel={linkLabel} />
-            </motion.div>
-          )}
-          <motion.div
-            className="grid gap-y-6 pt-8 text-ink md:grid-cols-12 md:gap-x-10 md:pt-10"
+      {/* two by two, as the cases' pairs: each its example, then its number, name, a line and what it delivers */}
+      <div className="grid gap-x-6 gap-y-16 md:grid-cols-2 md:gap-y-20">
+        {s.disciplines.map((d, i) => (
+          <motion.article
+            key={d.title}
+            id={`disciplina-${i}`}
             initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE_HAUS } }}
+            whileInView={{ opacity: 1, y: 0, transition: { duration: 0.9, delay: (i % 2) * 0.12, ease: EASE_HAUS } }}
             viewport={{ once: true, margin: "-8% 0px" }}
           >
-            <div className="md:col-span-5">
+            {EXAMPLES[i] && (
+              <div className="relative -mx-4 aspect-[16/10] sm:-mx-6 md:mx-0">
+                <Frame ex={EXAMPLES[i]} note={EXAMPLES[i].video ? s.videoNote : undefined} linkLabel={linkLabel} />
+              </div>
+            )}
+            <div className="pt-6 text-ink">
               <p className={`${SMALL} text-graphite`}>{String(i + 1).padStart(2, "0")}</p>
-              <h3 className="mt-3 font-geo text-[2rem] font-medium leading-[1.06] tracking-[0.005em] md:text-[2.7rem]">{d.title}</h3>
-            </div>
-            <div className="md:col-span-7">
-              <p className="max-w-[52ch] font-geo text-[1.08rem] font-normal leading-[1.45] tracking-[0.01em] md:text-[1.2rem]">{d.text}</p>
+              <h3 className="mt-2 font-geo text-[1.7rem] font-medium leading-[1.08] tracking-[0.005em] md:text-[2.1rem]">{d.title}</h3>
+              <p className="mt-4 max-w-[48ch] font-geo text-[1.02rem] font-normal leading-[1.45] tracking-[0.01em] md:text-[1.08rem]">{d.text}</p>
               {d.list && (
-                <ul className="mt-7 grid max-w-[60ch] gap-x-8 gap-y-2 border-t border-ink/15 pt-5 sm:grid-cols-2">
-                  {d.list.map((item) => (
-                    <li key={item} className={`${SMALL} normal-case text-ink`}>{item}</li>
-                  ))}
-                </ul>
+                <p className={`${SMALL} mt-5 max-w-[60ch] border-t border-ink/15 pt-4 normal-case text-ink/80`}>
+                  {d.list.join("  ·  ")}
+                </p>
               )}
             </div>
-          </motion.div>
-        </article>
-      ))}
-      {/* after the four, the invitation */}
+          </motion.article>
+        ))}
+      </div>      {/* after the four, the invitation */}
       <div className="mt-20 grid gap-y-6 border-t border-ink/15 pt-10 md:mt-28 md:grid-cols-12 md:gap-x-10">
         <p className="font-geo text-[1.6rem] font-medium leading-snug text-ink md:col-span-7 md:text-[2rem]">{s.endTitle}</p>
         <div className="flex items-center gap-6 md:col-span-5 md:justify-self-end">
