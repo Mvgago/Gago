@@ -12,6 +12,7 @@ import tolvaStill from "../assets/peojects/tolva/tolva.webp";
 import tolvaWindow from "../assets/peojects/tolva/tolva-window.webp";
 import tolvaSign from "../assets/peojects/tolva/tolva-sign.webp";
 import tolvaIced from "../assets/peojects/tolva/tolva-iced.webp";
+import tolvaRoast from "../assets/peojects/tolva/tolva-roast.webp";
 import tolvaPour from "../assets/peojects/tolva/tolva-pour.webp";
 import tolvaServe from "../assets/peojects/tolva/tolva-serve.webp";
 import santaRender from "../assets/peojects/santa/santa-render.jpg.webp";
@@ -333,6 +334,8 @@ export const cases: Case[] = [
       { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6" },
       // half width each: the blade sign out over the street (a blank sign photographed, painted in the brand's
       // rust with the logo laid on in perspective), beside a shop window in the sun (Pexels): the place
+      // the craft, wide: beans turning in the cooling tray, the arm sweeping round like the seal (Pexels)
+      { src: tolvaRoast },
       { src: tolvaSign, pair: true },
       { src: tolvaWindow },
       // a bright breath between the darker pieces: an iced coffee on a sunlit table, wide (Pexels, cropped 3:2)
