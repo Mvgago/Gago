@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Tolva — web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* Tolva's site on a phone, lying on the brand's burnt orange: the page scrolls on its own, down and back,
+     and waits while the pointer is over it (then the wheel scrolls it). Inside the screen, 1em is 1% of its width. */
+  :root {
+    --rust: #b45e45; --charcoal: #232220; --coffee: #75574b; --mocha: #d9d0bf; --paper: #ece6d8; --cream: #f7f3ec;
+    --ph: min(88vh, 150vw);
+    --pw: calc(var(--ph) * 9 / 19.3);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    overflow: hidden; display: grid; place-items: center; font-family: Syne, sans-serif;
+    background: radial-gradient(120% 90% at 30% 20%, #c4694d, #a24f37 55%, #7e3a28);
+  }
+  /* soft light across the table */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg, rgba(255,220,190,.16) 0 30%, transparent 30% 46%, rgba(255,220,190,.08) 46% 58%, transparent 58%);
+  }
+  .phone {
+    position: relative; width: var(--pw); height: var(--ph); border-radius: calc(var(--pw) * .16);
+    background: #121212; padding: calc(var(--pw) * .028);
+    box-shadow: calc(var(--pw) * .06) calc(var(--pw) * .1) calc(var(--pw) * .18) rgba(60,20,10,.45), inset 0 0 0 calc(var(--pw) * .008) #3a3a3a;
+  }
+  .screen { position: relative; width: 100%; height: 100%; border-radius: calc(var(--pw) * .135); overflow: hidden; background: var(--paper); font-size: calc(var(--pw) * .0094); color: var(--charcoal); }
+  .island { position: absolute; z-index: 5; left: 50%; top: 2.2%; width: 30%; height: 3.4%; transform: translateX(-50%); background: #0b0b0b; border-radius: 99em; }
+  .page { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+
+  /* the site */
+  .bar { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 15em 6em 4em; }
+  .logo { font-weight: 800; font-size: 7.5em; letter-spacing: -.01em; }
+  .burger { width: 7em; display: grid; gap: 1.4em; } .burger i { height: .7em; background: currentColor; border-radius: 1em; }
+  .hero { margin: 2em 4em 0; border-radius: 6em; overflow: hidden; position: relative; height: 128em; background: var(--rust) url(beans-rust.jpg) center 30% / cover; color: var(--cream); }
+  .hero h1 { position: absolute; left: 7%; right: 7%; top: 7%; font-weight: 800; font-size: 8.2em; line-height: .92; text-transform: uppercase; }
+  .hero p { position: absolute; left: 7%; right: 7%; bottom: 6%; font-weight: 500; font-size: 4.2em; line-height: 1.3; }
+  .sec { padding: 14em 6em 0; }
+  .kick { font-weight: 700; font-size: 3.2em; letter-spacing: .3em; text-transform: uppercase; opacity: .7; }
+  .h2 { font-weight: 800; font-size: 8.5em; line-height: .95; text-transform: uppercase; margin-top: .35em; }
+  .txt { font-weight: 500; font-size: 4.2em; line-height: 1.35; }
+  .card { border-radius: 5em; overflow: hidden; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .btn { display: inline-block; background: var(--charcoal); color: var(--cream); border-radius: 99em; padding: 3.2em 7em; font-weight: 700; font-size: 3.8em; }
+  .chip { display: inline-flex; align-items: center; gap: 2em; border: .3em solid rgba(35,34,32,.2); border-radius: 99em; padding: 2.4em 5em; font-weight: 700; font-size: 3.6em; }
+  .chip i { width: 1em; height: 1em; border-radius: 50%; }
+  .rule { border-top: .3em solid rgba(35,34,32,.15); }
+  /* the menu at the foot of the screen, always there */
+  .nav { position: absolute; z-index: 4; left: 50%; bottom: 3.5%; transform: translateX(-50%); display: flex; gap: 1em; background: var(--charcoal); border-radius: 99em; padding: 2em; box-shadow: 0 2em 6em rgba(0,0,0,.25); }
+  .nav span { color: var(--cream); font-weight: 700; font-size: 3.6em; padding: .9em 1.6em; border-radius: 99em; white-space: nowrap; }
+  .nav span:first-child { background: var(--rust); }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen" id="screen">
+      <div class="island"></div>
+      <div class="page" id="page">
+        <div class="bar"><span class="logo">TOLVA</span><span class="burger"><i></i><i></i></span></div>
+
+        <div class="hero">
+          <h1>Café tostado en la nave de molienda</h1>
+          <p>Tostadero, barra y tienda. Cada origen, con su propia curva.</p>
+        </div>
+
+        <!-- the new origin -->
+        <div class="sec">
+          <p class="kick">Nuevo origen</p>
+          <p class="h2">Etiopía Guji</p>
+          <div class="card" style="margin-top:6em;background:var(--mocha);padding:8em 10em;display:grid;place-items:center">
+            <svg viewBox="0 0 200 270" style="width:62%" aria-hidden="true">
+              <path d="M20 22 L180 22 L188 262 L12 262 Z" fill="#b45e45" />
+              <path d="M20 22 L180 22 L178 40 L22 40 Z" fill="#9d4f39" />
+              <rect x="18" y="8" width="164" height="16" rx="2" fill="#8f4834" />
+              <circle cx="100" cy="62" r="5" fill="#8f4834" />
+              <rect x="34" y="84" width="132" height="158" fill="#ece6d8" />
+              <text x="100" y="118" text-anchor="middle" font-family="Syne" font-weight="800" font-size="27" fill="#232220">TOLVA</text>
+              <text x="100" y="134" text-anchor="middle" font-family="Syne" font-weight="700" font-size="6.5" letter-spacing="2" fill="#232220">TOSTADERO DE CAFÉ</text>
+              <line x1="48" y1="146" x2="152" y2="146" stroke="#232220" stroke-opacity=".25" />
+              <text x="48" y="162" font-family="Syne" font-weight="800" font-size="12" fill="#232220">ETIOPÍA</text>
+              <text x="48" y="174" font-family="Syne" font-weight="500" font-size="7" fill="#232220">Guji · Lavado · 1.900 m</text>
+              <path d="M48 214 C 58 214, 62 230, 76 230 C 96 230, 120 214, 152 206" fill="none" stroke="#b45e45" stroke-width="2" />
+              <circle cx="152" cy="206" r="2.6" fill="#b45e45" />
+              <text x="48" y="234" font-family="Syne" font-weight="700" font-size="7" fill="#232220">250 g</text>
+            </svg>
+          </div>
+          <div style="margin-top:5em;display:flex;flex-wrap:wrap;gap:2.4em">
+            <span class="chip"><i style="background:#3b2418"></i>Cacao</span>
+            <span class="chip"><i style="background:#e8833a"></i>Naranja</span>
+            <span class="chip"><i style="background:#c99a5b"></i>Panela</span>
+          </div>
+          <div class="row" style="margin-top:6em;align-items:center"><p class="h2" style="font-size:7em;margin:0">14,90 €</p><span class="btn">Añadir</span></div>
+        </div>
+
+        <!-- today's roast -->
+        <div class="sec">
+          <div class="card" style="background:var(--charcoal);color:var(--cream);padding:9em 8em">
+            <p class="kick" style="color:#d0663a;opacity:1">Tueste de hoy</p>
+            <p class="h2" style="font-size:17em;letter-spacing:-.03em;margin-top:.15em">11:40</p>
+            <svg viewBox="0 0 600 200" style="margin-top:4em;width:100%;overflow:visible" aria-hidden="true">
+              <path d="M0 30 C 40 30, 60 170, 130 170 C 240 170, 360 90, 470 60 C 530 44, 570 38, 600 36" fill="none" stroke="#b45e45" stroke-width="6" />
+              <circle cx="130" cy="170" r="10" fill="#f7f3ec" /><circle cx="430" cy="72" r="10" fill="#f7f3ec" /><circle cx="600" cy="36" r="10" fill="#b45e45" />
+            </svg>
+            <div class="row" style="margin-top:6em"><p class="txt" style="opacity:.6">Carga 200°</p><p class="txt" style="opacity:.6">Crack 9:10</p><p class="txt" style="opacity:.6">18%</p></div>
+          </div>
+        </div>
+
+        <!-- the bar -->
+        <div class="sec">
+          <p class="kick">La barra</p>
+          <p class="h2">Para tomar aquí</p>
+          <div style="margin-top:6em;display:flex;flex-direction:column;gap:4.5em">
+            <div class="row"><p class="txt" style="font-weight:700">Espresso</p><p class="txt">1,80</p></div><div class="rule"></div>
+            <div class="row"><p class="txt" style="font-weight:700">Cortado</p><p class="txt">2,00</p></div><div class="rule"></div>
+            <div class="row"><p class="txt" style="font-weight:700">Flat white</p><p class="txt">3,00</p></div><div class="rule"></div>
+            <div class="row"><p class="txt" style="font-weight:700">Filtro V60</p><p class="txt">3,20</p></div><div class="rule"></div>
+            <div class="row"><p class="txt" style="font-weight:700">Cold brew</p><p class="txt">3,50</p></div>
+          </div>
+        </div>
+
+        <!-- the shop -->
+        <div class="sec">
+          <div class="card" style="position:relative;height:120em;background:var(--charcoal) url(beans-charcoal.jpg) center / cover;color:var(--cream)">
+            <p class="kick" style="position:absolute;left:8%;top:8%;opacity:1">En la tienda</p>
+            <div style="position:absolute;left:8em;right:8em;bottom:9em;display:flex;flex-direction:column;gap:3.5em">
+              <div class="row"><p class="h2" style="font-size:7em;margin:0">Colombia</p><p class="txt">13,50</p></div>
+              <div class="row"><p class="h2" style="font-size:7em;margin:0">Kenia</p><p class="txt">16,20</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- visit, and the seal to sign off -->
+        <div class="sec" style="padding-bottom:42em">
+          <p class="kick">Visítanos</p>
+          <p class="h2">De lunes a sábado</p>
+          <p class="txt" style="margin-top:3em;opacity:.7">8:00 – 19:00 · Tostamos los martes y viernes por la mañana: ven a verlo.</p>
+          <svg viewBox="0 0 120 120" style="display:block;width:34em;margin:12em auto 0" aria-hidden="true">
+            <defs><path id="sr" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0" /></defs>
+            <circle cx="60" cy="60" r="57" fill="none" stroke="#232220" stroke-width="1.8" />
+            <circle cx="60" cy="60" r="38" fill="none" stroke="#232220" stroke-width="1" />
+            <text font-family="Syne" font-weight="700" font-size="8.5" fill="#232220"><textPath href="#sr" textLength="290" lengthAdjust="spacing">TOLVA · TOSTADERO DE CAFÉ ·</textPath></text>
+            <ellipse cx="53" cy="60" rx="9" ry="13" fill="#b45e45" transform="rotate(-14 53 60)" />
+            <ellipse cx="68" cy="62" rx="8.5" ry="12" fill="#75574b" transform="rotate(10 68 62)" />
+          </svg>
+        </div>
+      </div>
+      <div class="nav"><span>Tienda</span><span>Barra</span><span>Visítanos</span></div>
+    </div>
+  </div>
+<script>
+  const screen = document.getElementById("screen"), page = document.getElementById("page");
+  let y = 0, dir = 1, wait = 1.2, hover = false, visible = true;
+  const max = () => Math.max(0, page.offsetHeight - screen.offsetHeight);
+  // pauses on each section as it scrolls, like someone reading
+  screen.addEventListener("pointerenter", () => (hover = true));
+  screen.addEventListener("pointerleave", () => (hover = false));
+  screen.addEventListener("wheel", (e) => { e.preventDefault(); y = Math.max(0, Math.min(max(), y + e.deltaY * .6)); }, { passive: false });
+  let last = performance.now();
+  (function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    if (visible && !hover) {
+      if (wait > 0) wait -= dt;
+      else {
+        y += dir * screen.offsetHeight * .16 * dt;
+        if (y >= max()) { y = max(); dir = -1; wait = 1.6; }
+        if (y <= 0) { y = 0; dir = 1; wait = 1.6; }
+      }
+    }
+    page.style.transform = `translateY(${-y}px)`;
+    requestAnimationFrame(frame);
+  })(last);
+  // framed in the site: held still while off screen
+  addEventListener("message", (e) => {
+    if (e.origin !== location.origin || typeof e.data?.fhVisible !== "boolean") return;
+    visible = e.data.fhVisible;
+  });
+</script>
+</body>
+</html>
