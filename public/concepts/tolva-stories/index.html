@@ -259,8 +259,10 @@
         if (x > L / 2) x -= L;
         const t = Math.max(-1.6, Math.min(1.6, x / HALF)); // 0 in the middle, ±1 at the screen's edges
         const g = grow[i];
-        const back = Math.pow(Math.abs(t), 1.6) * W * .9; // drawn back, more the further out
-        c.style.transform = `translateX(${x}px) translateZ(${-back + g * W * .35}px) rotateY(${-t * 16}deg) scale(${1 + g * .12})`;
+        const back = Math.pow(Math.abs(t), 1.4) * W * 1.5; // drawn back, more the further out
+        // spread out a little as they draw back, so the far ones don't pile up on each other
+        const spread = x * (1 + Math.abs(t) * .16);
+        c.style.transform = `translateX(${spread}px) translateZ(${-back + g * W * .35}px) rotateY(${-t * 28}deg) scale(${1 + g * .12})`;
         c.style.filter = `brightness(${1 - Math.min(.55, Math.abs(t) * .38) + g * .06})`;
         c.style.zIndex = String(100 - Math.round(Math.abs(t) * 50) + (hovered === i ? 200 : 0));
       });
