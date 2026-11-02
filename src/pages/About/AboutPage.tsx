@@ -322,7 +322,7 @@ export const AboutPage: React.FC = () => {
               {/* held to a width that sets it in two lines, the principle making the third */}
               {/* on phones the principle runs on right after the statement; on large screens it takes its own line */}
               <span className="lg:block">{s.statement.slice(0, cut + 1)}</span>{" "}
-              <span className="text-graphite lg:block">{s.statement.slice(cut + 2)}</span>
+              <span className="text-graphite lg:block lg:max-w-[64ch]">{s.statement.slice(cut + 2)}</span>
             </>
           );
         })()}
