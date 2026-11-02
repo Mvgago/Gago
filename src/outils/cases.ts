@@ -12,9 +12,14 @@ import santaTerrace from "../assets/peojects/santa/santa (2).jpg.webp";
 import santaInterior from "../assets/peojects/santa/santa (1).jpg.webp";
 import santaDevices from "../assets/peojects/santa/santa (3).jpg.webp";
 import santaSketch from "../assets/peojects/santa/santa (4).jpg.webp";
+import santaMap from "../assets/peojects/santa/santa-map.jpg.webp";
+import santaMapOrder from "../assets/peojects/santa/santa-map-order.png";
+import santaMarkOrder from "../assets/peojects/santa/santa-mark-order.png";
+import santaScreensOrder from "../assets/peojects/santa/santa-screens-order.png";
+import santaPaletteOrder from "../assets/peojects/santa/santa-palette-order.png";
 import santaPalette from "../assets/peojects/santa/santa (5).jpg.webp";
 import santaMark from "../assets/peojects/santa/santa (6).jpg.webp";
-import santaStationery from "../assets/peojects/santa/santa (8).jpg.webp";import buendiaStrip from "../assets/peojects/buendia/buendia-strip.jpg.webp";
+import buendiaStrip from "../assets/peojects/buendia/buendia-strip.jpg.webp";
 import smStrip from "../assets/peojects/smart/smart-strip.jpg.webp";
 import buendiaWeb from "../assets/peojects/buendia/buendia-web-web.jpg.webp";
 import buendiaLaptop from "../assets/peojects/buendia/buendia-laptop-web.jpg.webp";
@@ -72,11 +77,13 @@ export type CaseImage = {
   video?: string;
   videoSpeed?: number;
   pair?: boolean;
-  fit?: "contain";
+  fit?: "contain" | "natural";
   /** Opens an interactive version (e.g. a 3D recreation) in a new tab, with a small caption */
   href?: string;
   /** A construction sheet whose guide lines draw themselves the first time it is seen */
   draw?: "sapphire-mark";
+  /** A drawing that draws itself in the order of a map (see RevealImage) */
+  reveal?: { order: string; w: number; h: number; paper: string; cover?: boolean; focus?: number; duration?: number };
   /** In place of the photograph: its cards (two designs) sliding on in slanted rows, without end */
   cards?: [string, string];
 };
@@ -109,6 +116,8 @@ export type Case = {
   videoSpeed?: number;
   /** Opens the case with the interactive 3D stand instead of a film or the cover */
   headerViewer?: "stand";
+  /** Opens the case with a drawing that draws itself (see RevealImage) */
+  headerReveal?: { src: string; order: string; w: number; h: number; paper: string };
   /** Opens the case with an interactive concept page (public/concepts/…) framed beside the words */
   headerFrame?: string;
   /** "contain": show the whole cover on a pale mount (square or small covers) */
@@ -162,27 +171,73 @@ export const DISCIPLINE: Record<Discipline, Text> = {
 
 export const cases: Case[] = [
   {
-    slug: "santa-engracia",
-    title: "Santa Engracia",
-    hidden: true,
-    client: { en: "Santa Engracia — residential", es: "Santa Engracia — residencial", fr: "Santa Engracia — résidentiel", de: "Santa Engracia — wohnbau" },
+    slug: "gracia-prados",
+    title: "Gracia Prados 14",
+    client: { en: "Gracia Prados 14 — residential", es: "Gracia Prados 14 — residencial", fr: "Gracia Prados 14 — résidentiel", de: "Gracia Prados 14 — wohnbau" },
     disciplines: ["identity", "web"],
-    sector: { en: "heritage residential", es: "residencial histórico", fr: "résidentiel patrimonial", de: "historischer wohnbau" },
+    sector: { en: "residential refurbishment", es: "rehabilitación residencial", fr: "réhabilitation résidentielle", de: "wohnsanierung" },
     lead: {
-      en: "Heritage residential building.",
-      es: "Edificio residencial histórico.",
-      fr: "Immeuble résidentiel historique.",
-      de: "Historisches Wohngebäude.",
+      en: "Residential refurbishment in Madrid.",
+      es: "Rehabilitación residencial en Madrid.",
+      fr: "Réhabilitation résidentielle à Madrid.",
+      de: "Wohnsanierung in Madrid.",
     },
     body: {
-      en: "The complete visual identity, logo and website, drawn from the building's own architecture: minimal and elegant, keeping its timeless character.",
-      es: "La identidad visual completa, el logotipo y la web, a partir de la propia arquitectura del edificio: minimalista y elegante, conservando su carácter atemporal.",
-      fr: "L'identité visuelle complète, le logotype et le site, tirés de l'architecture même de l'immeuble : minimale et élégante, fidèle à son caractère intemporel.",
-      de: "Die komplette visuelle Identität, Logo und Website, aus der Architektur des Gebäudes selbst entwickelt: minimal und elegant, mit seinem zeitlosen Charakter.",
+      es: "Gracia Prados 14 es un edificio con historia, rehabilitado en viviendas y áticos dúplex. Para contarlo no hacía falta inventar nada: su cúpula ya era lo que todo el mundo reconocía desde la calle. La convertimos en la marca, un único trazo que nace del edificio y recorre el logotipo, la web y la papelería. Así, cada pieza habla de la casa antes que de los metros. La marca hizo el resto: las viviendas se vendieron en muy poco tiempo.",
+      en: "Gracia Prados 14 is a building with a past, refurbished into flats and duplex penthouses. Telling its story needed nothing invented: its dome was already what everyone recognised from the street. We made it the brand, a single line drawn from the building that runs through the logo, the website and the stationery. So every piece speaks of the home before the square metres. The brand did the rest: the homes sold in very little time.",
+      fr: "Gracia Prados 14 est un immeuble chargé d'histoire, réhabilité en appartements et attiques en duplex. Pour le raconter, il n'y avait rien à inventer : sa coupole était déjà ce que tout le monde reconnaissait depuis la rue. Nous en avons fait la marque, un trait unique né de l'immeuble qui parcourt le logo, le site et la papeterie. Ainsi, chaque pièce parle du lieu avant de parler de mètres carrés. La marque a fait le reste : les logements se sont vendus en très peu de temps.",
+      de: "Gracia Prados 14 ist ein Gebäude mit Geschichte, saniert zu Wohnungen und Duplex-Penthäusern. Um es zu erzählen, musste nichts erfunden werden: Seine Kuppel war schon das, was jeder von der Straße aus erkannte. Wir machten sie zur Marke, eine einzige Linie, die aus dem Gebäude entsteht und sich durch Logo, Website und Geschäftsausstattung zieht. So spricht jedes Stück vom Zuhause, bevor es um Quadratmeter geht. Den Rest erledigte die Marke: Die Wohnungen waren in kürzester Zeit verkauft.",
+    },
+    services: [
+      {
+        d: "identity",
+        detail: {
+          en: "logo drawn from the dome, palette and stationery",
+          es: "logotipo a partir de la cúpula, paleta y papelería",
+          fr: "logo tiré de la coupole, palette et papeterie",
+          de: "logo aus der kuppel, farbpalette und geschäftsausstattung",
+        },
+      },
+      {
+        d: "web",
+        detail: {
+          en: "sales site: homes, plans and specifications",
+          es: "web de venta: viviendas, planos y calidades",
+          fr: "site de vente : logements, plans et prestations",
+          de: "verkaufswebsite: wohnungen, grundrisse und ausstattung",
+        },
+      },
+    ],
+    cta: {
+      en: "A building with a story to tell? Let's talk",
+      es: "¿Un edificio con historia? Hablemos",
+      fr: "Un immeuble avec une histoire ? Parlons-en",
+      de: "Ein Gebäude mit Geschichte? Sprechen wir darüber",
     },
     cover: santaFacade,
     thumb: santaStrip,
-    images: [{ src: santaTerrace }, { src: santaSketch }, { src: santaMark, pair: true }, { src: santaPalette }, { src: santaDevices }, { src: santaInterior, pair: true }, { src: santaStationery }],
+    // the case opens on the site's map drawing itself, out from the building along its lines
+    headerReveal: { src: santaMap, order: santaMapOrder, w: 1026, h: 680, paper: "#f9f6f5" },
+    // From the building to the brand: the building by day then by night, the dome drawn into the mark beside
+    // its palette (same proportion), the site on its illustrated map, then the brand on screens beside a home
+    // (the cards still carry the building's old name: left out)
+    images: [
+      // first the brand on screens beside a home: the line and the name draw themselves out of the dome, as on
+      // the site's opening
+      { src: santaDevices, pair: true, reveal: { order: santaScreensOrder, w: 1700, h: 1275, paper: "#f7f7f7", cover: true, focus: 0.41, duration: 3 } },
+      { src: santaInterior },
+      // the building, wide: the dome the brand is drawn from
+      { src: santaFacade },
+      // both whole, at their own (shared) proportion; the mark draws itself from the spire down
+      { src: santaMark, pair: true, fit: "natural", reveal: { order: santaMarkOrder, w: 2047, h: 989, paper: "#ffffff" } },
+      // the colours spread out from the first one, then the versions of the mark fill in
+      { src: santaPalette, fit: "natural", reveal: { order: santaPaletteOrder, w: 2047, h: 989, paper: "#ffffff" } },
+      { src: santaSketch },
+      // the living room again, wide this time
+      { src: santaInterior },
+      // the terrace at dusk, wide, to close
+      { src: santaTerrace },
+    ],
   },  {
     slug: "buendia",
     title: "Buendía Travel",

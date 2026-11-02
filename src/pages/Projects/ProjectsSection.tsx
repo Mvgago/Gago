@@ -1,8 +1,9 @@
-﻿import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { EASE_HAUS } from "../../lib/motion";
-import { cases, CASE_UI, DISCIPLINE } from "../../outils/cases";
+import { cases, CASE_UI, DISCIPLINE, type Case } from "../../outils/cases";
+import { DrawingLoop } from "../../components/Drawn/DrawingLoop";
 import { useI18n } from "../../i18n/I18n";
 import type { Lang } from "../../i18n/strings";
 import type { CameraMotion } from "../../components/Gallery/CinematicViewer";
@@ -32,6 +33,7 @@ const WORKS: Work[] = [
   { slug: "sapphire", title: "The Sapphire" },
   { slug: "buendia", title: "Buendía Travel" },
   { slug: "smarthc", title: "Smart Human Capital" },
+  { slug: "gracia-prados", title: "Gracia Prados 14" },
 ];
 
 // The sector first, so the range of clients shows at a glance, then what was done
@@ -60,6 +62,11 @@ const SCENE: Record<string, string | undefined> = {
   buendia: "/concepts/buendia-devices/index.html?bare",
   smarthc: "/concepts/smarthc-devices/index.html?bare&room",
 };
+
+// Projects shown as their drawing drawing itself, then the photograph (the case's opening drawing)
+const DRAWN: Record<string, Case["headerReveal"]> = Object.fromEntries(
+  cases.filter((c) => c.headerReveal).map((c) => [c.slug, c.headerReveal]),
+);
 
 // The hint's words: scrolling (or a swipe) brings the next project
 const NEXT_HINT: Record<Lang, string> = { es: "scroll para el siguiente", en: "scroll for the next", fr: "défilez pour le suivant", de: "scrollen für das nächste" };
@@ -130,9 +137,9 @@ export const ProjectsSection: React.FC = () => {
   const [hint, setHint] = useState(false);
   const used = useRef(false);
   useEffect(() => {
-    // shown for two seconds, then it fades on its own
-    const id = window.setTimeout(() => !used.current && setHint(true), 1400);
-    const off = window.setTimeout(() => setHint(false), 3400);
+    // shown almost at once for a few seconds, then it fades on its own
+    const id = window.setTimeout(() => !used.current && setHint(true), 500);
+    const off = window.setTimeout(() => setHint(false), 3500);
     return () => {
       window.clearTimeout(id);
       window.clearTimeout(off);
@@ -238,7 +245,10 @@ export const ProjectsSection: React.FC = () => {
           animate={{ opacity: 1, transition: { duration: 0.8, ease: EASE_HAUS } }}
           exit={{ opacity: 0, transition: { duration: 0.35, ease: [0.4, 0, 1, 1] } }}
         >
-          {!SCENE[active.slug] && (
+          {/* Gracia Prados: its map drawing itself, then the building's photograph over it, in a loop */}
+          {DRAWN[active.slug] ? (
+            <DrawingLoop drawing={DRAWN[active.slug]!} photo={imageOf(active.slug)} className="absolute inset-0" />
+          ) : !SCENE[active.slug] && (
             <Suspense fallback={null}>
               <CinematicViewer image={imageOf(active.slug)} film={FILM[active.slug]} onMotion={onMotion} className="absolute inset-0" />
             </Suspense>
@@ -279,18 +289,18 @@ export const ProjectsSection: React.FC = () => {
         }}
       />
 
-      {/* The hint, centred high under the header: the words alone, no pill behind them, a soft shadow so
+      {/* The hint, in the middle of the screen: the words alone, no pill behind them, a soft shadow so
           they read over any picture; gone at the first scroll */}
       <div
         aria-hidden
-        className={`pointer-events-none absolute left-1/2 top-24 z-10 -translate-x-1/2 whitespace-nowrap font-[var(--font-mono)] text-[11px] font-light tracking-[0.08em] text-[#f4f1ec] [text-shadow:0_1px_8px_rgba(0,0,0,0.35)] transition-opacity duration-1000 ${
+        className={`pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-[var(--font-mono)] text-[14px] font-normal tracking-[0.08em] text-[#f4f1ec] [text-shadow:0_1px_8px_rgba(0,0,0,0.35)] transition-opacity duration-500 ${
           hint ? "opacity-90" : "opacity-0"
         }`}
       >
         <span className="flex items-center gap-2.5">
           {/* two fine chevrons, one over the other, drifting down: the way the next project comes */}
           <style>{`@keyframes fh-down{0%{transform:translateY(-3px);opacity:0}35%{opacity:1}100%{transform:translateY(4px);opacity:0}}`}</style>
-          <svg viewBox="0 0 12 14" className="h-3.5 w-3" fill="none" stroke="currentColor" strokeWidth={1.3} strokeLinecap="round" strokeLinejoin="round">
+          <svg viewBox="0 0 12 14" className="h-[18px] w-4" fill="none" stroke="currentColor" strokeWidth={1.3} strokeLinecap="round" strokeLinejoin="round">
             <path d="M2 2.5l4 3.5 4-3.5" style={{ animation: "fh-down 1.6s ease-in-out infinite" }} />
             <path d="M2 7.5l4 3.5 4-3.5" style={{ animation: "fh-down 1.6s ease-in-out .25s infinite" }} />
           </svg>
@@ -311,16 +321,16 @@ export const ProjectsSection: React.FC = () => {
           >
             {/* The words hold still: only the picture behind them follows the pointer */}
             <Layer mx={mx} my={my} depth={0}>
-              {/* phones: the name alone over the film; the sector and the work wait for wider screens */}
-              <p className={`${CAPTION} hidden lowercase text-platinum/70 sm:block`}>
-                {scopeOf(active.slug, lang)}
-              </p>
+              {/* The name first, then the sector and the work under it (phones: the name alone over the film) */}
               <Link
                 to={`/projects/${active.slug}`}
-                className={`${DISPLAY} pointer-events-auto mt-3 inline-block text-[#f7f4f0] transition-opacity duration-500 hover:opacity-80`}
+                className={`${DISPLAY} pointer-events-auto inline-block text-[#f7f4f0] transition-opacity duration-500 hover:opacity-80`}
               >
                 {active.title}
               </Link>
+              <p className={`${CAPTION} mt-3 hidden lowercase text-platinum/70 sm:block`}>
+                {scopeOf(active.slug, lang)}
+              </p>
               {/* a plain way in, so it is clear the name opens the project (on phones above all) */}
               <Link
                 to={`/projects/${active.slug}`}

@@ -35,7 +35,7 @@ export const projects = [
     { title: 'AMORSACRO', image: amorsacro, description: 'Description here', link: '/amorsacro' },
     { title: 'AMV Report', image: report, description: 'Description of Artwork 4.', link: '/amvreport' },
     { title: 'Annet, piel de serpiente', image: annet, description: 'Description of Artwork 6.', link: '/annet' },
-    { title: 'Santa Engracia', image: santa, description: 'Description here', link: '/santa' },
+    { title: 'Gracia Prados 14', image: santa, description: 'Description here', link: '/santa' },
     { title: 'Activa', image: activa, description: 'Description of Artwork 4.', link: '#' },
     { title: 'Bienal Internacional de Oaxaca', image: reliquia, description: 'Description of Artwork 5.', link: '#' },
     { title: 'Cicuta González', image: portada4, description: 'Description of Artwork 5.', link: '#' },
