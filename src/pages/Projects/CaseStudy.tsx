@@ -541,6 +541,8 @@ export const CaseStudyPage: React.FC = () => {
                     <Suspense key="stand" fallback={<div className="aspect-[16/10] w-full bg-[#a9b8ba]" />}>
                       <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[16/10] w-full" />
                     </Suspense>
+                  ) : img.viewer === "devices" && img.frame ? (
+                    <DevicesFrame key={img.frame} src={img.frame} title={`${c.title} — 3D`} className="aspect-[16/10] w-full" />
                   ) : img.cards ? (
                     <CardsConveyor key={img.src} cards={img.cards} alt={altText} className="aspect-[16/10] w-full" />
                   ) : img.draw === "sapphire-mark" ? (

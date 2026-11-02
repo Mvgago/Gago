@@ -325,8 +325,9 @@ export const cases: Case[] = [
       // (Pexels): the place, at street level
       { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1, pair: true },
       { src: tolvaWindow },
-      // the brand's stories running past on a dark band, without end
-      { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10" },
+      // half width each: the brand's stories on their arc, beside the palette laying itself out
+      { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
+      { src: "", video: "/video/tolva-palette.mp4", videoSpeed: 1 },
     ],
   },
   {
