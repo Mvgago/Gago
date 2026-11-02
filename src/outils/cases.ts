@@ -323,11 +323,13 @@ export const cases: Case[] = [
     },
     cover: tolvaStill,
     // the site on a phone over roasted beans turning close up: the brand at work, not a large logo
-    headerFrame: "/concepts/tolva-phone/index.html?v=4",
+    headerFrame: "/concepts/tolva-phone/index.html?v=5",
     images: [
-      // half width each: the mark in cream over the grinder at work (Pexels film), beside a shop window in the sun
+      // the mark in cream over the grinder at work (Pexels film), wide
+      { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1 },
+      // half width each: the round blade sign out from a sunlit wall (3D), beside a shop window in the sun
       // (Pexels): the place, at street level
-      { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1, pair: true },
+      { src: "", viewer: "devices", frame: "/concepts/tolva-sign/index.html?v=1", pair: true },
       { src: tolvaWindow },
       // half width each: the brand's stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
