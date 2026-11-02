@@ -146,7 +146,7 @@ export const SiteHeader: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
-          <div className={onCase ? "max-sm:hidden" : ""}>`n            <LanguageSwitch dark={(pathname === "/projects" || pathname === "/artwork") && !open} />`n          </div>
+          <LanguageSwitch className={onCase ? "max-sm:hidden" : ""} dark={(pathname === "/projects" || pathname === "/artwork") && !open} />
 
           <style>{`@keyframes fh-bloom{0%,100%{opacity:0;transform:scale(.9)}35%{opacity:.85;transform:scale(1.15)}70%{opacity:0;transform:scale(1.3)}}@keyframes fh-halo{0%{transform:scale(1);opacity:0}12%{opacity:.75}80%,100%{transform:scale(1.35,1.6);opacity:0}}@keyframes fh-open{0%,100%{letter-spacing:.08em}14%,30%{letter-spacing:.2em}44%{letter-spacing:.08em}}@keyframes fh-sheen{0%,8%{transform:translateX(-110%)}52%,100%{transform:translateX(70%)}}@keyframes fh-nudge{0%,100%{transform:scale(1)}18%{transform:scale(1.025)}40%{transform:scale(1)}}@keyframes fh-draw{0%,55%,100%{width:.625rem}20%,35%{width:1rem}}@media (prefers-reduced-motion:reduce){.fh-invite *{animation:none!important}}`}</style>
           <button
