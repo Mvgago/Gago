@@ -368,10 +368,10 @@ export const cases: Case[] = [
     sector: { en: "real estate", es: "inmobiliario", fr: "immobilier", de: "immobilien" },
     layout: "editorial",
     statement: {
-      es: "Vender lo que aún no existe. Una promoción contada antes de la primera piedra.",
-      en: "Selling what doesn't exist yet. A development told before the first stone.",
-      fr: "Vendre ce qui n'existe pas encore. Un programme raconté avant la première pierre.",
-      de: "Verkaufen, was es noch nicht gibt. Ein Projekt, erzählt vor dem ersten Stein.",
+      es: "Antes de la primera piedra, ya era un lugar.",
+      en: "Before the first stone, it was already a place.",
+      fr: "Avant la première pierre, c'était déjà un lieu.",
+      de: "Vor dem ersten Stein war es schon ein Ort.",
     },
     // The problem first, so anyone selling something not yet built sees themselves in it
     lead: {
