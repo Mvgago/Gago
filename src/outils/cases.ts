@@ -9,7 +9,7 @@ import aleaLaptop from "../assets/peojects/alea/alea.png.webp";
 import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip from "../assets/peojects/santa/santa-strip.jpg.webp";
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
-import tolvaWindow from "../assets/peojects/tolva/tolva-window.webp";
+import tolvaRoom from "../assets/peojects/tolva/tolva-room.webp";
 import tolvaSign from "../assets/peojects/tolva/tolva-sign.webp";
 import tolvaIced from "../assets/peojects/tolva/tolva-iced.webp";
 import tolvaRoast from "../assets/peojects/tolva/tolva-roast.webp";
@@ -340,7 +340,8 @@ export const cases: Case[] = [
       { src: tolvaRoast, pair: true },
       { src: tolvaBag },
       { src: tolvaSign, pair: true },
-      { src: tolvaWindow },
+      // the place inside: the bar at the back, globe lamps, someone at work at a table (Pexels)
+      { src: tolvaRoom },
       // a bright breath between the darker pieces: an iced coffee on a sunlit table, wide (Pexels, cropped 3:2)
       { src: tolvaIced },
       // half width each: the brand's stories on their arc, beside the palette laying itself out
