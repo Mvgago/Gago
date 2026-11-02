@@ -9,7 +9,6 @@ import aleaLaptop from "../assets/peojects/alea/alea.png.webp";
 import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip from "../assets/peojects/santa/santa-strip.jpg.webp";
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
-import tolvaSheet from "../assets/peojects/tolva/tolva-sheet.webp";
 import santaRender from "../assets/peojects/santa/santa-render.jpg.webp";
 import santaTerrace from "../assets/peojects/santa/santa (2).jpg.webp";
 import santaDevices from "../assets/peojects/santa/santa (3).jpg.webp";
@@ -321,8 +320,8 @@ export const cases: Case[] = [
     // the site on a phone over roasted beans turning close up: the brand at work, not a large logo
     headerFrame: "/concepts/tolva-phone/index.html?v=4",
     images: [
-      // half width each: the mark on paper (seal, name, roast curve), beside the palette laying itself out
-      { src: tolvaSheet, pair: true },
+      // half width each: the mark in cream over the grinder at work (Pexels film), beside the palette laying itself out
+      { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1, pair: true },
       { src: "", video: "/video/tolva-palette.mp4", videoSpeed: 1 },
       // the brand's stories running past on a dark band, without end
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=6" },
