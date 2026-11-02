@@ -23,7 +23,7 @@ const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb,
 const ZOOM: Record<string, [number, string]> = {};
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import Footer from "../../components/Footer/Footer";
-import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
+import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessSteps, ServicesEditorial } from "./ServicesShowcase";
 
 // three.js loads only on this page, after the text
 const WhiteRoom = lazy(() => import("../../components/Light/WhiteRoom"));
@@ -310,8 +310,8 @@ export const AboutPage: React.FC = () => {
         initial="hidden"
         animate="shown"
         custom={3}
-        // Smaller than a subtitle here, so the film below fits whole on the first screen
-        className="font-geo text-[1.05rem] font-light leading-snug tracking-[0.01em] text-ink lg:text-[1.2rem]"
+        // the page's headline, large and dark, as a case opens on its statement
+        className="font-geo text-[1.55rem] font-medium leading-[1.14] tracking-[0.005em] text-ink lg:text-[2.25rem]"
       >
         {/* Two lines, each whole: what the studio is, then its principle, set back in grey */}
         {(() => {
@@ -351,7 +351,8 @@ export const AboutPage: React.FC = () => {
       </div>
 
       {/* What the studio does, shown: an example for each discipline, held while it is read */}
-      <ServicesShowcase s={s} />
+      {/* (on trial: the editorial version, as the cases read; the showcase kept beside it to go back to) */}
+      <ServicesEditorial s={s} />
 
       {/* The process, in the showcase's grid: the steps under the frame's column, the title in
           the column the disciplines are read in */}

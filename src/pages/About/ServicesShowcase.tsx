@@ -546,6 +546,82 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
 };
 
 /**
+ * The disciplines as the case pages are read (on trial in place of the showcase above): one after another
+ * down the page, each its example edge to edge and, under it, two columns: its number and name large on the
+ * left, what it is and what it delivers on the right, dark on the pale wall. No wheel, no tabs: the page's
+ * own scroll.
+ */
+export const ServicesEditorial: React.FC<{ s: Studio }> = ({ s }) => {
+  const { lang } = useI18n();
+  const linkLabel = OPEN[lang] ?? OPEN.es;
+  const lenis = useLenis();
+  return (
+    <section id="servicios" className="scroll-mt-24">
+      <h2 className="sr-only">{s.disciplinesLabel}</h2>
+      {s.disciplines.map((d, i) => (
+        <article key={d.title} id={`disciplina-${i}`} className={i > 0 ? "mt-20 md:mt-28" : ""}>
+          {/* the example, edge to edge, a little short of the full screen so the words follow on */}
+          {EXAMPLES[i] && (
+            <motion.div
+              className="relative -mx-4 h-[62vw] max-h-[74svh] sm:-mx-6 md:-mx-8 md:h-[56vw]"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1, transition: { duration: 0.9, ease: EASE_HAUS } }}
+              viewport={{ once: true, margin: "-10% 0px" }}
+            >
+              <Frame ex={EXAMPLES[i]} note={EXAMPLES[i].video ? s.videoNote : undefined} linkLabel={linkLabel} />
+            </motion.div>
+          )}
+          <motion.div
+            className="grid gap-y-6 pt-8 text-ink md:grid-cols-12 md:gap-x-10 md:pt-10"
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE_HAUS } }}
+            viewport={{ once: true, margin: "-8% 0px" }}
+          >
+            <div className="md:col-span-5">
+              <p className={`${SMALL} text-graphite`}>{String(i + 1).padStart(2, "0")}</p>
+              <h3 className="mt-3 font-geo text-[2rem] font-medium leading-[1.06] tracking-[0.005em] md:text-[2.7rem]">{d.title}</h3>
+            </div>
+            <div className="md:col-span-7">
+              <p className="max-w-[52ch] font-geo text-[1.08rem] font-normal leading-[1.45] tracking-[0.01em] md:text-[1.2rem]">{d.text}</p>
+              {d.list && (
+                <ul className="mt-7 grid max-w-[60ch] gap-x-8 gap-y-2 border-t border-ink/15 pt-5 sm:grid-cols-2">
+                  {d.list.map((item) => (
+                    <li key={item} className={`${SMALL} normal-case text-ink`}>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </motion.div>
+        </article>
+      ))}
+      {/* after the four, the invitation */}
+      <div className="mt-20 grid gap-y-6 border-t border-ink/15 pt-10 md:mt-28 md:grid-cols-12 md:gap-x-10">
+        <p className="font-geo text-[1.6rem] font-medium leading-snug text-ink md:col-span-7 md:text-[2rem]">{s.endTitle}</p>
+        <div className="flex items-center gap-6 md:col-span-5 md:justify-self-end">
+          <button
+            type="button"
+            onClick={() => {
+              const el = document.getElementById("contact");
+              if (!el) return;
+              if (lenis) lenis.scrollTo(el, { offset: window.innerWidth < 640 ? 0 : -96, duration: 1.2 });
+              else el.scrollIntoView({ behavior: "smooth" });
+            }}
+            className={`${SMALL} cursor-pointer rounded-full border border-ink/25 px-5 py-2.5 text-ink transition-[background-color,border-color] duration-300 hover:border-ink/40 hover:bg-ink/[0.05]`}
+          >
+            {s.endTalk}
+          </button>
+          <Link to="/projects" className={`${SMALL} group relative text-ink`}>
+            {s.endWork}
+            <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
+            <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/**
  * The process as four numbered steps: a hairline draws itself above each as it comes into
  * view, one after another, so the page moves as it is read.
  */
