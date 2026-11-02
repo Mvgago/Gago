@@ -130,7 +130,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Como en una fuga musical, distintas voces independientes se entrelazan para crear una sola pieza. Unimos identidad, web, vídeo y espacio bajo una misma dirección conceptual, para que cada proyecto se cuente como una sola historia.",
+      "Como en una fuga musical, voces independientes se entrelazan para crear una sola pieza. Unimos identidad, web, vídeo y espacio bajo una misma dirección conceptual, para que cada proyecto se cuente como una sola historia.",
     disciplinesLabel: "disciplinas",
     discover: "descubre nuestras disciplinas",
     disciplines: [
