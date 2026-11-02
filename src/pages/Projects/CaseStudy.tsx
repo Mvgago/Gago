@@ -76,7 +76,9 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
       animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.1, ease: EASE_HAUS } }}
     >
       {/* from the top of the page, under the header: the mark sits in the middle, well clear of it */}
-      {c.headerFrame ? (
+      {c.headerImage ? (
+        <img src={c.headerImage} alt={c.title} {...protect} className="block h-[86svh] w-full object-cover" />
+      ) : c.headerFrame ? (
         <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="h-[86svh] w-full" />
       ) : c.headerViewer === "stand" ? (
         <Suspense fallback={<div className="h-[86svh] w-full" />}>

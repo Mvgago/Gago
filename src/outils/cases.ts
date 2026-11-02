@@ -132,6 +132,8 @@ export type Case = {
   headerViewer?: "stand";
   /** Opens the case with a drawing that draws itself (see RevealImage) */
   headerReveal?: { src: string; order: string; w: number; h: number; paper: string };
+  /** Opens the editorial case with a still of its own (the cover stays the cover elsewhere) */
+  headerImage?: string;
   /** Opens the case with an interactive concept page (public/concepts/…) framed beside the words */
   headerFrame?: string;
   /** "editorial": the work full width first, then a statement and the story side by side in a tight grotesque */
@@ -327,6 +329,8 @@ export const cases: Case[] = [
     cover: tolvaStill,
     // an opening as in a brand film: latte art drawing itself (Pexels), nothing over it
     headerFrame: "/concepts/tolva-film/index.html?bare&v=1",
+    // (on trial: the sunlit shop window, in place of the film)
+    headerImage: tolvaWindow,
     // Pairs of one height throughout (the mark and the screen, the system, the craft, the street), and two
     // uprights to close
     images: [
