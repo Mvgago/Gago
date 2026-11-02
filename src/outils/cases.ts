@@ -9,10 +9,7 @@ import aleaLaptop from "../assets/peojects/alea/alea.png.webp";
 import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip from "../assets/peojects/santa/santa-strip.jpg.webp";
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
-import tolvaRoom from "../assets/peojects/tolva/tolva-room.webp";
 import tolvaSign from "../assets/peojects/tolva/tolva-sign.webp";
-import tolvaIced from "../assets/peojects/tolva/tolva-iced.webp";
-import tolvaRoast from "../assets/peojects/tolva/tolva-roast.webp";
 import tolvaBag from "../assets/peojects/tolva/tolva-bag.webp";
 import tolvaPour from "../assets/peojects/tolva/tolva-pour.webp";
 import tolvaServe from "../assets/peojects/tolva/tolva-serve.webp";
@@ -328,26 +325,21 @@ export const cases: Case[] = [
     cover: tolvaStill,
     // an opening as in a brand film: latte art drawing itself (Pexels), nothing over it
     headerFrame: "/concepts/tolva-film/index.html?bare&v=1",
-    // One wide piece to open, then pairs of one height, each a chapter (the system, the craft, the place, the
-    // screen), and two uprights to close
+    // Only the pieces that carry the brand: one wide piece to open, the system, the brand out in the world (the
+    // place and the product), the screen wide, and two uprights to close
     images: [
       // the mark: in cream over the grinder at work (Pexels film), wide
       { src: "", video: "/video/tolva-sheet.mp4?v=2", videoSpeed: 1 },
       // the system: the stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
       { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
-      // the craft: beans turning in the cooling tray, the arm sweeping round like the seal, then a bag being
-      // poured from a kraft bag into the grinder's hopper, Tolva's origin label on it (Pexels; the old sticker replaced)
-      { src: tolvaRoast, pair: true },
-      { src: tolvaBag },
-      // the place: the blade sign out over the street (a blank sign photographed, painted and lettered), and
-      // inside, the bar at the back and the globe lamps (Pexels)
+      // the brand out in the world: the blade sign over the street (a blank sign photographed, painted and
+      // lettered), beside beans poured from a kraft bag into the grinder's hopper, Tolva's origin label on it
+      // (Pexels; the old sticker replaced)
       { src: tolvaSign, pair: true },
-      { src: tolvaRoom },
-      // the screen: the site on a phone over roasted beans, scrolling on its own, beside an iced coffee on a
-      // sunlit table (Pexels)
-      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6", pair: true },
-      { src: tolvaIced },
+      { src: tolvaBag },
+      // the screen: the site on a phone over roasted beans, scrolling on its own, wide
+      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6" },
       // to close, two uprights, whole (Pexels): ground coffee falling into the filter, what goes down a hopper,
       // and the coffee poured into a cup with Tolva's seal raised on it (its own mark removed)
       { src: tolvaPour, pair: true, fit: "natural" },
