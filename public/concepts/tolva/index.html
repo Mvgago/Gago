@@ -23,13 +23,9 @@
     overflow: hidden;
     font-family: Syne, sans-serif;
   }
-  /* the café behind frosted glass: the photograph comes already blurred (glass.jpg), here softened a
-     touch more and given the glass's own milky sheen */
-  body::before {
-    content: ""; position: fixed; inset: -20px;
-    background: url(glass.jpg) center / cover no-repeat;
-    filter: brightness(1.1) saturate(.78);
-  }
+  /* behind the mark, ground coffee in the portafilter under the grinder, in warm light (Pexels footage) */
+  .bg { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; filter: saturate(.9); }
+  .plain .bg { display: none; }
   /* a light warm wash over the café, under the words (it tinted them when it lay on top) */
   body::after {
     content: ""; position: fixed; inset: 0; pointer-events: none; mix-blend-mode: soft-light; z-index: 0;
@@ -107,6 +103,7 @@
 </style>
 </head>
 <body>
+  <video class="bg" id="bg" src="grinder.mp4" muted loop playsinline autoplay aria-hidden="true"></video>
   <div class="shade"></div>
   <div class="bulb" id="bulb"></div>
   <svg width="0" height="0" aria-hidden="true" style="position:absolute">
@@ -190,6 +187,8 @@
     if (e.origin !== location.origin || typeof e.data?.fhVisible !== "boolean") return;
     const was = window.fhVisible;
     window.fhVisible = e.data.fhVisible;
+    const bg = document.getElementById("bg");
+    if (e.data.fhVisible) bg.play().catch(() => {}); else bg.pause();
     if (e.data.fhVisible && !was) play();
   });
 </script>
