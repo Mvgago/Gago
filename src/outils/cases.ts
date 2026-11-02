@@ -343,7 +343,7 @@ export const cases: Case[] = [
       // from a kraft bag into the grinder's hopper, Tolva's origin label on it (Pexels; the old sticker replaced)
       { src: tolvaRoast, pair: true },
       { src: tolvaBag },
-      // the street and the screen: the blade sign (a blank sign photographed, painted and lettered), beside the
+      // the street and the screen: the lit sign box at dusk on a concrete street front (Pexels; another café's lettering replaced with Tolva's), beside the
       // site on a phone over roasted beans
       { src: tolvaSign, pair: true },
       { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=7" },
