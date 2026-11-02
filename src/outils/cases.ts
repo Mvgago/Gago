@@ -357,7 +357,8 @@ export const cases: Case[] = [
     // Beside the words, first: the 3D scene, the site booking a trip and the campaign on the phone,
     // Amsterdam behind (the Asturias spot (2019) was tried there, but its shots are too short and
     // mostly under titles to make a clean loop)
-    headerFrame: "/concepts/buendia-devices/index.html",
+    // (bare: the full-bleed version, with no caption in the corner under the site's logo)
+    headerFrame: "/concepts/buendia-devices/index.html?bare&v=3",
     // Then pairs of the same height: the site beside the site on the laptop, the catalogue in hand
     // beside a spread, the campaign on social media wide; last, its digital presence (search, posts, bookings)
     // beside the brand out in the street, on an umbrella and a sweatshirt
