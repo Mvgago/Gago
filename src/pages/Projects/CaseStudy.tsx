@@ -144,9 +144,41 @@ const MOVING: Record<string, { video?: string; frame?: string } | undefined> = {
 
 const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ after, shown, lang }) => {
   const rest = shown.map((_, k) => shown[(after + 1 + k) % shown.length]).slice(0, shown.length - 1);
+  // With a mouse, the row is dragged sideways like a phone's; a drag never counts as a click on the card under it
+  const row = React.useRef<HTMLDivElement>(null);
+  const drag = React.useRef<{ x: number; left: number; moved: boolean } | null>(null);
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse" || !row.current) return;
+    drag.current = { x: e.clientX, left: row.current.scrollLeft, moved: false };
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d || !row.current) return;
+    const dx = e.clientX - d.x;
+    if (!d.moved && Math.abs(dx) > 5) {
+      d.moved = true;
+      row.current.setPointerCapture(e.pointerId);
+    }
+    if (d.moved) row.current.scrollLeft = d.left - dx;
+  };
+  const onPointerUp = () => {
+    const d = drag.current;
+    drag.current = null;
+    // the click that ends a drag is swallowed (once), so letting go never opens a project
+    if (d?.moved) row.current?.addEventListener("click", (ev) => ev.preventDefault(), { capture: true, once: true });
+  };
   return (
     <nav aria-label={CASE_UI.next[lang]} className="mt-16 border-t border-ink/10 pt-10 md:mt-20">
-      <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:-mx-6 sm:px-6 md:-mx-8 md:px-8">
+      <div
+        ref={row}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        onDragStart={(e) => e.preventDefault()}
+        data-lenis-prevent-wheel
+        className="-mx-4 flex cursor-grab select-none gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] active:cursor-grabbing sm:-mx-6 sm:px-6 md:-mx-8 md:px-8"
+      >
         <span className={`${SMALL} shrink-0 pt-2 text-ink md:pr-3`}>{CASE_UI.nextShort[lang]}</span>
         {rest.map((k) => (
           <Link
@@ -574,6 +606,8 @@ export const CaseStudyPage: React.FC = () => {
               </a>
             ) : row[0].reveal ? (
               <RevealImage key={r} src={row[0].src} alt={altText} {...row[0].reveal} />
+            ) : row[0].video ? (
+              <Film key={r} src={row[0].video} title={c.title} ratio="16 / 9" speed={row[0].videoSpeed} />
             ) : (
               <Plate key={r} src={row[0].src} alt={altText} />
             ),

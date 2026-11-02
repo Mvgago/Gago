@@ -319,7 +319,10 @@ export const cases: Case[] = [
     cover: tolvaStill,
     // the mark building itself, live: the beans turning in the seal
     headerFrame: "/concepts/tolva/index.html?v=5",
-    images: [],
+    images: [
+      // the palette laying itself out, colour by colour (the tall film set wide on its own cream)
+      { src: "", video: "/video/tolva-palette.mp4", videoSpeed: 1 },
+    ],
   },
   {
     slug: "buendia",
