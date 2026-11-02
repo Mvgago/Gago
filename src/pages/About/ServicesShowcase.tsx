@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { EASE_HAUS } from "../../lib/motion";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
-import { BODY, SMALL, TITLE } from "../../lib/type";
+import { BODY, SMALL } from "../../lib/type";
 import type { Studio } from "../../i18n/studio";
 import { Link } from "react-router-dom";
 import { useI18n } from "../../i18n/I18n";
@@ -143,10 +143,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
     const io = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       io.disconnect();
-      timer = window.setTimeout(() => {
-        setHint(true);
-        timer = window.setTimeout(() => setHint(false), 4800);
-      }, 900);
+      // (the tabs' running light is left out now: a plain row of tabs, as the cases' labels)
+      timer = window.setTimeout(() => setHint(false), 0);
     }, { threshold: 1 });
     io.observe(el);
     return () => {
@@ -242,8 +240,10 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
   // small, moves the page a whole step, to the next or the previous discipline, level with the
   // frame; the rest of the wheel's spin is held until it has arrived. Past the first or the last
   // the page scrolls freely again
+  // (left out now: the page's own scroll runs through the disciplines, nothing held or stepped)
+  const STEPPED = false;
   useEffect(() => {
-    if (!lenis) return;
+    if (!lenis || !STEPPED) return;
     const mq = window.matchMedia("(min-width: 1024px)");
     let busy = false;
     let quietTimer = 0;
@@ -395,36 +395,11 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                 )}
               </div>
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
-                {/* where we are, as a dial: the number inside a hairline ring, and round it the part of the
-                    four already read, drawing itself on as the discipline arrives */}
-                {/* phones: the place in the four as a plain figure, the ring took too much room */}
-                <p className={`${SMALL} !text-[11px] text-graphite lg:hidden`}>
-                  {String(i + 1).padStart(2, "0")} / {String(s.disciplines.length).padStart(2, "0")}
-                </p>
-                <div className="hidden items-center gap-3 lg:flex" aria-label={`${i + 1} / ${s.disciplines.length}`}>
-                  <span aria-hidden className="relative grid h-11 w-11 place-items-center">
-                    <svg viewBox="0 0 44 44" className="absolute inset-0 -rotate-90">
-                      <circle cx="22" cy="22" r="20.5" fill="none" stroke="currentColor" strokeWidth="1" className="text-ink/15" />
-                      <circle
-                        cx="22"
-                        cy="22"
-                        r="20.5"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.25"
-                        strokeLinecap="round"
-                        pathLength={1}
-                        strokeDasharray="1 1"
-                        className="text-ink transition-[stroke-dashoffset] duration-[1100ms] ease-haus"
-                        style={{ strokeDashoffset: i === active ? 1 - (i + 1) / s.disciplines.length : 1, transitionDelay: i === active ? "200ms" : "0ms" }}
-                      />
-                    </svg>
-                    {/* the figure alone: both faces dot their zero, and in a ring a 0 read as an 8 */}
-                    <span className="font-geo text-[15px] font-normal leading-none text-ink">{i + 1}</span>
-                  </span>
-                </div>
-                {/* as the discipline arrives its title rises word by word out of an unseen mask */}
-                <h3 className={`${TITLE} mt-2 text-ink lg:mt-5`} aria-label={d.title}>
+                {/* where we are: the number, plain, as the cases label their parts */}
+                <p className={`${SMALL} text-graphite`}>{String(i + 1).padStart(2, "0")}</p>
+                {/* as the discipline arrives its title rises word by word out of an unseen mask; large and dark,
+                    as a case's statement */}
+                <h3 className="mt-3 font-geo text-[2rem] font-medium leading-[1.06] tracking-[0.005em] text-ink lg:text-[2.6rem]" aria-label={d.title}>
                   {d.title.split(" ").map((w, k) => (
                     <React.Fragment key={k}>
                       {k > 0 && " "}
@@ -439,44 +414,16 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     </React.Fragment>
                   ))}
                 </h3>
-                <p className={`${BODY} mt-4 max-w-[42ch] text-ink/80 lg:mt-6`}>{d.text}</p>
+                <p className="mt-4 max-w-[44ch] font-geo text-[1.05rem] font-normal leading-[1.45] tracking-[0.01em] text-ink lg:mt-6 lg:text-[1.15rem]">{d.text}</p>
               </div>
               </div>
               {/* from here on the frame has let go: the list, and the invitation after the last, are read whole */}
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {d.list && (
-                  // what is delivered, the part to read: larger, in full ink, each with its number
-                  // As the discipline arrives its services come in one after another, each line drawing
-                  // itself across; on hover a line fills in ink and its words step a touch to the right
-                  // (tighter on phones, so each sheet fits under the header whole)
-                  // (phones: no rules between them, just air, so the three read as a calm list)
-                  <ul className="mt-5 max-w-[44ch] space-y-1 lg:mt-9 lg:space-y-0">
-                    {d.list.map((item, k) => {
-                      const on = i === active;
-                      const delay = on ? `${250 + k * 130}ms` : "0ms";
-                      return (
-                        <li key={item} className="group/svc relative py-1.5 lg:py-4">
-                          <span aria-hidden className="absolute inset-x-0 top-0 hidden h-px bg-ink/15 lg:block" />
-                          <span
-                            aria-hidden
-                            className={`absolute left-0 top-0 hidden h-px origin-left bg-ink/45 lg:block transition-transform duration-[900ms] ease-haus group-hover/svc:bg-ink ${on ? "scale-x-100" : "lg:scale-x-0"}`}
-                            style={{ transitionDelay: delay, width: "100%" }}
-                          />
-                          <span
-                            className={`flex items-baseline gap-3 transition-[opacity,transform] lg:gap-5 duration-700 ease-haus ${on ? "translate-y-0 opacity-100" : "lg:translate-y-2 lg:opacity-0"}`}
-                            style={{ transitionDelay: delay }}
-                          >
-                            {/* phones: a short hairline before each, so they read as a list, not as headings */}
-                            <span aria-hidden className="h-px w-4 shrink-0 self-center bg-ink/40 lg:hidden" />
-                            <span className="font-geo text-[0.98rem] font-normal leading-snug tracking-[0.01em] text-ink/85 transition-transform duration-500 ease-haus group-hover/svc:translate-x-1.5 lg:text-[1.12rem] lg:text-ink">
-                              {item}
-                            </span>
-                          </span>
-                          {k === d.list!.length - 1 && <span aria-hidden className="absolute inset-x-0 bottom-0 hidden h-px bg-ink/15 lg:block" />}
-                        </li>
-                      );
-                    })}
-                  </ul>
+                  // what is delivered: one quiet line under a hairline, as a case lists its services
+                  <p className={`${SMALL} mt-6 max-w-[48ch] border-t border-ink/15 pt-4 normal-case text-ink/80 lg:mt-8`}>
+                    {d.list.join("  ·  ")}
+                  </p>
                 )}
                 {/* at the end of the four, an invitation that comes in once the last is reached */}
                 {i === s.disciplines.length - 1 && (
@@ -523,8 +470,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     </div>
                   </div>
                 )}
-                {/* on arrival, a plain word that the others follow below */}
-                {i === 0 && (
+                {/* (the scroll hint is gone: the page scrolls as any other) */}
+                {false && i === 0 && (
                   <div className={`mt-14 hidden items-center gap-5 transition-opacity duration-700 lg:flex ${active === 0 ? "opacity-100" : "opacity-0"}`}>
                     {/* a mouse, its wheel rolling down, and a line that keeps drawing itself downwards */}
                     <style>{`@keyframes fh-wheel{0%{transform:translateY(0);opacity:0}20%{opacity:1}70%{transform:translateY(9px);opacity:0}100%{opacity:0}}@keyframes fh-draw{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}`}</style>

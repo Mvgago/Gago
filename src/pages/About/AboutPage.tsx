@@ -23,7 +23,7 @@ const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb,
 const ZOOM: Record<string, [number, string]> = {};
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import Footer from "../../components/Footer/Footer";
-import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessSteps, ServicesEditorial } from "./ServicesShowcase";
+import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
 
 // three.js loads only on this page, after the text
 const WhiteRoom = lazy(() => import("../../components/Light/WhiteRoom"));
@@ -351,8 +351,7 @@ export const AboutPage: React.FC = () => {
       </div>
 
       {/* What the studio does, shown: an example for each discipline, held while it is read */}
-      {/* (on trial: the editorial version, as the cases read; the showcase kept beside it to go back to) */}
-      <ServicesEditorial s={s} />
+      <ServicesShowcase s={s} />
 
       {/* The process, in the showcase's grid: the steps under the frame's column, the title in
           the column the disciplines are read in */}
