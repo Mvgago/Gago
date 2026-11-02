@@ -19,13 +19,15 @@
   html, body { height: 100%; }
   body {
     overflow: hidden; display: grid; place-items: center; font-family: Syne, sans-serif;
-    background: radial-gradient(120% 90% at 30% 20%, #c4694d, #a24f37 55%, #7e3a28);
+    background: #1b1410;
   }
-  /* soft light across the table */
+  /* behind the phone, roasted beans close up, turning slowly (Pexels footage), a little darkened round the edges */
+  .bg { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   body::before {
-    content: ""; position: fixed; inset: 0; pointer-events: none;
-    background: linear-gradient(115deg, rgba(255,220,190,.16) 0 30%, transparent 30% 46%, rgba(255,220,190,.08) 46% 58%, transparent 58%);
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background: radial-gradient(90% 80% at 50% 50%, rgba(20,12,8,.05), rgba(20,12,8,.55) 90%);
   }
+  .phone { z-index: 2; }
   .phone {
     position: relative; width: var(--pw); height: var(--ph); border-radius: calc(var(--pw) * .16);
     background: #121212; padding: calc(var(--pw) * .028);
@@ -63,6 +65,7 @@
 </style>
 </head>
 <body>
+  <video class="bg" id="bg" src="beans.mp4" muted loop playsinline autoplay aria-hidden="true"></video>
   <div class="phone">
     <div class="screen" id="screen">
       <div class="island"></div>
@@ -192,6 +195,8 @@
   addEventListener("message", (e) => {
     if (e.origin !== location.origin || typeof e.data?.fhVisible !== "boolean") return;
     visible = e.data.fhVisible;
+    const bg = document.getElementById("bg");
+    if (visible) bg.play().catch(() => {}); else bg.pause();
   });
 </script>
 </body>

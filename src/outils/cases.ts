@@ -318,14 +318,12 @@ export const cases: Case[] = [
       de: "Ein Unternehmen, das ein Bild mit Charakter braucht? Sprechen wir darüber",
     },
     cover: tolvaStill,
-    // the mark building itself, live: the beans turning in the seal
-    headerFrame: "/concepts/tolva/index.html?v=6",
+    // the site on a phone over roasted beans turning close up: the brand at work, not a large logo
+    headerFrame: "/concepts/tolva-phone/index.html?v=3",
     images: [
       // half width each: the mark on paper (seal, name, roast curve), beside the palette laying itself out
       { src: tolvaSheet, pair: true },
       { src: "", video: "/video/tolva-palette.mp4", videoSpeed: 1 },
-      // the site on a phone, on the brand's orange: it scrolls on its own, and by hand under the pointer
-      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=2" },
       // the brand's stories running past on a dark band, without end
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=6" },
     ],
