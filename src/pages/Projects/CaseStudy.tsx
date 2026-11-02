@@ -204,7 +204,7 @@ export const CaseStudyPage: React.FC = () => {
   const { lang } = useI18n();
   // Hidden cases are neither reachable nor part of the case-to-case navigation
   // In the same order as the projects page
-  const ORDER = ["sapphire", "buendia", "smarthc", "gracia-prados"];
+  const ORDER = ["sapphire", "buendia", "smarthc", "gracia-prados", "tolva"];
   const rank = (k: Case) => (ORDER.indexOf(k.slug) + 1 || ORDER.length + 1);
   const shown = cases.filter((c) => !c.hidden).sort((a, b) => rank(a) - rank(b));
   const index = shown.findIndex((c) => c.slug === slug);

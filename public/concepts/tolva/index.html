@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Tolva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --wall: #1b1916;      /* the old mill's walls, soot and roast */
+    --cream: #f1e8d6;
+    --rust: #d0663a;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--wall);
+    color: var(--cream);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    font-family: Syne, sans-serif;
+  }
+  .shade {
+    position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 90% at 50% 45%, rgba(12,10,8,.25), rgba(10,8,6,.85) 85%);
+  }
+  /* a lamp over the roaster: the warm light */
+  .bulb {
+    position: fixed; inset: 0; pointer-events: none; mix-blend-mode: soft-light;
+    background: radial-gradient(55vmax 40vmax at 50% 36%, rgba(255,186,110,.8), rgba(255,160,80,.22) 45%, transparent 72%);
+    opacity: 0;
+  }
+  .bulb.on { animation: flicker 2.4s ease forwards; }
+  @keyframes flicker { 0%{opacity:0} 8%{opacity:.8} 11%{opacity:.2} 16%{opacity:1} 19%{opacity:.5} 24%,100%{opacity:1} }
+  .grain { position: fixed; inset: -50%; pointer-events: none; opacity: .08; filter: url(#grain); }
+
+  .stage { position: relative; text-align: center; }
+
+  /* the seal: the name round the rim, two beans at its centre */
+  .markwrap { position: relative; width: fit-content; margin: 0 auto; }
+  .seal { display: block; width: clamp(80px, min(11vw, 20vh), 168px); height: auto; margin-bottom: 1.6em; overflow: visible;
+    opacity: 0; transform: translateY(-14px); transition: opacity .6s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+  .seal.on { opacity: 1; transform: none; }
+  .seal .spin { transform-origin: 60px 60px; }
+  /* the rim comes in turning, and never quite stops: a slow turn, like the drum of a roaster */
+  .seal.on .spin { animation: spin 1.6s cubic-bezier(.2,.8,.2,1), turn 36s linear 1.6s infinite; }
+  @keyframes spin { from { transform: rotate(-120deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes turn { to { transform: rotate(360deg); } }
+  /* the canvas runs well past the seal, so the beans can come out over its rings */
+  #beans { position: absolute; left: 50%; top: 50%; width: 175%; aspect-ratio: 1; transform: translate(-50%, -50%);
+    pointer-events: none; opacity: 0; transition: opacity 1.2s ease .6s; z-index: 1; }
+  #beans.on { opacity: 1; }
+
+  .line {
+    display: flex; justify-content: center;
+    font-weight: 800; font-size: clamp(48px, min(14vw, 22vh), 190px); line-height: .9; letter-spacing: -.01em; text-transform: uppercase;
+  }
+  /* each letter drops down the hopper, lands heavy, settles */
+  .plate { display: inline-block; transform: translateY(-110vh); }
+  .plate.in { animation: land .5s cubic-bezier(.55,0,1,.45) forwards, settle .35s ease-out .5s forwards; }
+  @keyframes land { to { transform: translateY(0) rotate(var(--r)); } }
+  @keyframes settle {
+    0% { transform: translateY(0) rotate(var(--r)) scaleY(.95); }
+    60% { transform: translateY(-.015em) rotate(var(--r)) scaleY(1.01); }
+    100% { transform: translateY(0) rotate(var(--r)); }
+  }
+  .line.thud { animation: thud .22s ease; }
+  @keyframes thud { 30% { transform: translateY(3px); } 60% { transform: translateY(-1px); } }
+  .tagline {
+    margin-top: 1.1em; font-weight: 700; font-size: clamp(9px, 1.05vw, 14px); letter-spacing: .4em; text-transform: uppercase;
+    opacity: 0; transform: translateY(6px); transition: opacity .9s ease, transform .9s ease;
+  }
+  .tagline.on { opacity: .85; transform: none; }
+  /* the roast curve: temperature over time, the line every roaster watches */
+  .curve { display: block; width: min(70vw, 620px); height: auto; margin: 1.1em auto 0; overflow: visible; }
+  .curve path { fill: none; stroke: rgba(241,232,214,.55); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 1;
+    transition: stroke-dashoffset 2.2s cubic-bezier(.3,0,.2,1); }
+  .curve circle { fill: var(--rust); opacity: 0; transition: opacity .4s ease 2s; }
+  .curve.on path { stroke-dashoffset: 0; }
+  .curve.on circle { opacity: 1; }
+  /* ?still: the finished frame at once, for a cover image */
+  .still *, .still *::before { transition: none !important; animation: none !important; }
+  .still .plate { transform: rotate(var(--r)); }
+  .still .bulb { opacity: 1; }
+</style>
+</head>
+<body>
+  <div class="shade"></div>
+  <div class="bulb" id="bulb"></div>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" />
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" />
+    </filter>
+  </svg>
+  <div class="grain"></div>
+  <div class="stage">
+    <div class="markwrap">
+      <canvas id="beans"></canvas>
+      <svg class="seal" id="seal" viewBox="0 0 120 120" aria-hidden="true">
+        <defs><path id="ring" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0" /></defs>
+        <circle cx="60" cy="60" r="57" fill="none" stroke="var(--rust)" stroke-width="1.6" />
+        <circle cx="60" cy="60" r="38" fill="none" stroke="var(--rust)" stroke-width="1" />
+        <g class="spin">
+          <text font-family="Syne" font-weight="700" font-size="8.5" fill="var(--rust)">
+            <textPath href="#ring" textLength="290" lengthAdjust="spacing">TOLVA · TOSTADERO DE CAFÉ ·</textPath>
+          </text>
+        </g>
+      </svg>
+    </div>
+    <div class="line" id="line" aria-label="Tolva"></div>
+    <div class="tagline" id="tagline">Tostadero · Barra · Tienda</div>
+    <svg class="curve" id="curve" viewBox="0 0 600 70" aria-hidden="true">
+      <!-- the charge drops the temperature, the turning point, then the long climb to first crack -->
+      <path pathLength="1" d="M0 18 C 30 18, 45 62, 85 62 C 150 62, 260 40, 380 26 C 470 16, 540 12, 600 10" />
+      <circle cx="600" cy="10" r="4" />
+    </svg>
+  </div>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const WORD = "Tolva";
+  const line = $("line");
+  const fades = ["seal", "tagline", "curve"].map($);
+  let timers = [];
+  const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+
+  function play() {
+    timers.forEach(clearTimeout); timers = [];
+    fades.forEach((e) => e.classList.remove("on"));
+    $("bulb").classList.remove("on"); void $("bulb").offsetWidth;
+    line.classList.remove("thud");
+    line.innerHTML = "";
+    for (const ch of WORD) {
+      const s = document.createElement("span");
+      s.className = "plate";
+      s.setAttribute("aria-hidden", "true");
+      s.style.setProperty("--r", (Math.random() * 1.6 - .8).toFixed(2) + "deg");
+      s.textContent = ch;
+      line.appendChild(s);
+    }
+    later(150, () => $("bulb").classList.add("on"));
+    later(700, () => $("seal").classList.add("on"));
+    let t = 1500;
+    [...line.children].forEach((s) => { later(t, () => s.classList.add("in")); t += 150 + Math.random() * 60; });
+    t += 500;
+    later(t, () => line.classList.add("thud"));
+    later(t + 350, () => $("tagline").classList.add("on"));
+    later(t + 500, () => $("curve").classList.add("on"));
+  }
+  const STILL = new URLSearchParams(location.search).has("still");
+  if (STILL) {
+    document.documentElement.classList.add("still");
+    play();
+    timers.forEach(clearTimeout);
+    [...fades, ...line.children, $("bulb")].forEach((e) => e.classList.add("on", "in"));
+  } else document.fonts.ready.then(play);
+
+  // framed in the site: played again each time it comes back on view, and the beans held still while away
+  window.fhVisible = true;
+  addEventListener("message", (e) => {
+    if (e.origin !== location.origin || typeof e.data?.fhVisible !== "boolean") return;
+    const was = window.fhVisible;
+    window.fhVisible = e.data.fhVisible;
+    if (e.data.fhVisible && !was) play();
+  });
+</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js" } }</script>
+<script type="module">
+  import * as THREE from "three";
+  const canvas = document.getElementById("beans");
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.25;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(28, 1, .1, 50);
+  camera.position.set(0, 0, 11);
+
+  // a few lumps of noise, so no two beans or two sides of one are quite alike
+  const hash = (x, y, z) => { const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return s - Math.floor(s); };
+  function noise(x, y, z) {
+    const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z), xf = x - xi, yf = y - yi, zf = z - zi;
+    const f = (t) => t * t * (3 - 2 * t), u = f(xf), v = f(yf), w = f(zf);
+    const L = (a, b, t) => a + (b - a) * t;
+    const c = (i, j, k) => hash(xi + i, yi + j, zi + k);
+    return L(L(L(c(0,0,0), c(1,0,0), u), L(c(0,1,0), c(1,1,0), u), v), L(L(c(0,0,1), c(1,0,1), u), L(c(0,1,1), c(1,1,1), u), v), w);
+  }
+
+  // a roasted bean: a plump oval, one face flattened and split by the S-shaped seam
+  function beanGeometry(seed) {
+    const g = new THREE.SphereGeometry(1, 96, 72);
+    const p = g.attributes.position, v = new THREE.Vector3();
+    const col = new Float32Array(p.count * 3);
+    for (let i = 0; i < p.count; i++) {
+      v.fromBufferAttribute(p, i);
+      let { x, y, z } = v;
+      const lump = 1 + (noise(x * 1.6 + seed, y * 1.6, z * 1.6) - .5) * .12;
+      x *= .7 * lump; y *= 1 * lump; z *= .56 * lump;
+      if (z > 0) z *= .62; // the flat face
+      // the seam: an S down the flat face, deep in the middle, closing at the ends
+      const seam = .1 * Math.sin(y * 2.4 + seed);
+      const d = x - seam;
+      const fade = Math.max(0, 1 - Math.pow(Math.abs(y) / .9, 4));
+      const cut = Math.exp(-((d / .07) ** 2)) * fade;
+      // the two halves swell a little either side of it
+      const lip = Math.exp(-(((Math.abs(d) - .13) / .07) ** 2)) * fade;
+      if (z > 0) z += (-.2 * cut + .025 * lip) * Math.min(1, z * 6);
+      // shrivelled skin: folds running lengthwise, fine across and long down the bean
+      const fold = (noise(v.x * 16 + seed, v.y * 2.5, v.z * 16) - .5) * .018 + (noise(v.x * 34, v.y * 5 + seed, v.z * 34) - .5) * .006;
+      const r = Math.hypot(x, z) || 1;
+      x += (x / r) * fold * (1 - cut); z += (z / r) * fold * (1 - cut);
+      p.setXYZ(i, x, y, z);
+      // roast brown, uneven; the seam's walls darker, and down its middle the pale silverskin a real bean keeps
+      const m = .75 + noise(x * 6 + seed, y * 6, z * 6) * .5;
+      const front = z > 0 ? 1 : 0;
+      const skin = front * Math.exp(-((d / .028) ** 2)) * fade;
+      const wall = front * cut * (1 - skin);
+      const roast = [.055, .02, .008].map((c) => c * m * (1 - .55 * wall));
+      const pale = [.3, .2, .1];
+      for (let k = 0; k < 3; k++) col[i * 3 + k] = roast[k] + (pale[k] - roast[k]) * skin * .9;
+    }
+    g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    g.computeVertexNormals();
+    return g;
+  }
+
+  // the skin of a roasted bean is fine-wrinkled lengthwise, like dried leather: short streaks
+  // running pole to pole (v on the sphere is the bean's length)
+  const tex = (() => {
+    const c = document.createElement("canvas"); c.width = c.height = 512;
+    const x = c.getContext("2d");
+    x.fillStyle = "#808080"; x.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 5200; i++) {
+      const px = Math.random() * 512, py = Math.random() * 512, len = 8 + Math.random() * 40;
+      x.strokeStyle = Math.random() < .5 ? `rgba(0,0,0,${.14 + Math.random() * .22})` : `rgba(255,255,255,${.1 + Math.random() * .16})`;
+      x.lineWidth = .6 + Math.random() * 1.6;
+      x.beginPath(); x.moveTo(px, py); x.quadraticCurveTo(px + (Math.random() - .5) * 6, py + len / 2, px + (Math.random() - .5) * 4, py + len); x.stroke();
+    }
+    x.filter = "blur(.6px)"; x.drawImage(c, 0, 0);
+    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2, 1);
+    return t;
+  })();
+  // dry and matte: no clearcoat, no sheen, the colour all in the vertices
+  const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: .82, bumpMap: tex, bumpScale: 1.8 });
+
+  // little fill, a hard key from one side: the relief comes from the shadow side
+  scene.add(new THREE.HemisphereLight(0xfff0dc, 0x1a0f08, .35));
+  const key = new THREE.DirectionalLight(0xffe2c0, 3.6); key.position.set(4, 5, 4); scene.add(key);
+  // a strong warm backlight, so each bean's edge glows clear of the brown behind it
+  const rim = new THREE.DirectionalLight(0xffa860, 6); rim.position.set(-5, 1, -3); scene.add(rim);
+  const rim2 = new THREE.DirectionalLight(0xffc890, 3.5); rim2.position.set(5, -2, -4); scene.add(rim2);
+
+  // a pair: one showing its seam, one its round back; close side by side, one a little in front,
+  // so turning they pass by each other, never through
+  const a = new THREE.Mesh(beanGeometry(1.3), mat);
+  const b = new THREE.Mesh(beanGeometry(4.7), mat);
+  a.position.set(-.52, .05, .65); a.rotation.set(.15, -.35, .24);
+  b.position.set(.52, -.08, -.65); b.rotation.set(-.1, Math.PI + .45, -.22);
+  a.scale.setScalar(.9); b.scale.setScalar(.9);
+  scene.add(a, b);
+  const base = [a.rotation.clone(), b.rotation.clone()];
+
+  function size() {
+    const r = canvas.getBoundingClientRect();
+    renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false);
+  }
+  size(); addEventListener("resize", size); setTimeout(size, 800);
+
+  let t = new URLSearchParams(location.search).has("still") ? 1.2 : 0, last = performance.now();
+  renderer.setAnimationLoop((now) => {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    if (!window.fhVisible) return;
+    t += dt;
+    // they turn right round, slowly, and float, each to its own time
+    a.rotation.y = base[0].y + t * .55;
+    a.rotation.x = base[0].x + Math.sin(t * .6) * .25;
+    a.position.y = .05 + Math.sin(t * .9) * .12;
+    b.rotation.y = base[1].y - t * .45;
+    b.rotation.x = base[1].x + Math.sin(t * .5 + .7) * .25;
+    b.position.y = -.08 + Math.sin(t * .8 + 2) * .12;
+    renderer.render(scene, camera);
+  });
+  setTimeout(() => canvas.classList.add("on"), document.documentElement.classList.contains("still") ? 0 : 300);
+</script>
+</body>
+</html>

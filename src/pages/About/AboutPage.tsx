@@ -9,7 +9,7 @@ import { LightWall } from "../../components/Light/LightWall";
 import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
 
-const WORK_ORDER = ["sapphire", "buendia", "smarthc", "gracia-prados"];
+const WORK_ORDER = ["sapphire", "buendia", "smarthc", "gracia-prados", "tolva"];
 import buendiaCatalogue from "../../assets/peojects/buendia/buendia-catalogue-web.jpg.webp";
 import buendiaSocial from "../../assets/peojects/buendia/buendia-social-web.jpg.webp";
 import sapWeb from "../../assets/peojects/saphire/saphire.jpg.webp";

@@ -19,6 +19,8 @@ const GRADE = "brightness(0.8) contrast(1.08) saturate(0.9)";
 const GRADE_OF: Record<string, string | undefined> = {
   buendia: "brightness(0.8) contrast(1.08) saturate(0.78)",
   "gracia-prados": "brightness(0.98) contrast(1.04)",
+  // (Tolva is already a dark room of its own)
+  tolva: "none",
 };
 
 const GRAIN =
@@ -40,6 +42,7 @@ const WORKS: Work[] = [
   { slug: "buendia", title: "Buendía Travel" },
   { slug: "smarthc", title: "Smart Human Capital" },
   { slug: "gracia-prados", title: "Gracia Prados 14" },
+  { slug: "tolva", title: "Tolva" },
 ];
 
 // The sector first, so the range of clients shows at a glance, then what was done
@@ -68,6 +71,7 @@ const SCENE: Record<string, string | undefined> = {
   // (v: bumped when the scene changes, so a cached copy is never shown)
   buendia: "/concepts/buendia-devices/index.html?bare&v=3",
   smarthc: "/concepts/smarthc-devices/index.html?bare&room&v=3",
+  tolva: "/concepts/tolva/index.html?v=1",
 };
 
 // Projects shown as their drawing drawing itself, then the photograph (the case's opening drawing)

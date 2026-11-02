@@ -8,6 +8,7 @@ import aleaScreen from "../assets/peojects/alea/alea-screen-web.jpg.webp";
 import aleaLaptop from "../assets/peojects/alea/alea.png.webp";
 import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip from "../assets/peojects/santa/santa-strip.jpg.webp";
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
+import tolvaStill from "../assets/peojects/tolva/tolva.webp";
 import santaTerrace from "../assets/peojects/santa/santa (2).jpg.webp";
 import santaDevices from "../assets/peojects/santa/santa (3).jpg.webp";
 import santaSketch from "../assets/peojects/santa/santa (4).jpg.webp";
@@ -255,7 +256,49 @@ export const cases: Case[] = [
       // the terrace at dusk, wide, to close
       { src: santaTerrace },
     ],
-  },  {
+  },
+  {
+    slug: "tolva",
+    title: "Tolva",
+    client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
+    disciplines: ["identity"],
+    sector: { en: "specialty coffee", es: "café de especialidad", fr: "café de spécialité", de: "spezialitätenkaffee" },
+    lead: {
+      en: "Specialty coffee roastery.",
+      es: "Tostadero de café de especialidad.",
+      fr: "Torréfacteur de café de spécialité.",
+      de: "Rösterei für Spezialitätenkaffee.",
+    },
+    // what the brand is and how it works: no client, no results
+    body: {
+      es: "Una marca para un tostadero instalado en una antigua nave de molienda. La identidad sale de su oficio: la curva de tueste, la gráfica que todo tostador vigila, es el sistema visual, y cada origen tiene la suya. Un sello que gira como el tambor de la tostadora y una tipografía ancha y rotunda la hacen industrial, pero cálida.",
+      en: "A brand for a roastery set in an old flour mill. The identity comes from the craft: the roast curve, the graph every roaster watches, is the visual system, and each origin has its own. A seal that turns like the roaster's drum and a broad, solid typeface make it industrial, but warm.",
+      fr: "Une marque pour une torréfaction installée dans une ancienne minoterie. L'identité naît du métier : la courbe de torréfaction, le graphique que tout torréfacteur surveille, devient le système visuel, et chaque origine a la sienne. Un sceau qui tourne comme le tambour du torréfacteur et une typographie large et affirmée la rendent industrielle, mais chaleureuse.",
+      de: "Eine Marke für eine Rösterei in einer alten Mühle. Die Identität kommt aus dem Handwerk: Die Röstkurve, die Grafik, die jeder Röster im Blick hat, ist das visuelle System, und jede Herkunft hat ihre eigene. Ein Siegel, das sich wie die Trommel des Rösters dreht, und eine breite, kräftige Schrift machen sie industriell, aber warm.",
+    },
+    services: [
+      {
+        d: "identity",
+        detail: {
+          en: "name, seal, typography and a system drawn from the roast curve",
+          es: "nombre, sello, tipografía y un sistema a partir de la curva de tueste",
+          fr: "nom, sceau, typographie et un système tiré de la courbe de torréfaction",
+          de: "name, siegel, typografie und ein system aus der röstkurve",
+        },
+      },
+    ],
+    cta: {
+      en: "A business that needs an image with character? Let's talk",
+      es: "¿Un negocio que necesita una imagen con carácter? Hablemos",
+      fr: "Une entreprise qui a besoin d'une image de caractère ? Parlons-en",
+      de: "Ein Unternehmen, das ein Bild mit Charakter braucht? Sprechen wir darüber",
+    },
+    cover: tolvaStill,
+    // the mark building itself, live: the beans turning in the seal
+    headerFrame: "/concepts/tolva/index.html?v=1",
+    images: [],
+  },
+  {
     slug: "buendia",
     title: "Buendía Travel",
     client: { en: "Buendía Travel — tourism", es: "Buendía Travel — turismo", fr: "Buendía Travel — tourisme", de: "Buendía Travel — tourismus" },
