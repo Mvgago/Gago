@@ -243,6 +243,14 @@ export const ProjectsSection: React.FC = () => {
     <main className="relative h-[100dvh] w-full overflow-hidden bg-[#2f2b2a] text-platinum sm:h-[100svh] sm:min-h-[640px]">
       <h1 className="sr-only">{t("section.projects")}</h1>
 
+      {/* How far through the projects: a hairline along the foot of the screen, filling as each one comes */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[2px] bg-platinum/15">
+        <div
+          className="h-full origin-left bg-[#f7f4f0] transition-transform duration-700 ease-haus"
+          style={{ transform: `scaleX(${(index + 1) / WORKS.length})` }}
+        />
+      </div>
+
       {/* The work, full-bleed. Between two projects the picture dips into the room's graphite
           and the next one rises out of it, like a cut in a film: never a hard swap.
           Every project gets the same grade, a touch darker and firmer, so a bright photograph
