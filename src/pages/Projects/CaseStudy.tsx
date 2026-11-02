@@ -37,6 +37,40 @@ const AllProjects: React.FC<{ current: string; lang: Lang }> = ({ current, lang 
   </Link>
 );
 
+/**
+ * On to the rest of the work: "next" on the left, then every other project from the next one on, side by side
+ * as pictures, each with its name on a small tag; the row runs off the edge and scrolls sideways
+ */
+const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ after, shown, lang }) => {
+  const rest = shown.map((_, k) => shown[(after + 1 + k) % shown.length]).slice(0, shown.length - 1);
+  return (
+    <nav aria-label={CASE_UI.next[lang]} className="mt-16 border-t border-ink/10 pt-10 md:mt-20">
+      <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:-mx-6 sm:px-6 md:-mx-8 md:px-8">
+        <span className={`${SMALL} shrink-0 pt-2 text-ink md:pr-3`}>{CASE_UI.nextShort[lang]}</span>
+        {rest.map((k) => (
+          <Link
+            key={k.slug}
+            to={`/projects/${k.slug}`}
+            className="group relative aspect-[16/9] w-[78vw] shrink-0 overflow-hidden rounded-[3px] bg-[#ecebe8] sm:w-[46vw] lg:w-[36vw]"
+          >
+            <img
+              src={k.thumb ?? k.cover}
+              alt={k.title}
+              loading="lazy"
+              {...protect}
+              className="h-full w-full object-cover transition-transform duration-1000 ease-haus group-hover:scale-[1.03]"
+              style={{ objectPosition: k.coverFocus }}
+            />
+            <span className={`${SMALL} absolute left-2 top-2 rounded-[3px] bg-[#ecebe8]/85 px-2 py-1 text-ink backdrop-blur-sm`}>
+              {k.title}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </nav>
+  );
+};
+
 /** One image of the case, rising softly into view */
 /**
  * The case's film, full width, silent and looping, at the same pace as on the
@@ -211,7 +245,6 @@ export const CaseStudyPage: React.FC = () => {
   if (index === -1) return <Navigate to="/projects" replace />;
 
   const c = shown[index];
-  const next = shown[(index + 1) % shown.length];
   // what each picture of the case is, for those who can't see it and for search engines
   const altText = `${c.title} — ${c.client[lang as "es"] ?? c.client.es}`;
   // Cases told the new way (a film, or services in detail) open side by side
@@ -439,21 +472,8 @@ export const CaseStudyPage: React.FC = () => {
       </div>
       )}
 
-      {/* The next project */}
-      <Link
-        to={`/projects/${next.slug}`}
-        className="group mt-16 block border-t border-ink/10 pt-10 md:mt-20"
-      >
-        <span className={`${SMALL} text-graphite`}>{CASE_UI.next[lang]}</span>
-        <span className="mt-4 flex items-baseline justify-between gap-6">
-          <span className={`${TITLE} text-ink transition-transform duration-700 ease-haus group-hover:translate-x-2`}>
-            {next.title}
-          </span>
-          <span aria-hidden className={`${TITLE} text-ink transition-transform duration-700 ease-haus group-hover:translate-x-2`}>
-            →
-          </span>
-        </span>
-      </Link>
+      {/* The projects that follow, in order from the next one: a row of pictures, each named on a small tag */}
+      <NextStrip after={index} shown={shown} lang={lang} />
     </main>
   );
 };
