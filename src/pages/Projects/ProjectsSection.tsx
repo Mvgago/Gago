@@ -338,10 +338,10 @@ export const ProjectsSection: React.FC = () => {
               <p className={`${CAPTION} mt-3 hidden lowercase text-platinum/70 sm:block`}>
                 {scopeOf(active.slug, lang)}
               </p>
-              {/* a plain way in, so it is clear the name opens the project (on phones above all) */}
+              {/* a plain way in, so it is clear the name opens the project (wider screens; on phones the name alone) */}
               <Link
                 to={`/projects/${active.slug}`}
-                className={`${ACTION} group pointer-events-auto mt-5 flex w-fit items-center gap-4 text-platinum/85 transition-colors duration-500 hover:text-[#f7f4f0]`}
+                className={`${ACTION} group pointer-events-auto mt-5 hidden w-fit md:flex items-center gap-4 text-platinum/85 transition-colors duration-500 hover:text-[#f7f4f0]`}
               >
                 <span className="transition-[letter-spacing] duration-700 ease-haus group-hover:tracking-[0.12em]">{CASE_UI.open[lang]}</span>
                 <span aria-hidden className="relative block h-px w-16">
