@@ -327,7 +327,7 @@ export const cases: Case[] = [
       { src: tolvaWindow },
       // half width each: the brand's stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
-      { src: "", video: "/video/tolva-palette.mp4", videoSpeed: 1 },
+      { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
     ],
   },
   {
