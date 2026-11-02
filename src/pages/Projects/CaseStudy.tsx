@@ -55,7 +55,7 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
   const grot = new URLSearchParams(useLocation().search).has("grot");
   // phones: the film's own upright cut where there is one (the wide film, cropped to a tall screen, lost the building)
   const [narrow] = useState(() => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches);
-  const film = narrow && c.videoSmall ? c.videoSmall : c.video;
+  const film = c.video; void narrow;
   const t = grot
     ? {
         wrap: "font-grot",
@@ -80,16 +80,16 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
     >
       {/* from the top of the page, under the header: the mark sits in the middle, well clear of it */}
       {c.headerImage ? (
-        <img src={c.headerImage} alt={c.title} {...protect} className="block h-[86svh] w-full object-cover" />
+        <img src={c.headerImage} alt={c.title} {...protect} className="block aspect-[16/10] w-full md:aspect-auto md:h-[86svh] object-cover" />
       ) : c.headerFrame ? (
-        <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="h-[86svh] w-full" />
+        <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="aspect-[16/10] w-full md:aspect-auto md:h-[86svh]" />
       ) : c.headerViewer === "stand" ? (
-        <Suspense fallback={<div className="h-[86svh] w-full" />}>
-          <StandViewer label={CASE_UI.recreation[lang]} className="h-[86svh] w-full" />
+        <Suspense fallback={<div className="aspect-[16/10] w-full md:aspect-auto md:h-[86svh]" />}>
+          <StandViewer label={CASE_UI.recreation[lang]} className="aspect-[16/10] w-full md:aspect-auto md:h-[86svh]" />
         </Suspense>
       ) : c.headerReveal ? (
         // the drawing drawing itself, then the building over it, as on the projects page
-        <div className="relative h-[86svh] w-full">
+        <div className="relative aspect-[16/10] w-full md:aspect-auto md:h-[86svh]">
           <DrawingLoop drawing={c.headerReveal} photo={c.cover} className="absolute inset-0" />
         </div>
       ) : c.video ? (
@@ -102,10 +102,10 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
           autoPlay
           {...protect}
           onLoadedMetadata={(e) => (e.currentTarget.playbackRate = c.videoSpeed ?? 1.35)}
-          className="block h-[86svh] w-full object-cover"
+          className="block aspect-[16/10] w-full md:aspect-auto md:h-[86svh] object-cover"
         />
       ) : (
-        <img src={c.cover} alt={c.title} {...protect} className="block h-[86svh] w-full object-cover" />
+        <img src={c.cover} alt={c.title} {...protect} className="block aspect-[16/10] w-full md:aspect-auto md:h-[86svh] object-cover" />
       )}
     </motion.figure>
     <header className={`grid gap-y-10 pb-20 pt-8 text-ink md:grid-cols-12 md:gap-x-10 md:pb-28 md:pt-10 ${t.wrap}`}>
