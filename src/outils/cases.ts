@@ -329,7 +329,7 @@ export const cases: Case[] = [
     // place and the product), the screen wide, and two uprights to close
     images: [
       // the mark: in cream over the grinder at work (Pexels film), wide
-      { src: "", video: "/video/tolva-sheet.mp4?v=2", videoSpeed: 1 },
+      { src: "", video: "/video/tolva-sheet.mp4?v=3", videoSpeed: 1 },
       // the system: the stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
       { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
