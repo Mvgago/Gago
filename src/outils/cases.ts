@@ -394,7 +394,7 @@ export const cases: Case[] = [
     // Amsterdam behind (the Asturias spot (2019) was tried there, but its shots are too short and
     // mostly under titles to make a clean loop)
     // (bare: the full-bleed version, with no caption in the corner under the site's logo)
-    headerFrame: "/concepts/buendia-devices/index.html?bare&v=3",
+    headerFrame: "/concepts/buendia-devices/index.html?bare&v=4",
     // Then pairs of the same height: the site beside the site on the laptop, the catalogue in hand
     // beside a spread, the campaign on social media wide; last, its digital presence (search, posts, bookings)
     // beside the brand out in the street, on an umbrella and a sweatshirt
@@ -580,7 +580,7 @@ export const cases: Case[] = [
     ],
     cover: smMascot,
     // The first screen is the signing tablet, full width; the stand follows the words
-    headerFrame: "/concepts/smarthc-devices/index.html?bare&center&v=4",
+    headerFrame: "/concepts/smarthc-devices/index.html?bare&center&v=5",
     thumb: smStrip,
     pick: smDetailLogo,
     coverFocus: "50% 55%",

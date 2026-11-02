@@ -790,7 +790,8 @@ function fit() {
   // (0.34: the narrowest half-width at which both still sit whole; frames near square, still on the
   // narrow lens, were the ones that cut them)
   { const need = 0.3, have = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect, k = Math.max(1, need / have);
-    const home0 = BARE_FULL && w / h >= .9 ? HOME_NEAR : HOME0;
+    // (near only in a wide frame: a square one, as a case's opening on a phone, came in far too close)
+    const home0 = BARE_FULL && w / h >= 1.3 ? HOME_NEAR : HOME0;
     [[HOME, home0], [START, START0]].forEach(([v, v0]) => v.copy(controls.target).add(new THREE.Vector3().copy(v0).sub(controls.target).multiplyScalar(k)));
     if (fitted) camera.position.copy(HOME); fitted = true; }
   const visH = 2 * CODE_DIST * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), visW = visH * camera.aspect;
