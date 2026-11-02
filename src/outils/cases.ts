@@ -329,7 +329,7 @@ export const cases: Case[] = [
       // half width each: the mark in cream over the grinder at work (Pexels film), beside the site on a phone
       // over roasted beans, scrolling on its own
       { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1, pair: true },
-      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=5" },
+      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6" },
       // half width each: the blade sign out over the street (a blank sign photographed, painted in the brand's
       // rust with the logo laid on in perspective), beside a shop window in the sun (Pexels): the place
       { src: tolvaSign, pair: true },
