@@ -23,9 +23,20 @@
     overflow: hidden;
     font-family: Syne, sans-serif;
   }
+  /* the café behind frosted glass: the photograph comes already blurred (glass.jpg), here softened a
+     touch more and given the glass's own milky sheen */
+  body::before {
+    content: ""; position: fixed; inset: -20px;
+    background: url(glass.jpg) center / cover no-repeat;
+    filter: blur(6px) saturate(.85);
+  }
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(255,240,220,.07), rgba(255,240,220,.02) 60%, rgba(255,240,220,.06));
+  }
   .shade {
     position: fixed; inset: 0; pointer-events: none;
-    background: radial-gradient(120% 90% at 50% 45%, rgba(12,10,8,.25), rgba(10,8,6,.85) 85%);
+    background: radial-gradient(120% 90% at 50% 45%, rgba(22,16,11,.58), rgba(14,10,7,.88) 85%);
   }
   /* a lamp over the roaster: the warm light */
   .bulb {

@@ -129,6 +129,8 @@ export type Case = {
   coverFit?: "contain";
   /** A calm image for the index strip, with no text or interface in it (defaults to the cover) */
   thumb?: string;
+  /** A bright picture for the row of next projects at the foot of a case (defaults to the strip image) */
+  pick?: string;
   /** Where to centre the strip image when it is cropped (CSS object-position) */
   coverFocus?: string;
   images: CaseImage[];
@@ -230,6 +232,7 @@ export const cases: Case[] = [
     },
     cover: santaFacade,
     thumb: santaStrip,
+    pick: santaFacade,
     // the case opens on the site's map drawing itself, out from the building along its lines
     headerReveal: { src: santaMap, order: santaMapOrder, w: 1026, h: 680, paper: "#f9f6f5" },
     // From the building to the brand: the building by day then by night, the dome drawn into the mark beside
@@ -295,7 +298,7 @@ export const cases: Case[] = [
     },
     cover: tolvaStill,
     // the mark building itself, live: the beans turning in the seal
-    headerFrame: "/concepts/tolva/index.html?v=1",
+    headerFrame: "/concepts/tolva/index.html?v=2",
     images: [],
   },
   {
@@ -325,6 +328,7 @@ export const cases: Case[] = [
     ],
     cover: buendiaWeb,
     thumb: buendiaStrip,
+    pick: buendiaMerch,
     // Beside the words, first: the 3D scene, the site booking a trip and the campaign on the phone,
     // Amsterdam behind (the Asturias spot (2019) was tried there, but its shots are too short and
     // mostly under titles to make a clean loop)
@@ -413,6 +417,7 @@ export const cases: Case[] = [
       de: "Ein Projekt, das es noch nicht gibt? Sprechen wir darüber",
     },
     cover: sapRender,
+    pick: sapAerial,
     // the whole film, opening on the facade (the projects page has its own cut, starting on the terrace)
     video: "/video/the-sapphire-full.mp4",
     coverFocus: "50% 62%",
@@ -500,6 +505,7 @@ export const cases: Case[] = [
     // The first screen is the stand, to turn round right away
     headerViewer: "stand",
     thumb: smStrip,
+    pick: smDetailLogo,
     coverFocus: "50% 55%",
     // Three pairs of the same height: the presentation beside the product sheet, then
     // each printed piece beside a close-up of it

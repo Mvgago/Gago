@@ -54,12 +54,12 @@ const NextStrip: React.FC<{ after: number; shown: Case[]; lang: Lang }> = ({ aft
             className="group relative aspect-[16/9] w-[78vw] shrink-0 overflow-hidden rounded-[3px] bg-[#ecebe8] sm:w-[46vw] lg:w-[36vw]"
           >
             <img
-              src={k.thumb ?? k.cover}
+              src={k.pick ?? k.thumb ?? k.cover}
               alt={k.title}
               loading="lazy"
               {...protect}
               className="h-full w-full object-cover transition-transform duration-1000 ease-haus group-hover:scale-[1.03]"
-              style={{ objectPosition: k.coverFocus }}
+              style={{ objectPosition: k.pick ? undefined : k.coverFocus }}
             />
             <span className={`${SMALL} absolute left-2 top-2 rounded-[3px] bg-[#ecebe8]/85 px-2 py-1 text-ink backdrop-blur-sm`}>
               {k.title}
