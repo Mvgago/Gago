@@ -48,9 +48,13 @@
   .txt { font-weight: 500; font-size: 4.2em; line-height: 1.35; }
   .card { border-radius: 5em; overflow: hidden; }
   .row { display: flex; justify-content: space-between; align-items: baseline; }
-  .btn { display: inline-block; background: var(--charcoal); color: var(--cream); border-radius: 99em; padding: 3.2em 7em; font-weight: 700; font-size: 3.8em; }
-  .chip { display: inline-flex; align-items: center; gap: 2em; border: .3em solid rgba(35,34,32,.2); border-radius: 99em; padding: 2.4em 5em; font-weight: 700; font-size: 3.6em; }
-  .chip i { width: 1em; height: 1em; border-radius: 50%; }
+  .btn { display: inline-block; background: var(--charcoal); color: var(--cream); border-radius: 99em; padding: .85em 1.9em; font-weight: 700; font-size: 3.8em; white-space: nowrap; }
+  .chip { display: inline-flex; align-items: center; gap: .55em; border: .08em solid rgba(35,34,32,.25); border-radius: 99em; padding: .6em 1.3em; font-weight: 700; font-size: 3.4em; }
+  .chip i { width: .8em; height: .8em; border-radius: 50%; }
+  /* a choice in a row of options: the grind, the weight */
+  .seg { display: flex; background: var(--mocha); border-radius: 99em; padding: 1em; gap: 1em; }
+  .seg span { flex: 1; text-align: center; border-radius: 99em; padding: .7em 0; font-weight: 700; font-size: 3.4em; opacity: .55; }
+  .seg span.on { background: var(--cream); opacity: 1; box-shadow: 0 .3em .9em rgba(0,0,0,.08); }
   .rule { border-top: .3em solid rgba(35,34,32,.15); }
   /* the menu at the foot of the screen, always there */
   .nav { position: absolute; z-index: 4; left: 50%; bottom: 3.5%; transform: translateX(-50%); display: flex; gap: 1em; background: var(--charcoal); border-radius: 99em; padding: 2em; box-shadow: 0 2em 6em rgba(0,0,0,.25); }
@@ -96,7 +100,12 @@
             <span class="chip"><i style="background:#e8833a"></i>Naranja</span>
             <span class="chip"><i style="background:#c99a5b"></i>Panela</span>
           </div>
-          <div class="row" style="margin-top:6em;align-items:center"><p class="h2" style="font-size:7em;margin:0">14,90 €</p><span class="btn">Añadir</span></div>
+          <p class="txt" style="margin-top:1.6em;font-weight:700">Molienda</p>
+          <div class="seg" style="margin-top:2.5em"><span class="on">Grano</span><span>Filtro</span><span>Espresso</span></div>
+          <p class="txt" style="margin-top:1.1em;font-weight:700">Peso</p>
+          <div class="seg" style="margin-top:2.5em"><span class="on">250 g</span><span>500 g</span><span>1 kg</span></div>
+          <div class="row" style="margin-top:7em;align-items:center"><p class="h2" style="font-size:7.5em;margin:0;white-space:nowrap">14,90 €</p><span class="btn">Añadir</span></div>
+          <p class="txt" style="margin-top:1em;opacity:.6;font-size:3.4em">Tostado el martes · envío en 24 h</p>
         </div>
 
         <!-- today's roast -->
@@ -140,7 +149,7 @@
         <div class="sec" style="padding-bottom:42em">
           <p class="kick">Visítanos</p>
           <p class="h2">De lunes a sábado</p>
-          <p class="txt" style="margin-top:3em;opacity:.7">8:00 – 19:00 · Tostamos los martes y viernes por la mañana: ven a verlo.</p>
+          <p class="txt" style="margin-top:.8em;opacity:.7">8:00 – 19:00 · Tostamos los martes y viernes por la mañana: ven a verlo.</p>
           <svg viewBox="0 0 120 120" style="display:block;width:34em;margin:12em auto 0" aria-hidden="true">
             <defs><path id="sr" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0" /></defs>
             <circle cx="60" cy="60" r="57" fill="none" stroke="#232220" stroke-width="1.8" />
@@ -157,6 +166,9 @@
 <script>
   const screen = document.getElementById("screen"), page = document.getElementById("page");
   let y = 0, dir = 1, wait = 1.2, hover = false, visible = true;
+  // ?y=n: held at that scroll, still (to look at one part of the page)
+  const Y = new URLSearchParams(location.search).get("y");
+  if (Y) { y = +Y; hover = true; }
   const max = () => Math.max(0, page.offsetHeight - screen.offsetHeight);
   // pauses on each section as it scrolls, like someone reading
   screen.addEventListener("pointerenter", () => (hover = true));

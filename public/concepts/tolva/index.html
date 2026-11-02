@@ -28,17 +28,17 @@
   body::before {
     content: ""; position: fixed; inset: -20px;
     background: url(glass.jpg) center / cover no-repeat;
-    filter: brightness(1.12);
+    filter: brightness(1.1) saturate(.78);
   }
   /* a light warm wash over the café, under the words (it tinted them when it lay on top) */
   body::after {
     content: ""; position: fixed; inset: 0; pointer-events: none; mix-blend-mode: soft-light; z-index: 0;
-    background: linear-gradient(180deg, rgba(255,175,110,.28), rgba(240,140,80,.2));
+    background: linear-gradient(180deg, rgba(255,190,140,.1), rgba(240,160,110,.06));
   }
   /* only light shade now: enough at the edges to hold the frame, little in the middle */
   .shade {
     position: fixed; inset: 0; pointer-events: none;
-    background: radial-gradient(120% 90% at 50% 45%, rgba(60,30,12,.32), rgba(34,18,8,.68) 88%);
+    background: radial-gradient(120% 90% at 50% 45%, rgba(28,24,20,.34), rgba(18,16,14,.7) 88%);
   }
   .line, .tagline { text-shadow: 0 2px 30px rgba(40,18,6,.35); }
   /* a lamp over the roaster: the warm light */

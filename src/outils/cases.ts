@@ -319,13 +319,13 @@ export const cases: Case[] = [
     },
     cover: tolvaStill,
     // the mark building itself, live: the beans turning in the seal
-    headerFrame: "/concepts/tolva/index.html?v=5",
+    headerFrame: "/concepts/tolva/index.html?v=6",
     images: [
       // half width each: the mark on paper (seal, name, roast curve), beside the palette laying itself out
       { src: tolvaSheet, pair: true },
       { src: "", video: "/video/tolva-palette.mp4", videoSpeed: 1 },
       // the site on a phone, on the brand's orange: it scrolls on its own, and by hand under the pointer
-      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=1" },
+      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=2" },
       // the brand's stories running past on a dark band, without end
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=6" },
     ],
