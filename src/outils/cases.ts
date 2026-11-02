@@ -10,7 +10,7 @@ import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
 import tolvaWindow from "../assets/peojects/tolva/tolva-window.webp";
-import tolvaHands from "../assets/peojects/tolva/tolva-hands.webp";
+import tolvaPour from "../assets/peojects/tolva/tolva-pour.webp";
 import santaRender from "../assets/peojects/santa/santa-render.jpg.webp";
 import santaTerrace from "../assets/peojects/santa/santa (2).jpg.webp";
 import santaDevices from "../assets/peojects/santa/santa (3).jpg.webp";
@@ -328,8 +328,8 @@ export const cases: Case[] = [
       // (Pexels): the place, at street level
       { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1, pair: true },
       { src: tolvaWindow },
-      // the barista's hands at the portafilter, small and centred (Pexels, cropped wide; the photographer's mark left out)
-      { src: tolvaHands, small: true },
+      // ground coffee falling into the filter, small and centred: what goes down a hopper (Pexels, cropped 4:3)
+      { src: tolvaPour, small: true },
       // half width each: the brand's stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
       { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
