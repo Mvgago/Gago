@@ -612,6 +612,10 @@ export const CaseStudyPage: React.FC = () => {
               <div key={r} className={row[0].small ? "mx-auto w-full px-4 sm:px-6 md:w-1/2 md:px-0" : ""}>
                 <Film src={row[0].video} title={c.title} ratio="16 / 9" speed={row[0].videoSpeed} />
               </div>
+            ) : row[0].small ? (
+              <div key={r} className="mx-auto w-full px-4 sm:px-6 md:w-1/2 md:px-0">
+                <Plate src={row[0].src} alt={altText} />
+              </div>
             ) : (
               <Plate key={r} src={row[0].src} alt={altText} />
             ),

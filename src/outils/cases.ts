@@ -10,6 +10,7 @@ import aleaDesk from "../assets/peojects/alea/alea7.jpeg.webp";import santaStrip
 import santaFacade from "../assets/peojects/santa/santa (7).jpg.webp";
 import tolvaStill from "../assets/peojects/tolva/tolva.webp";
 import tolvaWindow from "../assets/peojects/tolva/tolva-window.webp";
+import tolvaCup from "../assets/peojects/tolva/tolva-cup.webp";
 import santaRender from "../assets/peojects/santa/santa-render.jpg.webp";
 import santaTerrace from "../assets/peojects/santa/santa (2).jpg.webp";
 import santaDevices from "../assets/peojects/santa/santa (3).jpg.webp";
@@ -327,8 +328,8 @@ export const cases: Case[] = [
       // (Pexels): the place, at street level
       { src: "", video: "/video/tolva-sheet.mp4", videoSpeed: 1, pair: true },
       { src: tolvaWindow },
-      // a cup of coffee, small and centred (Pexels film)
-      { src: "", video: "/video/tolva-cup.mp4", videoSpeed: 1, small: true },
+      // a cup from above on a pale table, small and centred, the seal in the empty space beside it (Pexels)
+      { src: tolvaCup, small: true },
       // half width each: the brand's stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
       { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
