@@ -331,12 +331,11 @@ export const cases: Case[] = [
     headerFrame: "/concepts/tolva-film/index.html?bare&v=1",
     // (on trial: the sunlit shop window, in place of the film)
     headerImage: tolvaWindow,
-    // Pairs of one height throughout (the mark and the screen, the system, the craft, the street), and two
-    // uprights to close
+    // One wide piece to open, then pairs of one height (the system, the craft, the street and the screen), and
+    // two uprights to close
     images: [
-      // the mark in cream over the grinder at work (Pexels film), beside the site on a phone over roasted beans
-      { src: "", video: "/video/tolva-sheet.mp4?v=3", videoSpeed: 1, pair: true },
-      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6" },
+      // the mark in cream over the grinder at work (Pexels film), wide
+      { src: "", video: "/video/tolva-sheet.mp4?v=3", videoSpeed: 1 },
       // the system: the stories on their arc, beside the palette laying itself out
       { src: "", viewer: "devices", frame: "/concepts/tolva-stories/index.html?v=10", pair: true },
       { src: "", video: "/video/tolva-palette.mp4?v=2", videoSpeed: 1 },
@@ -344,10 +343,10 @@ export const cases: Case[] = [
       // from a kraft bag into the grinder's hopper, Tolva's origin label on it (Pexels; the old sticker replaced)
       { src: tolvaRoast, pair: true },
       { src: tolvaBag },
-      // the street: the blade sign (a blank sign photographed, painted and lettered), beside a shop window in
-      // the sun (Pexels)
+      // the street and the screen: the blade sign (a blank sign photographed, painted and lettered), beside the
+      // site on a phone over roasted beans
       { src: tolvaSign, pair: true },
-      { src: tolvaWindow },
+      { src: "", viewer: "devices", frame: "/concepts/tolva-phone/index.html?v=6" },
       // to close, two uprights, whole (Pexels): ground coffee falling into the filter, what goes down a hopper,
       // and the coffee poured into a cup with Tolva's seal raised on it (its own mark removed)
       { src: tolvaPour, pair: true, fit: "natural" },
