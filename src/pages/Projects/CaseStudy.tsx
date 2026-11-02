@@ -138,7 +138,7 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
 // Kept light so the row comes up at once: six-second clips at card size (public/video/previews), each over its
 // own first frame, shown the moment the card is drawn; the film or the scene takes over once it can play
 const MOVING: Record<string, { video?: string; frame?: string; poster: string } | undefined> = {
-  sapphire: { video: "/video/previews/sapphire.mp4", poster: "/video/previews/sapphire.jpg" },
+  sapphire: { video: "/video/previews/sapphire.mp4?v=2", poster: "/video/previews/sapphire.jpg?v=2" },
   buendia: { frame: "/concepts/buendia-devices/index.html?bare&v=3", poster: "/video/previews/buendia.jpg" },
   // (its 3D scene is framed for a full screen, off-centre for the words beside it: in a card, its 3D character)
   smarthc: { video: "/video/previews/smarthc.mp4", poster: "/video/previews/smarthc.jpg" },
