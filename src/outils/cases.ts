@@ -368,10 +368,10 @@ export const cases: Case[] = [
     sector: { en: "real estate", es: "inmobiliario", fr: "immobilier", de: "immobilien" },
     layout: "editorial",
     statement: {
-      es: "Habitar un lugar antes de construirlo.",
-      en: "Living in a place before it is built.",
-      fr: "Habiter un lieu avant de le construire.",
-      de: "Einen Ort bewohnen, bevor er gebaut ist.",
+      es: "Habitar un hogar antes de construirlo.",
+      en: "Living in a home before it is built.",
+      fr: "Habiter un foyer avant de le construire.",
+      de: "Ein Zuhause bewohnen, bevor es gebaut ist.",
     },
     // The problem first, so anyone selling something not yet built sees themselves in it
     lead: {
