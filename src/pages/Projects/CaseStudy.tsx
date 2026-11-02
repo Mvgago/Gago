@@ -78,6 +78,18 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
       {/* from the top of the page, under the header: the mark sits in the middle, well clear of it */}
       {c.headerFrame ? (
         <DevicesFrame src={c.headerFrame} title={`${c.title} — 3D`} className="h-[86svh] w-full" />
+      ) : c.video ? (
+        <video
+          src={c.video}
+          aria-label={c.title}
+          muted
+          loop
+          playsInline
+          autoPlay
+          {...protect}
+          onLoadedMetadata={(e) => (e.currentTarget.playbackRate = c.videoSpeed ?? 1.35)}
+          className="block h-[86svh] w-full object-cover"
+        />
       ) : (
         <img src={c.cover} alt={c.title} {...protect} className="block h-[86svh] w-full object-cover" />
       )}

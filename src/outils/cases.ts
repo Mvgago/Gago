@@ -366,6 +366,13 @@ export const cases: Case[] = [
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
     disciplines: ["identity", "web", "direction", "video", "presentation"],
     sector: { en: "real estate", es: "inmobiliario", fr: "immobilier", de: "immobilien" },
+    layout: "editorial",
+    statement: {
+      es: "Vender lo que aún no existe. Una promoción contada antes de la primera piedra.",
+      en: "Selling what doesn't exist yet. A development told before the first stone.",
+      fr: "Vendre ce qui n'existe pas encore. Un programme raconté avant la première pierre.",
+      de: "Verkaufen, was es noch nicht gibt. Ein Projekt, erzählt vor dem ersten Stein.",
+    },
     // The problem first, so anyone selling something not yet built sees themselves in it
     lead: {
       en: "Residential complex on the Costa del Sol.",
