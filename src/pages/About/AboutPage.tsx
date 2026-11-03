@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
@@ -25,15 +25,6 @@ import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import Footer from "../../components/Footer/Footer";
 import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
 
-// three.js loads only on this page, after the text
-const WhiteRoom = lazy(() => import("../../components/Light/WhiteRoom"));
-
-// The room fades into the page's wall at the top (under the header) and the bottom, so it has no edge,
-// and away to the left, so the words there sit on the plain wall
-const ROOM_FADE = [
-  "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.9) 16%, rgba(0,0,0,0.9) 55%, transparent 100%)",
-  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.55) 55%, #000 85%)",
-].join(", ");
 
 // Fine film grain, as on the landing
 const GRAIN =
@@ -241,34 +232,13 @@ export const AboutPage: React.FC = () => {
   };
 
 
-  // The white room starts once the page has drawn its words (a frame or two later, half a second at most)
-  const [roomReady, setRoomReady] = useState(false);
-  useEffect(() => {
-    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 300));
-    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
-    const id = idle(() => setRoomReady(true), { timeout: 600 });
-    return () => cancel(id);
-  }, []);
 
   return (
     // No bottom padding: the dark contact block closes the page, the footer follows it
     <main className="relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
       <LightWall />
 
-      {/* The opening: a white room, curved, with lines of light set into its wall */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-[1] h-[100svh] max-h-[960px] min-h-[640px]"
-        // Both fades apply at once: each point keeps the lesser of the two
-        style={{ maskImage: ROOM_FADE, WebkitMaskImage: ROOM_FADE, maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
-      >
-        {/* (it comes in a moment after the words: the page can be read and used first) */}
-        {roomReady && (
-          <Suspense fallback={null}>
-            <WhiteRoom className="h-full w-full" />
-          </Suspense>
-        )}
-      </div>
+      {/* (the page sits on the plain wall: no room behind the opening) */}
 
       {/* Header, as in the other rooms: one quiet line. The logo heads the page,
           and the statement below is the one large thing to read */}
