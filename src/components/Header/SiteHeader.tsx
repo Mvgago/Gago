@@ -1,12 +1,35 @@
 import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useAnimationControls, useReducedMotion, type Variants } from "framer-motion";
 import { Monolith } from "../Monolith/Monolith";
 import { SpatialIndex, preloadLogoSpace } from "../SpatialIndex/SpatialIndex";
-import { EASE_HAUS } from "../../lib/motion";
+import { EASE_HAUS, EASE_VEIL } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { LanguageSwitch } from "../../i18n/LanguageSwitch";
 import { WALL, isLightRoom } from "../Light/LightWall";
+
+// Arriving at the landing from any other page, the corner pieces unfold again instead of standing fixed:
+// each folds away with the page that leaves, then opens out from its own edge (the logo from the left,
+// the index and the language from the right), coming into focus as it goes.
+type Unfold = { from: "left" | "right"; delay: number };
+const UNFOLD: Variants = {
+  folded: ({ from }: Unfold) => ({
+    opacity: 0,
+    x: from === "left" ? -10 : 10,
+    filter: "blur(6px)",
+    clipPath: from === "left" ? "inset(-40% 100% -40% 0%)" : "inset(-40% 0% -40% 100%)",
+    transition: { duration: 0.28, ease: EASE_VEIL },
+  }),
+  open: ({ delay }: Unfold) => ({
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    clipPath: "inset(-40% 0% -40% 0%)",
+    transition: { duration: 1.3, ease: EASE_HAUS, delay },
+    // (left unclipped once open, so the language list and the index's invitation are never cut)
+    transitionEnd: { clipPath: "none", filter: "none" },
+  }),
+};
 
 // The corner logo is the same 3D model as the index sculpture; the 2D mark stands in while it loads.
 const Logo3D = lazy(() => import("../Monolith/Logo3D"));
@@ -16,6 +39,33 @@ export const SiteHeader: React.FC = () => {
   const { pathname } = useLocation();
   const close = useCallback(() => setOpen(false), []);
   const { t } = useI18n();
+
+  const unfold = useAnimationControls();
+  const still = useReducedMotion();
+  const last = useRef(pathname);
+  const folded = useRef(false);
+  useEffect(() => {
+    const from = last.current;
+    last.current = pathname;
+    // left again before the unfolding finished: the pieces simply stand where they belong
+    if (pathname !== "/" || from === "/" || still) {
+      if (folded.current) void unfold.start("open");
+      folded.current = false;
+      return;
+    }
+    let gone = false;
+    folded.current = true;
+    void unfold.start("folded").then(() => {
+      // (the old page takes about this long to leave; the landing comes in with the corners)
+      window.setTimeout(() => {
+        if (gone) return;
+        void unfold.start("open").then(() => (folded.current = false));
+      }, 180);
+    });
+    return () => {
+      gone = true;
+    };
+  }, [pathname, still, unfold]);
 
   // Any navigation closes the index.
   useEffect(close, [pathname, close]);
@@ -98,7 +148,7 @@ export const SiteHeader: React.FC = () => {
           // Translucent, so light falling on the page behind (as on "info") carries on under it
           style={{ background: pathname === "/artwork" ? "#0f0e10cc" : `${WALL}cc`, borderColor: pathname === "/artwork" ? "rgba(255,255,255,0.06)" : undefined }}
         />
-        <div className="relative">
+        <motion.div className="relative" variants={UNFOLD} custom={{ from: "left", delay: 0 } satisfies Unfold} animate={unfold}>
         {/* While the index is open the sculpture is the brand, so the corner becomes a
             second way out: home, balancing the close control on the right. */}
         <Link
@@ -143,12 +193,15 @@ export const SiteHeader: React.FC = () => {
             <Monolith tilt={false} tone="warm" reveal={false} />
           )}
         </Link>
-        </div>
+        </motion.div>
 
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
-          <LanguageSwitch className={compact ? "max-sm:hidden" : ""} dark={(pathname === "/projects" || pathname === "/artwork") && !open} />
+          <motion.div className={compact ? "max-sm:hidden" : ""} variants={UNFOLD} custom={{ from: "right", delay: 0.22 } satisfies Unfold} animate={unfold}>
+            <LanguageSwitch dark={(pathname === "/projects" || pathname === "/artwork") && !open} />
+          </motion.div>
 
           <style>{`@keyframes fh-bloom{0%,100%{opacity:0;transform:scale(.9)}35%{opacity:.85;transform:scale(1.15)}70%{opacity:0;transform:scale(1.3)}}@keyframes fh-halo{0%{transform:scale(1);opacity:0}12%{opacity:.75}80%,100%{transform:scale(1.35,1.6);opacity:0}}@keyframes fh-open{0%,100%{letter-spacing:.08em}14%,30%{letter-spacing:.2em}44%{letter-spacing:.08em}}@keyframes fh-sheen{0%,8%{transform:translateX(-110%)}52%,100%{transform:translateX(70%)}}@keyframes fh-nudge{0%,100%{transform:scale(1)}18%{transform:scale(1.025)}40%{transform:scale(1)}}@keyframes fh-draw{0%,55%,100%{width:.625rem}20%,35%{width:1rem}}@media (prefers-reduced-motion:reduce){.fh-invite *{animation:none!important}}`}</style>
+          <motion.div variants={UNFOLD} custom={{ from: "right", delay: 0.1 } satisfies Unfold} animate={unfold}>
           <button
             ref={toggle}
             type="button"
@@ -187,6 +240,7 @@ export const SiteHeader: React.FC = () => {
               />
             </span>
           </button>
+          </motion.div>
         </div>
       </motion.header>
 
