@@ -8,28 +8,25 @@ import { useI18n } from "../../i18n/I18n";
 import { LanguageSwitch } from "../../i18n/LanguageSwitch";
 import { WALL, isLightRoom } from "../Light/LightWall";
 
-// Arriving at the landing from any other page, the corner pieces unfold again instead of standing fixed:
-// each folds away with the page that leaves, then opens out from its own edge (the logo from the left,
-// the index and the language from the right), coming into focus as it goes.
-type Unfold = { from: "left" | "right"; delay: number };
+// Arriving at the landing from any other page, the corner pieces come in again instead of standing fixed,
+// the way the lema does: each one comes down out of its own top edge, as if from behind a mask, and comes
+// into focus as it lands; the logo first, then the index, then the language.
+type Unfold = { delay: number };
 const UNFOLD: Variants = {
-  folded: ({ from }: Unfold) => ({
-    opacity: 0,
-    x: from === "left" ? -10 : 10,
-    filter: "blur(6px)",
-    clipPath: from === "left" ? "inset(-40% 100% -40% 0%)" : "inset(-40% 0% -40% 100%)",
-    transition: { duration: 0.28, ease: EASE_VEIL },
-  }),
+  folded: { y: "-105%", opacity: 0, filter: "blur(6px)", transition: { duration: 0.35, ease: EASE_VEIL } },
   open: ({ delay }: Unfold) => ({
+    y: 0,
     opacity: 1,
-    x: 0,
     filter: "blur(0px)",
-    clipPath: "inset(-40% 0% -40% 0%)",
-    transition: { duration: 1.3, ease: EASE_HAUS, delay },
-    // (left unclipped once open, so the language list and the index's invitation are never cut)
-    transitionEnd: { clipPath: "none", filter: "none" },
+    // (the lema's own timing and curve)
+    transition: { duration: 1.4, ease: EASE_HAUS, delay },
+    transitionEnd: { filter: "none" },
   }),
 };
+/** Sent by the landing once it is on screen: the cue for the corner pieces to come down. */
+export const LANDING_IN = "fh:landing-in";
+/** The mask's edge: the box's own top and bottom; open at the sides, so nothing is cut but the fall. */
+const MASK = "inset(0% -40% 0% -40%)";
 
 // The corner logo is the same 3D model as the index sculpture; the 2D mark stands in while it loads.
 const Logo3D = lazy(() => import("../Monolith/Logo3D"));
@@ -44,26 +41,50 @@ export const SiteHeader: React.FC = () => {
   const still = useReducedMotion();
   const last = useRef(pathname);
   const folded = useRef(false);
+  // the mask is on only while the pieces come in (left on, it would cut the language list and the index's waves)
+  const [masked, setMasked] = useState(false);
   useEffect(() => {
     const from = last.current;
     last.current = pathname;
     // left again before the unfolding finished: the pieces simply stand where they belong
     if (pathname !== "/" || from === "/" || still) {
-      if (folded.current) void unfold.start("open");
+      if (folded.current) void unfold.start("open").then(() => setMasked(false));
       folded.current = false;
       return;
     }
     let gone = false;
     folded.current = true;
+    setMasked(true);
+    // The pieces come down once the landing is in place and painted, not while it is being built
+    // (on a phone, the fall then ran during the busiest moment and stuttered)
+    let arrived = false, hidden = false, wait = 0;
+    const fall = () => {
+      if (gone || !arrived || !hidden) return;
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          if (gone) return;
+          void unfold.start("open").then(() => {
+            folded.current = false;
+            setMasked(false);
+          });
+        }),
+      );
+    };
+    const onLanding = () => {
+      arrived = true;
+      fall();
+    };
+    window.addEventListener(LANDING_IN, onLanding, { once: true });
+    // (never left waiting, should the landing's signal not come)
+    wait = window.setTimeout(onLanding, 1400);
     void unfold.start("folded").then(() => {
-      // (the old page takes about this long to leave; the landing comes in with the corners)
-      window.setTimeout(() => {
-        if (gone) return;
-        void unfold.start("open").then(() => (folded.current = false));
-      }, 180);
+      hidden = true;
+      fall();
     });
     return () => {
       gone = true;
+      window.clearTimeout(wait);
+      window.removeEventListener(LANDING_IN, onLanding);
     };
   }, [pathname, still, unfold]);
 
@@ -119,6 +140,17 @@ export const SiteHeader: React.FC = () => {
   }, [open]);
   const inviting = invite && !open;
 
+  // The index control introduces itself, then makes room: a few seconds after each page arrives, the word
+  // folds away and only the menu sign stays. A hover, keyboard focus or opening it brings the word back.
+  const [tucked, setTucked] = useState(false);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    setTucked(false);
+    const id = window.setTimeout(() => setTucked(true), pathname === "/" ? 4200 : 3200);
+    return () => window.clearTimeout(id);
+  }, [pathname]);
+  const shortPill = tucked && !open && !near;
+
   // When the index closes, keyboard focus returns to the button that opened it.
   const toggle = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
@@ -148,7 +180,8 @@ export const SiteHeader: React.FC = () => {
           // Translucent, so light falling on the page behind (as on "info") carries on under it
           style={{ background: pathname === "/artwork" ? "#0f0e10cc" : `${WALL}cc`, borderColor: pathname === "/artwork" ? "rgba(255,255,255,0.06)" : undefined }}
         />
-        <motion.div className="relative" variants={UNFOLD} custom={{ from: "left", delay: 0 } satisfies Unfold} animate={unfold}>
+        <div className="relative" style={masked ? { clipPath: MASK } : undefined}>
+        <motion.div variants={UNFOLD} custom={{ delay: 0 } satisfies Unfold} animate={unfold}>
         {/* While the index is open the sculpture is the brand, so the corner becomes a
             second way out: home, balancing the close control on the right. */}
         <Link
@@ -177,7 +210,8 @@ export const SiteHeader: React.FC = () => {
           to="/"
           aria-label="Fuga Haus — home"
           tabIndex={open ? -1 : undefined}
-          className={`block ${compact ? "w-[4.5rem] sm:w-28" : "w-28"} transition-opacity md:w-36 ${
+          // (a touch larger on every page but the landing, which keeps its own size)
+          className={`block ${compact ? "w-[5.25rem] sm:w-32 md:w-40" : "w-28 md:w-36"} transition-[opacity,width] ${
             open
               ? "pointer-events-none opacity-0 duration-200"
               : // Phones: the mark is small and its hairline bars fade into the mauve,
@@ -194,25 +228,39 @@ export const SiteHeader: React.FC = () => {
           )}
         </Link>
         </motion.div>
+        </div>
 
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
-          <motion.div className={compact ? "max-sm:hidden" : ""} variants={UNFOLD} custom={{ from: "right", delay: 0.22 } satisfies Unfold} animate={unfold}>
-            <LanguageSwitch dark={(pathname === "/projects" || pathname === "/artwork") && !open} />
-          </motion.div>
+          <div className={compact ? "max-sm:hidden" : ""} style={masked ? { clipPath: MASK } : undefined}>
+            <motion.div variants={UNFOLD} custom={{ delay: 0.24 } satisfies Unfold} animate={unfold}>
+              <LanguageSwitch dark={(pathname === "/projects" || pathname === "/artwork") && !open} />
+            </motion.div>
+          </div>
 
           <style>{`@keyframes fh-bloom{0%,100%{opacity:0;transform:scale(.9)}35%{opacity:.85;transform:scale(1.15)}70%{opacity:0;transform:scale(1.3)}}@keyframes fh-halo{0%{transform:scale(1);opacity:0}12%{opacity:.75}80%,100%{transform:scale(1.35,1.6);opacity:0}}@keyframes fh-open{0%,100%{letter-spacing:.08em}14%,30%{letter-spacing:.2em}44%{letter-spacing:.08em}}@keyframes fh-sheen{0%,8%{transform:translateX(-110%)}52%,100%{transform:translateX(70%)}}@keyframes fh-nudge{0%,100%{transform:scale(1)}18%{transform:scale(1.025)}40%{transform:scale(1)}}@keyframes fh-draw{0%,55%,100%{width:.625rem}20%,35%{width:1rem}}@media (prefers-reduced-motion:reduce){.fh-invite *{animation:none!important}}`}</style>
-          <motion.div variants={UNFOLD} custom={{ from: "right", delay: 0.1 } satisfies Unfold} animate={unfold}>
+          <div style={masked ? { clipPath: MASK } : undefined}>
+          <motion.div variants={UNFOLD} custom={{ delay: 0.12 } satisfies Unfold} animate={unfold}>
           <button
             ref={toggle}
             type="button"
             onClick={() => setOpen((v) => !v)}
-            onPointerEnter={() => void preloadLogoSpace()}
-            onFocus={() => void preloadLogoSpace()}
+            onPointerEnter={(e) => {
+              void preloadLogoSpace();
+              if (e.pointerType === "mouse") setNear(true);
+            }}
+            onPointerLeave={() => setNear(false)}
+            onFocus={(e) => {
+              void preloadLogoSpace();
+              if (e.currentTarget.matches(":focus-visible")) setNear(true);
+            }}
+            onBlur={() => setNear(false)}
             aria-expanded={open}
             aria-label={open ? t("index.aria.close") : t("index.aria.open")}
             // Hover, quietly: the graphite lifts a shade lighter, the letters open a touch, the short line grows. No shadow.
             // (smaller on phones, where it took too much of the header)
-            className={`group relative flex items-center gap-2.5 rounded-full bg-ink/90 px-3.5 py-2 backdrop-blur-md max-sm:[&_.meta]:text-[11px] ${compact ? "max-sm:gap-2 max-sm:px-2.5 max-sm:py-1.5 max-sm:[&_.meta]:text-[10px]" : ""} sm:gap-3.5 sm:px-5 sm:py-2.5 transition-colors duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
+            // (the gap between word and sign lives inside the word, so it folds away with it; folded, the
+            // pill's sides draw in to the height, closing round the sign)
+            className={`group relative flex items-center rounded-full bg-ink/90 py-2 backdrop-blur-md max-sm:[&_.meta]:text-[11px] ${shortPill ? "px-2.5" : "px-3.5"} ${compact ? `max-sm:py-1.5 max-sm:[&_.meta]:text-[10px] ${shortPill ? "max-sm:px-2" : "max-sm:px-2.5"}` : ""} ${shortPill ? "sm:px-3.5" : "sm:px-5"} sm:py-2.5 transition-[background-color,padding] duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
           >
             {inviting && (
               <>
@@ -225,7 +273,16 @@ export const SiteHeader: React.FC = () => {
                 </span>
               </>
             )}
-            <span className={`meta min-w-10 text-left transition-[color,letter-spacing] duration-500 group-hover:tracking-[0.18em] ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
+            {/* (the word folds to nothing and the gap with it, so the pill closes round the sign) */}
+            <motion.span
+              aria-hidden
+              className="block overflow-hidden whitespace-nowrap"
+              initial={false}
+              animate={shortPill ? { width: 0, opacity: 0, filter: "blur(4px)" } : { width: "auto", opacity: 1, filter: "blur(0px)" }}
+              transition={{ duration: 0.9, ease: EASE_HAUS, opacity: { duration: shortPill ? 0.4 : 0.8, ease: EASE_HAUS, delay: shortPill ? 0 : 0.15 } }}
+            >
+              <span className={`meta block min-w-10 pr-2.5 text-left transition-[color,letter-spacing] duration-500 group-hover:tracking-[0.18em] sm:pr-3.5 ${compact ? "max-sm:pr-2" : ""} ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
+            </motion.span>
             <span className="relative block h-2 w-4">
               <span
                 className={`absolute right-0 top-0 h-px ${line} transition-all duration-700 ease-haus ${
@@ -241,6 +298,7 @@ export const SiteHeader: React.FC = () => {
             </span>
           </button>
           </motion.div>
+          </div>
         </div>
       </motion.header>
 

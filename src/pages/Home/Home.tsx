@@ -6,6 +6,7 @@ import { ContactMenu } from "../../components/Contact/ContactMenu";
 import { SocialLinks } from "../../components/Contact/SocialLinks";
 import { useI18n } from "../../i18n/I18n";
 import { ACTION, DISPLAY, SMALL, SUBTITLE } from "../../lib/type";
+import { LANDING_IN } from "../../components/Header/SiteHeader";
 
 /**
  * Hero as an empty, lit room. The brand lives in the header corner,
@@ -16,6 +17,10 @@ export const Home: React.FC = () => {
   const { t } = useI18n();
   // The landing is one screen and nothing more: the page does not scroll here, nor bounce past
   // its edges on phones (which showed the end of the light behind it)
+  // the header's corner pieces wait for this to come down
+  useEffect(() => {
+    window.dispatchEvent(new Event(LANDING_IN));
+  }, []);
   useEffect(() => {
     const html = document.documentElement;
     const before = { overflow: html.style.overflow, overscroll: html.style.overscrollBehavior, body: document.body.style.overscrollBehavior };
