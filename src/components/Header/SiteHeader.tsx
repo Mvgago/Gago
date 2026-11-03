@@ -260,7 +260,7 @@ export const SiteHeader: React.FC = () => {
             // (smaller on phones, where it took too much of the header)
             // (the gap between word and sign lives inside the word, so it folds away with it; folded, the
             // pill's sides draw in to the height, closing round the sign)
-            className={`group relative flex items-center rounded-[0.7rem] bg-ink/90 py-2 backdrop-blur-md max-sm:[&_.meta]:text-[11px] ${shortPill ? "px-2.5" : "px-3.5"} ${compact ? `max-sm:py-1.5 max-sm:[&_.meta]:text-[10px] ${shortPill ? "max-sm:px-2" : "max-sm:px-2.5"}` : ""} ${shortPill ? "sm:px-3.5" : "sm:px-5"} sm:py-2.5 transition-[background-color,padding] duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
+            className={`group relative flex items-center rounded-[0.6rem] bg-ink/90 py-1.5 backdrop-blur-md [&_.meta]:text-[10px] ${shortPill ? "px-2" : "px-2.5"} sm:py-2 sm:[&_.meta]:text-[12px] ${shortPill ? "sm:px-2.5" : "sm:px-4"} transition-[background-color,padding] duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
           >
             {inviting && (
               <>
@@ -281,7 +281,7 @@ export const SiteHeader: React.FC = () => {
               animate={shortPill ? { width: 0, opacity: 0, filter: "blur(4px)" } : { width: "auto", opacity: 1, filter: "blur(0px)" }}
               transition={{ duration: 0.9, ease: EASE_HAUS, opacity: { duration: shortPill ? 0.4 : 0.8, ease: EASE_HAUS, delay: shortPill ? 0 : 0.15 } }}
             >
-              <span className={`meta block min-w-10 pr-2.5 text-left transition-[color,letter-spacing] duration-500 group-hover:tracking-[0.18em] sm:pr-3.5 ${compact ? "max-sm:pr-2" : ""} ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
+              <span className={`meta block min-w-10 pr-2 text-left transition-[color,letter-spacing] duration-500 group-hover:tracking-[0.18em] sm:pr-3 ${tone}`}>{open ? t("index.close") : t("index.open")}</span>
             </motion.span>
             <span className="relative block h-2 w-4">
               <span
