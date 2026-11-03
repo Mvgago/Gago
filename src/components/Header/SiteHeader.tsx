@@ -167,8 +167,19 @@ export const SiteHeader: React.FC = () => {
 
   // The index control is the one solid form on the page: a graphite pill with
   // platinum type, so the way in is found at a glance without shouting.
+  // Folded to its sign, the control turns to glass: a pane of frosted light with the lines in the
+  // ink of the type, so it belongs to the airy page instead of sitting on it like a solid tile
+  // (on the two dark rooms, a darker glass with pale lines). The invitation plays only while the word shows.
+  const glass = shortPill;
+  const darkRoom = pathname === "/projects" || pathname === "/artwork";
+  const glow = inviting && !glass;
   const tone = "text-platinum";
-  const line = "bg-platinum";
+  const line = glass && !darkRoom ? "bg-ink/80" : "bg-platinum";
+  const surface = !glass
+    ? "border-transparent bg-ink/90 hover:bg-[#4d4744]"
+    : darkRoom
+      ? "border-white/15 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] hover:bg-white/[0.12]"
+      : "border-white/50 bg-white/[0.22] shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_6px_18px_-10px_rgba(40,32,36,0.35)] hover:bg-white/[0.34]";
 
   return (
     <>
@@ -267,9 +278,9 @@ export const SiteHeader: React.FC = () => {
             // (smaller on phones, where it took too much of the header)
             // (the gap between word and sign lives inside the word, so it folds away with it; folded, the
             // pill's sides draw in to the height, closing round the sign)
-            className={`group relative flex items-center rounded-[0.6rem] bg-ink/90 py-1.5 backdrop-blur-md [&_.meta]:text-[10px] ${shortPill ? "px-2" : "px-2.5"} sm:py-2 sm:[&_.meta]:text-[12px] ${shortPill ? "sm:px-2.5" : "sm:px-4"} transition-[background-color,padding] duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
+            className={`group relative flex items-center rounded-[0.6rem] border ${surface} py-1.5 backdrop-blur-md backdrop-saturate-150 [&_.meta]:text-[10px] ${shortPill ? "px-2" : "px-2.5"} sm:py-2 sm:[&_.meta]:text-[12px] ${shortPill ? "sm:px-2.5" : "sm:px-4"} transition-[background-color,border-color,box-shadow,padding] duration-700 ease-haus focus-visible:outline-offset-2 ${glow ? "fh-invite will-change-transform" : ""}`}
           >
-            {inviting && (
+            {glow && (
               <>
                 {/* two hairline waves leaving the pill's edge */}
                 <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit] border border-white/80 shadow-[0_0_14px_rgba(255,255,255,0.35)]" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) 2" }} />
@@ -300,7 +311,7 @@ export const SiteHeader: React.FC = () => {
                 className={`absolute bottom-0 right-0 h-px ${line} transition-all duration-700 ease-haus ${
                   open ? "bottom-1 w-4 -rotate-45" : "w-2.5 group-hover:w-4"
                 }`}
-                style={inviting ? { animation: "fh-draw 7s cubic-bezier(.65,0,.35,1) 2" } : undefined}
+                style={glow ? { animation: "fh-draw 7s cubic-bezier(.65,0,.35,1) 2" } : undefined}
               />
             </span>
           </button>
