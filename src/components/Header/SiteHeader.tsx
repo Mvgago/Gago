@@ -146,7 +146,7 @@ export const SiteHeader: React.FC = () => {
   const [near, setNear] = useState(false);
   useEffect(() => {
     setTucked(false);
-    const id = window.setTimeout(() => setTucked(true), pathname === "/" ? 4200 : 3200);
+    const id = window.setTimeout(() => setTucked(true), pathname === "/" ? 7000 : 5500);
     return () => window.clearTimeout(id);
   }, [pathname]);
   const shortPill = tucked && !open && !near;
@@ -260,15 +260,15 @@ export const SiteHeader: React.FC = () => {
             // (smaller on phones, where it took too much of the header)
             // (the gap between word and sign lives inside the word, so it folds away with it; folded, the
             // pill's sides draw in to the height, closing round the sign)
-            className={`group relative flex items-center rounded-full bg-ink/90 py-2 backdrop-blur-md max-sm:[&_.meta]:text-[11px] ${shortPill ? "px-2.5" : "px-3.5"} ${compact ? `max-sm:py-1.5 max-sm:[&_.meta]:text-[10px] ${shortPill ? "max-sm:px-2" : "max-sm:px-2.5"}` : ""} ${shortPill ? "sm:px-3.5" : "sm:px-5"} sm:py-2.5 transition-[background-color,padding] duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
+            className={`group relative flex items-center rounded-[0.7rem] bg-ink/90 py-2 backdrop-blur-md max-sm:[&_.meta]:text-[11px] ${shortPill ? "px-2.5" : "px-3.5"} ${compact ? `max-sm:py-1.5 max-sm:[&_.meta]:text-[10px] ${shortPill ? "max-sm:px-2" : "max-sm:px-2.5"}` : ""} ${shortPill ? "sm:px-3.5" : "sm:px-5"} sm:py-2.5 transition-[background-color,padding] duration-700 ease-haus hover:bg-[#4d4744] focus-visible:outline-offset-2 ${inviting ? "fh-invite will-change-transform" : ""}`}
           >
             {inviting && (
               <>
                 {/* two hairline waves leaving the pill's edge */}
-                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full border border-white/80 shadow-[0_0_14px_rgba(255,255,255,0.35)]" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) 2" }} />
-                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full border border-white/40" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) .7s 2" }} />
+                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit] border border-white/80 shadow-[0_0_14px_rgba(255,255,255,0.35)]" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) 2" }} />
+                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit] border border-white/40" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) .7s 2" }} />
                 {/* a band of light passing over the pill */}
-                <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-full">
+                <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
                   <span className="absolute -inset-y-2 left-0 w-[170%] bg-[linear-gradient(100deg,transparent_0%,rgba(255,255,255,0.06)_30%,rgba(255,255,255,0.32)_50%,rgba(255,255,255,0.06)_70%,transparent_100%)] blur-[2px]" style={{ animation: "fh-sheen 7s cubic-bezier(.45,0,.25,1) 2" }} />
                 </span>
               </>
