@@ -11,16 +11,22 @@ import { WALL, isLightRoom } from "../Light/LightWall";
 // Arriving at the landing from any other page, the corner pieces come in again instead of standing fixed,
 // the way the lema does: each one comes down out of its own top edge, as if from behind a mask, and comes
 // into focus as it lands; the logo first, then the index, then the language.
-type Unfold = { delay: number };
+// (the 3D logo comes in without the haze: a CSS filter over its WebGL canvas made it flicker on phones)
+type Unfold = { delay: number; haze?: boolean };
 const UNFOLD: Variants = {
-  folded: { y: "-105%", opacity: 0, filter: "blur(6px)", transition: { duration: 0.35, ease: EASE_VEIL } },
-  open: ({ delay }: Unfold) => ({
+  folded: ({ haze = true }: Unfold) => ({
+    y: "-105%",
+    opacity: 0,
+    ...(haze ? { filter: "blur(6px)" } : {}),
+    transition: { duration: 0.35, ease: EASE_VEIL },
+  }),
+  open: ({ delay, haze = true }: Unfold) => ({
     y: 0,
     opacity: 1,
-    filter: "blur(0px)",
+    ...(haze ? { filter: "blur(0px)" } : {}),
     // (the lema's own timing and curve)
     transition: { duration: 1.4, ease: EASE_HAUS, delay },
-    transitionEnd: { filter: "none" },
+    ...(haze ? { transitionEnd: { filter: "none" } } : {}),
   }),
 };
 /** Sent by the landing once it is on screen: the cue for the corner pieces to come down. */
@@ -181,7 +187,7 @@ export const SiteHeader: React.FC = () => {
           style={{ background: pathname === "/artwork" ? "#0f0e10cc" : `${WALL}cc`, borderColor: pathname === "/artwork" ? "rgba(255,255,255,0.06)" : undefined }}
         />
         <div className="relative" style={masked ? { clipPath: MASK } : undefined}>
-        <motion.div variants={UNFOLD} custom={{ delay: 0 } satisfies Unfold} animate={unfold}>
+        <motion.div variants={UNFOLD} custom={{ delay: 0, haze: false } satisfies Unfold} animate={unfold}>
         {/* While the index is open the sculpture is the brand, so the corner becomes a
             second way out: home, balancing the close control on the right. */}
         <Link
@@ -210,8 +216,9 @@ export const SiteHeader: React.FC = () => {
           to="/"
           aria-label="Fuga Haus — home"
           tabIndex={open ? -1 : undefined}
-          // (a touch larger on every page but the landing, which keeps its own size)
-          className={`block ${compact ? "w-[5.25rem] sm:w-32 md:w-40" : "w-28 md:w-36"} transition-[opacity,width] ${
+                    // One size on every page, the landing's (it also never changes: resizing the 3D canvas cleared it
+          // for a frame, and the logo flickered)
+          className={`block w-28 md:w-36 transition-opacity ${
             open
               ? "pointer-events-none opacity-0 duration-200"
               : // Phones: the mark is small and its hairline bars fade into the mauve,
