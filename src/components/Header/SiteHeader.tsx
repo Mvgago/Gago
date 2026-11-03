@@ -146,15 +146,17 @@ export const SiteHeader: React.FC = () => {
   }, [open]);
   const inviting = invite && !open;
 
-  // The index control introduces itself, then makes room: a few seconds after each page arrives, the word
-  // folds away and only the menu sign stays. A hover, keyboard focus or opening it brings the word back.
-  const [tucked, setTucked] = useState(false);
-  const [near, setNear] = useState(false);
+  // The index control introduces itself once: the word shows on the first view of the landing, then folds
+  // to its sign and stays folded for the rest of the visit, on every page (a visit that begins on another
+  // page starts folded). A hover or keyboard focus still brings the word back for a moment.
+  const [tucked, setTucked] = useState(() => window.location.pathname !== "/");
   useEffect(() => {
-    setTucked(false);
-    const id = window.setTimeout(() => setTucked(true), pathname === "/" ? 7000 : 5500);
+    if (tucked) return;
+    if (pathname !== "/") return setTucked(true);
+    const id = window.setTimeout(() => setTucked(true), 7000);
     return () => window.clearTimeout(id);
-  }, [pathname]);
+  }, [pathname, tucked]);
+  const [near, setNear] = useState(false);
   const shortPill = tucked && !open && !near;
 
   // When the index closes, keyboard focus returns to the button that opened it.
