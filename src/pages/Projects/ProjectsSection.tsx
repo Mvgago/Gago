@@ -17,6 +17,9 @@ const GRADE = "brightness(0.8) contrast(1.08) saturate(0.9)";
 // (Buendía's scene runs greener than the rest: a point less colour)
 // (Gracia Prados' drawing is on pale paper: darkened like the rest, it turned to a muddy grey)
 const GRADE_OF: Record<string, string | undefined> = {
+  // (The Sapphire's film is soft and pale under the common grade: firmer, so the building stands out,
+  // and a touch less dark, so the deeper contrast never closes up the shadows)
+  sapphire: "brightness(0.84) contrast(1.24) saturate(0.92)",
   buendia: "brightness(0.8) contrast(1.08) saturate(0.78)",
   "gracia-prados": "brightness(0.98) contrast(1.04)",
   // (Tolva is already a dark room of its own)
