@@ -181,7 +181,9 @@ export const SiteHeader: React.FC = () => {
     ? "border-transparent bg-ink/90 hover:bg-[#4d4744]"
     : darkRoom
       ? "border-white/15 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] hover:bg-white/[0.12]"
-      : "border-white/50 bg-white/[0.22] shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_6px_18px_-10px_rgba(40,32,36,0.35)] hover:bg-white/[0.34]";
+      // (no bright rim: over a photograph a white edge read as a frame drawn round it; a faint ink hairline
+      // holds the pane instead, on a pale wall and on a picture alike)
+      : "border-ink/[0.08] bg-white/[0.32] shadow-[0_6px_18px_-12px_rgba(40,32,36,0.3)] hover:bg-white/[0.45]";
 
   return (
     <>
