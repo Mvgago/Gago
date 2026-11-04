@@ -361,7 +361,7 @@ export const cases: Case[] = [
   },
   {
     slug: "buendia",
-    outcome: { es: "más reservas online", en: "more online bookings", fr: "plus de réservations en ligne", de: "mehr Online-Buchungen" },
+    outcome: { es: "+24 % de reservas online", en: "+24% online bookings", fr: "+24 % de réservations en ligne", de: "+24 % Online-Buchungen" },
     title: "Buendía Travel",
     layout: "editorial",
     statement: {
