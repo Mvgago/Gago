@@ -364,7 +364,7 @@ export const cases: Case[] = [
   },
   {
     slug: "buendia",
-    outcome: { es: "+24 % de reservas online", en: "+24% online bookings", fr: "+24 % de réservations en ligne", de: "+24 % Online-Buchungen" },
+    outcome: { es: "+24\u00a0% de reservas online", en: "+24% online bookings", fr: "+24\u00a0% de réservations en ligne", de: "+24\u00a0% Online-Buchungen" },
     title: "Buendía Travel",
     layout: "editorial",
     statement: {
@@ -421,7 +421,7 @@ export const cases: Case[] = [
   },
   {
     slug: "sapphire",
-    outcome: { es: "100 % vendida sobre plano", en: "100% sold off-plan", fr: "100 % vendue sur plan", de: "100 % vor Baubeginn verkauft" },
+    outcome: { es: "100\u00a0% vendida sobre plano", en: "100% sold off-plan", fr: "100\u00a0% vendue sur plan", de: "100\u00a0% vor Baubeginn verkauft" },
     title: "The Sapphire",
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
     disciplines: ["identity", "web", "direction", "video", "presentation"],
