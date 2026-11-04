@@ -7,6 +7,28 @@ import { BODY, SMALL } from "../../lib/type";
 import type { Studio } from "../../i18n/studio";
 import { Link } from "react-router-dom";
 import { useI18n } from "../../i18n/I18n";
+import { cases } from "../../outils/cases";
+import type { Lang } from "../../i18n/strings";
+
+// Under each discipline, in its order, the case that shows what it achieves: the project's name and its
+// result, as the projects page gives them, leading to the case (each case once)
+const PROOF = ["sapphire", "gracia-prados", "smarthc", "buendia"];
+const RESULT: Record<Lang, string> = { es: "resultado", en: "result", fr: "résultat", de: "ergebnis" };
+const Proof: React.FC<{ i: number; lang: Lang }> = ({ i, lang }) => {
+  const c = cases.find((k) => k.slug === PROOF[i]);
+  if (!c?.outcome) return null;
+  return (
+    <p className={`${SMALL} mt-3 max-w-[48ch] normal-case`}>
+      <span className="block text-ink/45">{RESULT[lang]}</span>
+      <Link to={`/projects/${c.slug}`} className="group text-ink">
+        {c.title} <span className="text-ink/60">—</span> {c.outcome[lang]}
+        {/* (the arrow kept with the last word, never alone at the edge) */}
+        {"\u00a0"}
+        <span aria-hidden className="inline-block transition-transform duration-500 ease-haus group-hover:translate-x-1">→</span>
+      </Link>
+    </p>
+  );
+};
 
 /**
  * What the studio does, shown rather than listed. One discipline after another down the
@@ -425,6 +447,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     {d.list.join("  ·  ")}
                   </p>
                 )}
+                <Proof i={i} lang={lang} />
                 {/* at the end of the four, an invitation that comes in once the last is reached */}
                 {i === s.disciplines.length - 1 && (
                   <div className="mt-14">

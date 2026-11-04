@@ -293,7 +293,7 @@ export const cases: Case[] = [
   {
     slug: "tolva",
     outcomeIsApproach: true,
-    outcome: { es: "cada origen, su propia curva de tueste", en: "each origin, its own roast curve", fr: "chaque origine, sa propre courbe de torréfaction", de: "jede Herkunft, ihre eigene Röstkurve" },
+    outcome: { es: "un solo sistema visual, de la barra a cada bolsa", en: "one visual system, from the counter to every bag", fr: "un seul système visuel, du comptoir à chaque sachet", de: "ein visuelles System, von der Theke bis zu jeder Tüte" },
     title: "Tolva",
     client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
     disciplines: ["identity"],
