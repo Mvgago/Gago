@@ -418,7 +418,7 @@ export const cases: Case[] = [
   },
   {
     slug: "sapphire",
-    outcome: { es: "15 viviendas vendidas sobre plano", en: "15 homes sold off-plan", fr: "15 logements vendus sur plan", de: "15 Wohnungen vor Baubeginn verkauft" },
+    outcome: { es: "15 viviendas, 100 % vendidas sobre plano", en: "15 homes, 100% sold off-plan", fr: "15 logements, 100 % vendus sur plan", de: "15 Wohnungen, 100 % vor Baubeginn verkauft" },
     title: "The Sapphire",
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
     disciplines: ["identity", "web", "direction", "video", "presentation"],
