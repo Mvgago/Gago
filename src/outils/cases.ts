@@ -361,7 +361,7 @@ export const cases: Case[] = [
   },
   {
     slug: "buendia",
-    outcome: { es: "una marca unificada en todos sus canales", en: "one brand across every channel", fr: "une marque unifiée sur tous ses canaux", de: "eine einheitliche Marke auf allen Kanälen" },
+    outcome: { es: "más reservas online, tráfico y seguidores", en: "more online bookings, traffic and followers", fr: "plus de réservations en ligne, de trafic et d'abonnés", de: "mehr Online-Buchungen, Traffic und Follower" },
     title: "Buendía Travel",
     layout: "editorial",
     statement: {
