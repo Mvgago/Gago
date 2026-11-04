@@ -75,7 +75,8 @@ const FILM: Record<string, { src: string; small: string; poster: string; posterS
 // Projects shown as a live 3D scene instead (pages in public/concepts, the scene alone)
 const SCENE: Record<string, string | undefined> = {
   // (v: bumped when the scene changes, so a cached copy is never shown)
-  buendia: "/concepts/buendia-devices/index.html?bare&v=3",
+  // (lift: on a phone the devices ride higher, clear of the name and result below)
+  buendia: "/concepts/buendia-devices/index.html?bare&lift&v=5",
   smarthc: "/concepts/smarthc-devices/index.html?bare&room&v=3",
   // (the latte-art film alone: the page names the project itself)
   tolva: "/concepts/tolva-film/index.html?bare&v=1",
@@ -313,6 +314,13 @@ export const ProjectsSection: React.FC = () => {
             "linear-gradient(180deg, rgba(47,43,42,0.5) 0%, rgba(47,43,42,0) 16%, rgba(47,43,42,0) 55%, rgba(47,43,42,0.3) 76%, rgba(47,43,42,0.68) 100%)",
           ].join(", "),
         }}
+      />
+      {/* phones: the words take the lower half of a tall screen, so the shade beneath them reaches higher
+          and a little deeper, and the result reads over any picture */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 sm:hidden"
+        style={{ background: "linear-gradient(180deg, rgba(47,43,42,0) 50%, rgba(47,43,42,0.34) 66%, rgba(47,43,42,0.5) 100%)" }}
       />
 
       {/* The hint, in the middle of the screen: the words alone, no pill behind them, a soft shadow so

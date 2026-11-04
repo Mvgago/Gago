@@ -412,6 +412,7 @@ const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 80);
 // ?bare (full-bleed on the projects page, the name over its lower left): drawn back a little, the devices
 // closer together, so neither screen is cut at the edges
 const BARE_FULL = new URLSearchParams(location.search).has('bare');
+const LIFT = new URLSearchParams(location.search).has('lift');
 const HOME = new THREE.Vector3(0.55, 2.95, BARE_FULL ? 5.9 : 5.0); // a little below the devices, looking up at them
 const START = new THREE.Vector3(1.2, 3.1, 10);
 const HOME0 = HOME.clone(), START0 = START.clone(); // as framed for a wide screen
@@ -784,6 +785,9 @@ function fit() {
   finish.uniforms.res.value.set(w, h);
   camera.aspect = w / h;
   camera.fov = w / h < .9 ? 48 : 30;
+  // ?lift (the projects page, a tall phone screen): the view slides down the frame, so the devices sit in
+  // its upper half and the project's name and result below read on the open street, not over the tablet
+  if (LIFT && w / h < .9) camera.setViewOffset(w, h, 0, h * .15, w, h); else camera.clearViewOffset();
   camera.updateProjectionMatrix();
   // narrow frames (phones): drawn back until the two devices fit side to side as on a wide screen,
   // instead of running off both edges
