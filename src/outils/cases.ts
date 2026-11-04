@@ -109,6 +109,10 @@ export type Case = {
   client: Text;
   /** When set, the facts name the sector instead of the client: the case reads as an offer to others */
   sector?: Text;
+  /** What changed for the client, in a few words: shown under the name on the projects page */
+  outcome?: Text;
+  /** The case in three beats at its opening: where it started, the idea, and what came of it */
+  beats?: { from: Text; idea: Text; result: Text };
   /** A closing line inviting a similar project, linked to the contact */
   cta?: Text;
   /** Kept but not shown: off the site and out of the case-to-case navigation */
@@ -196,6 +200,7 @@ export const DISCIPLINE: Record<Discipline, Text> = {
 export const cases: Case[] = [
   {
     slug: "gracia-prados",
+    outcome: { es: "web y renders, su herramienta de venta", en: "website and renders, its sales tool", fr: "site et rendus, son outil de vente", de: "Website und Renderings als Verkaufswerkzeug" },
     title: "Gracia Prados 14",
     layout: "editorial",
     statement: {
@@ -287,6 +292,7 @@ export const cases: Case[] = [
   },
   {
     slug: "tolva",
+    outcome: { es: "una marca que nace de su oficio", en: "a brand born of its craft", fr: "une marque née de son métier", de: "eine Marke aus dem eigenen Handwerk" },
     title: "Tolva",
     client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
     disciplines: ["identity"],
@@ -357,6 +363,7 @@ export const cases: Case[] = [
   },
   {
     slug: "buendia",
+    outcome: { es: "de una imagen dispersa a una sola marca", en: "from a scattered image to one brand", fr: "d'une image dispersée à une seule marque", de: "von einem zerstreuten Bild zu einer Marke" },
     title: "Buendía Travel",
     layout: "editorial",
     statement: {
@@ -413,6 +420,12 @@ export const cases: Case[] = [
   },
   {
     slug: "sapphire",
+    outcome: { es: "vendida sobre plano", en: "sold off-plan", fr: "vendue sur plan", de: "vor Baubeginn verkauft" },
+    beats: {
+      from: { es: "Sin piso piloto ni obra que visitar", en: "No show flat, no site to visit", fr: "Ni appartement témoin ni chantier à visiter", de: "Keine Musterwohnung, keine Baustelle zu besichtigen" },
+      idea: { es: "La web y la campaña como sala de ventas", en: "The website and campaign as the sales room", fr: "Le site et la campagne comme espace de vente", de: "Website und Kampagne als Verkaufsraum" },
+      result: { es: "Vendida sobre plano", en: "Sold off-plan", fr: "Vendue sur plan", de: "Vor Baubeginn verkauft" },
+    },
     title: "The Sapphire",
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
     disciplines: ["identity", "web", "direction", "video", "presentation"],
@@ -517,6 +530,7 @@ export const cases: Case[] = [
   },
   {
     slug: "smarthc",
+    outcome: { es: "un sector complejo, hecho comprensible", en: "a complex sector, made clear", fr: "un secteur complexe, rendu clair", de: "eine komplexe Branche, verständlich gemacht" },
     title: "Smart Human Capital",
     layout: "editorial",
     statement: {

@@ -51,6 +51,8 @@ const WORKS: Work[] = [
 // The sector first, so the range of clients shows at a glance, then what was done
 const scopeOf = (slug: string, lang: Lang) => {
   const c = cases.find((k) => k.slug === slug);
+  // what changed for the client, where the case says it; otherwise what was done
+  if (c?.outcome) return c.sector ? `${c.sector[lang]} — ${c.outcome[lang]}` : c.outcome[lang];
   const work = (c?.disciplines ?? []).map((d) => DISCIPLINE[d][lang]).join(" · ");
   return c?.sector ? `${c.sector[lang]} — ${work}` : work;
 };

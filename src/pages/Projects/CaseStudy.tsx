@@ -43,6 +43,12 @@ const AllProjects: React.FC<{ current: string; lang: Lang }> = ({ current, lang 
  * as pictures, each with its name on a small tag; the row runs off the edge and scrolls sideways
  */
 const CONTEXT: Record<Lang, string> = { es: "Contexto", en: "Context", fr: "Contexte", de: "Kontext" };
+const BEATS: Record<Lang, [string, string, string]> = {
+  es: ["partida", "idea", "resultado"],
+  en: ["starting point", "idea", "result"],
+  fr: ["point de départ", "idée", "résultat"],
+  de: ["ausgangslage", "idee", "ergebnis"],
+};
 
 /**
  * The editorial opening (on trial on one case): the work first, edge to edge and large; under it, two columns
@@ -110,6 +116,27 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
       <motion.div variants={rise} initial="hidden" animate="shown" custom={1} className="md:col-span-6">
         <p className={t.label}>{c.title}</p>
         <h1 className={`mt-3 max-w-[22ch] ${t.head}`}>{(c.statement ?? c.lead)[lang]}</h1>
+        {/* The case in three beats, like the card beside a piece: where it started, the idea, what came of it.
+            The beats are drawn one after another along a hairline, and the result, the last, in full ink */}
+        {c.beats && (
+          <ol className={`mt-10 grid gap-y-5 border-t border-ink/15 pt-4 sm:grid-cols-3 sm:gap-x-6 md:mt-14 ${t.facts}`}>
+            {(["from", "idea", "result"] as const).map((k, i) => (
+              <motion.li
+                key={k}
+                variants={rise}
+                initial="hidden"
+                animate="shown"
+                custom={4 + i * 3}
+                className="flex flex-col gap-1.5"
+              >
+                <span className="text-ink/45">
+                  {String(i + 1).padStart(2, "0")} — {BEATS[lang][i]}
+                </span>
+                <span className={k === "result" ? "text-ink" : "text-ink/75"}>{c.beats![k][lang]}</span>
+              </motion.li>
+            ))}
+          </ol>
+        )}
       </motion.div>
       <motion.div variants={rise} initial="hidden" animate="shown" custom={2} className="md:col-span-6">
         <p className={t.label}>{grot ? CONTEXT[lang] : CONTEXT[lang].toLowerCase()}</p>
