@@ -382,7 +382,7 @@ export const ProjectsSection: React.FC = () => {
           {/* phones: the list alone, no rule and no heading over it */}
           <nav aria-label={t("section.projects")} className="pointer-events-auto">
             <p className={`${SMALL} mb-3 hidden text-platinum/50 md:block md:text-right`}>{t("section.projects")}</p>
-            <ul className={`${CAPTION} flex flex-col gap-y-2.5 md:items-end`}>
+            <ul className={`${CAPTION} flex flex-col gap-y-1 md:items-end md:gap-y-2.5`}>
               {WORKS.map((w, i) => (
                 <li key={w.slug}>
                   <Link
