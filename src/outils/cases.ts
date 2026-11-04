@@ -526,7 +526,7 @@ export const cases: Case[] = [
   },
   {
     slug: "smarthc",
-    outcome: { es: "nuevos clientes y partners tras el relanzamiento", en: "new clients and partners after the relaunch", fr: "de nouveaux clients et partenaires après la relance", de: "neue Kunden und Partner nach dem Relaunch" },
+    outcome: { es: "ciberseguridad más cercana, marca consolidada", en: "cybersecurity made approachable, a consolidated brand", fr: "une cybersécurité plus proche, une marque consolidée", de: "nahbare Cybersicherheit, gefestigte Marke" },
     title: "Smart Human Capital",
     layout: "editorial",
     statement: {
