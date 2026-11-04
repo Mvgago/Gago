@@ -74,10 +74,17 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
   return (
   <>
     <motion.figure
-      className="-mx-4 overflow-hidden sm:-mx-6 md:-mx-8"
+      className="relative -mx-4 overflow-hidden sm:-mx-6 md:-mx-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.9, delay: 0.1, ease: EASE_HAUS } }}
     >
+      {/* a soft haze of the page's own wall along the top, so the header reads the same over any picture
+          (over a busy photograph its grey type and glass control went patchy) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 md:h-36"
+        style={{ background: "linear-gradient(180deg, rgba(239,238,240,0.82) 0%, rgba(239,238,240,0.45) 45%, rgba(239,238,240,0) 100%)" }}
+      />
       {/* from the top of the page, under the header: the mark sits in the middle, well clear of it */}
       {c.headerImage ? (
         <img src={c.headerImage} alt={c.title} {...protect} className="block aspect-square w-full md:aspect-auto md:h-[86svh] object-cover" />
