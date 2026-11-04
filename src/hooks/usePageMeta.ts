@@ -9,10 +9,10 @@ import { cases } from "../outils/cases";
  */
 const PAGES: Record<string, Record<string, [string, string]>> = {
   "/": {
-    es: ["Fuga Haus — Estudio de diseño", "Estudio de diseño independiente: estrategia, identidad, 3D interactivo y diseño web, y vídeo y motion."],
-    en: ["Fuga Haus — Design studio", "Independent design studio: strategy, identity, interactive 3D and web design, and film."],
-    fr: ["Fuga Haus — Studio de design", "Studio de design indépendant : stratégie, identité, 3D interactive et design web, et vidéo et motion design."],
-    de: ["Fuga Haus — Designstudio", "Unabhängiges Designstudio: Strategie, Identität, interaktives 3D und Webdesign sowie Film."],
+    es: ["Fuga Haus — Estudio de diseño en Vigo", "Estudio de diseño independiente en Vigo: estrategia, identidad, 3D interactivo y diseño web, y vídeo y motion."],
+    en: ["Fuga Haus — Design studio in Vigo", "Independent design studio in Vigo, Spain: strategy, identity, interactive 3D and web design, and film."],
+    fr: ["Fuga Haus — Studio de design à Vigo", "Studio de design indépendant à Vigo : stratégie, identité, 3D interactive et design web, et vidéo et motion design."],
+    de: ["Fuga Haus — Designstudio in Vigo", "Unabhängiges Designstudio in Vigo: Strategie, Identität, interaktives 3D und Webdesign sowie Film."],
   },
   "/about": {
     es: ["Estudio — Fuga Haus", "Qué hace el estudio: vídeo y motion, 3D interactivo y diseño web, espacios y eventos, estrategia e identidad."],
