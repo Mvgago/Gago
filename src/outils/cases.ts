@@ -198,7 +198,7 @@ export const DISCIPLINE: Record<Discipline, Text> = {
 export const cases: Case[] = [
   {
     slug: "gracia-prados",
-    outcome: { es: "web y renders, su herramienta de venta", en: "website and renders, its sales tool", fr: "site et rendus, son outil de vente", de: "Website und Renderings als Verkaufswerkzeug" },
+    outcome: { es: "comercializada a través de la web", en: "marketed through its website", fr: "commercialisée via son site", de: "über die Website vermarktet" },
     title: "Gracia Prados 14",
     layout: "editorial",
     statement: {
@@ -290,7 +290,7 @@ export const cases: Case[] = [
   },
   {
     slug: "tolva",
-    outcome: { es: "una marca que nace de su oficio", en: "a brand born of its craft", fr: "une marque née de son métier", de: "eine Marke aus dem eigenen Handwerk" },
+    outcome: { es: "sistema de identidad completo", en: "a complete identity system", fr: "un système d'identité complet", de: "ein vollständiges Erscheinungsbild" },
     title: "Tolva",
     client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
     disciplines: ["identity"],
@@ -361,7 +361,7 @@ export const cases: Case[] = [
   },
   {
     slug: "buendia",
-    outcome: { es: "de una imagen dispersa a una sola marca", en: "from a scattered image to one brand", fr: "d'une image dispersée à une seule marque", de: "von einem zerstreuten Bild zu einer Marke" },
+    outcome: { es: "una marca unificada en todos sus canales", en: "one brand across every channel", fr: "une marque unifiée sur tous ses canaux", de: "eine einheitliche Marke auf allen Kanälen" },
     title: "Buendía Travel",
     layout: "editorial",
     statement: {
@@ -523,7 +523,7 @@ export const cases: Case[] = [
   },
   {
     slug: "smarthc",
-    outcome: { es: "un sector complejo, hecho comprensible", en: "a complex sector, made clear", fr: "un secteur complexe, rendu clair", de: "eine komplexe Branche, verständlich gemacht" },
+    outcome: { es: "nuevos clientes y partners tras el rebranding", en: "new clients and partners after the rebrand", fr: "nouveaux clients et partenaires après le changement d'image", de: "neue Kunden und Partner nach dem Rebranding" },
     title: "Smart Human Capital",
     layout: "editorial",
     statement: {
