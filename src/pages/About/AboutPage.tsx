@@ -313,7 +313,7 @@ export const AboutPage: React.FC = () => {
           <p className={`${SMALL} text-graphite`}>{s.processLabel}</p>
           <h2 className={`${TITLE} mt-4 text-ink`}>{s.processTitle}</h2>
           {/* what sets the process apart, said once and quietly under its title */}
-          <p className={`${BODY} mt-4 text-graphite`}>{s.processNote}</p>
+          <p className={`${BODY} mt-2 text-graphite`}>{s.processNote}</p>
         </div>
         <div className="col-span-12 mt-12 lg:order-1 lg:col-span-7 lg:mt-0 xl:col-span-8">
           <ProcessSteps steps={s.process} />

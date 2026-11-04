@@ -100,7 +100,7 @@ export const STUDIO: Record<Lang, Studio> = {
       { title: "Listen", text: "Understand the project, its context and what it needs to convey, with no intermediaries." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
       { title: "Build", text: "Design and development, with clear reviews at every stage." },
-      { title: "Refine and follow through", text: "The details that make everything feel finished, and support after launch." },
+      { title: "Refine and follow through", text: "The details that make everything feel finished, and our support once it is delivered." },
     ],
     voiceLabel: "own voice",
     voice:
@@ -180,7 +180,7 @@ export const STUDIO: Record<Lang, Studio> = {
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir, sin intermediarios." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
       { title: "Construir", text: "Diseño y desarrollo, con revisiones claras en cada etapa." },
-      { title: "Afinar y acompañar", text: "Los detalles que hacen que todo se sienta terminado, y el seguimiento después del lanzamiento." },
+      { title: "Afinar y acompañar", text: "Los detalles que hacen que todo se sienta terminado, y el acompañamiento una vez entregado." },
     ],
     voiceLabel: "voz propia",
     voice:
@@ -260,7 +260,7 @@ export const STUDIO: Record<Lang, Studio> = {
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre, sans intermédiaires." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
       { title: "Construire", text: "Design et développement, avec des validations claires à chaque étape." },
-      { title: "Affiner et accompagner", text: "Les détails qui donnent le sentiment d'un travail abouti, et le suivi après le lancement." },
+      { title: "Affiner et accompagner", text: "Les détails qui donnent le sentiment d'un travail abouti, et notre accompagnement une fois livré." },
     ],
     voiceLabel: "voix propre",
     voice:
@@ -340,7 +340,7 @@ export const STUDIO: Record<Lang, Studio> = {
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll, ohne Zwischenstellen." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
       { title: "Bauen", text: "Design und Entwicklung, mit klaren Abstimmungen in jeder Phase." },
-      { title: "Verfeinern und begleiten", text: "Die Details, durch die alles vollendet wirkt, und die Betreuung nach dem Start." },
+      { title: "Verfeinern und begleiten", text: "Die Details, durch die alles vollendet wirkt, und die Begleitung nach der Übergabe." },
     ],
     voiceLabel: "eigene stimme",
     voice:
