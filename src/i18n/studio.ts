@@ -16,6 +16,8 @@ export type Studio = {
   disciplines: Item[];
   processLabel: string;
   processTitle: string;
+  /** Under the process title: the same hands at every step */
+  processNote: string;
   workLabel: string;
   labArtLabel: string;
   labArtText: string;
@@ -83,6 +85,7 @@ export const STUDIO: Record<Lang, Studio> = {
     endTalk: "let's talk", endWork: "see the projects",
     processLabel: "process",
     processTitle: "How we work",
+    processNote: "The same hands at every step.",
     labSoundLabel: "sound",
     labPlaying: "in the headphones",
     labArtLabel: "illustration and photography",
@@ -94,7 +97,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workAll: "see all projects",
     closing: "It all starts with a conversation.", closingNote: "One creative direction for your brand, in every dimension. The one who listens to you is the one who carries it out, from start to finish, so everything answers to one idea.",
     process: [
-      { title: "Listen", text: "Understand the project, its context and what it needs to convey." },
+      { title: "Listen", text: "Understand the project, its context and what it needs to convey, with no intermediaries." },
       { title: "Find the story", text: "What to tell, in what tone and with what material, before anything is designed." },
       { title: "Build", text: "Design and development, with clear reviews at every stage." },
       { title: "Refine and follow through", text: "The details that make everything feel finished, and support after launch." },
@@ -162,6 +165,7 @@ export const STUDIO: Record<Lang, Studio> = {
     endTalk: "hablemos", endWork: "ver proyectos",
     processLabel: "proceso",
     processTitle: "Cómo trabajamos",
+    processNote: "Las mismas manos en cada paso.",
     labSoundLabel: "sonido",
     labPlaying: "en los cascos",
     labArtLabel: "ilustración y fotografía",
@@ -173,7 +177,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workAll: "ver todos los proyectos",
     closing: "Todo empieza con una conversación.", closingNote: "Una sola dirección creativa para tu marca, en todas sus dimensiones. Quien te escucha es quien lo lleva a cabo, de principio a fin, para que todo responda a una misma idea.",
     process: [
-      { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir." },
+      { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir, sin intermediarios." },
       { title: "Encontrar la historia", text: "Qué contar, con qué tono y con qué material, antes de diseñar nada." },
       { title: "Construir", text: "Diseño y desarrollo, con revisiones claras en cada etapa." },
       { title: "Afinar y acompañar", text: "Los detalles que hacen que todo se sienta terminado, y el seguimiento después del lanzamiento." },
@@ -241,6 +245,7 @@ export const STUDIO: Record<Lang, Studio> = {
     endTalk: "parlons-en", endWork: "voir les projets",
     processLabel: "processus",
     processTitle: "Notre méthode",
+    processNote: "Les mêmes mains à chaque étape.",
     labSoundLabel: "son",
     labPlaying: "dans le casque",
     labArtLabel: "illustration et photographie",
@@ -252,7 +257,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workAll: "voir tous les projets",
     closing: "Tout commence par une conversation.", closingNote: "Une seule direction créative pour votre marque, dans toutes ses dimensions. Celui qui vous écoute est celui qui le réalise, du début à la fin, pour que tout réponde à une même idée.",
     process: [
-      { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre." },
+      { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre, sans intermédiaires." },
       { title: "Trouver l'histoire", text: "Quoi raconter, sur quel ton et avec quelle matière, avant de dessiner quoi que ce soit." },
       { title: "Construire", text: "Design et développement, avec des validations claires à chaque étape." },
       { title: "Affiner et accompagner", text: "Les détails qui donnent le sentiment d'un travail abouti, et le suivi après le lancement." },
@@ -320,6 +325,7 @@ export const STUDIO: Record<Lang, Studio> = {
     endTalk: "sprechen wir", endWork: "Projekte ansehen",
     processLabel: "prozess",
     processTitle: "Wie wir arbeiten",
+    processNote: "Dieselben Hände bei jedem Schritt.",
     labSoundLabel: "klang",
     labPlaying: "im kopfhörer",
     labArtLabel: "Illustration und Fotografie",
@@ -331,7 +337,7 @@ export const STUDIO: Record<Lang, Studio> = {
     workAll: "alle projekte ansehen",
     closing: "Alles beginnt mit einem Gespräch.", closingNote: "Eine kreative Leitung für Ihre Marke, in all ihren Dimensionen. Wer Ihnen zuhört, setzt es auch um, von Anfang bis Ende, damit alles einer Idee folgt.",
     process: [
-      { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll." },
+      { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll, ohne Zwischenstellen." },
       { title: "Die Geschichte finden", text: "Was erzählt wird, in welchem Ton und mit welchem Material, bevor etwas gestaltet wird." },
       { title: "Bauen", text: "Design und Entwicklung, mit klaren Abstimmungen in jeder Phase." },
       { title: "Verfeinern und begleiten", text: "Die Details, durch die alles vollendet wirkt, und die Betreuung nach dem Start." },
