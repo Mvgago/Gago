@@ -43,6 +43,8 @@ const AllProjects: React.FC<{ current: string; lang: Lang }> = ({ current, lang 
  * as pictures, each with its name on a small tag; the row runs off the edge and scrolls sideways
  */
 const CONTEXT: Record<Lang, string> = { es: "Contexto", en: "Context", fr: "Contexte", de: "Kontext" };
+const RESULT: Record<Lang, string> = { es: "resultado", en: "result", fr: "résultat", de: "ergebnis" };
+const APPROACH: Record<Lang, string> = { es: "enfoque", en: "approach", fr: "approche", de: "ansatz" };
 
 /**
  * The editorial opening (on trial on one case): the work first, edge to edge and large; under it, two columns
@@ -127,6 +129,13 @@ const Editorial: React.FC<{ c: Case; lang: Lang }> = ({ c, lang }) => {
                 ))
               : c.disciplines.map((d) => DISCIPLINE[d][lang]).join(" · ")}
           </dd>
+          {/* what came of it, as the projects page names it; for a concept, its approach */}
+          {c.outcome && (
+            <>
+              <dt className="text-ink/55">{(c.outcomeIsApproach ? APPROACH : RESULT)[lang]}</dt>
+              <dd className="text-ink">{c.outcome[lang]}</dd>
+            </>
+          )}
         </dl>
       </motion.div>
     </header>

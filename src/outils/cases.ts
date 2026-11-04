@@ -111,6 +111,8 @@ export type Case = {
   sector?: Text;
   /** What changed for the client, in a few words: shown under the name on the projects page */
   outcome?: Text;
+  /** The outcome is an approach, not a result (a concept piece): labelled so in the case's facts */
+  outcomeIsApproach?: boolean;
   /** A closing line inviting a similar project, linked to the contact */
   cta?: Text;
   /** Kept but not shown: off the site and out of the case-to-case navigation */
@@ -290,6 +292,7 @@ export const cases: Case[] = [
   },
   {
     slug: "tolva",
+    outcomeIsApproach: true,
     outcome: { es: "una identidad que se huele y se toca", en: "an identity you can smell and touch", fr: "une identité qui se sent et se touche", de: "eine Identität zum Riechen und Anfassen" },
     title: "Tolva",
     client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
