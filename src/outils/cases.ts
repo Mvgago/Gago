@@ -290,7 +290,7 @@ export const cases: Case[] = [
   },
   {
     slug: "tolva",
-    outcome: { es: "identidad, packaging y web en un solo sistema", en: "identity, packaging and web in one system", fr: "identité, packaging et web en un seul système", de: "Identität, Verpackung und Web in einem System" },
+    outcome: { es: "una identidad que se huele y se toca", en: "an identity you can smell and touch", fr: "une identité qui se sent et se touche", de: "eine Identität zum Riechen und Anfassen" },
     title: "Tolva",
     client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
     disciplines: ["identity"],
