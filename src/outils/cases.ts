@@ -293,7 +293,7 @@ export const cases: Case[] = [
   {
     slug: "tolva",
     outcomeIsApproach: true,
-    outcome: { es: "un solo sistema visual, de la barra a cada bolsa", en: "one visual system, from the counter to every bag", fr: "un seul système visuel, du comptoir à chaque sachet", de: "ein visuelles System, von der Theke bis zu jeder Tüte" },
+    outcome: { es: "identidad, packaging y espacio con el aroma del tueste", en: "identity, packaging and space with the aroma of the roast", fr: "identité, packaging et espace au parfum de la torréfaction", de: "Identität, Verpackung und Raum mit dem Duft der Röstung" },
     title: "Tolva",
     client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
     disciplines: ["identity"],
