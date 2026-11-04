@@ -77,7 +77,7 @@ const SCENE: Record<string, string | undefined> = {
   // (v: bumped when the scene changes, so a cached copy is never shown)
   // (lift: on a phone the devices ride higher, clear of the name and result below)
   buendia: "/concepts/buendia-devices/index.html?bare&lift&v=5",
-  smarthc: "/concepts/smarthc-devices/index.html?bare&room&v=3",
+  smarthc: "/concepts/smarthc-devices/index.html?bare&room&v=4",
   // (the latte-art film alone: the page names the project itself)
   tolva: "/concepts/tolva-film/index.html?bare&v=1",
 };

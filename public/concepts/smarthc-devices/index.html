@@ -852,6 +852,9 @@ function fit() {
   camera.position.x += (dx + .2) - HOME.x; camera.position.z += dz - HOME.z;
   HOME.set(dx + .2, 1.6, dz); controls.target.set(dx + .05, ROOM ? .95 : 1.2, 0);
   if (BARE) camera.position.copy(HOME);
+  // ?room on a tall phone screen: the view slides down the frame, so the tablet sits in its upper half and
+  // the project's name and result below read on the open floor, not over the tablet
+  if (ROOM && tall) camera.setViewOffset(w, h, 0, h * .17, w, h); else camera.clearViewOffset();
   camera.updateProjectionMatrix();
   const visH = 2 * CODE_DIST * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), visW = visH * camera.aspect;
   const bandH = visH, bandW = bandH * (CODE_W / CODE_H);
