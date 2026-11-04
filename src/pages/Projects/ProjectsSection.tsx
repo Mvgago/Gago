@@ -357,6 +357,12 @@ export const ProjectsSection: React.FC = () => {
               <p className={`${CAPTION} mt-3 hidden lowercase text-platinum/70 sm:block`}>
                 {scopeOf(active.slug, lang)}
               </p>
+              {/* phones: the result alone, the line that sells, short enough for the width */}
+              {cases.find((k) => k.slug === active.slug)?.outcome && (
+                <p className={`${CAPTION} mt-2 lowercase text-platinum/75 sm:hidden`}>
+                  {cases.find((k) => k.slug === active.slug)!.outcome![lang]}
+                </p>
+              )}
               {/* a plain way in, so it is clear the name opens the project (wider screens; on phones the name alone) */}
               <Link
                 to={`/projects/${active.slug}`}
