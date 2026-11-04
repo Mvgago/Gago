@@ -111,8 +111,6 @@ export type Case = {
   sector?: Text;
   /** What changed for the client, in a few words: shown under the name on the projects page */
   outcome?: Text;
-  /** The case in three beats at its opening: where it started, the idea, and what came of it */
-  beats?: { from: Text; idea: Text; result: Text };
   /** A closing line inviting a similar project, linked to the contact */
   cta?: Text;
   /** Kept but not shown: off the site and out of the case-to-case navigation */
@@ -421,11 +419,6 @@ export const cases: Case[] = [
   {
     slug: "sapphire",
     outcome: { es: "vendida sobre plano", en: "sold off-plan", fr: "vendue sur plan", de: "vor Baubeginn verkauft" },
-    beats: {
-      from: { es: "Sin piso piloto ni obra que visitar", en: "No show flat, no site to visit", fr: "Ni appartement témoin ni chantier à visiter", de: "Keine Musterwohnung, keine Baustelle zu besichtigen" },
-      idea: { es: "La web y la campaña como sala de ventas", en: "The website and campaign as the sales room", fr: "Le site et la campagne comme espace de vente", de: "Website und Kampagne als Verkaufsraum" },
-      result: { es: "Vendida sobre plano", en: "Sold off-plan", fr: "Vendue sur plan", de: "Vor Baubeginn verkauft" },
-    },
     title: "The Sapphire",
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
     disciplines: ["identity", "web", "direction", "video", "presentation"],
