@@ -293,7 +293,7 @@ export const cases: Case[] = [
   {
     slug: "tolva",
     outcomeIsApproach: true,
-    outcome: { es: "una identidad que se huele y se toca", en: "an identity you can smell and touch", fr: "une identité qui se sent et se touche", de: "eine Identität zum Riechen und Anfassen" },
+    outcome: { es: "cada origen, su propia curva de tueste", en: "each origin, its own roast curve", fr: "chaque origine, sa propre courbe de torréfaction", de: "jede Herkunft, ihre eigene Röstkurve" },
     title: "Tolva",
     client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
     disciplines: ["identity"],
@@ -421,7 +421,7 @@ export const cases: Case[] = [
   },
   {
     slug: "sapphire",
-    outcome: { es: "100\u00a0% vendida sobre plano", en: "100% sold off-plan", fr: "100\u00a0% vendue sur plan", de: "100\u00a0% vor Baubeginn verkauft" },
+    outcome: { es: "15 viviendas, 100\u00a0% vendidas sobre plano", en: "15 homes, 100% sold off-plan", fr: "15 logements, 100\u00a0% vendus sur plan", de: "15 Wohnungen, 100\u00a0% vor Baubeginn verkauft" },
     title: "The Sapphire",
     client: { en: "Darya Homes — residential", es: "Darya Homes — residencial", fr: "Darya Homes — résidentiel", de: "Darya Homes — wohnbau" },
     disciplines: ["identity", "web", "direction", "video", "presentation"],
