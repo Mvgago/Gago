@@ -290,7 +290,7 @@ export const cases: Case[] = [
   },
   {
     slug: "tolva",
-    outcome: { es: "sistema de identidad completo", en: "a complete identity system", fr: "un système d'identité complet", de: "ein vollständiges Erscheinungsbild" },
+    outcome: { es: "identidad, packaging y web en un solo sistema", en: "identity, packaging and web in one system", fr: "identité, packaging et web en un seul système", de: "Identität, Verpackung und Web in einem System" },
     title: "Tolva",
     client: { en: "Tolva — coffee roastery", es: "Tolva — tostadero de café", fr: "Tolva — torréfaction", de: "Tolva — kaffeerösterei" },
     disciplines: ["identity"],
@@ -523,7 +523,7 @@ export const cases: Case[] = [
   },
   {
     slug: "smarthc",
-    outcome: { es: "nuevos clientes y partners tras el rebranding", en: "new clients and partners after the rebrand", fr: "nouveaux clients et partenaires après le changement d'image", de: "neue Kunden und Partner nach dem Rebranding" },
+    outcome: { es: "6 servicios unificados en una sola marca", en: "6 services united under one brand", fr: "6 services réunis sous une seule marque", de: "6 Leistungen unter einer Marke vereint" },
     title: "Smart Human Capital",
     layout: "editorial",
     statement: {
