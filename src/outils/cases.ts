@@ -200,7 +200,7 @@ export const DISCIPLINE: Record<Discipline, Text> = {
 export const cases: Case[] = [
   {
     slug: "gracia-prados",
-    outcome: { es: "comercializada a través de la web", en: "marketed through its website", fr: "commercialisée via son site", de: "über die Website vermarktet" },
+    outcome: { es: "la web, su principal herramienta de venta", en: "the website, its main sales tool", fr: "le site, son principal outil de vente", de: "die Website als wichtigstes Verkaufswerkzeug" },
     title: "Gracia Prados 14",
     layout: "editorial",
     statement: {
@@ -526,7 +526,7 @@ export const cases: Case[] = [
   },
   {
     slug: "smarthc",
-    outcome: { es: "6 servicios unificados en una sola marca", en: "6 services united under one brand", fr: "6 services réunis sous une seule marque", de: "6 Leistungen unter einer Marke vereint" },
+    outcome: { es: "nuevos clientes y partners tras el relanzamiento", en: "new clients and partners after the relaunch", fr: "de nouveaux clients et partenaires après la relance", de: "neue Kunden und Partner nach dem Relaunch" },
     title: "Smart Human Capital",
     layout: "editorial",
     statement: {
