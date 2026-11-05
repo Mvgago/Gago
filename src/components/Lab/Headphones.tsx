@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { FUGA, FUGA_WEIGHT, HAUS, HAUS_WEIGHT, type Pt } from "../Monolith/wordmark3d";
 
 /**
  * A pair of modern over-ear headphones in silver, floating in the lab's dark beside the record.
@@ -10,8 +11,8 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
  * domed, a disc of spun metal. It turns slowly and leans a little towards the pointer.
  */
 
-const SILVER = new THREE.MeshPhysicalMaterial({ color: "#e3e4e7", metalness: 0.85, roughness: 0.3 });
-const PAD = new THREE.MeshStandardMaterial({ color: "#58595e", metalness: 0, roughness: 0.85 });
+const SILVER = new THREE.MeshPhysicalMaterial({ color: "#cdced2", metalness: 0.85, roughness: 0.36 });
+const PAD = new THREE.MeshStandardMaterial({ color: "#4a4b50", metalness: 0, roughness: 1 });
 const HOLLOW = new THREE.MeshStandardMaterial({ color: "#3a3b3f", roughness: 0.95, side: THREE.DoubleSide });
 
 // The proportions, in one place
@@ -37,6 +38,64 @@ const inner = (y: number) => 0.08 + (BAND - 0.08) * settle(y);
 const sup = (a: number, b: number, p: number, t: number) =>
   new THREE.Vector2(a * Math.sign(Math.cos(t)) * Math.pow(Math.abs(Math.cos(t)), 2 / p), b * Math.sign(Math.sin(t)) * Math.pow(Math.abs(Math.sin(t)), 2 / p));
 
+// The studio's wordmark cut into the disc, from the same strokes as every logo on the site: a dark
+// line for the cut, a fine light one on its lower edge where the wall of the cut catches the light
+function engrave(x: CanvasRenderingContext2D, relief = false) {
+  const line = (pts: Pt[]) => {
+    x.beginPath();
+    x.moveTo(pts[0][0], pts[0][1]);
+    for (let k = 1; k < pts.length - 1; k++) {
+      const [px, py, r] = pts[k];
+      if (r) x.arcTo(px, py, pts[k + 1][0], pts[k + 1][1], r);
+      else x.lineTo(px, py);
+    }
+    x.lineTo(pts[pts.length - 1][0], pts[pts.length - 1][1]);
+    x.stroke();
+  };
+  const all = (dx: number, dy: number, style: string, thin: number) => {
+    x.save();
+    x.translate(dx, dy);
+    x.strokeStyle = style;
+    x.lineWidth = FUGA_WEIGHT - thin;
+    FUGA.flat().forEach(line);
+    x.lineWidth = HAUS_WEIGHT - thin * 0.4;
+    HAUS.forEach(line);
+    x.restore();
+  };
+  x.save();
+  x.globalAlpha = 1;
+  x.lineCap = "butt";
+  x.lineJoin = "miter";
+  // the logo spans about x 250–1640, y 680–1080 in its own units: fitted across the disc's middle
+  const s = 560 / 1390;
+  x.translate(512, 512);
+  x.scale(s, s);
+  x.translate(-945, -880);
+  if (relief) {
+    // the height of the letters for the bump map: soft shoulders, then the flat top
+    x.filter = "blur(6px)";
+    all(0, 0, "#fff", -6);
+    x.filter = "blur(2px)";
+    all(0, 0, "#fff", 0);
+    x.filter = "none";
+  } else {
+    all(0, 5, "rgba(250,250,252,0.4)", 6);
+    all(0, 0, "rgba(90,91,97,0.45)", 0);
+  }
+  x.restore();
+}
+
+// The letters' height over the disc, so they stand up from it and catch the light at their edges
+function reliefMap() {
+  const c = document.createElement("canvas");
+  c.width = c.height = 1024;
+  const x = c.getContext("2d")!;
+  x.fillStyle = "#000";
+  x.fillRect(0, 0, 1024, 1024);
+  engrave(x, true);
+  return new THREE.CanvasTexture(c);
+}
+
 // The spun disc: a soft cross of light over fine rings, as turned metal catches it
 function spun() {
   const c = document.createElement("canvas");
@@ -56,6 +115,7 @@ function spun() {
     x.arc(512, 512, r, 0, Math.PI * 2);
     x.stroke();
   }
+  engrave(x);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 8;
@@ -177,27 +237,80 @@ function strip(a: number, b: number, inset: number, base: number, h: number, fad
 // block, swept round; centred on its own middle, its depth along x
 function cushion(ra: number, rv: number) {
   const NA = 180, NC = 40;
-  const pos: number[] = [];
-  for (let i = 0; i < NA; i++) {
-    const t = (2 * Math.PI * i) / NA;
+  const pos: number[] = [], uv: number[] = [];
+  // one row and one column more than the round needs, closing it on themselves, so the leather's
+  // grain can be laid over it without a jump
+  for (let i = 0; i <= NA; i++) {
+    const t = (2 * Math.PI * (i % NA)) / NA;
     const p = sup(A - ra, B - ra, SQ, t);
     const q = sup(A - ra, B - ra, SQ, t + 0.001);
     const tx = q.x - p.x, ty = q.y - p.y, tl = Math.hypot(tx, ty);
     const nx = ty / tl, ny = -tx / tl; // out from the ring
-    for (let j = 0; j < NC; j++) {
-      const w = (2 * Math.PI * j) / NC;
+    for (let j = 0; j <= NC; j++) {
+      const w = (2 * Math.PI * (j % NC)) / NC;
       const s = sup(ra, rv, 4, w);
       // the leather's soft pleats, round the outside of the ring
       const pleat = 1 + 0.035 * Math.sin(t * 64) * Math.max(0, Math.cos(w));
       pos.push(s.y, p.y + ny * s.x * pleat, p.x + nx * s.x * pleat);
+      uv.push(i / NA, j / NC);
     }
   }
-  return grid(pos, NA, NC, true, true);
+  const geo = grid(pos, NA + 1, NC + 1, false, false);
+  geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+  // the doubled seams share one normal, so the light runs on across them
+  const n = geo.attributes.normal as THREE.BufferAttribute, M = NC + 1;
+  const join = (a: number, b: number) => {
+    const v = new THREE.Vector3().fromBufferAttribute(n, a).add(new THREE.Vector3().fromBufferAttribute(n, b)).normalize();
+    n.setXYZ(a, v.x, v.y, v.z);
+    n.setXYZ(b, v.x, v.y, v.z);
+  };
+  for (let j = 0; j <= NC; j++) join(j, NA * M + j);
+  for (let i = 0; i <= NA; i++) join(i * M, i * M + NC);
+  return geo;
+}
+
+// The cushions' surface: a fine irregular grain of soft pores, tiling seamlessly, for their height
+function grain() {
+  const S = 512;
+  const c = document.createElement("canvas");
+  c.width = c.height = S;
+  const x = c.getContext("2d")!;
+  x.fillStyle = "#808080";
+  x.fillRect(0, 0, S, S);
+  for (let k = 0; k < 5200; k++) {
+    const px = Math.random() * S, py = Math.random() * S, r = 2 + Math.random() * 5;
+    const dark = Math.random() < 0.6;
+    for (const ox of [-S, 0, S]) for (const oy of [-S, 0, S]) {
+      const cx = px + ox, cy = py + oy;
+      if (cx < -r || cx > S + r || cy < -r || cy > S + r) continue;
+      const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+      g.addColorStop(0, dark ? "rgba(30,30,30,0.55)" : "rgba(220,220,220,0.45)");
+      g.addColorStop(1, "rgba(128,128,128,0)");
+      x.fillStyle = g;
+      x.fillRect(cx - r, cy - r, 2 * r, 2 * r);
+    }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(36, 7);
+  t.anisotropy = 8;
+  return t;
 }
 
 function headphones() {
   const g = new THREE.Group();
-  const DISC = new THREE.MeshPhysicalMaterial({ map: spun(), metalness: 1, roughness: 0.26 });
+  const DISC = new THREE.MeshPhysicalMaterial({ map: spun(), bumpMap: reliefMap(), bumpScale: 1.2, metalness: 1, roughness: 0.26 });
+  // the right disc shows the cylinder's other cap, which carries the picture a half turn round:
+  // turned back, so the wordmark reads upright on both sides
+  const half = (t: THREE.Texture) => {
+    const c = t.clone();
+    c.center.set(0.5, 0.5);
+    c.rotation = Math.PI;
+    return c;
+  };
+  const DISC_R = DISC.clone();
+  DISC_R.map = half(DISC.map!);
+  DISC_R.bumpMap = half(DISC.bumpMap!);
   // a tall round arch, a touch higher than a half circle
   const H = 1.55, BASE = NECK - 0.12 + H * Math.sin(OVER);
 
@@ -208,6 +321,18 @@ function headphones() {
   const shell = housing();
   const RA = 0.18, RV = 0.15; // the cushion's half breadth and half thickness
   const ring = cushion(RA, RV);
+  // the cushions soft and matte, a foam under a fine velour: no shine at all, only the grain and a
+  // faint soft light at their edges, as cloth takes it
+  const pores = grain();
+  const LEATHER = new THREE.MeshPhysicalMaterial({
+    color: "#4a4b50",
+    roughness: 1,
+    bumpMap: pores,
+    bumpScale: 1.4,
+    sheen: 0.25,
+    sheenRoughness: 1,
+    sheenColor: new THREE.Color("#6e6e76"),
+  });
   const hollow = new THREE.ShapeGeometry(
     new THREE.Shape(Array.from({ length: 96 }, (_, k) => sup(A - 2 * RA + 0.02, B - 2 * RA + 0.02, SQ, (2 * Math.PI * k) / 96))),
     1,
@@ -230,14 +355,14 @@ function headphones() {
     part.add(h);
 
     // the spun disc on the domed back
-    const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.47, 0.47, 0.024, 128), [SILVER, DISC, DISC]);
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.47, 0.47, 0.024, 128), [SILVER, DISC, side > 0 ? DISC_R : DISC]);
     // tilted with the face it sits on
     disc.rotation.set(0, 0, Math.PI / 2 + side * Math.atan(0.06));
     disc.position.set(side * (CX + outer(-0.06) + DOME + 0.008), -0.06, -CUP);
     part.add(disc);
 
     // the cushion against the inside of the cup, and the cloth in its hollow
-    const c = new THREE.Mesh(ring, PAD);
+    const c = new THREE.Mesh(ring, LEATHER);
     c.position.set(side * (CX - inner(0) - RV + 0.02), 0, -CUP);
     part.add(c);
     const cloth = new THREE.Mesh(hollow, HOLLOW);
@@ -261,7 +386,8 @@ export const Headphones: React.FC<{ className?: string; active?: boolean }> = ({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.9;
+    // a little under, so the silver sits in the dim room and never glares
+    renderer.toneMappingExposure = 0.66;
     renderer.setClearColor(0x000000, 0);
     renderer.domElement.style.display = "block";
     el.appendChild(renderer.domElement);
@@ -269,9 +395,9 @@ export const Headphones: React.FC<{ className?: string; active?: boolean }> = ({
     const scene = new THREE.Scene();
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-    scene.environmentIntensity = 0.9;
-    // the lab's lights: a low cold red from the left, a violet from below right, a white key above
-    const red = new THREE.PointLight("#c23a46", 2.5, 12);
+    scene.environmentIntensity = 0.8;
+    // the lab's lights: a low lavender from the left, a violet from below right, a white key above
+    const red = new THREE.PointLight("#9a8fc4", 2, 12);
     red.position.set(-3.2, 1.4, 2.2);
     const violet = new THREE.PointLight("#7a5aa8", 0.5, 12);
     violet.position.set(3, -1.6, 2);

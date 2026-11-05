@@ -14,15 +14,15 @@
 const GAP = 30; // extra air before "ga", as on the logo
 const UNIT = 300; // logo units per world unit
 /** Bar weights in logo units. */
-const FUGA_WEIGHT = 35;
-const HAUS_WEIGHT = 11; // heavier than its size alone would ask, so it holds at the corner logo's size
+export const FUGA_WEIGHT = 35;
+export const HAUS_WEIGHT = 11; // heavier than its size alone would ask, so it holds at the corner logo's size
 /** Extrusion depths in world units: Fuga a thin slab, haus a little shallower. */
 const FUGA_DEPTH = 0.07;
 const HAUS_DEPTH = 0.035;
 
-type Pt = [x: number, y: number, r: number];
+export type Pt = [x: number, y: number, r: number];
 
-const FUGA: Pt[][][] = [
+export const FUGA: Pt[][][] = [
   // F
   [
     [[570, 695, 0], [267, 695, 33], [267, 976, 0]],
@@ -56,7 +56,7 @@ const HAUS_DRAWN: Pt[][] = [
  * its second) and standing on the same line as the bottom of the g.
  * Scaled uniformly, so the letters keep their proportions.
  */
-const HAUS: Pt[][] = (() => {
+export const HAUS: Pt[][] = (() => {
   const fOut = FUGA_WEIGHT / 2;
   const hOut = HAUS_WEIGHT / 2;
   const uLeft = 612 - fOut;

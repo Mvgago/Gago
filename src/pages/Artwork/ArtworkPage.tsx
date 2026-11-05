@@ -15,20 +15,20 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const Headphones = lazy(() => import("../../components/Lab/Headphones"));
 
 /**
- * The lab is a room apart from the rest of the site: its walls a violet almost black, cool
+ * The lab is a room apart from the rest of the site: its walls a dark, quiet lavender, cool
  * where the studio is warm graphite, with a grain over it and the corners falling away.
  */
-const NIGHT = "#15111a";
+const NIGHT = "#1c1a23";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
   <div aria-hidden className="pointer-events-none fixed inset-0 -z-10" style={{ background: NIGHT }}>
-    <style>{`@keyframes lab-breathe{0%,100%{opacity:.88}50%{opacity:1}}`}</style>
+    <style>{`@keyframes lab-breathe{0%,100%{opacity:.92}50%{opacity:1}}`}</style>
     <div
       className="absolute inset-0"
       style={{
-        // no coloured lamp: the wall itself is a deep aubergine, only a shade lighter where the room is lit
-        background: "radial-gradient(70% 60% at 30% 25%, rgba(70,52,92,0.35) 0%, transparent 75%)",
+        // no coloured lamp: the wall itself is a dusky lavender, only a shade lighter where the room is lit
+        background: "radial-gradient(75% 65% at 30% 25%, rgba(132,124,160,0.2) 0%, transparent 75%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
@@ -125,7 +125,7 @@ export const ArtworkPage: React.FC = () => {
                 onClick={() => setOpen(i)}
                 aria-label={`${plate.title ?? t("section.artwork")} — ${pad(i + 1)}`}
                 className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden"
-                style={{ background: "#1d1824" }}
+                style={{ background: "#25232d" }}
               >
                 <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade, transform: plate.crop ? `scale(${plate.crop})` : undefined, transformOrigin: plate.cropAt }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
               </button>
@@ -195,8 +195,20 @@ export const ArtworkPage: React.FC = () => {
                 {...protect}
                 // a touch dimmer, so the pale sleeve doesn't glare in the dark room
                 style={{ filter: "brightness(0.82)" }}
-                className="relative block aspect-square w-full object-cover shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75)]"
+                className="relative block aspect-square w-full rounded-[3px] object-cover shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.7)]"
               />
+              {/* the sleeve as printed card, not a picture: light falling across it from the upper left,
+                  the card's tooth, edges with a little body */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 rounded-[3px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_22px_rgba(0,0,0,0.4),inset_-2px_0_0_rgba(0,0,0,0.5)]"
+                style={{
+                  background:
+                    "linear-gradient(118deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.03) 30%, transparent 55%, rgba(0,0,0,0.22) 100%)",
+                }}
+              />
+              <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[3px] opacity-[0.22] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
+              <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[3px] opacity-[0.1] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
             </div>
           </a>
           {/* pointed at, the headphones lift and turn to the visitor, and beside them comes in what
