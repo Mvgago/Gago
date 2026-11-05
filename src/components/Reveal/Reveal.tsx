@@ -2,8 +2,8 @@ import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { EASE_HAUS } from "../../lib/motion";
 
-// Once, as the text comes a little way into view
-const VIEW = { once: true, margin: "0px 0px -12% 0px" } as const;
+// Once, as soon as the text is in view (not later: a phone sheet can be covered before it is far in)
+const VIEW = { once: true, margin: "0px 0px -4% 0px" } as const;
 
 type Tag = "span" | "p" | "h2" | "h3" | "li";
 

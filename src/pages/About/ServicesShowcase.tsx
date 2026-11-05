@@ -183,7 +183,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
         // held as soon as its example, title, text and list are all on screen (what follows the list, the
         // closing invitation, may pass under the next sheet); if those fit, right under the header
         if (!el) return;
-        const list = el.querySelector("ul"), end = list ? list.getBoundingClientRect().bottom - el.getBoundingClientRect().top + 24 : el.offsetHeight;
+        // (the sheet's own text ends at its services line, marked; the room left below it is for reading time)
+        const list = el.querySelector("[data-sheet-end]") ?? el.querySelector("ul"), end = list ? list.getBoundingClientRect().bottom - el.getBoundingClientRect().top + 24 : el.offsetHeight;
         el.style.top = mq.matches ? "" : `${Math.min(64, window.innerHeight - end)}px`;
       });
     place();
@@ -374,9 +375,11 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               ref={(el) => (items.current[i] = el)}
               // a whole screen each on large screens, its title at the top, level with the frame; a line
               // above each after the first, so it is clear where one ends and the next begins
-              // On phones and tablets each is a sheet of its own, a screen tall: held in place once read
-              // through, while the next slides up over it, so two disciplines never run together
-              className={`sticky -mx-4 flex min-h-[calc(100svh-64px)] flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              // On phones and tablets each is a sheet of its own, held in place once read through while the next
+              // slides up over it, so two disciplines never run together; each is a third of a screen taller
+              // than the screen (all but the last), so it stays while its text comes in and is read, and the
+              // next only rises after that much more scrolling
+              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-[calc(100svh-64px)]"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
               style={{ zIndex: i + 1 }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
@@ -423,7 +426,9 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {d.list && (
                   // what is delivered: one quiet line under a hairline, as a case lists its services
-                  <RevealFlow text={d.list.join("  ·  ")} className={`${SMALL} mt-6 max-w-[48ch] border-t border-ink/15 pt-4 normal-case text-ink/80 lg:mt-8`} delay={0.45} stagger={0.02} />
+                  <div data-sheet-end>
+                    <RevealFlow text={d.list.join("  ·  ")} className={`${SMALL} mt-6 max-w-[48ch] border-t border-ink/15 pt-4 normal-case text-ink/80 lg:mt-8`} delay={0.3} stagger={0.02} />
+                  </div>
                 )}
                 {/* at the end of the four, an invitation that comes in once the last is reached */}
                 {i === s.disciplines.length - 1 && (
