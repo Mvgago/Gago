@@ -96,7 +96,9 @@ const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: 
     {ex.img && <img src={ex.img} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />}
     {ex.video && (
       <>
-        <video src={ex.video} poster="/video/audiovisual-poster.jpg" muted loop playsInline autoPlay preload="auto" className="absolute inset-0 h-full w-full object-cover" />
+        {/* graded gently, as film: the phone footage's colours and contrast eased, its blacks lifted a touch,
+            a breath of warmth, so it sits with the rest of the site */}
+        <video src={ex.video} poster="/video/audiovisual-poster.jpg" muted loop playsInline autoPlay preload="auto" className="absolute inset-0 h-full w-full object-cover" style={{ filter: "saturate(0.8) contrast(0.92) brightness(1.02) sepia(0.08)" }} />
         {/* a fine film grain over the footage, as on the projects page: one texture for every shot */}
         {/* plain, not blended: a blend over a playing film costs the browser a full repaint every frame */}
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.035]" style={{ backgroundImage: GRAIN }} />
