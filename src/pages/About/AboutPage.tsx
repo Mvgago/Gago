@@ -32,10 +32,10 @@ import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
 
 // Beside the form, how it works, said plainly
 const TRUST: Record<string, string[]> = {
-  es: ["Respuesta en dos días laborables.", "Una primera conversación, sin compromiso.", "Trabajas directamente con quien diseña."],
-  en: ["A reply within two working days.", "A first conversation, with no commitment.", "You work directly with whoever designs."],
-  fr: ["Une réponse sous deux jours ouvrés.", "Un premier échange, sans engagement.", "Vous travaillez directement avec qui conçoit."],
-  de: ["Antwort innerhalb von zwei Werktagen.", "Ein erstes Gespräch, unverbindlich.", "Sie arbeiten direkt mit der Person, die gestaltet."],
+  es: ["Una primera conversación, sin compromiso.", "Trabajas directamente con quien diseña."],
+  en: ["A first conversation, with no commitment.", "You work directly with whoever designs."],
+  fr: ["Un premier échange, sans engagement.", "Vous travaillez directement avec qui conçoit."],
+  de: ["Ein erstes Gespräch, unverbindlich.", "Sie arbeiten direkt mit der Person, die gestaltet."],
 };
 
 
