@@ -6,6 +6,8 @@ import { SMALL } from "../Light/LightWall";
 import { hasLegal } from "../../outils/legal";
 
 const LEGAL = { es: "aviso legal", en: "legal notice", fr: "mentions légales", de: "impressum" };
+// The studio's signature: threads drawn fine, as a fugue's voices are woven
+const SIGN = { es: "hilando fino.", en: "spinning it fine.", fr: "au fil près.", de: "fein gesponnen." };
 
 /**
  * The inner pages' footer: one quiet line under a hairline — the rooms, the
@@ -37,7 +39,7 @@ const Footer: React.FC<{ dark?: boolean }> = ({ dark }) => {
         <span className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:contents">
         <span className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-center">
           {dark ? (
-            "designing atmospheres."
+            (SIGN[lang as keyof typeof SIGN] ?? SIGN.es)
           ) : (
             <>
               <span className="hidden sm:inline">{t("availability")}</span>
