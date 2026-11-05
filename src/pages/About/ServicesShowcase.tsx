@@ -37,7 +37,9 @@ if (typeof window !== "undefined") {
   }), 1500);
 }
 
-type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; seen: string[]; link?: string };
+// poster: a still of a 3D example (public/posters/<name>-wide.webp and -tall.webp, the phone frame's shape), shown
+// at once while the live scene loads behind it, which then fades in over it
+type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; poster?: string; seen: string[]; link?: string };
 
 // the way into the full example, where an example has one
 const OPEN: Record<string, string> = { es: "Ver el plano en 3D", en: "See the floor plan in 3D", fr: "Voir le plan en 3D", de: "Den Grundriss in 3D ansehen" };
@@ -47,6 +49,13 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
   const Scene = SCENES[name] as React.ComponentType<{ className?: string; paused?: boolean }>;
   const box = useRef<HTMLDivElement>(null);
   const [load, setLoad] = useState(false);
+  // shown a moment after it starts, once it has drawn itself, fading in over the still beneath
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    if (!(load && allowed)) return setShown(false);
+    const id = window.setTimeout(() => setShown(true), 1400);
+    return () => window.clearTimeout(id);
+  }, [load, allowed]);
   useEffect(() => {
     const el = box.current;
     if (!el) return;
@@ -60,7 +69,7 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
     return () => io.disconnect();
   }, []);
   return (
-    <div ref={box} className="pointer-events-none absolute inset-0">
+    <div ref={box} className={`pointer-events-none absolute inset-0 transition-opacity duration-1000 ${shown ? "opacity-100" : "opacity-0"}`}>
       {load && allowed && (
         <Suspense fallback={null}>
           <Scene className="h-full w-full" paused={paused} />
@@ -77,9 +86,9 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
 const EXAMPLES: Example[] = [
   { video: "/video/audiovisual.mp4", seen: ["sapphire", "buendia"] },
   // the flat of The Sapphire to walk round: a space in 3D, the discipline's first promise
-  { frame: "/concepts/sapphire-home/index.html?bare", seen: ["sapphire", "smarthc", "buendia"], link: "/projects/sapphire#vivienda-3d" },
+  { frame: "/concepts/sapphire-home/index.html?bare", poster: "sapphire-home", seen: ["sapphire", "smarthc", "buendia"], link: "/projects/sapphire#vivienda-3d" },
   { scene: "stand", seen: ["smarthc"] },
-  { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
+  { scene: "stationery", poster: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
 const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: boolean; linkLabel?: string }> = ({ ex, note, paused, allowed = true, linkLabel }) => (
@@ -93,8 +102,14 @@ const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: 
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.035]" style={{ backgroundImage: GRAIN }} />
       </>
     )}
+    {ex.poster && (
+      <picture>
+        <source media="(max-width: 1023px)" srcSet={`/posters/${ex.poster}-tall.webp`} />
+        <img src={`/posters/${ex.poster}-wide.webp`} alt="" draggable={false} decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+      </picture>
+    )}
     {ex.scene && <SceneInView name={ex.scene} paused={paused} allowed={allowed} />}
-    {ex.frame && <DevicesFrame src={ex.frame} title="3D" paused={paused} allowed={allowed} className="pointer-events-none absolute inset-0 h-full w-full" />}
+    {ex.frame && <DevicesFrame src={ex.frame} title="3D" paused={paused} allowed={allowed} reveal={!!ex.poster} className="pointer-events-none absolute inset-0 h-full w-full" />}
     {note && (
       <p className={`${SMALL} absolute bottom-3 left-4 normal-case text-white/85 [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]`}>{note}</p>
     )}
