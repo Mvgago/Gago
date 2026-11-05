@@ -36,8 +36,9 @@ const STREAK_FILL =
  * Fixed studio backdrop modelled on the reference photograph:
  * mauve-lilac shadow top left, cool silver top right, a near-white bloom
  * on the right, sage-olive falling into the lower left, all over a neutral
- * taupe. The shadow and the bloom drift very slowly, the vertical
- * reflections only dim and brighten. Only transform and opacity animate.
+ * taupe. A wide band of reflected light crosses it now and then, as on a
+ * flat satin surface; the vertical reflections dim and brighten. Only
+ * transform and opacity animate.
  */
 export const StudioAtmosphere: React.FC = () => {
   const still = useReducedMotion();
@@ -58,36 +59,42 @@ export const StudioAtmosphere: React.FC = () => {
         }}
       />
 
-      {/* The light is alive, barely: the mauve shadow and the white bloom drift a few centimetres across the
-          screen and breathe a touch, each on its own long clock (so they never move together), keeping their
-          tones and shapes. Transform only, so it stays on the compositor */}
-      {/* Soft grey-mauve shadow in the upper-left corner */}
+      {/* Soft grey-mauve shadow in the upper-left corner: a touch deeper than before, and on arrival spread
+          wider across the screen, gathering into its corner over the first seconds */}
       <motion.div
         className="absolute -left-[12vw] -top-[14vh] h-[85vh] w-[70vw] rounded-full will-change-transform"
-        style={{ background: "radial-gradient(closest-side, rgba(97, 83, 96, 0.55), transparent)" }}
-        // (it takes the stage in turn with the bloom: reaching right and down across the screen while the bloom
-        // draws back, then gathering into its corner as the bloom comes forward)
-        animate={still ? undefined : { x: ["0vw", "24vw", "6vw"], y: ["0vh", "14vh", "2vh"], scale: [1, 1.38, 1.06] }}
-        transition={{ duration: 19, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
+        style={{ background: "radial-gradient(closest-side, rgba(97, 83, 96, 0.64), transparent)" }}
+        initial={still ? false : { x: "14vw", y: "10vh", scale: 1.45 }}
+        animate={{ x: "2vw", y: "2vh", scale: 1.12 }}
+        transition={{ duration: 9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
       />
 
-      {/* Key light: a near-white bloom on the right, drifting slowly */}
-      <motion.div
-        className="absolute left-[80vw] top-[48vh] will-change-transform"
-        // (the blend sits on the moving layer itself: on the bloom inside, it would only blend within this layer)
-        style={{ mixBlendMode: "screen" }}
-        // (on the shadow's clock, in counterpoint: drawing back to the edge and narrowing as the shadow spreads)
-        animate={still ? undefined : { x: ["0vw", "12vw", "-10vw"], y: ["0vh", "6vh", "-6vh"], scale: [1, 0.82, 1.08] }}
-        transition={{ duration: 19, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
-      >
-        <div
-          className="absolute left-0 top-0 h-[90vmax] w-[90vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
+      {/* Key light: a fixed near-white bloom on the right */}
+      <div
+        className="absolute left-[80vw] top-[48vh] h-[90vmax] w-[90vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(253, 253, 255, 0.7) 0%, rgba(246, 246, 249, 0.32) 30%, rgba(231, 230, 235, 0.08) 62%, transparent 100%)",
+          mixBlendMode: "screen",
+        }}
+      />
+
+      {/* A reflection crossing the wall as on a flat satin surface: a wide, soft, slightly leaning band of light
+          sliding slowly from one edge to the other, then resting a while before it passes again */}
+      {!still && (
+        <motion.div
+          className="absolute -top-[25vh] left-0 h-[150vh] w-[70vw] will-change-transform"
           style={{
             background:
-              "radial-gradient(closest-side, rgba(253, 253, 255, 0.7) 0%, rgba(246, 246, 249, 0.32) 30%, rgba(231, 230, 235, 0.08) 62%, transparent 100%)",
+              "linear-gradient(90deg, transparent 0%, rgba(255, 253, 248, 0.05) 30%, rgba(255, 253, 248, 0.13) 50%, rgba(255, 253, 248, 0.05) 70%, transparent 100%)",
+            mixBlendMode: "screen",
+            rotate: 16,
           }}
+          initial={{ x: "-80vw" }}
+          animate={{ x: ["-80vw", "120vw"] }}
+          transition={{ duration: 14, ease: [0.45, 0, 0.55, 1], repeat: Infinity, repeatDelay: 7, delay: 3.5 }}
         />
-      </motion.div>
+      )}
 
       {/* Vertical reflections over the dark areas */}
       {STREAKS.map((s) => (
