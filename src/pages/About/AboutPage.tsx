@@ -48,7 +48,7 @@ const TRUST: Record<string, string[]> = {
 /** A part of the page after the showcase, on its 12-column grid */
 const Section: React.FC<{ children: React.ReactNode; lit?: boolean }> = ({ children, lit = false }) => (
   <motion.section
-    className={`relative isolate grid grid-cols-12 gap-x-8 py-20 md:py-28 ${lit ? "md:mt-24" : ""}`}
+    className={`relative isolate grid grid-cols-12 gap-x-8 py-12 md:py-16 ${lit ? "md:mt-20" : ""}`}
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-10% 0px" }}
