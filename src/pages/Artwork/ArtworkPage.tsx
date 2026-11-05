@@ -154,22 +154,55 @@ export const ArtworkPage: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Fuga Sei — Grimaldi Lines"
-            // edge to edge, as the illustrations above, one wide square of the record
-            className="group -mx-4 block shrink-0 overflow-hidden sm:-mx-6 md:-ml-8 md:mr-0 md:w-1/2"
+            // the record as an object: its sleeve, and the disc slipping out of it to the right
+            className="group block shrink-0 md:w-1/2"
           >
-            <img
-              src={record.url}
-              alt="Fuga Sei — Grimaldi Lines (EP)"
-              {...protect}
-              // a touch dimmer, so the pale sleeve doesn't glare in the dark room
-              style={{ filter: "brightness(0.82)" }}
-              className="block aspect-square w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]"
-            />
+            <style>{`@keyframes fh-spin{to{transform:rotate(360deg)}}`}</style>
+            <div className="relative w-[78%] md:w-[80%]">
+              {/* the disc, drawn as pressed vinyl: hair-fine grooves, the darker gaps between the tracks,
+                  the smooth run-out by the label and a raised lip at the rim; the light lies on it in two
+                  opposite wedges and stays still while the label, in the sleeve's grey green, turns */}
+              <div
+                aria-hidden
+                className="absolute left-[3%] top-[3%] aspect-square w-[94%] translate-x-[30%] rounded-full shadow-[0_30px_60px_-30px_rgba(0,0,0,0.85)] transition-transform duration-[1400ms] ease-haus group-hover:translate-x-[42%]"
+                style={{
+                  background: [
+                    // the gaps between tracks
+                    "radial-gradient(circle, transparent 0 55.5%, rgba(0,0,0,0.7) 56% 56.6%, transparent 57.2% 69.5%, rgba(0,0,0,0.7) 70% 70.6%, transparent 71.2% 83.5%, rgba(0,0,0,0.7) 84% 84.6%, transparent 85.2%)",
+                    // the run-out, smooth, and the lip at the edge
+                    "radial-gradient(circle, transparent 0 36%, #131315 36% 42%, transparent 42% 97.5%, #222226 98% 99.2%, #0c0c0d 99.4%)",
+                    // the grooves
+                    "repeating-radial-gradient(circle, rgba(255,255,255,0.045) 0 0.5px, rgba(0,0,0,0.25) 0.6px 1.3px, rgba(255,255,255,0.02) 1.4px 1.8px)",
+                    "#101012",
+                  ].join(", "),
+                }}
+              >
+                <div
+                  className="absolute inset-[34%] animate-[fh-spin_6s_linear_infinite] rounded-full [animation-play-state:paused] group-hover:[animation-play-state:running]"
+                  style={{ background: "radial-gradient(circle, #050505 0 4.5%, #6f817a 5% 7%, #8fa39b 7.5% 80%, #7d9189 80.5% 100%)" }}
+                >
+                  <span className="absolute left-1/2 top-[16%] -translate-x-1/2 font-mono text-[8px] lowercase tracking-[0.2em] text-[#1d2523]/70">fuga sei</span>
+                  <span className="absolute bottom-[16%] left-1/2 -translate-x-1/2 font-mono text-[7px] lowercase tracking-[0.2em] text-[#1d2523]/55">grimaldi lines</span>
+                </div>
+                <div
+                  className="absolute inset-0 rounded-full mix-blend-screen"
+                  style={{ background: "conic-gradient(from 25deg, transparent 0 4%, rgba(255,255,255,0.16) 10%, rgba(255,255,255,0.04) 15%, transparent 20% 54%, rgba(255,255,255,0.12) 60%, rgba(255,255,255,0.03) 65%, transparent 70%)", WebkitMaskImage: "radial-gradient(circle, transparent 0 35%, #000 36%)", maskImage: "radial-gradient(circle, transparent 0 35%, #000 36%)" }}
+                />
+              </div>
+              <img
+                src={record.url}
+                alt="Fuga Sei — Grimaldi Lines (EP)"
+                {...protect}
+                // a touch dimmer, so the pale sleeve doesn't glare in the dark room
+                style={{ filter: "brightness(0.82)" }}
+                className="relative block aspect-square w-full object-cover shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75)]"
+              />
+            </div>
           </a>
           {/* pointed at, the headphones lift and turn to the visitor, and beside them comes in what
               is playing in them, with a way to listen */}
           <div
-            className="group/hp relative z-10 -mt-[30%] ml-[18%] w-[82%] md:-ml-[16%] md:mt-0 md:w-[50%]"
+            className="group/hp relative z-10 -mt-[30%] ml-[18%] w-[82%] md:-ml-[12%] md:mt-0 md:w-[50%]"
             onPointerEnter={(e) => e.pointerType === "mouse" && setListening(true)}
             onPointerLeave={() => setListening(false)}
           >
