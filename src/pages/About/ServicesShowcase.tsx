@@ -92,12 +92,12 @@ const EXAMPLES: Example[] = [
 ];
 
 const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: boolean; linkLabel?: string }> = ({ ex, note, paused, allowed = true, linkLabel }) => (
-  <div className="relative h-full w-full overflow-hidden bg-[#dfe1e2]">
+  <div className="relative h-full w-full overflow-hidden bg-[var(--fh-wall,#dfe1e2)]">
     {ex.img && <img src={ex.img} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />}
     {ex.video && (
       <>
         {/* the footage a shade dimmer, with a breath of warmth; its contrast left alone (eased, it went grey) */}
-        <video src={typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches ? ex.video.replace("audiovisual.mp4", "audiovisual-720.mp4") : ex.video} poster="/video/audiovisual-poster.jpg?v=2" muted loop playsInline autoPlay preload="auto" className="absolute inset-0 h-full w-full object-cover" style={{ filter: "brightness(0.96) sepia(0.05) saturate(1.03)" }} />
+        <video src={typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches ? ex.video.replace("audiovisual.mp4", "audiovisual-720.mp4") : ex.video} poster="/video/audiovisual-poster.jpg?v=2" muted loop playsInline autoPlay preload="auto" className="absolute -inset-px h-[calc(100%+2px)] w-[calc(100%+2px)] max-w-none object-cover" style={{ filter: "brightness(0.96) sepia(0.05) saturate(1.03)" }} />
         {/* a fine film grain over the footage, as on the projects page: one texture for every shot */}
         {/* plain, not blended: a blend over a playing film costs the browser a full repaint every frame */}
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.035]" style={{ backgroundImage: GRAIN }} />
