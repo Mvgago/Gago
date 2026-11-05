@@ -71,6 +71,12 @@ body.night .tag small { display: none; } body.night .tag::after, body.night .tag
 .tag:hover { color: var(--sapphire); }
 .tag.on { color: var(--sapphire); border-color: var(--sapphire); } .tag.on::before, .tag.on::after { background: var(--sapphire); }
 .tag.hide { opacity: 0; pointer-events: none; }
+/* back to the whole floor: shown only while a room is in close-up, just above the controls */
+.homebtn { position: fixed; left: 50%; bottom: 72px; z-index: 2; transform: translate(-50%, 6px); font: inherit; font-family: var(--mono); font-weight: 400; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); background: rgba(255, 255, 255, .7); border: 1px solid rgba(29, 34, 48, .1); border-radius: 2px; padding: 7px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 8px 24px rgba(30, 36, 50, .07); opacity: 0; pointer-events: none; transition: opacity .4s, transform .4s, background .25s; }
+.homebtn svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.homebtn:hover { background: rgba(255, 255, 255, .92); }
+body.focused:not(.touring):not(.bare) .homebtn { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+body.night .homebtn { color: #f4f1ec; background: rgba(28, 32, 42, .6); border-color: rgba(244, 241, 236, .14); }
 
 /* the guided walk: a button at the head of the controls, and a caption naming each room as it is reached */
 .tourbtn { font: inherit; font-family: var(--mono); font-weight: 400; letter-spacing: .06em; text-transform: uppercase; font-size: 10px; color: #f4f1ec; background: rgba(59, 55, 52, .9); border: 0; border-radius: 2px; padding: 7px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .25s; }
@@ -168,6 +174,7 @@ body.night .tourcap { background: rgba(28,32,42,.72); border-left-color: #f4f1ec
 <div class="credits" id="credits" hidden><b id="credits-title"></b><ul id="credits-list"></ul></div>
 <div class="bars" aria-hidden="true"><i></i><i></i></div>
 <div class="tourcap" id="tourcap" aria-live="polite"><small id="tc-step"></small><b id="tc-name"></b><span id="tc-m2"></span><p id="tc-line"></p><i><em id="tc-bar"></em></i></div>
+<button type="button" class="homebtn" id="homebtn"><svg viewBox="0 0 12 12"><path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8"/></svg><span id="hb-text"></span></button>
 <div class="panel" id="panel">
   <button type="button" class="tourbtn" id="tourbtn"><svg viewBox="0 0 12 12"><path id="tb-icon" d="M3 2l7 4-7 4z"/></svg><span id="tb-text"></span></button>
   <div class="sep tsep"></div>
@@ -202,16 +209,16 @@ const LANG = (() => { try { const l = localStorage.getItem('fugahaus.lang'); if 
 const DICT = {
   es: { cap: 'Concepto · Planta 2C, la vivienda en 3D', drag: 'arrastra para girar', swipe: 'desliza para girar', light: 'luz', floor: 'suelo', kitchen: 'cocina',
         morning: 'mañana', sunset: 'atardecer', night: 'noche', stone: 'travertino', oak: 'roble', white: 'blanco', sapphire: 'zafiro',
-        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1', bed2: 'Dormitorio 2', bed3: 'Dormitorio 3', sea: 'Frente al mar', tour: 'recorrer', stop: 'parar', dining: 'Comedor' },
+        living: 'Salón comedor', kitchenR: 'Cocina', hall: 'Hall', terrace: 'Terraza', laundry: 'Lavadero', bedroom: 'Dormitorio 1', bed2: 'Dormitorio 2', bed3: 'Dormitorio 3', sea: 'Frente al mar', tour: 'recorrer', stop: 'parar', dining: 'Comedor', overview: 'vista general' },
   en: { cap: 'Concept · Floor 2C, the home in 3D', drag: 'drag to rotate', swipe: 'swipe to rotate', light: 'light', floor: 'floor', kitchen: 'kitchen',
         morning: 'morning', sunset: 'sunset', night: 'night', stone: 'travertine', oak: 'oak', white: 'white', sapphire: 'sapphire',
-        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom', bed2: 'Bedroom 2', bed3: 'Bedroom 3', sea: 'Facing the sea', tour: 'walk through', stop: 'stop', dining: 'Dining' },
+        living: 'Living & dining', kitchenR: 'Kitchen', hall: 'Hall', terrace: 'Terrace', laundry: 'Laundry', bedroom: 'Main bedroom', bed2: 'Bedroom 2', bed3: 'Bedroom 3', sea: 'Facing the sea', tour: 'walk through', stop: 'stop', dining: 'Dining', overview: 'whole floor' },
   fr: { cap: 'Concept · Étage 2C, le logement en 3D', drag: 'faites glisser pour tourner', swipe: 'glissez pour tourner', light: 'lumière', floor: 'sol', kitchen: 'cuisine',
         morning: 'matin', sunset: 'couchant', night: 'nuit', stone: 'travertin', oak: 'chêne', white: 'blanc', sapphire: 'saphir',
-        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1', bed2: 'Chambre 2', bed3: 'Chambre 3', sea: 'Face à la mer', tour: 'parcourir', stop: 'arrêter', dining: 'Salle à manger' },
+        living: 'Séjour', kitchenR: 'Cuisine', hall: 'Entrée', terrace: 'Terrasse', laundry: 'Buanderie', bedroom: 'Chambre 1', bed2: 'Chambre 2', bed3: 'Chambre 3', sea: 'Face à la mer', tour: 'parcourir', stop: 'arrêter', dining: 'Salle à manger', overview: 'vue d\'ensemble' },
   de: { cap: 'Konzept · Etage 2C, die Wohnung in 3D', drag: 'ziehen zum Drehen', swipe: 'wischen zum Drehen', light: 'licht', floor: 'boden', kitchen: 'küche',
         morning: 'morgen', sunset: 'abend', night: 'nacht', stone: 'travertin', oak: 'eiche', white: 'weiß', sapphire: 'saphir',
-        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1', bed2: 'Schlafzimmer 2', bed3: 'Schlafzimmer 3', sea: 'Mit Blick aufs Meer', tour: 'rundgang', stop: 'stopp', dining: 'Essbereich' },
+        living: 'Wohnen & Essen', kitchenR: 'Küche', hall: 'Diele', terrace: 'Terrasse', laundry: 'Waschraum', bedroom: 'Schlafzimmer 1', bed2: 'Schlafzimmer 2', bed3: 'Schlafzimmer 3', sea: 'Mit Blick aufs Meer', tour: 'rundgang', stop: 'stopp', dining: 'Essbereich', overview: 'gesamtansicht' },
 };
 const TX = DICT[LANG] || DICT.es;
 const t = (k) => TX[k] ?? DICT.es[k] ?? k;
@@ -1748,9 +1755,14 @@ let focus = null;
 ROOMS.filter((room) => !(phone && room.k === 'hall')).forEach((room) => {
   const el = document.createElement('button'); el.type = 'button'; el.className = 'tag';
   el.innerHTML = `${t(room.k)}<small>${room.m2} m²</small>`;
-  el.addEventListener('click', () => { stopTour(); const on = focus === room; focus = on ? null : room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !on && x === el)); goTo(on ? HOME : room); poke(); });
+  el.addEventListener('click', () => { stopTour(); const on = focus === room; focus = on ? null : room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !on && x === el)); goTo(on ? HOME : room); syncHome(); poke(); });
   room.el = el; tagsEl.appendChild(el);
 });
+// the way back for anyone who doesn't guess that a second tap on the tag does it
+const homebtn = document.getElementById('homebtn');
+document.getElementById('hb-text').textContent = t('overview');
+function syncHome() { document.body.classList.toggle('focused', !!focus); }
+homebtn.addEventListener('click', () => { stopTour(); focus = null; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.remove('on')); goTo(HOME); syncHome(); poke(); });
 
 const sph = new THREE.Spherical(), goal = { look: new THREE.Vector3(...HOME.look), az: HOME.az, pol: HOME.pol, r: HOME.r };
 let flying = 0;
@@ -1797,7 +1809,7 @@ const viewOf = (room) => { if (!room) return { look: new THREE.Vector3(...HOME.l
   const v = SHOTS[room.k] || room; return { look: new THREE.Vector3(...v.look), az: v.az, pol: v.pol, r: v.r * (phone ? (room.k === 'sea' ? 0.9 : 1.4) : 1) }; }; // (the sea's shot is at eye level: drawn back on a phone it stood behind a wall)
 function tourGo(i, T = clock.getElapsedTime()) {
   tour.i = (i + TOUR.length) % TOUR.length; tour.holdUntil = 0; const room = TOUR[tour.i];
-  focus = room; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !!room && !!room.el && x === room.el));
+  focus = room; syncHome(); tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.toggle('on', !!room && !!room.el && x === room.el));
   sph.setFromVector3(v3.copy(camera.position).sub(controls.target));
   tour.from = { look: controls.target.clone(), az: sph.theta, pol: sph.phi, r: sph.radius }; tour.to = viewOf(room);
   tour.flyFrom = T; flying = 0; tc.box.classList.remove('on');
@@ -1805,7 +1817,7 @@ function tourGo(i, T = clock.getElapsedTime()) {
 // while walking, the camera may come down to eye level (the hand-held view stays above, as a model)
 function startTour() { if (tour.on) return; controls.maxPolarAngle = 1.5; tour.on = true; tour.lap = 0; document.body.classList.add('touring'); setBtn(); hideHint(); tourGo(0); }
 function stopTour() { if (!tour.on) return; tour.on = false; controls.maxPolarAngle = 1.2; if (sph.phi > 1.2) { sph.phi = 1.2; camera.position.setFromSpherical(sph).add(controls.target); } tour.holdUntil = 0; tour.to = null; document.body.classList.remove('touring'); setBtn(); tc.box.classList.remove('on'); poke(); }
-tbtn.addEventListener('click', () => { if (tour.on) { stopTour(); focus = null; tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.remove('on')); goTo(HOME); } else startTour(); });
+tbtn.addEventListener('click', () => { if (tour.on) { stopTour(); focus = null; syncHome(); tagsEl.querySelectorAll('.tag').forEach((x) => x.classList.remove('on')); goTo(HOME); } else startTour(); });
 addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); tbtn.click(); }
   else if (tour.on && (e.code === 'ArrowRight' || e.code === 'ArrowLeft')) tourGo(tour.i + (e.code === 'ArrowRight' ? 1 : -1));
