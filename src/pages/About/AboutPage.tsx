@@ -28,7 +28,15 @@ const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb,
 const ZOOM: Record<string, [number, string]> = {};
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
 import Footer from "../../components/Footer/Footer";
-import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
+import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
+
+// Beside the form, how it works, said plainly
+const TRUST: Record<string, string[]> = {
+  es: ["Respuesta en dos días laborables.", "Una primera conversación, sin compromiso.", "Trabajas directamente con quien diseña."],
+  en: ["A reply within two working days.", "A first conversation, with no commitment.", "You work directly with whoever designs."],
+  fr: ["Une réponse sous deux jours ouvrés.", "Un premier échange, sans engagement.", "Vous travaillez directement avec qui conçoit."],
+  de: ["Antwort innerhalb von zwei Werktagen.", "Ein erstes Gespräch, unverbindlich.", "Sie arbeiten direkt mit der Person, die gestaltet."],
+};
 
 
 
@@ -447,7 +455,7 @@ export const AboutPage: React.FC = () => {
           olive and pale bloom turned low — and the footer lives inside it */}
       <motion.section
         id="contact"
-        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden px-4 pb-10 pt-8 text-platinum sm:-mx-6 sm:px-6 sm:pt-24 md:-mx-8 md:px-8 md:pt-32"
+        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden px-4 pb-10 pt-8 text-platinum sm:-mx-6 sm:px-6 sm:pt-14 md:-mx-8 md:px-8 md:pt-20"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-10% 0px" }}
@@ -485,14 +493,22 @@ export const AboutPage: React.FC = () => {
           animate={status === "sent" ? { opacity: [0, 1, 0.45], transition: { duration: 2.2, times: [0, 0.3, 1], ease: "easeOut" } } : { opacity: 0, transition: { duration: 0.8 } }}
         />
 
-        <div className="relative grid grid-cols-12 gap-x-8 gap-y-6 sm:gap-y-16">
-          <div className="col-span-12 lg:col-span-6">
+        <div className="relative grid grid-cols-12 gap-x-8 gap-y-8 sm:gap-y-12">
+          {/* the close of the page, as a case opens: the label, then the line large and across */}
+          <div className="col-span-12">
             <h2 className={`${SMALL} text-platinum/55`}>
               {s.contactLabel}
             </h2>
-            <RevealWords as="p" text={s.contactLead} className={`${LEAD} mt-3 block max-w-[18ch] text-platinum sm:mt-8`} delay={0.2} />
-            {/* The direct ways in (on phones they come after the form, so the form fits in one screen) */}
-            <div className={`${ACTION} mt-8 hidden flex-col items-start gap-2 sm:mt-12 sm:flex sm:gap-4`}>
+            <RevealWords as="p" text={s.contactLead} className="mt-4 block max-w-[24ch] font-geo text-[2.1rem] font-medium leading-[1.06] tracking-[0.005em] text-platinum sm:mt-6 md:text-[3.2rem]" delay={0.2} />
+          </div>
+          {/* how it works, in three plain lines, and the ways in (on phones these come after the form) */}
+          <div className="col-span-12 lg:col-span-4">
+            <ul className="flex flex-col gap-3 border-t border-platinum/15 pt-5">
+              {(TRUST[lang] ?? TRUST.es).map((line) => (
+                <li key={line} className="font-geo text-[1.02rem] leading-snug text-platinum/85">{line}</li>
+              ))}
+            </ul>
+            <div className={`${ACTION} mt-10 hidden flex-col items-start gap-3 sm:flex`}>
               <PlainLink href={`mailto:${EMAIL}`} dark>
                 {EMAIL}
               </PlainLink>
@@ -500,12 +516,10 @@ export const AboutPage: React.FC = () => {
                 instagram
               </PlainLink>
             </div>
-
-
           </div>
 
-          {/* The form, on a pane of smoked glass */}
-          <GlassPane className="col-span-12 self-start lg:col-span-6">
+          {/* The form, straight on the room: no pane, only its hairlines */}
+          <div className="col-span-12 self-start lg:col-span-8">
           <AnimatePresence mode="wait" initial={false}>
           {status === "sent" ? (
             // Sent: the pane turns over, like a card, and on its back is the confirmation, with a way to write again
@@ -578,7 +592,7 @@ export const AboutPage: React.FC = () => {
             onSubmit={onSubmit}
             noValidate
             // phones: tighter, so the whole form fits in about one screen
-            className="relative grid grid-cols-2 items-end gap-x-4 gap-y-4 rounded-sm border border-platinum/25 bg-platinum/[0.08] p-4 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md sm:gap-9 sm:p-8 md:p-10 xl:grid-cols-3"
+            className="relative grid grid-cols-2 items-end gap-x-4 gap-y-4 border-t border-platinum/15 pt-5 sm:gap-x-9 sm:gap-y-8 xl:grid-cols-3"
           >
             {/* the trap: out of sight, out of the tab order, and left empty by anyone real */}
             <input ref={trap} type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute -left-[9999px] top-0 h-px w-px opacity-0" />
@@ -624,7 +638,7 @@ export const AboutPage: React.FC = () => {
                 type="submit"
                 disabled={status === "sending"}
                 // The way out of the page: solid light, the one filled form in this room
-                className={`${ACTION} group inline-flex shrink-0 items-center justify-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-[#3b3734] transition-colors duration-500 hover:bg-white disabled:cursor-wait disabled:opacity-70`}
+                className={`${ACTION} group inline-flex shrink-0 items-center justify-center gap-2.5 rounded-full bg-platinum px-9 py-3.5 text-[#3b3734] transition-colors duration-500 hover:bg-white disabled:cursor-wait disabled:opacity-70`}
               >
                 {status === "sending" ? s.form.sending : s.form.send}
               </button>
@@ -632,7 +646,7 @@ export const AboutPage: React.FC = () => {
           </motion.form>
           )}
           </AnimatePresence>
-          </GlassPane>
+          </div>
           {/* phones: the direct ways in, under the form */}
           <div className={`${ACTION} col-span-12 flex flex-wrap items-center gap-x-6 gap-y-2 sm:hidden`}>
             <PlainLink href={`mailto:${EMAIL}`} dark>
