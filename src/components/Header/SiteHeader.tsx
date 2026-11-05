@@ -195,19 +195,19 @@ export const SiteHeader: React.FC = () => {
       >
         <div
           aria-hidden
-          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 transition-opacity duration-500 ${pathname === "/about" ? "-bottom-5" : "bottom-0 border-b border-ink/[0.06] backdrop-blur-md"} ${
+          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 transition-opacity duration-500 ${pathname === "/about" ? "bottom-0 border-b" : "bottom-0 border-b border-ink/[0.06] backdrop-blur-md"} ${
             (onLight || pathname === "/artwork") && scrolled && !open ? "opacity-100" : "opacity-0"
           }`}
           // Translucent, so light falling on the page behind (as on "info") carries on under it
-                    // (the studio: solid behind the logo, then fading out below the header into the room, with no edge)
+                    // (the studio: solid, so nothing shows through behind the logo, closed by a single faint line of light)
           style={{
             background:
               pathname === "/artwork"
                 ? "#0f0e10cc"
                 : pathname === "/about"
-                  ? "linear-gradient(to bottom, #2c2827 0%, #2c2827 70%, rgba(44, 40, 39, 0.7) 82%, rgba(44, 40, 39, 0) 100%)"
+                  ? "#2c2827"
                   : `${WALL}cc`,
-            borderColor: pathname === "/artwork" ? "rgba(255,255,255,0.06)" : undefined,
+            borderColor: pathname === "/artwork" ? "rgba(255,255,255,0.06)" : pathname === "/about" ? "rgba(244,241,237,0.09)" : undefined,
           }}
         />
         <div className="relative" style={masked ? { clipPath: MASK } : undefined}>
