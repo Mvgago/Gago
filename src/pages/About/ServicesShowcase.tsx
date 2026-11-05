@@ -388,13 +388,14 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               id={`disciplina-${i}`}
               data-i={i}
               ref={(el) => (items.current[i] = el)}
-              // a whole screen each on large screens, its title at the top, level with the frame; a line
+              // a whole screen each on large screens, its title at the top, level with the frame (the last only as tall
+              // as its words: the frame lets go as it ends, so its title never runs up under the header); a line
               // above each after the first, so it is clear where one ends and the next begins
               // On phones and tablets each is a sheet of its own, held in place once read through while the next
               // slides up over it, so two disciplines never run together; each is a third of a screen taller
               // than the screen (all but the last), so it stays while its text comes in and is read, and the
               // next only rises after that much more scrolling
-              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-0"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-0"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 ${i === s.disciplines.length - 1 ? "lg:min-h-0 lg:pb-16" : "lg:min-h-[calc(100svh-112px)]"} lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
               style={{ zIndex: i + 1 }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
