@@ -37,6 +37,9 @@
      over one another, stay almost solid so the one below never shows through */
   --fh-panel: transparent;
   --fh-sheet: rgba(47, 43, 42, 0.96);
+  /* the process steps light up one after another: on the dark wall, a faint pane of warm light */
+  --fh-plate: radial-gradient(120% 90% at 50% 25%, rgba(244, 238, 232, 0.1) 0%, rgba(244, 238, 232, 0.05) 60%, rgba(244, 238, 232, 0.03) 100%);
+  --fh-plate-shadow: 0 22px 50px -18px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.07), 0 0 40px 0 rgba(236, 226, 222, 0.06);
   color: var(--color-ink);
 }
 

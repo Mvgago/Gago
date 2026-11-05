@@ -581,9 +581,10 @@ export const ProcessSteps: React.FC<{ steps: { title: string; text: string }[] }
         <motion.span
           aria-hidden
           className="pointer-events-none absolute -inset-x-5 -bottom-6 -top-5 -z-10 rounded-xl"
+          // (from the room's tokens: on the dark studio a faint pane of light, not a white flash)
           style={{
-            background: "radial-gradient(120% 90% at 50% 30%, #ffffff 0%, #fbfbfd 55%, #f3f3f6 100%)",
-            boxShadow: "0 22px 50px -14px rgba(40,38,48,0.32), 0 0 0 1px rgba(40,38,48,0.08), 0 0 60px 6px rgba(255,255,255,0.95)",
+            background: "var(--fh-plate, radial-gradient(120% 90% at 50% 30%, #ffffff 0%, #fbfbfd 55%, #f3f3f6 100%))",
+            boxShadow: "var(--fh-plate-shadow, 0 22px 50px -14px rgba(40,38,48,0.32), 0 0 0 1px rgba(40,38,48,0.08), 0 0 60px 6px rgba(255,255,255,0.95))",
           }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: [0, 1, 1, 0], transition: { duration: 1.3, delay: 0.15 + i * 0.2, times: [0, 0.18, 0.55, 1], ease: "easeInOut" } }}

@@ -412,7 +412,7 @@ export const AboutPage: React.FC = () => {
           olive and pale bloom turned low — and the footer lives inside it */}
       <motion.section
         id="contact"
-        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden bg-[#2f2b2a] px-4 pb-10 pt-8 text-platinum sm:-mx-6 sm:px-6 sm:pt-24 md:-mx-8 md:px-8 md:pt-32"
+        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden border-t border-white/[0.06] bg-[#241f1e] px-4 pb-10 pt-8 text-platinum sm:-mx-6 sm:px-6 sm:pt-24 md:-mx-8 md:px-8 md:pt-32"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-10% 0px" }}
@@ -424,9 +424,9 @@ export const AboutPage: React.FC = () => {
           className="pointer-events-none absolute inset-0"
           style={{
             background: `
-              radial-gradient(55% 60% at 0% 100%, rgba(150, 146, 110, 0.32) 0%, transparent 75%),
-              radial-gradient(50% 55% at 8% 0%, rgba(120, 98, 116, 0.38) 0%, transparent 80%),
-              radial-gradient(45% 60% at 92% 30%, rgba(236, 226, 222, 0.14) 0%, transparent 75%)
+              radial-gradient(55% 60% at 0% 100%, rgba(150, 146, 110, 0.36) 0%, transparent 75%),
+              radial-gradient(50% 55% at 8% 0%, rgba(120, 98, 116, 0.42) 0%, transparent 80%),
+              radial-gradient(48% 62% at 78% 45%, rgba(236, 226, 222, 0.2) 0%, transparent 72%)
             `,
           }}
         />
@@ -533,7 +533,7 @@ export const AboutPage: React.FC = () => {
             onSubmit={onSubmit}
             noValidate
             // phones: tighter, so the whole form fits in about one screen
-            className="relative grid grid-cols-2 items-end gap-x-4 gap-y-4 rounded-sm border border-platinum/10 bg-platinum/[0.04] p-4 backdrop-blur-sm sm:gap-9 sm:p-8 md:p-10 xl:grid-cols-3"
+            className="relative grid grid-cols-2 items-end gap-x-4 gap-y-4 rounded-sm border border-platinum/25 bg-platinum/[0.08] p-4 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md sm:gap-9 sm:p-8 md:p-10 xl:grid-cols-3"
           >
             {/* the trap: out of sight, out of the tab order, and left empty by anyone real */}
             <input ref={trap} type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute -left-[9999px] top-0 h-px w-px opacity-0" />
