@@ -340,16 +340,15 @@ export const AboutPage: React.FC = () => {
         );
       })()}
 
-      {/* Phones and tablets: the four disciplines as small cards, two by two and all on view at once, each its
-          example edge to edge with its number and name over it; a tap goes down to its sheet (wide screens have
-          the tabs under the frame) */}
+      {/* Phones and tablets: the four disciplines as an open list, no rules between them: a still of each, its
+          number and its name beside it; a tap goes down to its sheet (wide screens have the tabs under the frame) */}
       <nav aria-label={s.disciplinesLabel} className="mt-10 min-w-0 lg:hidden">
-        <ol className="grid grid-cols-2 gap-2.5 sm:gap-3">
+        <ol className="flex flex-col gap-4">
           {s.disciplines.map((d, i) => (
             <motion.li
               key={d.title}
-              initial={stillPage ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={stillPage ? false : { opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, ease: EASE_HAUS, delay: 0.9 + i * 0.09 }}
             >
               <a
@@ -359,20 +358,22 @@ export const AboutPage: React.FC = () => {
                   const el = document.getElementById(`disciplina-${i}`);
                   if (el) scrollToTarget(lenis, el, { offset: -64 });
                 }}
-                className="group relative block aspect-[5/4] overflow-hidden rounded-[5px] bg-[#3a3533]"
+                className="group flex items-center gap-4"
               >
-                <img
-                  src={`/posters/cards/${["film", "plan", "stand", "identity"][i]}.webp`}
-                  alt=""
-                  draggable={false}
-                  decoding="async"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-haus group-active:scale-[1.03]"
-                />
-                {/* a shade from below, so the name reads over any picture */}
-                <span aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgba(28,24,23,0.85)_0%,rgba(28,24,23,0.4)_45%,transparent_75%)]" />
-                <span className={`${SMALL} absolute left-2.5 top-2 !text-[11px] text-white/85 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]`}>{String(i + 1).padStart(2, "0")}</span>
-                <span className="absolute inset-x-2.5 bottom-2.5 font-geo text-[0.92rem] font-normal leading-[1.15] tracking-[0.01em] text-[#f4f1ed] [text-wrap:balance] sm:text-[1.05rem]">
-                  {d.title}
+                <span className="relative h-16 w-[5.5rem] shrink-0 overflow-hidden rounded-[4px] bg-[#3a3533]">
+                  <img
+                    src={`/posters/cards/${["film", "plan", "stand", "identity"][i]}.webp`}
+                    alt=""
+                    draggable={false}
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-haus group-active:scale-[1.06]"
+                  />
+                </span>
+                <span className="flex min-w-0 flex-col gap-1">
+                  <span className={`${SMALL} !text-[11px] text-graphite`}>{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-geo text-[1.1rem] font-normal leading-[1.2] tracking-[0.01em] text-ink transition-colors duration-500 group-hover:text-graphite">
+                    {d.title}
+                  </span>
                 </span>
               </a>
             </motion.li>
