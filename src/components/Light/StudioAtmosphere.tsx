@@ -65,8 +65,10 @@ export const StudioAtmosphere: React.FC = () => {
       <motion.div
         className="absolute -left-[12vw] -top-[14vh] h-[85vh] w-[70vw] rounded-full will-change-transform"
         style={{ background: "radial-gradient(closest-side, rgba(97, 83, 96, 0.55), transparent)" }}
-        animate={still ? undefined : { x: ["0vw", "11vw", "3vw"], y: ["0vh", "8vh", "-4vh"], scale: [1, 1.12, 1.04] }}
-        transition={{ duration: 17, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
+        // (it takes the stage in turn with the bloom: reaching right and down across the screen while the bloom
+        // draws back, then gathering into its corner as the bloom comes forward)
+        animate={still ? undefined : { x: ["0vw", "24vw", "6vw"], y: ["0vh", "14vh", "2vh"], scale: [1, 1.38, 1.06] }}
+        transition={{ duration: 19, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
       />
 
       {/* Key light: a near-white bloom on the right, drifting slowly */}
@@ -74,8 +76,9 @@ export const StudioAtmosphere: React.FC = () => {
         className="absolute left-[80vw] top-[48vh] will-change-transform"
         // (the blend sits on the moving layer itself: on the bloom inside, it would only blend within this layer)
         style={{ mixBlendMode: "screen" }}
-        animate={still ? undefined : { x: ["0vw", "-13vw", "-4vw"], y: ["0vh", "7vh", "-8vh"], scale: [1, 1.1, 0.96] }}
-        transition={{ duration: 21, ease: "easeInOut", repeat: Infinity, repeatType: "mirror", delay: 1 }}
+        // (on the shadow's clock, in counterpoint: drawing back to the edge and narrowing as the shadow spreads)
+        animate={still ? undefined : { x: ["0vw", "12vw", "-10vw"], y: ["0vh", "6vh", "-6vh"], scale: [1, 0.82, 1.08] }}
+        transition={{ duration: 19, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
       >
         <div
           className="absolute left-0 top-0 h-[90vmax] w-[90vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
