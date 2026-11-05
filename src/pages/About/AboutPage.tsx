@@ -34,14 +34,31 @@ import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessS
  * the content in the right, like the index of a well-set book.
  */
 /** A part of the page after the showcase, on its 12-column grid */
-const Section: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const Section: React.FC<{ children: React.ReactNode; lit?: boolean }> = ({ children, lit = false }) => (
   <motion.section
-    className="grid grid-cols-12 gap-x-8 py-20 md:py-28"
+    className={`relative isolate grid grid-cols-12 gap-x-8 py-20 md:py-28 ${lit ? "my-16 md:my-24" : ""}`}
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-10% 0px" }}
     transition={{ duration: 1.2, ease: EASE_HAUS }}
   >
+    {/* lit: the room brightens behind this part of the page, a warmer, paler graphite under a soft light from
+        above, out to both edges of the screen, coming and going in long fades with no edge anywhere */}
+    {lit && (
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-x-4 -inset-y-28 -z-10 sm:-inset-x-6 md:-inset-x-8 md:-inset-y-40"
+        style={{
+          background: [
+            "radial-gradient(55% 45% at 72% 22%, rgba(244, 236, 228, 0.13) 0%, transparent 70%)",
+            "radial-gradient(70% 60% at 20% 70%, rgba(150, 140, 120, 0.1) 0%, transparent 75%)",
+            "linear-gradient(to bottom, rgba(92, 84, 80, 0) 0%, rgba(92, 84, 80, 0.42) 28%, rgba(92, 84, 80, 0.42) 72%, rgba(92, 84, 80, 0) 100%)",
+          ].join(", "),
+          maskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%)",
+        }}
+      />
+    )}
     {children}
   </motion.section>
 );
@@ -342,8 +359,8 @@ export const AboutPage: React.FC = () => {
       <ServicesShowcase s={s} />
 
       {/* The process, in the showcase's grid: the steps under the frame's column, the title in
-          the column the disciplines are read in */}
-      <Section>
+          the column the disciplines are read in; lit, so it reads as its own part of the page */}
+      <Section lit>
         <div className="col-span-12 lg:order-2 lg:col-span-5 xl:col-span-4">
           <Reveal as="p" className={`${SMALL} text-graphite`}>{s.processLabel}</Reveal>
           <RevealWords as="h2" text={s.processTitle} className={`${TITLE} mt-4 block text-ink`} delay={0.1} />
