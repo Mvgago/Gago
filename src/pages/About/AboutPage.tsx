@@ -340,46 +340,7 @@ export const AboutPage: React.FC = () => {
         );
       })()}
 
-      {/* Phones and tablets: the four disciplines as one block, their stills stacked edge to edge in a single
-          square-cornered column, each with its number and name beside it; a tap goes down to its sheet (wide screens have the tabs under the frame) */}
-      <nav aria-label={s.disciplinesLabel} className="mt-10 min-w-0 lg:hidden">
-        <ol className="flex flex-col">
-          {s.disciplines.map((d, i) => (
-            <motion.li
-              key={d.title}
-              initial={stillPage ? false : { opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, ease: EASE_HAUS, delay: 0.9 + i * 0.09 }}
-            >
-              <a
-                href={`#disciplina-${i}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  const el = document.getElementById(`disciplina-${i}`);
-                  if (el) scrollToTarget(lenis, el, { offset: -64 });
-                }}
-                className="group flex items-center gap-4"
-              >
-                <span className="relative h-[4.5rem] w-24 shrink-0 overflow-hidden bg-[#3a3533]">
-                  <img
-                    src={`/posters/cards/${["film", "plan", "stand", "identity"][i]}.webp`}
-                    alt=""
-                    draggable={false}
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-haus group-active:scale-[1.06]"
-                  />
-                </span>
-                <span className="flex min-w-0 flex-col gap-1">
-                  <span className={`${SMALL} !text-[11px] text-graphite`}>{String(i + 1).padStart(2, "0")}</span>
-                  <span className="font-geo text-[1.1rem] font-normal leading-[1.2] tracking-[0.01em] text-ink transition-colors duration-500 group-hover:text-graphite">
-                    {d.title}
-                  </span>
-                </span>
-              </a>
-            </motion.li>
-          ))}
-        </ol>
-      </nav>
+      {/* (no index of the disciplines here: each follows straight on with its own large example) */}
 
       </div>
 
