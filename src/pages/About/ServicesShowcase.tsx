@@ -102,9 +102,9 @@ const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: 
     {ex.link && (
       <Link
         to={ex.link}
-        // (small, so the scene leads; a graphite glass with pale type in its own colours, whatever the page
-        // around it, so it always reads over the white plan)
-        className={`${SMALL} absolute bottom-3 left-3 inline-flex items-center rounded-full border border-white/10 bg-[#2f2b2a]/75 px-3 py-1 !text-[11px] text-[#f4f1ed]/90 backdrop-blur-sm transition-[background-color,border-color,color] duration-500 hover:border-white/25 hover:bg-[#2f2b2a]/95 hover:text-[#f4f1ed]`}
+        // (small, so the scene leads; a pale frosted glass with dark type in its own colours, whatever the page
+        // around it, so it reads over the white plan without weighing on it)
+        className={`${SMALL} absolute bottom-3 left-3 inline-flex items-center rounded-full border border-[#3b3734]/15 bg-white/60 px-3 py-1 !text-[11px] text-[#3b3734]/85 shadow-[0_6px_18px_-8px_rgba(0,0,0,0.35)] backdrop-blur-md transition-[background-color,border-color,color] duration-500 hover:border-[#3b3734]/30 hover:bg-white/85 hover:text-[#3b3734]`}
       >
         {linkLabel}
       </Link>
@@ -591,8 +591,9 @@ const ProcessStep: React.FC<{ step: { title: string; text: string }; i: number; 
 }) => {
   // this step's share of the way: the thread crosses it between i/n and (i+1)/n
   const fill = useTransform(progress, [i / n, (i + 1) / n], [0, 1]);
-  const lit = useTransform(progress, [i / n, (i + 0.55) / n], [0.16, 1]);
+  const lit = useTransform(progress, [i / n, (i + 0.55) / n], [0.12, 1]);
   const glow = useTransform(progress, [(i - 0.25) / n, (i + 0.5) / n, (i + 1.25) / n], [0, 1, 0]);
+  const halo = useTransform(glow, (g) => `0 0 ${Math.round(28 * g)}px rgba(244, 241, 237, ${(0.45 * g).toFixed(2)})`);
   return (
     <motion.div className="relative isolate" initial="off" whileInView="on" viewport={{ once: true, margin: "-12% 0px" }}>
       {/* the pane of light that goes with the step being read (from the room's tokens: faint on the dark wall) */}
@@ -606,14 +607,17 @@ const ProcessStep: React.FC<{ step: { title: string; text: string }; i: number; 
         }}
       />
       {/* the thread: a faint line, filled in light as the reader goes past */}
-      <span aria-hidden className="relative block h-px bg-ink/15">
-        <motion.span className="absolute inset-0 origin-left bg-ink" style={{ scaleX: still ? 1 : fill }} />
+      <span aria-hidden className="relative block h-[2px] bg-ink/15">
+        <motion.span
+          className="absolute inset-0 origin-left bg-ink shadow-[0_0_12px_1px_rgba(244,241,237,0.55)]"
+          style={{ scaleX: still ? 1 : fill }}
+        />
       </span>
       {/* the step's number, large and light, coming up as the thread arrives */}
       <motion.p
         aria-hidden
         className="mt-5 font-geo text-[2.75rem] font-light leading-none tracking-[0.02em] text-ink [font-variant-numeric:tabular-nums] lg:text-[3.25rem]"
-        style={{ opacity: still ? 1 : lit }}
+        style={{ opacity: still ? 1 : lit, textShadow: still ? undefined : halo }}
       >
         {String(i + 1).padStart(2, "0")}
       </motion.p>
