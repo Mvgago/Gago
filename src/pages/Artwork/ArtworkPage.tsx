@@ -27,9 +27,10 @@ const NightRoom: React.FC = () => (
     <div
       className="absolute inset-0"
       style={{
-        // a grey wall, and on it one gathered pool of lavender light, upper left, fading out well
-        // before the rest of the room
-        background: "radial-gradient(38% 34% at 24% 22%, rgba(150,134,196,0.3) 0%, rgba(150,134,196,0.12) 45%, transparent 100%)",
+        // a grey wall, and lavender light gathered in the upper left: its source off the page, so it
+        // comes in as a long soft wash with no edge, never a shape, and fades well before the rest
+        background:
+          "radial-gradient(75% 50% at -5% -10%, rgba(150,134,196,0.3) 0%, rgba(150,134,196,0.12) 45%, transparent 100%), radial-gradient(45% 70% at -10% 20%, rgba(150,134,196,0.12) 0%, transparent 100%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
