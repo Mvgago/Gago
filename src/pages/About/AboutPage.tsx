@@ -6,6 +6,7 @@ import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { DARK_WALL, LightWall } from "../../components/Light/LightWall";
+import { Reveal, RevealWords } from "../../components/Reveal/Reveal";
 import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
 
@@ -237,6 +238,24 @@ export const AboutPage: React.FC = () => {
     // No bottom padding: the dark contact block closes the page, the footer follows it
     <main className="fh-dark relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
       <LightWall color={DARK_WALL} />
+      {/* The room's light, held still behind the page as it scrolls: the landing's mauve, olive and pale
+          bloom turned low, as in the contact block, a fine grain over it and the corners a shade deeper,
+          so the graphite has depth rather than being a flat wall */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: [
+              "radial-gradient(60% 55% at 6% 0%, rgba(120, 98, 116, 0.34) 0%, transparent 78%)",
+              "radial-gradient(55% 60% at 0% 100%, rgba(150, 146, 110, 0.22) 0%, transparent 75%)",
+              "radial-gradient(42% 58% at 94% 36%, rgba(236, 226, 222, 0.11) 0%, transparent 75%)",
+              "radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(18, 15, 15, 0.38) 100%)",
+            ].join(", "),
+          }}
+        />
+        {/* (plain, no blend mode: blending a full-screen layer under a scrolling page is heavy on phones) */}
+        <div className="absolute inset-0 opacity-[0.035]" style={{ backgroundImage: GRAIN }} />
+      </div>
 
       {/* (the page sits on the plain wall: no room behind the opening) */}
 
@@ -275,12 +294,9 @@ export const AboutPage: React.FC = () => {
       <div className="mb-8 mt-8 grid items-center gap-14 md:mb-10 md:mt-3 lg:grid-cols-12 lg:gap-8">
       <div className="lg:col-span-12">
       {/* The statement: the one thing to read first */}
-      <motion.p
-        variants={rise}
-        initial="hidden"
-        animate="shown"
-        custom={3}
-        // the page's headline, large and dark, as a case opens on its statement
+      <p
+        // the page's headline, large and dark, as a case opens on its statement; its words rise into place
+        // one after another, as the lema does on the landing
         className="font-geo text-[1.2rem] font-normal leading-[1.3] tracking-[0.005em] text-ink lg:text-[1.55rem]"
       >
         {/* Two lines, each whole: what the studio is, then its principle, set back in grey */}
@@ -291,12 +307,17 @@ export const AboutPage: React.FC = () => {
             <>
               {/* held to a width that sets it in two lines, the principle making the third */}
               {/* on phones the principle runs on right after the statement; on large screens it takes its own line */}
-              <span className="lg:block">{s.statement.slice(0, cut + 1)}</span>{" "}
-              <span className="text-graphite lg:block lg:max-w-[64ch]">{s.statement.slice(cut + 2)}</span>
+              <RevealWords text={s.statement.slice(0, cut + 1)} className="lg:block" delay={0.35} stagger={0.03} />{" "}
+              <RevealWords
+                text={s.statement.slice(cut + 2)}
+                className="text-graphite lg:block lg:max-w-[64ch]"
+                delay={0.35 + s.statement.slice(0, cut + 1).split(" ").length * 0.03}
+                stagger={0.03}
+              />
             </>
           );
         })()}
-      </motion.p>
+      </p>
 
       </div>
 
@@ -310,10 +331,10 @@ export const AboutPage: React.FC = () => {
           the column the disciplines are read in */}
       <Section>
         <div className="col-span-12 lg:order-2 lg:col-span-5 xl:col-span-4">
-          <p className={`${SMALL} text-graphite`}>{s.processLabel}</p>
-          <h2 className={`${TITLE} mt-4 text-ink`}>{s.processTitle}</h2>
+          <Reveal as="p" className={`${SMALL} text-graphite`}>{s.processLabel}</Reveal>
+          <RevealWords as="h2" text={s.processTitle} className={`${TITLE} mt-4 block text-ink`} delay={0.1} />
           {/* what sets the process apart, said once and quietly under its title */}
-          <p className={`${BODY} mt-2 text-graphite`}>{s.processNote}</p>
+          <Reveal as="p" className={`${BODY} mt-2 text-graphite`} delay={0.35}>{s.processNote}</Reveal>
         </div>
         <div className="col-span-12 mt-12 lg:order-1 lg:col-span-7 lg:mt-0 xl:col-span-8">
           <ProcessSteps steps={s.process} />
@@ -368,9 +389,9 @@ export const AboutPage: React.FC = () => {
           </ul>
         </div>
         <div className="col-span-12 mt-16 flex flex-col justify-end lg:col-span-5 lg:mt-0 xl:col-span-4">
-          <p className={`${TITLE} text-ink`}>{s.closing}</p>
+          <RevealWords as="p" text={s.closing} className={`${TITLE} text-ink`} />
           {/* who you would be talking to: no face, just how it works */}
-          <p className={`${BODY} mt-5 max-w-[36ch] text-graphite`}>{s.closingNote}</p>
+          <Reveal as="p" className={`${BODY} mt-5 max-w-[36ch] text-graphite`} delay={0.35}>{s.closingNote}</Reveal>
           <a
             href="#contact"
             onClick={(e) => {
@@ -424,9 +445,7 @@ export const AboutPage: React.FC = () => {
             <h2 className={`${SMALL} text-platinum/55`}>
               {s.contactLabel}
             </h2>
-            <p className={`${LEAD} mt-3 max-w-[18ch] text-platinum sm:mt-8`}>
-              {s.contactLead}
-            </p>
+            <RevealWords as="p" text={s.contactLead} className={`${LEAD} mt-3 block max-w-[18ch] text-platinum sm:mt-8`} delay={0.2} />
             {/* The direct ways in (on phones they come after the form, so the form fits in one screen) */}
             <div className={`${ACTION} mt-8 hidden flex-col items-start gap-2 sm:mt-12 sm:flex sm:gap-4`}>
               <PlainLink href={`mailto:${EMAIL}`} dark>

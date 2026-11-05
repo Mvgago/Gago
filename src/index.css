@@ -33,6 +33,10 @@
   --color-graphite: #c4bcb6;
   --color-umber: #d6c9c4;
   --fh-wall: #2f2b2a;
+  /* the disciplines' column on wide screens lets the room's light through; the phone sheets, which slide
+     over one another, stay almost solid so the one below never shows through */
+  --fh-panel: transparent;
+  --fh-sheet: rgba(47, 43, 42, 0.96);
   color: var(--color-ink);
 }
 
