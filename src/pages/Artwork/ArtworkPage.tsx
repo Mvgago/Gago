@@ -24,17 +24,17 @@ const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
   <div aria-hidden className="pointer-events-none fixed inset-0 -z-10" style={{ background: NIGHT }}>
-    <style>{`@keyframes lab-breathe{0%,100%{opacity:.75}50%{opacity:1}}`}</style>
+    <style>{`@keyframes lab-breathe{0%,100%{opacity:.88}50%{opacity:1}}`}</style>
     <div
       className="absolute inset-0"
       style={{
         // a darkroom's safelight: one red lamp off to the left, its glow spilling across the room
         background:
-          "radial-gradient(55% 70% at 0% 30%, rgba(168,30,30,0.5) 0%, rgba(120,22,24,0.22) 45%, transparent 75%), radial-gradient(90% 60% at 20% 100%, rgba(110,20,22,0.18) 0%, transparent 70%)",
+          "radial-gradient(70% 85% at 0% 35%, rgba(200,34,30,0.85) 0%, rgba(150,24,24,0.5) 35%, rgba(90,14,16,0.2) 65%, transparent 90%), linear-gradient(100deg, rgba(80,12,14,0.55) 0%, rgba(40,6,8,0.35) 100%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
-    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(0,0,0,0.65) 100%)" }} />
+    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(0,0,0,0.5) 100%)" }} />
     <div className="absolute inset-0 opacity-[0.07] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
   </div>
 );
