@@ -34,7 +34,7 @@ const NightRoom: React.FC = () => (
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
-    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 55%, rgba(30,26,42,0.18) 100%)" }} />
+    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(10,9,14,0.5) 100%)" }} />
     <div className="absolute inset-0 opacity-[0.07] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
   </div>
 );
