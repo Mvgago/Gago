@@ -18,7 +18,7 @@ const Headphones = lazy(() => import("../../components/Lab/Headphones"));
  * The lab is a room apart from the rest of the site: its walls a dark lavender grey, cool
  * where the studio is warm graphite, with a grain over it and the corners falling away.
  */
-const NIGHT = "#2a2830";
+const NIGHT = "#2b2833";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
@@ -28,7 +28,7 @@ const NightRoom: React.FC = () => (
       className="absolute inset-0"
       style={{
         // no coloured lamp: the wall itself is a dusky lavender, only a shade lighter where the room is lit
-        background: "radial-gradient(75% 65% at 30% 25%, rgba(150,146,166,0.12) 0%, transparent 75%)",
+        background: "radial-gradient(75% 65% at 30% 25%, rgba(156,148,180,0.13) 0%, transparent 75%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
@@ -125,7 +125,7 @@ export const ArtworkPage: React.FC = () => {
                 onClick={() => setOpen(i)}
                 aria-label={`${plate.title ?? t("section.artwork")} — ${pad(i + 1)}`}
                 className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden"
-                style={{ background: "#323039" }}
+                style={{ background: "#33303c" }}
               >
                 <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade, transform: plate.crop ? `scale(${plate.crop})` : undefined, transformOrigin: plate.cropAt }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
               </button>
