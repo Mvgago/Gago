@@ -264,7 +264,8 @@ export const AboutPage: React.FC = () => {
   return (
     // No bottom padding: the dark contact block closes the page, the footer follows it
     <main className="fh-dark relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
-      <LightWall color={DARK_WALL} />
+      {/* (the ground only: a solid layer here covered the studio's light, which lies behind the pages) */}
+      <LightWall color={DARK_WALL} layer={false} />
       {/* (the room's light lives behind every page, in App, so it never moves with the page's entrance) */}
 
       {/* (the page sits on the plain wall: no room behind the opening) */}
@@ -352,10 +353,20 @@ export const AboutPage: React.FC = () => {
                     const el = document.getElementById(`disciplina-${i}`);
                     if (el) scrollToTarget(lenis, el, { offset: -64 });
                   }}
-                  className="group flex items-baseline gap-4 py-3.5 text-ink"
+                  className="group flex items-baseline gap-4 py-2.5 text-ink"
                 >
                   <span className="text-graphite">{String(i + 1).padStart(2, "0")}</span>
                   <span className="flex-1 normal-case transition-colors duration-500 group-hover:text-graphite">{d.title}</span>
+                  {/* a glimpse of what follows: a small still of the discipline's example, so the first screen
+                      shows the work as well as naming it */}
+                  <img
+                    src={`/posters/thumbs/${["film", "plan", "stand", "identity"][i]}.webp`}
+                    alt=""
+                    aria-hidden
+                    draggable={false}
+                    decoding="async"
+                    className="h-11 w-16 shrink-0 self-center rounded-[3px] object-cover opacity-90 ring-1 ring-white/10 transition-opacity duration-500 group-hover:opacity-100"
+                  />
                 </a>
             </Reveal>
           ))}

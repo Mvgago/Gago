@@ -23,6 +23,12 @@ export const StudioLight: React.FC = () => (
         ].join(", "),
       }}
     />
+    {/* phones: the screen is tall and narrow, so the mauve barely reached the top of it; a wider wash of it
+        across the top gives the first screen the depth it has on wide screens */}
+    <div
+      className="absolute inset-0 sm:hidden"
+      style={{ background: "radial-gradient(95% 42% at 18% 0%, rgba(120, 98, 116, 0.42) 0%, rgba(120, 98, 116, 0.16) 55%, transparent 85%)" }}
+    />
     {/* (plain, no blend mode: blending a full-screen layer under a scrolling page is heavy on phones) */}
     <div className="absolute inset-0 opacity-[0.035]" style={{ backgroundImage: GRAIN }} />
   </>
