@@ -15,10 +15,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const Headphones = lazy(() => import("../../components/Lab/Headphones"));
 
 /**
- * The lab is a room apart from the rest of the site: its walls a dark lavender grey, cool
+ * The lab is a room apart from the rest of the site: its walls a dark cool grey under a pool of lavender, cool
  * where the studio is warm graphite, with a grain over it and the corners falling away.
  */
-const NIGHT = "#2b2833";
+const NIGHT = "#29282e";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
@@ -27,8 +27,9 @@ const NightRoom: React.FC = () => (
     <div
       className="absolute inset-0"
       style={{
-        // no coloured lamp: the wall itself is a dusky lavender, only a shade lighter where the room is lit
-        background: "radial-gradient(75% 65% at 30% 25%, rgba(156,148,180,0.13) 0%, transparent 75%)",
+        // a grey wall, and on it one gathered pool of lavender light, upper left, fading out well
+        // before the rest of the room
+        background: "radial-gradient(38% 34% at 24% 22%, rgba(150,134,196,0.3) 0%, rgba(150,134,196,0.12) 45%, transparent 100%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
