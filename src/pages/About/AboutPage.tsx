@@ -303,7 +303,7 @@ export const AboutPage: React.FC = () => {
 
       {/* Statement and way in */}
       <div className="mb-8 mt-8 grid items-center gap-14 md:mb-10 md:mt-3 lg:grid-cols-12 lg:gap-8">
-      <div className="lg:col-span-12">
+      <div className="min-w-0 lg:col-span-12">
       {/* The statement in two voices: the image of the fugue as the page's headline, large, its words rising
           into place one after another as the lema does on the landing; then what it means, smaller and set
           back in grey, read as the line under a title */}
@@ -340,35 +340,43 @@ export const AboutPage: React.FC = () => {
         );
       })()}
 
-      {/* Phones and tablets: the four disciplines at a glance, each a way down to its own sheet, so the first
-          screen says what the studio does before anything is shown (wide screens have the tabs under the frame) */}
-      <nav aria-label={s.disciplinesLabel} className="mt-10 lg:hidden">
-        <ol className={`${SMALL} border-t border-ink/15`}>
+      {/* Phones and tablets: the four disciplines as a row of tall cards to swipe through, each its example
+          edge to edge with its number and name over it, the next one showing at the edge; a tap goes down to
+          its sheet (wide screens have the tabs under the frame) */}
+      <nav aria-label={s.disciplinesLabel} className="mt-10 min-w-0 lg:hidden">
+        <ol className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:scroll-px-6 sm:px-6 [&::-webkit-scrollbar]:hidden">
           {s.disciplines.map((d, i) => (
-            <Reveal as="li" key={d.title} className="border-b border-ink/15" delay={0.9 + i * 0.08}>
-                <a
-                  href={`#disciplina-${i}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const el = document.getElementById(`disciplina-${i}`);
-                    if (el) scrollToTarget(lenis, el, { offset: -64 });
-                  }}
-                  className="group flex items-baseline gap-4 py-2.5 text-ink"
-                >
-                  <span className="text-graphite">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="flex-1 normal-case transition-colors duration-500 group-hover:text-graphite">{d.title}</span>
-                  {/* a glimpse of what follows: a small still of the discipline's example, so the first screen
-                      shows the work as well as naming it */}
-                  <img
-                    src={`/posters/thumbs/${["film", "plan", "stand", "identity"][i]}.webp`}
-                    alt=""
-                    aria-hidden
-                    draggable={false}
-                    decoding="async"
-                    className="h-11 w-16 shrink-0 self-center rounded-[3px] object-cover opacity-90 ring-1 ring-white/10 transition-opacity duration-500 group-hover:opacity-100"
-                  />
-                </a>
-            </Reveal>
+            <motion.li
+              key={d.title}
+              className="w-[64vw] max-w-[280px] shrink-0 snap-start"
+              initial={stillPage ? false : { opacity: 0, x: 28 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, ease: EASE_HAUS, delay: 0.9 + i * 0.1 }}
+            >
+              <a
+                href={`#disciplina-${i}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const el = document.getElementById(`disciplina-${i}`);
+                  if (el) scrollToTarget(lenis, el, { offset: -64 });
+                }}
+                className="group relative block aspect-[4/5] overflow-hidden rounded-[6px] bg-[#3a3533]"
+              >
+                <img
+                  src={`/posters/cards/${["film", "plan", "stand", "identity"][i]}.webp`}
+                  alt=""
+                  draggable={false}
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-haus group-active:scale-[1.03]"
+                />
+                {/* a shade from below, so the name reads over any picture */}
+                <span aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgba(28,24,23,0.82)_0%,rgba(28,24,23,0.35)_38%,transparent_62%)]" />
+                <span className={`${SMALL} absolute left-3.5 top-3 text-white/80 [text-shadow:0_1px_6px_rgba(0,0,0,0.4)]`}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="absolute inset-x-3.5 bottom-3.5 font-geo text-[1.15rem] font-normal leading-[1.15] tracking-[0.005em] text-[#f4f1ed] [text-wrap:balance]">
+                  {d.title}
+                </span>
+              </a>
+            </motion.li>
           ))}
         </ol>
       </nav>
