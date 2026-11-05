@@ -6,7 +6,7 @@ import portada from "../assets/gallery/portada.png.webp";
 import untitled from "../assets/gallery/untitlezdfdsd.png.webp";
 import summer from "../assets/gallery/summer2003.png.webp";
 import acne from "../assets/gallery/acne2.png.webp";
-import grimaldi from "../assets/gallery/grimaldi-lines.jpg.webp";
+import grimaldi from "../assets/gallery/grimaldi-lines-hd.webp";
 
 /** The studio's own music project. */
 export const FUGA_SEI_EP = "https://open.spotify.com/album/7EdGwidKh2TS1HsV3j67tf";

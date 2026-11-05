@@ -18,7 +18,7 @@ const Headphones = lazy(() => import("../../components/Lab/Headphones"));
  * The lab is a room apart from the rest of the site: its walls a dark cool grey under a pool of lavender, cool
  * where the studio is warm graphite, with a grain over it and the corners falling away.
  */
-const NIGHT = "#29282e";
+const NIGHT = "#232227";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
@@ -209,8 +209,8 @@ export const ArtworkPage: React.FC = () => {
                     "linear-gradient(118deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.03) 30%, transparent 55%, rgba(0,0,0,0.22) 100%)",
                 }}
               />
-              <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[3px] opacity-[0.22] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
-              <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[3px] opacity-[0.1] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
+              {/* the card's tooth, faint, so the print stays sharp under it */}
+              <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[3px] opacity-[0.1] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
             </div>
           </a>
           {/* pointed at, the headphones lift and turn to the visitor, and beside them comes in what
