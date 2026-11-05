@@ -50,9 +50,9 @@ const Section: React.FC<{ children: React.ReactNode; lit?: boolean }> = ({ child
         className="pointer-events-none absolute -inset-x-4 -inset-y-28 -z-10 sm:-inset-x-6 md:-inset-x-8 md:-inset-y-40"
         style={{
           background: [
-            "radial-gradient(55% 45% at 72% 22%, rgba(244, 236, 228, 0.13) 0%, transparent 70%)",
-            "radial-gradient(70% 60% at 20% 70%, rgba(150, 140, 120, 0.1) 0%, transparent 75%)",
-            "linear-gradient(to bottom, rgba(92, 84, 80, 0) 0%, rgba(92, 84, 80, 0.42) 28%, rgba(92, 84, 80, 0.42) 72%, rgba(92, 84, 80, 0) 100%)",
+            // (the light falls over the steps, not behind the title, so the heading stays crisp)
+            "radial-gradient(50% 42% at 34% 18%, rgba(244, 236, 228, 0.09) 0%, transparent 70%)",
+            "linear-gradient(to bottom, rgba(92, 84, 80, 0) 0%, rgba(92, 84, 80, 0.36) 28%, rgba(92, 84, 80, 0.36) 72%, rgba(92, 84, 80, 0) 100%)",
           ].join(", "),
           maskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%)",
           WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%)",
@@ -362,10 +362,11 @@ export const AboutPage: React.FC = () => {
           the column the disciplines are read in; lit, so it reads as its own part of the page */}
       <Section lit>
         <div className="col-span-12 lg:order-2 lg:col-span-5 xl:col-span-4">
-          <Reveal as="p" className={`${SMALL} text-graphite`}>{s.processLabel}</Reveal>
-          <RevealWords as="h2" text={s.processTitle} className={`${TITLE} mt-4 block text-ink`} delay={0.1} />
+          <Reveal as="p" className={`${SMALL} text-ink/75`}>{s.processLabel}</Reveal>
+          {/* (a weight up from the other titles and the full ink: it reads crisp over the lit band) */}
+          <RevealWords as="h2" text={s.processTitle} className={`${TITLE} mt-4 block !font-normal text-ink`} delay={0.1} />
           {/* what sets the process apart, said once and quietly under its title */}
-          <RevealFlow text={s.processNote} className={`${BODY} mt-2 text-graphite`} delay={0.35} stagger={0.03} />
+          <RevealFlow text={s.processNote} className={`${BODY} mt-2 text-ink/85`} delay={0.35} stagger={0.03} />
         </div>
         <div className="col-span-12 mt-12 lg:order-1 lg:col-span-7 lg:mt-0 xl:col-span-8">
           <ProcessSteps steps={s.process} />

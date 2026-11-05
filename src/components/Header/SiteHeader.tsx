@@ -199,7 +199,9 @@ export const SiteHeader: React.FC = () => {
             (onLight || pathname === "/artwork") && scrolled && !open ? "opacity-100" : "opacity-0"
           }`}
           // Translucent, so light falling on the page behind (as on "info") carries on under it
-          style={{ background: pathname === "/artwork" ? "#0f0e10cc" : pathname === "/about" ? "#2f2b2acc" : `${WALL}cc`, borderColor: pathname === "/artwork" || pathname === "/about" ? "rgba(255,255,255,0.06)" : undefined }}
+          // (on the studio, solid: its films and 3D scenes pass right under the header, and a see-through bar showed
+          // them blurred behind the logo)
+          style={{ background: pathname === "/artwork" ? "#0f0e10cc" : pathname === "/about" ? "#2c2827" : `${WALL}cc`, borderColor: pathname === "/artwork" || pathname === "/about" ? "rgba(255,255,255,0.06)" : undefined }}
         />
         <div className="relative" style={masked ? { clipPath: MASK } : undefined}>
         <motion.div variants={UNFOLD} custom={{ delay: 0, haze: false } satisfies Unfold} animate={unfold}>
