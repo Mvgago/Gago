@@ -334,8 +334,7 @@ export const AboutPage: React.FC = () => {
                   className="group flex items-baseline gap-4 py-3.5 text-ink"
                 >
                   <span className="text-graphite">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="flex-1 normal-case">{d.title}</span>
-                  <span aria-hidden className="text-graphite transition-transform duration-500 ease-haus group-hover:translate-y-0.5">↓</span>
+                  <span className="flex-1 normal-case transition-colors duration-500 group-hover:text-graphite">{d.title}</span>
                 </a>
             </Reveal>
           ))}

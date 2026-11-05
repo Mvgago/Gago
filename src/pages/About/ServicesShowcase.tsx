@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { EASE_HAUS } from "../../lib/motion";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
@@ -489,6 +489,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
             </div>
           );
         })}
+        {/* phones: the last sheet's colour carried on below it and faded out, so it melts into the room */}
+        <div aria-hidden className="pointer-events-none -mx-4 h-28 [background:var(--fh-skirt,transparent)] sm:-mx-6 md:-mx-8 lg:hidden" />
       </div>    </section>
   );
 };
@@ -564,52 +566,63 @@ export const ServicesEditorial: React.FC<{ s: Studio }> = ({ s }) => {
  * The process as four numbered steps: a hairline draws itself above each as it comes into
  * view, one after another, so the page moves as it is read.
  */
-export const ProcessSteps: React.FC<{ steps: { title: string; text: string }[] }> = ({ steps }) => (
-  <div className="grid gap-12 sm:grid-cols-2 sm:gap-x-8 2xl:grid-cols-4">
-    {steps.map((p, i) => (
-      <motion.div
-        key={p.title}
-        className="relative isolate"
-        initial="off"
-        whileInView="on"
-        viewport={{ once: true, margin: "-12% 0px" }}
+export const ProcessSteps: React.FC<{ steps: { title: string; text: string }[] }> = ({ steps }) => {
+  // A thread of light runs through the steps as the page is scrolled, one after another, in reading order:
+  // each step's line fills as it passes, its large number lights up as it arrives, and a faint pane of light
+  // goes with the step being read. The scroll drives it, so it moves at the reader's own pace.
+  const box = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: box, offset: ["start 85%", "end 55%"] });
+  const still = !!useReducedMotion();
+  return (
+    <div ref={box} className="grid gap-12 sm:grid-cols-2 sm:gap-x-8 2xl:grid-cols-4">
+      {steps.map((p, i) => (
+        <ProcessStep key={p.title} step={p} i={i} n={steps.length} progress={scrollYProgress} still={still} />
+      ))}
+    </div>
+  );
+};
+
+const ProcessStep: React.FC<{ step: { title: string; text: string }; i: number; n: number; progress: MotionValue<number>; still: boolean }> = ({
+  step,
+  i,
+  n,
+  progress,
+  still,
+}) => {
+  // this step's share of the way: the thread crosses it between i/n and (i+1)/n
+  const fill = useTransform(progress, [i / n, (i + 1) / n], [0, 1]);
+  const lit = useTransform(progress, [i / n, (i + 0.55) / n], [0.16, 1]);
+  const glow = useTransform(progress, [(i - 0.25) / n, (i + 0.5) / n, (i + 1.25) / n], [0, 1, 0]);
+  return (
+    <motion.div className="relative isolate" initial="off" whileInView="on" viewport={{ once: true, margin: "-12% 0px" }}>
+      {/* the pane of light that goes with the step being read (from the room's tokens: faint on the dark wall) */}
+      <motion.span
+        aria-hidden
+        className="pointer-events-none absolute -inset-x-5 -bottom-6 -top-5 -z-10 rounded-xl"
+        style={{
+          background: "var(--fh-plate, radial-gradient(120% 90% at 50% 30%, #ffffff 0%, #fbfbfd 55%, #f3f3f6 100%))",
+          boxShadow: "var(--fh-plate-shadow, 0 22px 50px -14px rgba(40,38,48,0.32), 0 0 0 1px rgba(40,38,48,0.08))",
+          opacity: still ? 0 : glow,
+        }}
+      />
+      {/* the thread: a faint line, filled in light as the reader goes past */}
+      <span aria-hidden className="relative block h-px bg-ink/15">
+        <motion.span className="absolute inset-0 origin-left bg-ink" style={{ scaleX: still ? 1 : fill }} />
+      </span>
+      {/* the step's number, large and light, coming up as the thread arrives */}
+      <motion.p
+        aria-hidden
+        className="mt-5 font-geo text-[2.75rem] font-light leading-none tracking-[0.02em] text-ink [font-variant-numeric:tabular-nums] lg:text-[3.25rem]"
+        style={{ opacity: still ? 1 : lit }}
       >
-        {/* On arrival the four light up one after another, quickly, like the keys of a lit
-            keyboard: a soft glow comes up behind each and fades as the next takes it */}
-        {/* each time the steps come into view: a pale plate lifts behind the step, its shadow soft,
-            and its line lights up in ink, then both settle as the next one lights */}
-        <motion.span
-          aria-hidden
-          className="pointer-events-none absolute -inset-x-5 -bottom-6 -top-5 -z-10 rounded-xl"
-          // (from the room's tokens: on the dark studio a faint pane of light, not a white flash)
-          style={{
-            background: "var(--fh-plate, radial-gradient(120% 90% at 50% 30%, #ffffff 0%, #fbfbfd 55%, #f3f3f6 100%))",
-            boxShadow: "var(--fh-plate-shadow, 0 22px 50px -14px rgba(40,38,48,0.32), 0 0 0 1px rgba(40,38,48,0.08), 0 0 60px 6px rgba(255,255,255,0.95))",
-          }}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: [0, 1, 1, 0], transition: { duration: 1.3, delay: 0.15 + i * 0.2, times: [0, 0.18, 0.55, 1], ease: "easeInOut" } }}
-          viewport={{ once: false, margin: "-20% 0px" }}
-        />
-        <motion.span
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-ink"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: [0, 1, 1, 0], transition: { duration: 1.3, delay: 0.15 + i * 0.2, times: [0, 0.18, 0.55, 1], ease: "easeInOut" } }}
-          viewport={{ once: false, margin: "-20% 0px" }}
-        />
-        <motion.span
-          aria-hidden
-          className="block h-px origin-left bg-ink/60"
-          variants={{ off: { scaleX: 0 }, on: { scaleX: 1, transition: { duration: 1.1, delay: i * 0.18, ease: EASE_HAUS } } }}
-        />
-        <motion.div
-          variants={{ off: { opacity: 0, y: 12 }, on: { opacity: 1, y: 0, transition: { duration: 0.9, delay: 0.3 + i * 0.18, ease: EASE_HAUS } } }}
-        >
-          <p className={`${SMALL} mt-5 text-graphite`}>{String(i + 1).padStart(2, "0")}</p>
-          <h3 className="mt-3 font-geo text-[1.2rem] font-normal leading-snug tracking-[0.02em] text-ink">{p.title}</h3>
-          <p className={`${BODY} mt-3 text-ink/80`}>{p.text}</p>
-        </motion.div>
+        {String(i + 1).padStart(2, "0")}
+      </motion.p>
+      <motion.div
+        variants={{ off: { opacity: 0, y: 12 }, on: { opacity: 1, y: 0, transition: { duration: 0.9, delay: 0.2 + i * 0.12, ease: EASE_HAUS } } }}
+      >
+        <h3 className="mt-4 font-geo text-[1.2rem] font-normal leading-snug tracking-[0.02em] text-ink">{step.title}</h3>
+        <p className={`${BODY} mt-3 text-ink/80`}>{step.text}</p>
       </motion.div>
-    ))}
-  </div>
-);
+    </motion.div>
+  );
+};
