@@ -36,7 +36,7 @@ import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessS
 /** A part of the page after the showcase, on its 12-column grid */
 const Section: React.FC<{ children: React.ReactNode; lit?: boolean }> = ({ children, lit = false }) => (
   <motion.section
-    className={`relative isolate grid grid-cols-12 gap-x-8 py-20 md:py-28 ${lit ? "my-16 md:my-24" : ""}`}
+    className={`relative isolate grid grid-cols-12 gap-x-8 py-20 md:py-28 ${lit ? "mb-16 md:my-24" : ""}`}
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-10% 0px" }}

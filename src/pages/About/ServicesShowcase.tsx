@@ -394,7 +394,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               // slides up over it, so two disciplines never run together; each is a third of a screen taller
               // than the screen (all but the last), so it stays while its text comes in and is read, and the
               // next only rises after that much more scrolling
-              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-[calc(100svh-64px)]"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-0"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
               style={{ zIndex: i + 1 }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
@@ -445,51 +445,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     <RevealFlow text={d.list.join("  ·  ")} className={`${SMALL} mt-6 max-w-[48ch] border-t border-ink/15 pt-4 normal-case text-ink/80 lg:mt-8`} delay={0.3} stagger={0.02} />
                   </div>
                 )}
-                {/* at the end of the four, an invitation that comes in once the last is reached */}
-                {i === s.disciplines.length - 1 && (
-                  <div className="mt-14">
-                    <p className="font-geo text-[1.5rem] font-normal leading-snug text-ink">
-                      {s.endTitle.split(" ").map((w, k) => (
-                        <React.Fragment key={k}>
-                          {k > 0 && " "}
-                          <span className="inline-block overflow-hidden pb-[0.12em] align-bottom">
-                            <span
-                              className={`inline-block transition-transform duration-[900ms] ease-haus ${i === active ? "translate-y-0" : "lg:translate-y-[110%]"}`}
-                              style={{ transitionDelay: i === active ? `${700 + k * 90}ms` : "0ms" }}
-                            >
-                              {w}
-                            </span>
-                          </span>
-                        </React.Fragment>
-                      ))}
-                    </p>
-                    <div
-                      className={`mt-6 flex items-center gap-6 transition-[opacity,transform] duration-700 ease-haus ${i === active ? "translate-y-0 opacity-100" : "lg:pointer-events-none lg:translate-y-2 lg:opacity-0"}`}
-                      style={{ transitionDelay: i === active ? "1150ms" : "0ms" }}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => {
-                          // to the form, as the page's own "let's talk" does: the smooth scroll forced past
-                          // the disciplines' wheel (which holds the page while it steps), the native one as a fallback
-                          const el = document.getElementById("contact");
-                          if (!el) return;
-                          if (lenis) { lenis.start(); lenis.scrollTo(el, { offset: window.innerWidth < 640 ? 0 : -96, force: true, duration: 1.2 }); }
-                          else el.scrollIntoView({ behavior: "smooth" });
-                        }}
-                        className={`${SMALL} cursor-pointer rounded-full border border-ink/25 px-5 py-2.5 text-ink transition-[background-color,border-color] duration-300 hover:border-ink/40 hover:bg-ink/[0.05]`}
-                      >
-                        {s.endTalk}
-                      </button>
-                      {/* and beside it, for whoever wants to see before talking: the projects */}
-                      <Link to="/projects" className={`${SMALL} group relative text-ink`}>
-                        {s.endWork}
-                        <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
-                        <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-                      </Link>
-                    </div>
-                  </div>
-                )}
+                {/* (no invitation here: the closing and the contact further down already ask, and here it hung
+                    between the disciplines and the process) */}
                 {/* (the scroll hint is gone: the page scrolls as any other) */}
                 {false && i === 0 && (
                   <div className={`mt-14 hidden items-center gap-5 transition-opacity duration-700 lg:flex ${active === 0 ? "opacity-100" : "opacity-0"}`}>
@@ -509,7 +466,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
           );
         })}
         {/* phones: the last sheet's colour carried on below it and faded out, so it melts into the room */}
-        <div aria-hidden className="pointer-events-none -mx-4 h-28 [background:var(--fh-skirt,transparent)] sm:-mx-6 md:-mx-8 lg:hidden" />
+        <div aria-hidden className="pointer-events-none -mx-4 h-14 [background:var(--fh-skirt,transparent)] sm:-mx-6 md:-mx-8 lg:hidden" />
       </div>    </section>
   );
 };
