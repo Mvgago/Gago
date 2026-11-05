@@ -340,18 +340,17 @@ export const AboutPage: React.FC = () => {
         );
       })()}
 
-      {/* Phones and tablets: the four disciplines as a row of tall cards to swipe through, each its example
-          edge to edge with its number and name over it, the next one showing at the edge; a tap goes down to
-          its sheet (wide screens have the tabs under the frame) */}
+      {/* Phones and tablets: the four disciplines as small cards, two by two and all on view at once, each its
+          example edge to edge with its number and name over it; a tap goes down to its sheet (wide screens have
+          the tabs under the frame) */}
       <nav aria-label={s.disciplinesLabel} className="mt-10 min-w-0 lg:hidden">
-        <ol className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:scroll-px-6 sm:px-6 [&::-webkit-scrollbar]:hidden">
+        <ol className="grid grid-cols-2 gap-2.5 sm:gap-3">
           {s.disciplines.map((d, i) => (
             <motion.li
               key={d.title}
-              className="w-[64vw] max-w-[280px] shrink-0 snap-start"
-              initial={stillPage ? false : { opacity: 0, x: 28 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, ease: EASE_HAUS, delay: 0.9 + i * 0.1 }}
+              initial={stillPage ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: EASE_HAUS, delay: 0.9 + i * 0.09 }}
             >
               <a
                 href={`#disciplina-${i}`}
@@ -360,7 +359,7 @@ export const AboutPage: React.FC = () => {
                   const el = document.getElementById(`disciplina-${i}`);
                   if (el) scrollToTarget(lenis, el, { offset: -64 });
                 }}
-                className="group relative block aspect-[4/5] overflow-hidden rounded-[6px] bg-[#3a3533]"
+                className="group relative block aspect-[5/4] overflow-hidden rounded-[5px] bg-[#3a3533]"
               >
                 <img
                   src={`/posters/cards/${["film", "plan", "stand", "identity"][i]}.webp`}
@@ -370,9 +369,9 @@ export const AboutPage: React.FC = () => {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-haus group-active:scale-[1.03]"
                 />
                 {/* a shade from below, so the name reads over any picture */}
-                <span aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgba(28,24,23,0.82)_0%,rgba(28,24,23,0.35)_38%,transparent_62%)]" />
-                <span className={`${SMALL} absolute left-3.5 top-3 text-white/80 [text-shadow:0_1px_6px_rgba(0,0,0,0.4)]`}>{String(i + 1).padStart(2, "0")}</span>
-                <span className="absolute inset-x-3.5 bottom-3.5 font-geo text-[1.15rem] font-normal leading-[1.15] tracking-[0.005em] text-[#f4f1ed] [text-wrap:balance]">
+                <span aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgba(28,24,23,0.85)_0%,rgba(28,24,23,0.4)_45%,transparent_75%)]" />
+                <span className={`${SMALL} absolute left-2.5 top-2 !text-[11px] text-white/85 [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]`}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="absolute inset-x-2.5 bottom-2.5 font-geo text-[0.92rem] font-normal leading-[1.15] tracking-[0.01em] text-[#f4f1ed] [text-wrap:balance] sm:text-[1.05rem]">
                   {d.title}
                 </span>
               </a>
