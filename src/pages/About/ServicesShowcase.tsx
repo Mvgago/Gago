@@ -407,7 +407,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div>
               {/* (as tall as the screen allows beside the text, and never much taller than its own landscape
                   shape, so a film is not cut away at the sides; the text and services follow straight on) */}
-              <div className="relative -mx-4 mb-4 h-[min(84vw,50svh)] bg-[var(--fh-sheet,#efeef0)] sm:-mx-6 md:-mx-8 lg:hidden">
+              <div className="relative -mx-4 mb-4 h-[min(76vw,44svh)] bg-[var(--fh-sheet,#efeef0)] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* the film carries its note here too, so it reads as the studio's own work, not a picture */}
                 {/* (set over the whole box: a height in % inside a flexible box resolves to nothing) */}
                 {EX[i] && (
