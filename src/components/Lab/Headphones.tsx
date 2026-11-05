@@ -249,7 +249,7 @@ function cushion(ra: number, rv: number) {
     for (let j = 0; j <= NC; j++) {
       const w = (2 * Math.PI * (j % NC)) / NC;
       // a rounded block, but full, as a cushion plumped up
-      const s = sup(ra, rv, 3.2, w);
+      const s = sup(ra, rv, 2.6, w);
       // the leather's soft pleats, round the outside of the ring
       const pleat = 1 + 0.035 * Math.sin(t * 64) * Math.max(0, Math.cos(w));
       pos.push(s.y, p.y + ny * s.x * pleat, p.x + nx * s.x * pleat);
@@ -320,7 +320,7 @@ function headphones() {
   g.add(new THREE.Mesh(strip(0.065, ARM - 0.015, BAND + 0.06, BASE, H, true), PAD));
 
   const shell = housing();
-  const RA = 0.18, RV = 0.17; // the cushion's half breadth and half thickness
+  const RA = 0.19, RV = 0.2; // the cushion's half breadth and half thickness
   const ring = cushion(RA, RV);
   // the cushions soft and matte, a foam under a fine velour: no shine at all, only the grain and a
   // faint soft light at their edges, as cloth takes it
