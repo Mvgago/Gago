@@ -39,7 +39,7 @@ const GRAIN =
 /** A part of the page after the showcase, on its 12-column grid */
 const Section: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <motion.section
-    className="grid grid-cols-12 gap-x-8 border-t border-ink/10 py-20 md:py-28"
+    className="grid grid-cols-12 gap-x-8 py-20 md:py-28"
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-10% 0px" }}
@@ -412,17 +412,20 @@ export const AboutPage: React.FC = () => {
           olive and pale bloom turned low — and the footer lives inside it */}
       <motion.section
         id="contact"
-        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden border-t border-white/[0.06] bg-[#241f1e] px-4 pb-10 pt-8 text-platinum sm:-mx-6 sm:px-6 sm:pt-24 md:-mx-8 md:px-8 md:pt-32"
+        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden px-4 pb-10 pt-8 text-platinum sm:-mx-6 sm:px-6 sm:pt-24 md:-mx-8 md:px-8 md:pt-32"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-10% 0px" }}
         transition={{ duration: 1.4, ease: EASE_HAUS }}
       >
-        {/* The landing's light, at dusk */}
+        {/* The landing's light, at dusk: it gathers as the page reaches the contact, out of the room's own
+            light, with no edge where the block begins (it fades in from the top) */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
+            maskImage: "linear-gradient(to bottom, transparent 0%, #000 35%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 35%)",
             background: `
               radial-gradient(55% 60% at 0% 100%, rgba(150, 146, 110, 0.36) 0%, transparent 75%),
               radial-gradient(50% 55% at 8% 0%, rgba(120, 98, 116, 0.42) 0%, transparent 80%),
@@ -430,7 +433,14 @@ export const AboutPage: React.FC = () => {
             `,
           }}
         />
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
+        {/* a deeper shade under the form, faded in from above like the light, so the pane stands out */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: "linear-gradient(to bottom, transparent 0%, rgba(20, 17, 16, 0.32) 45%, rgba(20, 17, 16, 0.4) 100%)",
+          }}
+        />
         {/* sent: the room lights up from behind the pane, warm, and stays a little brighter */}
         <motion.div
           aria-hidden
