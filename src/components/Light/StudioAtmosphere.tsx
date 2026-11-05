@@ -76,6 +76,18 @@ export const StudioAtmosphere: React.FC = () => {
         />
       </motion.div>
 
+      {/* On arrival the mauve also holds the upper right for the first seconds, then melts away slowly and
+          leaves that corner to the light */}
+      {!still && (
+        <motion.div
+          className="absolute -right-[20vw] -top-[22vh] h-[85vh] w-[90vw]"
+          style={{ background: "radial-gradient(closest-side, rgba(104, 88, 102, 0.62) 0%, rgba(104, 88, 102, 0.34) 45%, rgba(104, 88, 102, 0.1) 75%, transparent 100%)" }}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 3.5, ease: [0.45, 0, 0.55, 1], delay: 3 }}
+        />
+      )}
+
       {/* Key light on the right: a broad, tall wash of near-white rather than a round bloom (its long, soft
           fall-off leaves no edge to read as a shape), breathing on its own clock */}
       <motion.div
