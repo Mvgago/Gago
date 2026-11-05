@@ -18,12 +18,11 @@ import smCards from "../../assets/peojects/smart/smart-cards-web.jpg.webp";
 import santaFacade from "../../assets/peojects/santa/santa (7).jpg.webp";
 import santaRender from "../../assets/peojects/santa/santa-render.jpg.webp";
 import tolvaWindow from "../../assets/peojects/tolva/tolva-window.webp";
-import tolvaBag from "../../assets/peojects/tolva/tolva-bag.webp";
 
 // The picture each case shows here, where its own cover would not read at this size
 const PICK: Record<string, string> = { buendia: buendiaCatalogue, "gracia-prados": santaFacade, tolva: tolvaWindow };
 // A second picture of each, that the tile turns to and back from, each in its own time
-const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb, smarthc: smCards, "gracia-prados": santaRender, tolva: tolvaBag };
+const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb, smarthc: smCards, "gracia-prados": santaRender };
 // Drawn in close where the picture has a wide margin: the complex fills the tile, cut at its ends
 const ZOOM: Record<string, [number, string]> = {};
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
