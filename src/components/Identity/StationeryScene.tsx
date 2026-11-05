@@ -47,7 +47,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   // drawn at least at 1.5× even on ordinary screens: the small print and the foil stay crisp
   // (phones a little softer: the difference barely shows on a small screen, the work halves)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.matchMedia("(max-width: 767px)").matches ? 1.25 : 1.5));
+  // (phones at 1.75×: at 1.25 the small print, the foil and the paper edges went soft on a sharp phone screen)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.matchMedia("(max-width: 767px)").matches ? 1.75 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.52;
@@ -1114,7 +1115,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     flip.rotation.x = Math.PI * turn;
     flip.position.y = 0.068 + Math.sin(Math.PI * turn) * 0.28;
     const slide = span(t, 5.2, 6.6) - span(t, 11.4, 12.6);
-    key.position.z = 0.72 + (1 - slide) * 2.4;
+    // (from well outside the frame, so it is never seen waiting at the edge, even on a phone)
+    key.position.z = 0.72 + (1 - slide) * 4.6;
     // the swatch book fans open, chip by chip, and closes again before the loop ends
     fanStrips.forEach((p, i) => {
       const open = span(t, 0.6 + i * 0.12, 2.2 + i * 0.12) - span(t, 11.2 - i * 0.08, 12.4 - i * 0.08);
@@ -1141,12 +1143,12 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const [c, x] = canvas(512, 512);
     x.fillStyle = "#fff";
     x.fillRect(0, 0, 512, 512);
-    // a window of six panes in fine mullions, its shade soft and never black: the room's light fills it
-    x.fillStyle = "#6a6a6a";
-    x.filter = "blur(2.5px)";
-    [128, 256, 384].forEach((px) => x.fillRect(px - 4, 0, 8, 512));
-    [200, 400].forEach((py) => x.fillRect(0, py - 3, 512, 6));
-    x.fillRect(0, 0, 512, 10);
+    // a tall window of two panes, its frame a soft, pale shade far from the glass, as in a product
+    // photograph (fine dark mullions all over read as grey bars laid across the table)
+    x.fillStyle = "#b4b4b4";
+    x.filter = "blur(14px)";
+    x.fillRect(250, -20, 18, 552);
+    x.fillRect(-20, 300, 552, 14);
     sun.map = tex(c);
   }
   scene.add(sun, sun.target);
