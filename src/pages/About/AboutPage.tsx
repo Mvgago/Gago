@@ -455,7 +455,7 @@ export const AboutPage: React.FC = () => {
           olive and pale bloom turned low — and the footer lives inside it */}
       <motion.section
         id="contact"
-        className="relative -mx-4 mt-8 scroll-mt-24 overflow-hidden px-4 pb-10 pt-8 text-platinum sm:-mx-6 sm:px-6 sm:pt-14 md:-mx-8 md:px-8 md:pt-20"
+        className="relative -mx-4 scroll-mt-24 overflow-hidden px-4 pb-10 pt-6 text-platinum sm:-mx-6 sm:px-6 sm:pt-8 md:-mx-8 md:px-8 md:pt-10"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-10% 0px" }}
