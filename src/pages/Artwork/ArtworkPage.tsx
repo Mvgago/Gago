@@ -15,11 +15,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const Headphones = lazy(() => import("../../components/Lab/Headphones"));
 
 /**
- * The lab is a room apart from the rest of the site: near black, lit low from one side in a cold
- * red that fades into the dark, with a grain over it and the corners falling away, so it feels
- * like a back room the light hardly reaches.
+ * The lab is a room apart from the rest of the site: a darkroom, black, lit only by a red
+ * safelight from one side, with a grain over it and the corners falling away, so it never
+ * reads as the studio's graphite room.
  */
-const NIGHT = "#0f0e10";
+const NIGHT = "#0b0909";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
@@ -28,8 +28,9 @@ const NightRoom: React.FC = () => (
     <div
       className="absolute inset-0"
       style={{
+        // a darkroom's safelight: one red lamp off to the left, its glow spilling across the room
         background:
-          "radial-gradient(60% 55% at 12% 18%, rgba(120,28,36,0.28) 0%, transparent 70%), radial-gradient(50% 60% at 92% 85%, rgba(70,44,92,0.22) 0%, transparent 72%)",
+          "radial-gradient(55% 70% at 0% 30%, rgba(168,30,30,0.5) 0%, rgba(120,22,24,0.22) 45%, transparent 75%), radial-gradient(90% 60% at 20% 100%, rgba(110,20,22,0.18) 0%, transparent 70%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
