@@ -15,10 +15,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const Headphones = lazy(() => import("../../components/Lab/Headphones"));
 
 /**
- * The lab is a room apart from the rest of the site: its walls a dark, quiet lavender, cool
+ * The lab is a room apart from the rest of the site: its walls a dusky, quiet lavender, cool
  * where the studio is warm graphite, with a grain over it and the corners falling away.
  */
-const NIGHT = "#1c1a23";
+const NIGHT = "#3a3648";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
@@ -28,11 +28,11 @@ const NightRoom: React.FC = () => (
       className="absolute inset-0"
       style={{
         // no coloured lamp: the wall itself is a dusky lavender, only a shade lighter where the room is lit
-        background: "radial-gradient(75% 65% at 30% 25%, rgba(132,124,160,0.2) 0%, transparent 75%)",
+        background: "radial-gradient(75% 65% at 30% 25%, rgba(170,162,196,0.16) 0%, transparent 75%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
-    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(0,0,0,0.5) 100%)" }} />
+    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 50%, rgba(20,16,30,0.35) 100%)" }} />
     <div className="absolute inset-0 opacity-[0.07] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
   </div>
 );
@@ -125,7 +125,7 @@ export const ArtworkPage: React.FC = () => {
                 onClick={() => setOpen(i)}
                 aria-label={`${plate.title ?? t("section.artwork")} — ${pad(i + 1)}`}
                 className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden"
-                style={{ background: "#25232d" }}
+                style={{ background: "#423e52" }}
               >
                 <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade, transform: plate.crop ? `scale(${plate.crop})` : undefined, transformOrigin: plate.cropAt }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
               </button>
