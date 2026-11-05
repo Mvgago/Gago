@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import DevicesFrame from "../../components/Devices/DevicesFrame";
 import { EASE_HAUS } from "../../lib/motion";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
@@ -591,11 +591,14 @@ export const ProcessSteps: React.FC<{ steps: { title: string; text: string }[] }
   // goes with the step being read. The scroll drives it, so it moves at the reader's own pace.
   const box = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: box, offset: ["start 85%", "end 55%"] });
+  // the thread only goes forward: once a step is reached it stays lit, and scrolling back never undoes it
+  const reached = useMotionValue(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => v > reached.get() && reached.set(v));
   const still = !!useReducedMotion();
   return (
     <div ref={box} className="grid gap-12 sm:grid-cols-2 sm:gap-x-8 2xl:grid-cols-4">
       {steps.map((p, i) => (
-        <ProcessStep key={p.title} step={p} i={i} n={steps.length} progress={scrollYProgress} still={still} />
+        <ProcessStep key={p.title} step={p} i={i} n={steps.length} progress={reached} still={still} />
       ))}
     </div>
   );
