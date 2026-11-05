@@ -1165,6 +1165,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
     camera.aspect = w / h;
+    // the same width of table in every frame: framed for a wide one (30° at 16:9), a narrower frame (a phone)
+    // draws back to keep the whole spread in view instead of cutting the pieces at its sides
+    const WIDE = 16 / 9, half = Math.atan(Math.tan(THREE.MathUtils.degToRad(15)) * WIDE);
+    camera.fov = camera.aspect >= WIDE ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.93) / camera.aspect));
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
