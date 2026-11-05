@@ -36,8 +36,8 @@ const STREAK_FILL =
  * Fixed studio backdrop modelled on the reference photograph:
  * mauve-lilac shadow top left, cool silver top right, a near-white bloom
  * on the right, sage-olive falling into the lower left, all over a neutral
- * taupe. Everything stays put; the vertical reflections only dim and
- * brighten softly. Only opacity animates.
+ * taupe. The shadow and the bloom drift very slowly, the vertical
+ * reflections only dim and brighten. Only transform and opacity animate.
  */
 export const StudioAtmosphere: React.FC = () => {
   const still = useReducedMotion();
@@ -58,21 +58,33 @@ export const StudioAtmosphere: React.FC = () => {
         }}
       />
 
+      {/* The light is alive, barely: the mauve shadow and the white bloom drift a few centimetres across the
+          screen and breathe a touch, each on its own long clock (so they never move together), keeping their
+          tones and shapes. Transform only, so it stays on the compositor */}
       {/* Soft grey-mauve shadow in the upper-left corner */}
-      <div
-        className="absolute -left-[12vw] -top-[14vh] h-[85vh] w-[70vw] rounded-full"
+      <motion.div
+        className="absolute -left-[12vw] -top-[14vh] h-[85vh] w-[70vw] rounded-full will-change-transform"
         style={{ background: "radial-gradient(closest-side, rgba(97, 83, 96, 0.55), transparent)" }}
+        animate={still ? undefined : { x: ["0vw", "5vw", "1vw"], y: ["0vh", "4vh", "-2vh"], scale: [1, 1.06, 1.02] }}
+        transition={{ duration: 26, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
       />
 
-      {/* Key light: a fixed near-white bloom on the right */}
-      <div
-        className="absolute left-[80vw] top-[48vh] h-[90vmax] w-[90vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{
-          background:
-            "radial-gradient(closest-side, rgba(253, 253, 255, 0.7) 0%, rgba(246, 246, 249, 0.32) 30%, rgba(231, 230, 235, 0.08) 62%, transparent 100%)",
-          mixBlendMode: "screen",
-        }}
-      />
+      {/* Key light: a near-white bloom on the right, drifting slowly */}
+      <motion.div
+        className="absolute left-[80vw] top-[48vh] will-change-transform"
+        // (the blend sits on the moving layer itself: on the bloom inside, it would only blend within this layer)
+        style={{ mixBlendMode: "screen" }}
+        animate={still ? undefined : { x: ["0vw", "-6vw", "-2vw"], y: ["0vh", "3vh", "-4vh"], scale: [1, 1.05, 0.98] }}
+        transition={{ duration: 32, ease: "easeInOut", repeat: Infinity, repeatType: "mirror", delay: 2 }}
+      >
+        <div
+          className="absolute left-0 top-0 h-[90vmax] w-[90vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(253, 253, 255, 0.7) 0%, rgba(246, 246, 249, 0.32) 30%, rgba(231, 230, 235, 0.08) 62%, transparent 100%)",
+          }}
+        />
+      </motion.div>
 
       {/* Vertical reflections over the dark areas */}
       {STREAKS.map((s) => (
