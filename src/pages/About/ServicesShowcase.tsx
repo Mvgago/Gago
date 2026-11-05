@@ -39,7 +39,7 @@ if (typeof window !== "undefined") {
 type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; seen: string[]; link?: string };
 
 // the way into the full example, where an example has one
-const OPEN: Record<string, string> = { es: "Recorrer la vivienda en 3D", en: "Walk through the home in 3D", fr: "Parcourir le logement en 3D", de: "Die Wohnung in 3D erkunden" };
+const OPEN: Record<string, string> = { es: "Ver el plano en 3D", en: "See the floor plan in 3D", fr: "Voir le plan en 3D", de: "Den Grundriss in 3D ansehen" };
 
 // A 3D scene is built only once its frame nears the screen (never while hidden at this width)
 const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allowed?: boolean }> = ({ name, paused = false, allowed = true }) => {
@@ -102,8 +102,9 @@ const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: 
     {ex.link && (
       <Link
         to={ex.link}
-        // (kept small and faint, so the scene leads; it firms up on hover)
-        className={`${SMALL} absolute bottom-3 left-3 inline-flex items-center rounded-full border border-ink/5 bg-white/40 px-3 py-1 !text-[11px] text-ink/70 backdrop-blur-sm transition-[background-color,border-color,color] duration-500 hover:border-ink/20 hover:bg-white/80 hover:text-ink`}
+        // (small, so the scene leads; a graphite glass with pale type in its own colours, whatever the page
+        // around it, so it always reads over the white plan)
+        className={`${SMALL} absolute bottom-3 left-3 inline-flex items-center rounded-full border border-white/10 bg-[#2f2b2a]/75 px-3 py-1 !text-[11px] text-[#f4f1ed]/90 backdrop-blur-sm transition-[background-color,border-color,color] duration-500 hover:border-white/25 hover:bg-[#2f2b2a]/95 hover:text-[#f4f1ed]`}
       >
         {linkLabel}
       </Link>
