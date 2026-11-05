@@ -16,14 +16,14 @@ import buendiaSocial from "../../assets/peojects/buendia/buendia-social-web.jpg.
 import sapWeb from "../../assets/peojects/saphire/saphire.jpg.webp";
 import smCards from "../../assets/peojects/smart/smart-cards-web.jpg.webp";
 import santaFacade from "../../assets/peojects/santa/santa (7).jpg.webp";
-import santaTerrace from "../../assets/peojects/santa/santa-terrace-dusk.jpg.webp";
+import santaKitchen from "../../assets/peojects/santa/santa-kitchen.jpg.webp";
 import tolvaWindow from "../../assets/peojects/tolva/tolva-window.webp";
 import tolvaServe from "../../assets/peojects/tolva/tolva-serve.webp";
 
 // The picture each case shows here, where its own cover would not read at this size
 const PICK: Record<string, string> = { buendia: buendiaCatalogue, "gracia-prados": santaFacade, tolva: tolvaWindow };
 // A second picture of each, that the tile turns to and back from, each in its own time
-const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb, smarthc: smCards, "gracia-prados": santaTerrace, tolva: tolvaServe };
+const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb, smarthc: smCards, "gracia-prados": santaKitchen, tolva: tolvaServe };
 // Drawn in close where the picture has a wide margin: the complex fills the tile, cut at its ends
 const ZOOM: Record<string, [number, string]> = {};
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
