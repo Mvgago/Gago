@@ -511,7 +511,7 @@ export const cases: Case[] = [
       // same flat to walk round in 3D (a concept of the studio's), the piece most worth seeing
       { src: sapAxo, pair: true, fit: "contain" },
       { src: sapPlan, fit: "contain" },
-      { src: "", viewer: "devices", frame: "/concepts/sapphire-home/index.html?v=2" },
+      { src: "", viewer: "devices", frame: "/concepts/sapphire-home/index.html?v=3" },
       { src: sapWeb, pair: true },
       { src: sapStationery },
       { src: sapType, pair: true, fit: "contain" },

@@ -76,6 +76,8 @@ body.night .tag small { display: none; } body.night .tag::after, body.night .tag
 .homebtn svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.4; }
 .homebtn:hover { background: rgba(255, 255, 255, .92); }
 body.focused:not(.touring):not(.bare) .homebtn { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+body.focused .hint { opacity: 0; }
+@media (max-width: 760px) { .homebtn { bottom: 86px; } }
 body.night .homebtn { color: #f4f1ec; background: rgba(28, 32, 42, .6); border-color: rgba(244, 241, 236, .14); }
 
 /* the guided walk: a button at the head of the controls, and a caption naming each room as it is reached */
