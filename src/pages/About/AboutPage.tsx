@@ -27,9 +27,6 @@ import Footer from "../../components/Footer/Footer";
 import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessSteps, ServicesShowcase } from "./ServicesShowcase";
 
 
-// Fine film grain, as on the landing
-const GRAIN =
-  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
 
 /**
@@ -239,24 +236,7 @@ export const AboutPage: React.FC = () => {
     // No bottom padding: the dark contact block closes the page, the footer follows it
     <main className="fh-dark relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
       <LightWall color={DARK_WALL} />
-      {/* The room's light, held still behind the page as it scrolls: the landing's mauve, olive and pale
-          bloom turned low, as in the contact block, a fine grain over it and the corners a shade deeper,
-          so the graphite has depth rather than being a flat wall */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <div
-          className="absolute inset-0"
-          style={{
-            background: [
-              "radial-gradient(60% 55% at 6% 0%, rgba(120, 98, 116, 0.34) 0%, transparent 78%)",
-              "radial-gradient(55% 60% at 0% 100%, rgba(150, 146, 110, 0.22) 0%, transparent 75%)",
-              "radial-gradient(42% 58% at 94% 36%, rgba(236, 226, 222, 0.11) 0%, transparent 75%)",
-              "radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(18, 15, 15, 0.38) 100%)",
-            ].join(", "),
-          }}
-        />
-        {/* (plain, no blend mode: blending a full-screen layer under a scrolling page is heavy on phones) */}
-        <div className="absolute inset-0 opacity-[0.035]" style={{ backgroundImage: GRAIN }} />
-      </div>
+      {/* (the room's light lives behind every page, in App, so it never moves with the page's entrance) */}
 
       {/* (the page sits on the plain wall: no room behind the opening) */}
 

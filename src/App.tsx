@@ -6,6 +6,8 @@ import { PointerLightProvider } from "./components/Light/PointerLight";
 import { I18nProvider } from "./i18n/I18n";
 import { StudioAtmosphere } from "./components/Light/StudioAtmosphere";
 import { DARK_WALL, WALL, isLightRoom } from "./components/Light/LightWall";
+import { StudioLight } from "./components/Light/StudioLight";
+import { EASE_HAUS } from "./lib/motion";
 import { SiteHeader } from "./components/Header/SiteHeader";
 import { PageTransition } from "./components/PageTransition/PageTransition";
 import Footer from "./components/Footer/Footer";
@@ -66,9 +68,24 @@ export const App: React.FC = () => {
             className="pointer-events-none fixed inset-0 z-0"
             style={{ background: wall }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: 0.45 } }}
+            animate={{ opacity: 1, transition: { duration: 0.7, ease: EASE_HAUS } }}
             exit={{ opacity: 0, transition: { duration: 0.45, delay: 0.3 } }}
           />
+        )}
+      </AnimatePresence>
+      {/* The studio's own light over its graphite, coming up slowly once the wall has turned */}
+      <AnimatePresence initial={false}>
+        {location.pathname === "/about" && (
+          <motion.div
+            key="studio-light"
+            aria-hidden
+            className="pointer-events-none fixed inset-0 z-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 1.4, ease: EASE_HAUS, delay: 0.25 } }}
+            exit={{ opacity: 0, transition: { duration: 0.4 } }}
+          >
+            <StudioLight />
+          </motion.div>
         )}
       </AnimatePresence>
       <SiteHeader />

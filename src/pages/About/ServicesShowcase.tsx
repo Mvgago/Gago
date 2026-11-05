@@ -597,7 +597,7 @@ const ProcessStep: React.FC<{ step: { title: string; text: string }; i: number; 
   const fill = useTransform(progress, [i / n, (i + 1) / n], [0, 1]);
   const lit = useTransform(progress, [i / n, (i + 0.55) / n], [0.12, 1]);
   const glow = useTransform(progress, [(i - 0.25) / n, (i + 0.5) / n, (i + 1.25) / n], [0, 1, 0]);
-  const halo = useTransform(glow, (g) => `0 0 ${Math.round(28 * g)}px rgba(244, 241, 237, ${(0.45 * g).toFixed(2)})`);
+  const halo = useTransform(glow, (g) => `0 0 ${Math.round(18 * g)}px rgba(244, 241, 237, ${(0.22 * g).toFixed(2)})`);
   return (
     <motion.div className="relative isolate" initial="off" whileInView="on" viewport={{ once: true, margin: "-12% 0px" }}>
       {/* the pane of light that goes with the step being read (from the room's tokens: faint on the dark wall) */}
@@ -613,7 +613,7 @@ const ProcessStep: React.FC<{ step: { title: string; text: string }; i: number; 
       {/* the thread: a faint line, filled in light as the reader goes past */}
       <span aria-hidden className="relative block h-[2px] bg-ink/15">
         <motion.span
-          className="absolute inset-0 origin-left bg-ink shadow-[0_0_12px_1px_rgba(244,241,237,0.55)]"
+          className="absolute inset-0 origin-left bg-ink/65 shadow-[0_0_6px_0_rgba(244,241,237,0.18)]"
           style={{ scaleX: still ? 1 : fill }}
         />
       </span>
