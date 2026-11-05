@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
@@ -132,6 +132,7 @@ const Field: React.FC<{
 export const AboutPage: React.FC = () => {
   const { t, lang } = useI18n();
   const s = STUDIO[lang];
+  const stillPage = !!useReducedMotion();
   const lenis = useLenis();
   const { hash, key } = useLocation();
   // Arriving from a "let's talk" link on another page: the page comes in already at the contact,
@@ -309,8 +310,21 @@ export const AboutPage: React.FC = () => {
               delay={0.3}
               stagger={0.035}
             />
+            {/* a single thread of light drawn under the headline as it settles, the site's motif ("hilando fino"),
+                fading out to the right */}
+            <motion.span
+              aria-hidden
+              className="mt-6 block h-px w-full max-w-[26rem] origin-left lg:mt-8 lg:max-w-[34rem]"
+              style={{
+                background: "linear-gradient(90deg, rgba(244, 241, 237, 0.85) 0%, rgba(244, 241, 237, 0.4) 55%, rgba(244, 241, 237, 0) 100%)",
+                boxShadow: "0 0 10px rgba(244, 241, 237, 0.25)",
+              }}
+              initial={stillPage ? false : { scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ duration: 1.8, ease: EASE_HAUS, delay: 0.4 + head.split(" ").length * 0.035 }}
+            />
             {sub && (
-              <Reveal as="p" className={`${BODY} mt-5 max-w-[46ch] text-graphite lg:mt-6 lg:text-[1.15rem]`} delay={0.3 + head.split(" ").length * 0.035}>
+              <Reveal as="p" className={`${BODY} mt-6 max-w-[46ch] text-graphite lg:mt-8 lg:text-[1.15rem]`} delay={0.65 + head.split(" ").length * 0.035}>
                 {sub}
               </Reveal>
             )}
