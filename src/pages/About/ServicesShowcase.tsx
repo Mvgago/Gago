@@ -407,12 +407,12 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div>
               {/* (as tall as the screen allows beside the text, and never much taller than its own landscape
                   shape, so a film is not cut away at the sides; the text and services follow straight on) */}
-              <div className="relative -mx-4 mb-4 h-[min(76vw,44svh)] bg-[var(--fh-sheet,#efeef0)] sm:-mx-6 md:-mx-8 lg:hidden">
-                {/* the film carries its note here too, so it reads as the studio's own work, not a picture */}
+              <div className="relative -mx-4 mb-4 h-[min(300px,78vw)] bg-[var(--fh-sheet,#efeef0)] sm:-mx-6 md:-mx-8 lg:hidden">
+                {/* (no note over the film on phones: the picture alone) */}
                 {/* (set over the whole box: a height in % inside a flexible box resolves to nothing) */}
                 {EX[i] && (
                   <div className="absolute inset-0">
-                    <Frame ex={EX[i]} note={EX[i].video ? s.videoNote : undefined} linkLabel={linkLabel} />
+                    <Frame ex={EX[i]} linkLabel={linkLabel} />
                   </div>
                 )}
               </div>
