@@ -5,7 +5,7 @@ import { EASE_HAUS } from "../../lib/motion";
 // Once, as the text comes a little way into view
 const VIEW = { once: true, margin: "0px 0px -12% 0px" } as const;
 
-type Tag = "span" | "p" | "h2" | "h3";
+type Tag = "span" | "p" | "h2" | "h3" | "li";
 
 /**
  * Words rising out of their own line and coming into focus, one after another: the lema's arrival on the

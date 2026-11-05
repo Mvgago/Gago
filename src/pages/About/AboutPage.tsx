@@ -293,31 +293,54 @@ export const AboutPage: React.FC = () => {
       {/* Statement and way in */}
       <div className="mb-8 mt-8 grid items-center gap-14 md:mb-10 md:mt-3 lg:grid-cols-12 lg:gap-8">
       <div className="lg:col-span-12">
-      {/* The statement: the one thing to read first */}
-      <p
-        // the page's headline, large and dark, as a case opens on its statement; its words rise into place
-        // one after another, as the lema does on the landing
-        className="font-geo text-[1.2rem] font-normal leading-[1.3] tracking-[0.005em] text-ink lg:text-[1.55rem]"
-      >
-        {/* Two lines, each whole: what the studio is, then its principle, set back in grey */}
-        {(() => {
-          const cut = s.statement.lastIndexOf(". ");
-          if (cut < 0) return s.statement;
-          return (
-            <>
-              {/* held to a width that sets it in two lines, the principle making the third */}
-              {/* on phones the principle runs on right after the statement; on large screens it takes its own line */}
-              <RevealWords text={s.statement.slice(0, cut + 1)} className="lg:block" delay={0.35} stagger={0.03} />{" "}
-              <RevealWords
-                text={s.statement.slice(cut + 2)}
-                className="text-graphite lg:block lg:max-w-[64ch]"
-                delay={0.35 + s.statement.slice(0, cut + 1).split(" ").length * 0.03}
-                stagger={0.03}
-              />
-            </>
-          );
-        })()}
-      </p>
+      {/* The statement in two voices: the image of the fugue as the page's headline, large, its words rising
+          into place one after another as the lema does on the landing; then what it means, smaller and set
+          back in grey, read as the line under a title */}
+      {(() => {
+        const cut = s.statement.lastIndexOf(". ");
+        const head = cut < 0 ? s.statement : s.statement.slice(0, cut + 1);
+        const sub = cut < 0 ? "" : s.statement.slice(cut + 2);
+        return (
+          <>
+            <RevealWords
+              as="h2"
+              text={head}
+              className="block max-w-[22ch] font-geo text-[1.65rem] font-normal leading-[1.14] tracking-[0.005em] text-ink sm:text-[2rem] lg:max-w-[30ch] lg:text-[2.5rem]"
+              delay={0.3}
+              stagger={0.035}
+            />
+            {sub && (
+              <Reveal as="p" className={`${BODY} mt-5 max-w-[46ch] text-graphite lg:mt-6 lg:text-[1.15rem]`} delay={0.3 + head.split(" ").length * 0.035}>
+                {sub}
+              </Reveal>
+            )}
+          </>
+        );
+      })()}
+
+      {/* Phones and tablets: the four disciplines at a glance, each a way down to its own sheet, so the first
+          screen says what the studio does before anything is shown (wide screens have the tabs under the frame) */}
+      <nav aria-label={s.disciplinesLabel} className="mt-10 lg:hidden">
+        <ol className={`${SMALL} border-t border-ink/15`}>
+          {s.disciplines.map((d, i) => (
+            <Reveal as="li" key={d.title} className="border-b border-ink/15" delay={0.9 + i * 0.08}>
+                <a
+                  href={`#disciplina-${i}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const el = document.getElementById(`disciplina-${i}`);
+                    if (el) scrollToTarget(lenis, el, { offset: -64 });
+                  }}
+                  className="group flex items-baseline gap-4 py-3.5 text-ink"
+                >
+                  <span className="text-graphite">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="flex-1 normal-case">{d.title}</span>
+                  <span aria-hidden className="text-graphite transition-transform duration-500 ease-haus group-hover:translate-y-0.5">↓</span>
+                </a>
+            </Reveal>
+          ))}
+        </ol>
+      </nav>
 
       </div>
 
