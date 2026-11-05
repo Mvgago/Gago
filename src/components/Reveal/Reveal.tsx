@@ -66,3 +66,41 @@ export const Reveal: React.FC<{ children: React.ReactNode; className?: string; d
     </M>
   );
 };
+
+/**
+ * Running text that comes in as a soft, quick wave: its words rise a little and come into focus one after
+ * another, so the paragraph is seen to settle rather than stand pasted on the page (word by word, never
+ * letter by letter; read whole by screen readers).
+ */
+export const RevealFlow: React.FC<{ text: string; className?: string; delay?: number; stagger?: number; as?: Tag | "div" }> = ({
+  text,
+  className,
+  delay = 0,
+  stagger = 0.014,
+  as = "p",
+}) => {
+  const still = useReducedMotion();
+  if (still) return React.createElement(as, { className }, text);
+  const M = motion[as] as typeof motion.p;
+  // (runs of spaces, as between the services' middle dots, count as one)
+  const words = text.split(/\s+/).filter(Boolean);
+  return (
+    <M className={className} aria-label={text} initial="off" whileInView="on" viewport={VIEW}>
+      {words.map((w, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && " "}
+          <motion.span
+            aria-hidden
+            className="inline-block"
+            variants={{
+              off: { opacity: 0, y: "0.4em", filter: "blur(3px)" },
+              on: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: EASE_HAUS, delay: delay + i * stagger } },
+            }}
+          >
+            {w}
+          </motion.span>
+        </React.Fragment>
+      ))}
+    </M>
+  );
+};

@@ -7,6 +7,7 @@ import { BODY, SMALL } from "../../lib/type";
 import type { Studio } from "../../i18n/studio";
 import { Link } from "react-router-dom";
 import { useI18n } from "../../i18n/I18n";
+import { RevealFlow } from "../../components/Reveal/Reveal";
 
 /**
  * What the studio does, shown rather than listed. One discipline after another down the
@@ -415,16 +416,14 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
                     </React.Fragment>
                   ))}
                 </h3>
-                <p className="mt-4 max-w-[44ch] font-geo text-[1.05rem] font-normal leading-[1.45] tracking-[0.01em] text-ink lg:mt-6 lg:text-[1.15rem]">{d.text}</p>
+                <RevealFlow text={d.text} className="mt-4 max-w-[44ch] font-geo text-[1.05rem] font-normal leading-[1.45] tracking-[0.01em] text-ink lg:mt-6 lg:text-[1.15rem]" delay={0.15} />
               </div>
               </div>
               {/* from here on the frame has let go: the list, and the invitation after the last, are read whole */}
               <div className={`transition-opacity duration-700 ${i === active ? "lg:opacity-100" : "lg:opacity-35"}`}>
                 {d.list && (
                   // what is delivered: one quiet line under a hairline, as a case lists its services
-                  <p className={`${SMALL} mt-6 max-w-[48ch] border-t border-ink/15 pt-4 normal-case text-ink/80 lg:mt-8`}>
-                    {d.list.join("  ·  ")}
-                  </p>
+                  <RevealFlow text={d.list.join("  ·  ")} className={`${SMALL} mt-6 max-w-[48ch] border-t border-ink/15 pt-4 normal-case text-ink/80 lg:mt-8`} delay={0.45} stagger={0.02} />
                 )}
                 {/* at the end of the four, an invitation that comes in once the last is reached */}
                 {i === s.disciplines.length - 1 && (
@@ -625,7 +624,7 @@ const ProcessStep: React.FC<{ step: { title: string; text: string }; i: number; 
         variants={{ off: { opacity: 0, y: 12 }, on: { opacity: 1, y: 0, transition: { duration: 0.9, delay: 0.2 + i * 0.12, ease: EASE_HAUS } } }}
       >
         <h3 className="mt-4 font-geo text-[1.2rem] font-normal leading-snug tracking-[0.02em] text-ink">{step.title}</h3>
-        <p className={`${BODY} mt-3 text-ink/80`}>{step.text}</p>
+        <RevealFlow text={step.text} className={`${BODY} mt-3 text-ink/80`} delay={0.35 + i * 0.12} />
       </motion.div>
     </motion.div>
   );

@@ -6,7 +6,7 @@ import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
 import { DARK_WALL, LightWall } from "../../components/Light/LightWall";
-import { Reveal, RevealWords } from "../../components/Reveal/Reveal";
+import { Reveal, RevealFlow, RevealWords } from "../../components/Reveal/Reveal";
 import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
 
@@ -324,9 +324,7 @@ export const AboutPage: React.FC = () => {
               transition={{ duration: 1.8, ease: EASE_HAUS, delay: 0.4 + head.split(" ").length * 0.035 }}
             />
             {sub && (
-              <Reveal as="p" className={`${BODY} mt-6 max-w-[46ch] text-graphite lg:mt-8 lg:text-[1.15rem]`} delay={0.65 + head.split(" ").length * 0.035}>
-                {sub}
-              </Reveal>
+              <RevealFlow text={sub} className={`${BODY} mt-6 max-w-[46ch] text-graphite lg:mt-8 lg:text-[1.15rem]`} delay={0.65 + head.split(" ").length * 0.035} />
             )}
           </>
         );
@@ -370,7 +368,7 @@ export const AboutPage: React.FC = () => {
           <Reveal as="p" className={`${SMALL} text-graphite`}>{s.processLabel}</Reveal>
           <RevealWords as="h2" text={s.processTitle} className={`${TITLE} mt-4 block text-ink`} delay={0.1} />
           {/* what sets the process apart, said once and quietly under its title */}
-          <Reveal as="p" className={`${BODY} mt-2 text-graphite`} delay={0.35}>{s.processNote}</Reveal>
+          <RevealFlow text={s.processNote} className={`${BODY} mt-2 text-graphite`} delay={0.35} stagger={0.03} />
         </div>
         <div className="col-span-12 mt-12 lg:order-1 lg:col-span-7 lg:mt-0 xl:col-span-8">
           <ProcessSteps steps={s.process} />
@@ -427,7 +425,7 @@ export const AboutPage: React.FC = () => {
         <div className="col-span-12 mt-16 flex flex-col justify-end lg:col-span-5 lg:mt-0 xl:col-span-4">
           <RevealWords as="p" text={s.closing} className={`${TITLE} text-ink`} />
           {/* who you would be talking to: no face, just how it works */}
-          <Reveal as="p" className={`${BODY} mt-5 max-w-[36ch] text-graphite`} delay={0.35}>{s.closingNote}</Reveal>
+          <RevealFlow text={s.closingNote} className={`${BODY} mt-5 max-w-[36ch] text-graphite`} delay={0.35} />
           <a
             href="#contact"
             onClick={(e) => {
