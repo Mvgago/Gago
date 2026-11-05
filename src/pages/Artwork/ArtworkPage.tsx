@@ -161,6 +161,8 @@ export const ArtworkPage: React.FC = () => {
               src={record.url}
               alt="Fuga Sei — Grimaldi Lines (EP)"
               {...protect}
+              // a touch dimmer, so the pale sleeve doesn't glare in the dark room
+              style={{ filter: "brightness(0.82)" }}
               className="block aspect-square w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]"
             />
           </a>
