@@ -340,10 +340,10 @@ export const AboutPage: React.FC = () => {
         );
       })()}
 
-      {/* Phones and tablets: the four disciplines as an open list, no rules between them: a still of each, its
-          number and its name beside it; a tap goes down to its sheet (wide screens have the tabs under the frame) */}
+      {/* Phones and tablets: the four disciplines as one block, their stills stacked edge to edge in a single
+          square-cornered column, each with its number and name beside it; a tap goes down to its sheet (wide screens have the tabs under the frame) */}
       <nav aria-label={s.disciplinesLabel} className="mt-10 min-w-0 lg:hidden">
-        <ol className="flex flex-col gap-4">
+        <ol className="flex flex-col">
           {s.disciplines.map((d, i) => (
             <motion.li
               key={d.title}
@@ -360,7 +360,7 @@ export const AboutPage: React.FC = () => {
                 }}
                 className="group flex items-center gap-4"
               >
-                <span className="relative h-16 w-[5.5rem] shrink-0 overflow-hidden rounded-[4px] bg-[#3a3533]">
+                <span className="relative h-[4.5rem] w-24 shrink-0 overflow-hidden bg-[#3a3533]">
                   <img
                     src={`/posters/cards/${["film", "plan", "stand", "identity"][i]}.webp`}
                     alt=""
