@@ -317,8 +317,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     }
     g.add(contact(BW, BD));
     g.position.set(-2.55, 0, -0.55);
-    // (left off the table: fewer pieces, more air round each)
-    void g;
+    add(g);
     // the lid, set down beside it: a shallow cover in the same linen, the sign in silver on top
     const LW = BW + 0.04, LD = BD + 0.04, LH = 0.1;
     const lid = new THREE.Group();
@@ -344,7 +343,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     lid.add(lidTop, f, contact(LW, LD));
     lid.position.set(-2.55, 0, 0.74);
     lid.rotation.y = 0.04;
-    void lid;
+    add(lid);
   }
   // A notebook in Swiss binding: the sewn spine left bare, its signatures and coral thread on
   // show, the graphite cover glued only to the back, the sign in silver small on its front
@@ -413,9 +412,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     foil.rotation.x = -Math.PI / 2;
     foil.position.set(0, BOARD + NT + BOARD * 0.7 + 0.002, -SHORT / 2);
     g.add(block, backB, frontB, foil, contact(NW, ND));
-    // the left column to itself, balancing the cards and the phone on the right
-    g.position.set(-2.6, 0, -1.4);
-    g.rotation.y = 0.03;
+    // up level with the palette, clear above the cards
+    g.position.set(2.72, 0, -1.42);
     add(g);
   }
   // A card as it is cut: a thin slab with rounded corners, its faces printed edge to edge
@@ -590,7 +588,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const g = new THREE.Group();
     g.add(strap, crimp, hook);
     g.position.set(0.0, 0, 1.62);
-    void g;
+    add(g);
   }
   // a fan of colour chips: the palette, as a printer's swatch book pinned at one end; it fans open
   const fanStrips: THREE.Group[] = [];
@@ -639,7 +637,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     fan.add(fs);
     // up top, to the right of the vase, above the brochure; it fans open away from it
     fan.position.set(-0.85, 0.008, -1.4);
-    void fan;
+    add(fan);
   }
   // A narrow, straight-sided bud vase in clear glass, and in it a single lilac flower: the one living thing on the table
   {
@@ -806,9 +804,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     }
     vase.scale.setScalar(1.25);
     // off centre, towards the left column, so the brochure keeps the middle to itself
-    vase.position.set(-1.05, 0, -1.6);
-    // (left off the table: fewer pieces, more air)
-    void vase;
+    vase.position.set(-1.4, 0, -1.55);
+    add(vase);
   }
   // The phone, lying beside the cards, with the house's site on its screen: the brand's digital side
   let screenMap: THREE.Texture;
@@ -1173,7 +1170,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // the same width of table in every frame: framed for a wide one (30° at 16:9), a narrower frame (a phone)
     // draws back to keep the whole spread in view instead of cutting the pieces at its sides
     const WIDE = 16 / 9, half = Math.atan(Math.tan(THREE.MathUtils.degToRad(15)) * WIDE);
-    camera.fov = camera.aspect >= WIDE ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 1.04) / camera.aspect));
+    camera.fov = camera.aspect >= WIDE ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.93) / camera.aspect));
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
@@ -1183,13 +1180,12 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   fit();
 
   // The camera drifts slowly over the table, so the foil catches and loses the light
-  const look = new THREE.Vector3(0.2, 0, -0.15);
+  const look = new THREE.Vector3(0.4, 0, 0.15);
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const place = (t: number) => {
     // over the table, as a flat lay is shot, breathing only a little
     const a = Math.sin(t * 0.16) * 0.07, lift = Math.sin(t * 0.11) * 0.12;
-    // (a little nearer than with the full spread: fewer pieces, each given more of the frame)
-    camera.position.set(look.x + Math.sin(a) * 3.3, 7.0 + lift, look.z + Math.cos(a) * 3.3);
+    camera.position.set(look.x + Math.sin(a) * 4.4, 7.4 + lift, look.z + Math.cos(a) * 4.4);
     camera.lookAt(look);
   };
   place(0);
