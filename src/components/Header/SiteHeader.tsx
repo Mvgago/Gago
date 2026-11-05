@@ -173,7 +173,7 @@ export const SiteHeader: React.FC = () => {
   // ink of the type, so it belongs to the airy page instead of sitting on it like a solid tile
   // (on the two dark rooms, a darker glass with pale lines). The invitation plays only while the word shows.
   const glass = shortPill;
-  const darkRoom = pathname === "/projects" || pathname === "/artwork";
+  const darkRoom = pathname === "/projects" || pathname === "/artwork" || pathname === "/about";
   const glow = inviting && !glass;
   const tone = "text-platinum";
   const line = glass && !darkRoom ? "bg-ink/80" : "bg-platinum";
@@ -199,7 +199,7 @@ export const SiteHeader: React.FC = () => {
             (onLight || pathname === "/artwork") && scrolled && !open ? "opacity-100" : "opacity-0"
           }`}
           // Translucent, so light falling on the page behind (as on "info") carries on under it
-          style={{ background: pathname === "/artwork" ? "#0f0e10cc" : `${WALL}cc`, borderColor: pathname === "/artwork" ? "rgba(255,255,255,0.06)" : undefined }}
+          style={{ background: pathname === "/artwork" ? "#0f0e10cc" : pathname === "/about" ? "#2f2b2acc" : `${WALL}cc`, borderColor: pathname === "/artwork" || pathname === "/about" ? "rgba(255,255,255,0.06)" : undefined }}
         />
         <div className="relative" style={masked ? { clipPath: MASK } : undefined}>
         <motion.div variants={UNFOLD} custom={{ delay: 0, haze: false } satisfies Unfold} animate={unfold}>
@@ -232,7 +232,7 @@ export const SiteHeader: React.FC = () => {
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
           <div className={compact ? "max-sm:hidden" : ""} style={masked ? { clipPath: MASK } : undefined}>
             <motion.div variants={UNFOLD} custom={{ delay: 0.24 } satisfies Unfold} animate={unfold}>
-              <LanguageSwitch dark={(pathname === "/projects" || pathname === "/artwork") && !open} />
+              <LanguageSwitch dark={(pathname === "/projects" || pathname === "/artwork" || pathname === "/about") && !open} />
             </motion.div>
           </div>
 

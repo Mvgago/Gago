@@ -42,7 +42,7 @@ export const BackToTop: React.FC = () => {
       tabIndex={shown ? 0 : -1}
       onClick={() => scrollToTarget(lenis, 0)}
       style={lift ? { bottom: lift + 16 } : undefined}
-      className={`group fixed bottom-6 right-4 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 bg-[#efeef0]/80 text-ink backdrop-blur-md transition-[opacity,transform,border-color] duration-500 ease-haus hover:border-ink sm:right-6 md:bottom-8 md:right-8 ${
+      className={`${pathname === "/about" ? "fh-dark" : ""} group fixed bottom-6 right-4 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 bg-[var(--fh-wall,#efeef0)]/80 text-ink backdrop-blur-md transition-[opacity,transform,border-color] duration-500 ease-haus hover:border-ink sm:right-6 md:bottom-8 md:right-8 ${
         shown ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"
       }`}
     >

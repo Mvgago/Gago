@@ -13,17 +13,17 @@ export const DARK_WALL = "#2f2b2a";
 export const MOUNT = "#f8f8f9";
 
 /** Covers the whole screen behind a page's content. */
-export const LightWall: React.FC = () => {
+export const LightWall: React.FC<{ color?: string }> = ({ color = WALL }) => {
   // the same wall under the page itself, so a phone's overscroll shows it, not the landing's colour
   React.useEffect(() => {
-    document.documentElement.style.background = WALL;
-    document.body.style.background = WALL;
+    document.documentElement.style.background = color;
+    document.body.style.background = color;
     return () => {
       document.documentElement.style.background = "";
       document.body.style.background = "";
     };
-  }, []);
-  return <div aria-hidden className="pointer-events-none fixed inset-0 -z-10" style={{ background: WALL }} />;
+  }, [color]);
+  return <div aria-hidden className="pointer-events-none fixed inset-0 -z-10" style={{ background: color }} />;
 };
 
 /** The small type, now part of the site's type scale */

@@ -49,7 +49,7 @@ export const App: React.FC = () => {
   // The light rooms' wall changes as soon as the route does, under the page
   // transition, so the landing's colours never show through while a page fades in.
   // The projects page is the one dark room: its own graphite comes in instead of the light wall.
-  const wall = location.pathname === "/projects" ? DARK_WALL : isLightRoom(location.pathname) ? WALL : null;
+  const wall = location.pathname === "/projects" || location.pathname === "/about" ? DARK_WALL : isLightRoom(location.pathname) ? WALL : null;
 
   return (
     <I18nProvider>

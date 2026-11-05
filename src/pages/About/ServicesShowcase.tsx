@@ -362,7 +362,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
 
       {/* The disciplines, a screen each on large screens, a hairline between one and the next */}
       {/* on a clean ground of its own, out to the screen's right edge: the room's light stays behind the frame */}
-      <div className="relative z-10 col-span-12 lg:col-span-5 lg:-ml-8 lg:-mr-8 lg:bg-[#efeef0] lg:pl-16 lg:pr-8 xl:col-span-4">
+      <div className="relative z-10 col-span-12 lg:col-span-5 lg:-ml-8 lg:-mr-8 lg:bg-[var(--fh-wall,#efeef0)] lg:pl-16 lg:pr-8 xl:col-span-4">
         {s.disciplines.map((d, i) => {
           return (
             <div
@@ -374,7 +374,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               // above each after the first, so it is clear where one ends and the next begins
               // On phones and tablets each is a sheet of its own, a screen tall: held in place once read
               // through, while the next slides up over it, so two disciplines never run together
-              className={`sticky -mx-4 flex min-h-[calc(100svh-64px)] flex-col bg-[#efeef0] px-4 pb-36 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              className={`sticky -mx-4 flex min-h-[calc(100svh-64px)] flex-col bg-[var(--fh-wall,#efeef0)] px-4 pb-36 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 lg:min-h-[calc(100svh-112px)] lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
               style={{ zIndex: i + 1 }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
@@ -385,7 +385,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div>
               {/* (as tall as the screen allows beside the text, and never much taller than its own landscape
                   shape, so a film is not cut away at the sides; the text and services follow straight on) */}
-              <div className="relative -mx-4 mb-4 h-[min(76vw,42svh)] bg-[#efeef0] sm:-mx-6 md:-mx-8 lg:hidden">
+              <div className="relative -mx-4 mb-4 h-[min(76vw,42svh)] bg-[var(--fh-wall,#efeef0)] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* no note over the film here: on a phone it only crowded the picture */}
                 {/* (set over the whole box: a height in % inside a flexible box resolves to nothing) */}
                 {EX[i] && (

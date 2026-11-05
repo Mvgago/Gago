@@ -5,7 +5,7 @@ import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
-import { LightWall } from "../../components/Light/LightWall";
+import { DARK_WALL, LightWall } from "../../components/Light/LightWall";
 import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
 
@@ -235,8 +235,8 @@ export const AboutPage: React.FC = () => {
 
   return (
     // No bottom padding: the dark contact block closes the page, the footer follows it
-    <main className="relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
-      <LightWall />
+    <main className="fh-dark relative overflow-x-clip px-4 pt-28 sm:px-6 md:px-8 md:pt-32">
+      <LightWall color={DARK_WALL} />
 
       {/* (the page sits on the plain wall: no room behind the opening) */}
 
@@ -560,7 +560,7 @@ export const AboutPage: React.FC = () => {
                 type="submit"
                 disabled={status === "sending"}
                 // The way out of the page: solid light, the one filled form in this room
-                className={`${ACTION} group inline-flex shrink-0 items-center justify-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-ink transition-colors duration-500 hover:bg-white disabled:cursor-wait disabled:opacity-70`}
+                className={`${ACTION} group inline-flex shrink-0 items-center justify-center gap-2.5 rounded-full bg-platinum px-7 py-3 text-[#3b3734] transition-colors duration-500 hover:bg-white disabled:cursor-wait disabled:opacity-70`}
               >
                 {status === "sending" ? s.form.sending : s.form.send}
               </button>

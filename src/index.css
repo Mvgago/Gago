@@ -26,6 +26,16 @@
   --ease-haus: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Trial: the studio page as a dark room. Inside .fh-dark the ink tokens turn pale, so every text, line and
+   tint written in ink reads light on the graphite wall; the wall itself is --fh-wall */
+.fh-dark {
+  --color-ink: #f4f1ed;
+  --color-graphite: #c4bcb6;
+  --color-umber: #d6c9c4;
+  --fh-wall: #2f2b2a;
+  color: var(--color-ink);
+}
+
 @layer base {
   html,
   body {
