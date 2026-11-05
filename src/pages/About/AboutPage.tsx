@@ -15,11 +15,15 @@ import buendiaCatalogue from "../../assets/peojects/buendia/buendia-catalogue-we
 import buendiaSocial from "../../assets/peojects/buendia/buendia-social-web.jpg.webp";
 import sapWeb from "../../assets/peojects/saphire/saphire.jpg.webp";
 import smCards from "../../assets/peojects/smart/smart-cards-web.jpg.webp";
+import santaFacade from "../../assets/peojects/santa/santa (7).jpg.webp";
+import santaRender from "../../assets/peojects/santa/santa-render.jpg.webp";
+import tolvaWindow from "../../assets/peojects/tolva/tolva-window.webp";
+import tolvaBag from "../../assets/peojects/tolva/tolva-bag.webp";
 
 // The picture each case shows here, where its own cover would not read at this size
-const PICK: Record<string, string> = { buendia: buendiaCatalogue };
+const PICK: Record<string, string> = { buendia: buendiaCatalogue, "gracia-prados": santaFacade, tolva: tolvaWindow };
 // A second picture of each, that the tile turns to and back from, each in its own time
-const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb, smarthc: smCards };
+const NEXT: Record<string, string> = { buendia: buendiaSocial, sapphire: sapWeb, smarthc: smCards, "gracia-prados": santaRender, tolva: tolvaBag };
 // Drawn in close where the picture has a wide margin: the complex fills the tile, cut at its ends
 const ZOOM: Record<string, [number, string]> = {};
 import { EMAIL, INSTAGRAM } from "../../components/Contact/ContactMenu";
@@ -36,7 +40,7 @@ import { GlassPane } from "../../components/Contact/GlassPane";import { ProcessS
 /** A part of the page after the showcase, on its 12-column grid */
 const Section: React.FC<{ children: React.ReactNode; lit?: boolean }> = ({ children, lit = false }) => (
   <motion.section
-    className={`relative isolate grid grid-cols-12 gap-x-8 py-20 md:py-28 ${lit ? "mb-16 md:my-24" : ""}`}
+    className={`relative isolate grid grid-cols-12 gap-x-8 py-20 md:py-28 ${lit ? "md:mt-24" : ""}`}
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-10% 0px" }}
@@ -384,16 +388,15 @@ export const AboutPage: React.FC = () => {
           {/* edge to edge, the three touching, out to the screen's left edge */}
           {/* phones: a strip to slide through with the finger, each case nearly the screen's width */}
           {/* the cases' names stay out of search results (data-nosnippet), as their pages do */}
-          <ul data-nosnippet className="-mx-4 flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] sm:-mx-6 sm:grid sm:grid-cols-3 sm:overflow-visible md:-ml-8 md:mr-0 [&::-webkit-scrollbar]:hidden">
+          <ul data-nosnippet className="-mx-4 flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] sm:-mx-6 sm:grid sm:grid-cols-5 sm:overflow-visible md:-ml-8 md:mr-0 [&::-webkit-scrollbar]:hidden">
             {/* in the same order as the projects page */}
             {cases
               .filter((c) => !c.hidden)
               .sort((a, b) => WORK_ORDER.indexOf(a.slug) - WORK_ORDER.indexOf(b.slug))
-              .slice(0, 3)
               .map((c, k) => (
                 <li key={c.slug} className="w-[84%] shrink-0 snap-start sm:w-auto">
                   <Link to={`/projects/${c.slug}`} aria-label={c.title} className="group block">
-                    <span className="relative block aspect-[4/3] overflow-hidden bg-ink/5">
+                    <span className="relative block aspect-[4/3] overflow-hidden bg-ink/5 sm:aspect-[3/4]">
                       <img
                         src={PICK[c.slug] ?? c.thumb ?? c.cover}
                         alt=""
@@ -404,7 +407,7 @@ export const AboutPage: React.FC = () => {
                       {/* the second picture dissolves in over the first, settling from a touch closer,
                           and away again: the three take turns, so one is always changing */}
                       {NEXT[c.slug] && (
-                        <span className="absolute inset-0 opacity-0 motion-safe:animate-[fh-turn_12s_ease-in-out_infinite]" style={{ animationDelay: `${2 + k * 4}s` }}>
+                        <span className="absolute inset-0 opacity-0 motion-safe:animate-[fh-turn_12s_ease-in-out_infinite]" style={{ animationDelay: `${2 + k * 2.4}s` }}>
                           <img
                             src={NEXT[c.slug]}
                             alt=""
