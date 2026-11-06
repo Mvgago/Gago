@@ -325,16 +325,16 @@ function headphones() {
   // the band's length
   {
     const MARK = new THREE.MeshStandardMaterial({ map: bandMark(), transparent: true, metalness: 0.5, roughness: 0.45, polygonOffset: true, polygonOffsetFactor: -2 });
-    const W = 0.38, Hm = W * (210 / 620);
+    const W = 0.46, Hm = W * (210 / 620);
     const py = NECK + 0.34, t = Math.asin((py - BASE) / H);
     const px = SPAN * Math.cos(t);
     const nor = new THREE.Vector3(H * Math.cos(t), SPAN * Math.sin(t), 0).normalize();
     for (const side of [-1, 1]) {
       const m = new THREE.Mesh(new THREE.PlaneGeometry(W, Hm), MARK);
-      // laid along the band, centred between its edges: the letters run with the band's curve, their
-      // tops towards the front on both sides
+      // laid along the band, centred between its edges: the letters run with the band's curve, reading
+      // from the top down, their tops towards the back on both sides
       const za = new THREE.Vector3(side * nor.x, nor.y, 0);
-      const ya = new THREE.Vector3(0, 0, 1);
+      const ya = new THREE.Vector3(0, 0, -1);
       const xa = new THREE.Vector3().crossVectors(ya, za).normalize();
       m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(xa, ya, za));
       m.position.set(side * px, py, 0).addScaledVector(za, BAND + 0.004);
