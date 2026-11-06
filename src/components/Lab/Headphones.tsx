@@ -326,7 +326,7 @@ function headphones() {
   {
     const MARK = new THREE.MeshStandardMaterial({ map: bandMark(), transparent: true, metalness: 0.5, roughness: 0.45, polygonOffset: true, polygonOffsetFactor: -2 });
     const W = 0.38, Hm = W * (210 / 620);
-    const py = NECK + 0.34, t = Math.asin((py - BASE) / H);
+    const py = NECK + 0.24, t = Math.asin((py - BASE) / H);
     const px = SPAN * Math.cos(t);
     const tan = new THREE.Vector3(-SPAN * Math.sin(t), H * Math.cos(t), 0).normalize();
     const nor = new THREE.Vector3(H * Math.cos(t), SPAN * Math.sin(t), 0).normalize();
@@ -336,6 +336,8 @@ function headphones() {
       const ya = new THREE.Vector3(side * tan.x, tan.y, 0);
       const za = new THREE.Vector3(side * nor.x, nor.y, 0);
       m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(xa, ya, za));
+      // turned 15° in the band's face, rising towards the front on both sides
+      m.rotateZ(THREE.MathUtils.degToRad(15));
       m.position.set(side * px, py, 0).addScaledVector(za, BAND + 0.004);
       g.add(m);
     }
