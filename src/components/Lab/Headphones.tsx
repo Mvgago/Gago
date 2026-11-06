@@ -321,23 +321,22 @@ function headphones() {
   g.add(new THREE.Mesh(strip(BAND, ARM, 0, BASE, H), SILVER));
   g.add(new THREE.Mesh(strip(0.065, ARM - 0.015, BAND + 0.06, BASE, H, true), PAD));
 
-  // the wordmark on the outside of the band, on either side a little above the housing, set across the
-  // band's width and laid flat on its curve, reading upright from that side
+  // the wordmark on the outside of the band, on either side a little above the housing, engraved along
+  // the band's length
   {
     const MARK = new THREE.MeshStandardMaterial({ map: bandMark(), transparent: true, metalness: 0.5, roughness: 0.45, polygonOffset: true, polygonOffsetFactor: -2 });
     const W = 0.38, Hm = W * (210 / 620);
-    const py = NECK + 0.24, t = Math.asin((py - BASE) / H);
+    const py = NECK + 0.34, t = Math.asin((py - BASE) / H);
     const px = SPAN * Math.cos(t);
-    const tan = new THREE.Vector3(-SPAN * Math.sin(t), H * Math.cos(t), 0).normalize();
     const nor = new THREE.Vector3(H * Math.cos(t), SPAN * Math.sin(t), 0).normalize();
     for (const side of [-1, 1]) {
       const m = new THREE.Mesh(new THREE.PlaneGeometry(W, Hm), MARK);
-      const xa = new THREE.Vector3(0, 0, -side);
-      const ya = new THREE.Vector3(side * tan.x, tan.y, 0);
+      // laid along the band, centred between its edges: the letters run with the band's curve, their
+      // tops towards the front on both sides
       const za = new THREE.Vector3(side * nor.x, nor.y, 0);
+      const ya = new THREE.Vector3(0, 0, 1);
+      const xa = new THREE.Vector3().crossVectors(ya, za).normalize();
       m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(xa, ya, za));
-      // turned 15° in the band's face, rising towards the front on both sides
-      m.rotateZ(THREE.MathUtils.degToRad(15));
       m.position.set(side * px, py, 0).addScaledVector(za, BAND + 0.004);
       g.add(m);
     }
