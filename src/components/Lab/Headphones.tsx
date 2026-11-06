@@ -325,8 +325,8 @@ function headphones() {
   // the band's length
   {
     const MARK = new THREE.MeshStandardMaterial({ map: bandMark(), transparent: true, metalness: 0.5, roughness: 0.45, polygonOffset: true, polygonOffsetFactor: -2 });
-    const W = 0.46, Hm = W * (210 / 620);
-    const py = NECK + 0.34, t = Math.asin((py - BASE) / H);
+    const W = 0.58, Hm = W * (210 / 620);
+    const py = NECK + 0.4, t = Math.asin((py - BASE) / H);
     const px = SPAN * Math.cos(t);
     const nor = new THREE.Vector3(H * Math.cos(t), SPAN * Math.sin(t), 0).normalize();
     for (const side of [-1, 1]) {
