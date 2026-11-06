@@ -40,7 +40,7 @@ const sup = (a: number, b: number, p: number, t: number) =>
 
 // The studio's wordmark cut into the disc, from the same strokes as every logo on the site: a dark
 // line for the cut, a fine light one on its lower edge where the wall of the cut catches the light
-function engrave(x: CanvasRenderingContext2D, relief = false) {
+function engrave(x: CanvasRenderingContext2D, relief = false, strong = false) {
   const line = (pts: Pt[]) => {
     x.beginPath();
     x.moveTo(pts[0][0], pts[0][1]);
@@ -79,21 +79,10 @@ function engrave(x: CanvasRenderingContext2D, relief = false) {
     all(0, 0, "#fff", 0);
     x.filter = "none";
   } else {
-    all(0, 5, "rgba(250,250,252,0.4)", 6);
-    all(0, 0, "rgba(90,91,97,0.45)", 0);
+    all(0, 5, strong ? "rgba(250,250,252,0.55)" : "rgba(250,250,252,0.4)", 6);
+    all(0, 0, strong ? "rgba(58,59,64,0.9)" : "rgba(90,91,97,0.45)", 0);
   }
   x.restore();
-}
-
-// The letters' height over the disc, so they stand up from it and catch the light at their edges
-function reliefMap() {
-  const c = document.createElement("canvas");
-  c.width = c.height = 1024;
-  const x = c.getContext("2d")!;
-  x.fillStyle = "#000";
-  x.fillRect(0, 0, 1024, 1024);
-  engrave(x, true);
-  return new THREE.CanvasTexture(c);
 }
 
 // The spun disc: a soft cross of light over fine rings, as turned metal catches it
@@ -115,10 +104,24 @@ function spun() {
     x.arc(512, 512, r, 0, Math.PI * 2);
     x.stroke();
   }
-  engrave(x);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 8;
+  return t;
+}
+
+// The wordmark engraved in the band, just above where it meets each housing: dark and crisp, read on
+// the flat of the silver (on the spun disc it was lost in the rings)
+function bandMark() {
+  const c = document.createElement("canvas");
+  c.width = c.height = 1024;
+  engrave(c.getContext("2d")!, false, true);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  // only the logo's own box of the square
+  t.repeat.set(620 / 1024, 210 / 1024);
+  t.offset.set((512 - 310) / 1024, (512 - 105) / 1024);
   return t;
 }
 
@@ -300,7 +303,7 @@ function grain() {
 
 function headphones() {
   const g = new THREE.Group();
-  const DISC = new THREE.MeshPhysicalMaterial({ map: spun(), bumpMap: reliefMap(), bumpScale: 1.2, metalness: 1, roughness: 0.26 });
+  const DISC = new THREE.MeshPhysicalMaterial({ map: spun(), metalness: 1, roughness: 0.26 });
   // the right disc shows the cylinder's other cap, which carries the picture a half turn round:
   // turned back, so the wordmark reads upright on both sides
   const half = (t: THREE.Texture) => {
@@ -311,13 +314,32 @@ function headphones() {
   };
   const DISC_R = DISC.clone();
   DISC_R.map = half(DISC.map!);
-  DISC_R.bumpMap = half(DISC.bumpMap!);
   // a tall round arch, a touch higher than a half circle
   const H = 1.55, BASE = NECK - 0.12 + H * Math.sin(OVER);
 
   // the band, silver, and its grey padding underneath; both run down into the housings
   g.add(new THREE.Mesh(strip(BAND, ARM, 0, BASE, H), SILVER));
   g.add(new THREE.Mesh(strip(0.065, ARM - 0.015, BAND + 0.06, BASE, H, true), PAD));
+
+  // the wordmark on the outside of the band, on either side a little above the housing, set across the
+  // band's width and laid flat on its curve, reading upright from that side
+  {
+    const MARK = new THREE.MeshStandardMaterial({ map: bandMark(), transparent: true, metalness: 0.5, roughness: 0.45, polygonOffset: true, polygonOffsetFactor: -2 });
+    const W = 0.38, Hm = W * (210 / 620);
+    const py = NECK + 0.34, t = Math.asin((py - BASE) / H);
+    const px = SPAN * Math.cos(t);
+    const tan = new THREE.Vector3(-SPAN * Math.sin(t), H * Math.cos(t), 0).normalize();
+    const nor = new THREE.Vector3(H * Math.cos(t), SPAN * Math.sin(t), 0).normalize();
+    for (const side of [-1, 1]) {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(W, Hm), MARK);
+      const xa = new THREE.Vector3(0, 0, -side);
+      const ya = new THREE.Vector3(side * tan.x, tan.y, 0);
+      const za = new THREE.Vector3(side * nor.x, nor.y, 0);
+      m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(xa, ya, za));
+      m.position.set(side * px, py, 0).addScaledVector(za, BAND + 0.004);
+      g.add(m);
+    }
+  }
 
   const shell = housing();
   const RA = 0.19, RV = 0.2; // the cushion's half breadth and half thickness
