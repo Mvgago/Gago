@@ -301,10 +301,9 @@ export const AboutPage: React.FC = () => {
           <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
         </a>
         {/* wide screens: a small status readout under it, in the spirit of early-2000s interfaces: a row of
-            fine cells a light keeps sweeping along, between two crosshairs, and the studio's name */}
+            fine cells a light keeps sweeping along, and the studio's name */}
         <style>{`@keyframes fh-scan{0%,100%{opacity:.14}6%{opacity:.85}26%{opacity:.14}}`}</style>
         <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/40 lg:flex">
-          <span className="text-[10px] leading-none">+</span>
           <span className="flex gap-[3px]">
             {Array.from({ length: 14 }, (_, k) => (
               <span
@@ -314,7 +313,6 @@ export const AboutPage: React.FC = () => {
               />
             ))}
           </span>
-          <span className="text-[10px] leading-none">+</span>
           {/* the wordmark itself, drawn from the logo's own strokes, small */}
           <svg viewBox="249 677 1389 401" className="h-[13px] w-auto text-ink/60" fill="none" stroke="currentColor" strokeWidth="35">
             <path d="M570 695L300 695Q267 695 267 728L267 976M267 826L570 826M612 755L612 925Q612 960 647 960L860 960Q895 960 895 925L895 755M1255 960L1015 960Q980 960 980 925L980 807Q980 772 1015 772L1255 772L1255 1025Q1255 1060 1220 1060L965 1060M1320 772L1585 772Q1620 772 1620 807L1620 965L1365 965Q1330 965 1330 930L1330 885Q1330 850 1365 850L1620 850" />
