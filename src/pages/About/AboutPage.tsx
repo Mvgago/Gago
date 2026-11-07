@@ -644,7 +644,7 @@ export const AboutPage: React.FC = () => {
           animate={status === "sent" ? { opacity: [0, 1, 0.45], transition: { duration: 2.2, times: [0, 0.3, 1], ease: "easeOut" } } : { opacity: 0, transition: { duration: 0.8 } }}
         />
 
-        <div className="relative grid grid-cols-12 gap-x-8 gap-y-8 sm:gap-y-12">
+        <div className="relative grid grid-cols-12 gap-x-8 gap-y-6 sm:gap-y-12">
           {/* the close of the page, as a case opens: the label, then the line large and across */}
           <div className="col-span-12">
             <h2 className={`${SMALL} text-platinum/55`}>
@@ -675,7 +675,8 @@ export const AboutPage: React.FC = () => {
               viewport={{ once: true, margin: "-10% 0px" }}
               transition={{ duration: 1.4, ease: EASE_HAUS, delay: 0.3 }}
             />
-            <ul className="flex flex-col gap-3 pt-5">
+            {/* (no gap above on phones, where the hairline it followed is gone) */}
+            <ul className="flex flex-col gap-3 sm:pt-5">
               {(TRUST[lang] ?? TRUST.es).map((line, k) => (
                 <motion.li
                   key={line}
