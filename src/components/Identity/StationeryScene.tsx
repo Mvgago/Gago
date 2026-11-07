@@ -466,7 +466,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     lid.add(lidTop, f, contact(LW, LD));
     // set down just behind the box, turned a little, its sign in silver showing
     lid.scale.setScalar(1.18);
-    lid.position.set(-1.46, 0, -0.8);
+    // (clear of the box behind it: closer, the taller box overlapped its edge from a phone's angle)
+    lid.position.set(-1.5, 0, -1.0);
     lid.rotation.y = 0.2;
     add(lid);
   }
