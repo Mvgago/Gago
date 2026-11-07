@@ -330,14 +330,15 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       const card = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.008, 0.4), [
         edge, edge, new THREE.MeshStandardMaterial({ map: face, bumpMap: tooth, bumpScale: 0.35, roughness: 0.9 }), edge, edge, edge,
       ]);
-      // lying in the tissue, one corner just lifted on a fold
-      card.position.set(0.12, BH - 0.05, 0.08);
-      card.rotation.set(0.05, -0.18, 0.03);
+      // resting on the tissue, clear of its highest folds (sunk in, they cut through its corner), tipped a
+      // little as it lies across one
+      card.position.set(0.12, BH - 0.08 + 0.05, 0.08);
+      card.rotation.set(0.04, -0.18, 0.025);
       g.add(card);
       // its shadow on the tissue, soft and close
       const cs = contact(0.6, 0.4);
       (cs.material as THREE.MeshBasicMaterial).opacity = 0.55;
-      cs.position.set(0.14, BH - 0.074, 0.1);
+      cs.position.set(0.14, BH - 0.08 + 0.034, 0.1);
       cs.rotation.z = 0.18;
       g.add(cs);
       // three beach pebbles from the ría, worn smooth, resting on the tissue beside the card
