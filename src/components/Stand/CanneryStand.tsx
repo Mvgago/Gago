@@ -906,16 +906,19 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const now = performance.now();
     if (!start) start = now;
     const t = (now - start) / 1000;
-    const e = 1 - Math.pow(1 - Math.min(1, t / 3), 3);
-    const sway = t > 3 ? Math.sin((t - 3) * 0.22) * 0.18 : 0;
-    sph.set(home.radius * (1.16 - 0.16 * e), home.phi - 0.06 * (1 - e), home.theta + 0.5 * (1 - e) + sway);
+    // a short, gentle settling (a long swing round made some seasick): eased in and out over 4 s, then a
+    // slight, slow sway that fades in rather than starting at once
+    const u = Math.min(1, t / 4);
+    const e = 0.5 - 0.5 * Math.cos(Math.PI * u);
+    const sway = Math.sin(t * 0.14) * 0.07 * e;
+    sph.set(home.radius * (1.05 - 0.05 * e), home.phi - 0.02 * (1 - e), home.theta + 0.16 * (1 - e) + sway);
     place(sph);
     facePeople();
     // kept on the stand as the camera breathes in and out
     (bokeh.uniforms as unknown as Record<string, { value: number }>).focus.value = camera.position.distanceTo(look);
     composer.render();
   };
-  place(reduced ? home : new THREE.Spherical(home.radius * 1.16, home.phi - 0.06, home.theta + 0.5));
+  place(reduced ? home : new THREE.Spherical(home.radius * 1.05, home.phi - 0.02, home.theta + 0.16));
   const io = new IntersectionObserver(([entry]) => renderer.setAnimationLoop(entry.isIntersecting && !reduced ? loop : null), { rootMargin: "-15% 0px" });
   try {
     await renderer.compileAsync(scene, camera);
