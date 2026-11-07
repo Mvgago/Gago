@@ -99,6 +99,52 @@ const PlainLink: React.FC<{ href: string; external?: boolean; dark?: boolean; ch
   </a>
 );
 
+const COPIED: Record<string, string> = { es: "copiado", en: "copied", fr: "copié", de: "kopiert" };
+
+/**
+ * The address, which copies itself when pressed: many would rather write from their own mail, so a
+ * press puts it in their hands, the word turning to "copied" for a moment and back. Where the clipboard
+ * is not allowed, it opens the mail app as a plain link would.
+ */
+const CopyEmail: React.FC<{ lang: string }> = ({ lang }) => {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef(0);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  return (
+    <a
+      href={`mailto:${EMAIL}`}
+      onClick={(e) => {
+        if (!navigator.clipboard) return;
+        e.preventDefault();
+        navigator.clipboard.writeText(EMAIL).then(
+          () => {
+            setCopied(true);
+            window.clearTimeout(timer.current);
+            timer.current = window.setTimeout(() => setCopied(false), 1800);
+          },
+          () => (window.location.href = `mailto:${EMAIL}`),
+        );
+      }}
+      className="group relative grid text-platinum/75 transition-colors duration-500 hover:text-platinum"
+    >
+      {/* both words held in one cell, so the line never jumps as they trade places */}
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.span
+          key={copied ? "copied" : "email"}
+          className="col-start-1 row-start-1"
+          initial={{ opacity: 0, y: 6, filter: "blur(3px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: -6, filter: "blur(3px)" }}
+          transition={{ duration: 0.45, ease: EASE_HAUS }}
+        >
+          {copied ? COPIED[lang] ?? COPIED.es : EMAIL}
+        </motion.span>
+      </AnimatePresence>
+      <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-platinum transition-transform duration-700 ease-haus group-hover:scale-x-100" />
+    </a>
+  );
+};
+
 /** A form field: a hairline to write on, its label above */
 const Field: React.FC<{
   label: string;
@@ -552,19 +598,42 @@ export const AboutPage: React.FC = () => {
           </div>
           {/* how it works, in three plain lines, and the ways in (on phones these come after the form) */}
           <div className="col-span-12 lg:col-span-4">
-            <ul className="flex flex-col gap-3 border-t border-platinum/15 pt-5">
-              {(TRUST[lang] ?? TRUST.es).map((line) => (
-                <li key={line} className="font-geo text-[1.02rem] leading-snug text-platinum/85">{line}</li>
+            {/* the hairline over it drawn in as a thread, then the lines and the ways in rising one after
+                another, so it reads top to bottom before the form */}
+            <motion.span
+              aria-hidden
+              className="block h-px w-full origin-left bg-platinum/15"
+              initial={stillPage ? false : { scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true, margin: "-10% 0px" }}
+              transition={{ duration: 1.4, ease: EASE_HAUS, delay: 0.3 }}
+            />
+            <ul className="flex flex-col gap-3 pt-5">
+              {(TRUST[lang] ?? TRUST.es).map((line, k) => (
+                <motion.li
+                  key={line}
+                  className="font-geo text-[1.02rem] leading-snug text-platinum/85"
+                  initial={stillPage ? false : { opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10% 0px" }}
+                  transition={{ duration: 1, ease: EASE_HAUS, delay: 0.6 + k * 0.12 }}
+                >
+                  {line}
+                </motion.li>
               ))}
             </ul>
-            <div className={`${ACTION} mt-10 hidden flex-col items-start gap-3 sm:flex`}>
-              <PlainLink href={`mailto:${EMAIL}`} dark>
-                {EMAIL}
-              </PlainLink>
+            <motion.div
+              className={`${ACTION} mt-10 hidden flex-col items-start gap-3 sm:flex`}
+              initial={stillPage ? false : { opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10% 0px" }}
+              transition={{ duration: 1, ease: EASE_HAUS, delay: 0.95 }}
+            >
+              <CopyEmail lang={lang} />
               <PlainLink href={INSTAGRAM} external dark>
                 instagram
               </PlainLink>
-            </div>
+            </motion.div>
           </div>
 
           {/* The form, straight on the room: no pane, only its hairlines */}
@@ -641,8 +710,17 @@ export const AboutPage: React.FC = () => {
             onSubmit={onSubmit}
             noValidate
             // phones: tighter, so the whole form fits in about one screen
-            className="relative grid grid-cols-2 items-end gap-x-4 gap-y-4 border-t border-platinum/15 pt-5 sm:gap-x-9 sm:gap-y-8 xl:grid-cols-3"
+            className="relative grid grid-cols-2 items-end gap-x-4 gap-y-4 pt-5 sm:gap-x-9 sm:gap-y-8 xl:grid-cols-3"
           >
+            {/* its hairline drawn in as a thread just after the one beside it */}
+            <motion.span
+              aria-hidden
+              className="absolute inset-x-0 top-0 h-px origin-left bg-platinum/15"
+              initial={stillPage ? false : { scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true, margin: "-10% 0px" }}
+              transition={{ duration: 1.6, ease: EASE_HAUS, delay: 0.55 }}
+            />
             {/* the trap: out of sight, out of the tab order, and left empty by anyone real */}
             <input ref={trap} type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="pointer-events-none absolute -left-[9999px] top-0 h-px w-px opacity-0" />
             {/* phones: the name across, then email and phone side by side, so the form fits in one screen */}
