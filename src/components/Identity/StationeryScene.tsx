@@ -186,7 +186,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const t = wrap(new THREE.Texture(stoneImg));
     t.colorSpace = THREE.SRGBColorSpace;
     const relief = wrap(new THREE.Texture(stoneImg));
-    const mat = new THREE.MeshStandardMaterial({ map: t, bumpMap: relief, bumpScale: 0.9, roughness: 0.8 });
+    // (the photograph lifted a tone: a pale concrete)
+    const mat = new THREE.MeshStandardMaterial({ map: t, color: "#ffffff", emissive: "#ffffff", emissiveMap: t, emissiveIntensity: 0.08, bumpMap: relief, bumpScale: 0.9, roughness: 0.8 });
     const table = new THREE.Mesh(new THREE.PlaneGeometry(SIZE, SIZE), mat);
     table.rotation.x = -Math.PI / 2;
     table.receiveShadow = true;
@@ -205,7 +206,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   })();
   // (dark and close: where a thing meets the table the light can't reach, and without it they seem to float)
   const contact = (w: number, d: number) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.12, d * 1.12), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.95 }));
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.12, d * 1.12), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.7 }));
     m.rotation.x = -Math.PI / 2;
     m.position.set(0.035, 0.0015, 0.03);
     m.renderOrder = 1;
@@ -1213,7 +1214,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
 
   /* ---------- light: a window to the left, its frame falling across the table ---------- */
   // little light in the room itself, so the window's falls as a pool, with real shade around it
-  scene.add(new THREE.HemisphereLight("#f1f0ee", "#7f7c78", 0.42));
+  // (enough of it to lift the shadows to a soft grey, never a hole)
+  scene.add(new THREE.HemisphereLight("#f1f0ee", "#8e8b87", 0.62));
   // late, warm light through a window, low from the left
   // (only just warm: the grey concrete should stay grey, not turn sandy)
   // (held below burning: the near corner of the pool used to wash out to white)
@@ -1275,7 +1277,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   // is what sets a thing down on a surface instead of leaving it hovering over it
   const ao = new GTAOPass(scene, camera, 1, 1);
   ao.output = GTAOPass.OUTPUT.Default;
-  ao.blendIntensity = 1;
+  ao.blendIntensity = 0.7;
   ao.updateGtaoMaterial({ radius: 0.18, distanceExponent: 1.6, thickness: 0.6, scale: 1.2, samples: 16 });
   composer.addPass(ao);
 
