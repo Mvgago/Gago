@@ -405,7 +405,7 @@ export const AboutPage: React.FC = () => {
             small status readout in the spirit of early-2000s interfaces, a row of fine cells a light keeps
             sweeping along after a crosshair, each growing a little as it lights, and the studio's initials.
             All of it in one tone; pointed at, it brightens together, no underline */}
-        <style>{`@keyframes fh-scan{0%,22%,100%{transform:scaleY(1)}6%{transform:scaleY(1.7)}}@keyframes fh-fg{0%,40%,64%,100%{transform:scale(1)}47%{transform:scale(1.06)}}`}</style>
+        <style>{`@keyframes fh-scan{0%,22%,100%{transform:scaleY(1)}6%{transform:scaleY(2.4)}}@keyframes fh-fg{0%,40%,64%,100%{transform:scale(1)}47%{transform:scale(1.06)}}`}</style>
         <a
           href="#contact"
           onClick={(e) => {
