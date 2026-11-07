@@ -356,7 +356,7 @@ export const AboutPage: React.FC = () => {
               transition={{ duration: 1.8, ease: EASE_HAUS, delay: 0.4 + head.split(" ").length * 0.035 }}
             />
             {sub && (
-              <RevealFlow text={sub} className={`${BODY} mt-4 max-w-[46ch] text-graphite sm:mt-6 lg:mt-6 lg:max-w-[66ch] lg:text-[1.15rem]`} delay={0.65 + head.split(" ").length * 0.035} />
+              <RevealFlow text={sub} className={`${BODY} mt-4 max-w-[46ch] text-graphite sm:mt-6 lg:mt-6 lg:max-w-[76ch] lg:text-[1.15rem]`} delay={0.65 + head.split(" ").length * 0.035} />
             )}
           </>
         );
