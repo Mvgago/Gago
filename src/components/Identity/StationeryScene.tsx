@@ -619,7 +619,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       });
     }, (x) => {
       x.font = "200px Georgia, serif";
-      x.fillText("04", 56, 330);
+      // its ink set on the same left edge as HABITACIÓN and the rule (the 0's own side bearing taken off)
+      x.fillText("04", 60 + x.measureText("04").actualBoundingBoxLeft, 330);
       sign(x, 700, 300, 70, 5);
     });
     const pvc = new THREE.MeshPhysicalMaterial({ map: art.map, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.12 });
