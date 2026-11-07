@@ -67,6 +67,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   // soft filtered shadows (the variance kind left a dotted halo round the cards)
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.style.display = "block";
+  // the whole picture a little quieter in colour, as a printed photograph of it would be
+  renderer.domElement.style.filter = "saturate(0.82)";
   host.appendChild(renderer.domElement);
   const aniso = renderer.capabilities.getMaxAnisotropy();
 
@@ -1308,6 +1310,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
 
   composer.addPass(new OutputPass());
 
+  // phones draw straight to the screen: the half-float buffer the composer renders into gave black spots on
+  // their GPUs (the renderer tones and colours the picture the same way itself)
+  const draw = () => (phoneGpu ? renderer.render(scene, camera) : composer.render());
+
   /* ---------- size and loop ---------- */
   const fit = () => {
     const w = host.clientWidth, h = host.clientHeight;
@@ -1345,7 +1351,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     if (!start) start = now;
     const s = (now - start) / 1000;
     place(s);
-    composer.render();
+    draw();
   };
   const io = new IntersectionObserver(([entry]) => renderer.setAnimationLoop(entry.isIntersecting && !reduced ? loop : null), { rootMargin: "-15% 0px" });
   // on phones no relief maps at all: their GPUs broke them into round black spots once the scene was live;
@@ -1366,7 +1372,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   } catch {
     /* compiled on the first frame instead */
   }
-  composer.render();
+  draw();
   io.observe(host);
   onReady();
 
