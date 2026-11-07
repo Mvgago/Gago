@@ -50,7 +50,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     loadImg("/concepts/stationery/concrete.webp"),
   ]);
   const photos = { beach, facade };
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  // full precision even on phones: at their default the reliefs and shadows broke into round black specks
+  const renderer = new THREE.WebGLRenderer({ antialias: true, precision: "highp" });
+  const phoneGpu = window.matchMedia("(pointer: coarse)").matches;
   // drawn at least at 1.5× even on ordinary screens: the small print and the foil stay crisp
   // (phones a little softer: the difference barely shows on a small screen, the work halves)
   // (phones at 1.75×: at 1.25 the small print, the foil and the paper edges went soft on a sharp phone screen)
@@ -59,7 +61,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   // (a touch under: the white tissue and card in the window's light used to burn out)
   renderer.toneMappingExposure = 0.46;
-  renderer.shadowMap.enabled = true;
+  // (on phones the window's cast shadows are left out: their maps speckled there; the contact shadows
+  // under each piece still set it down)
+  renderer.shadowMap.enabled = !phoneGpu;
   // soft filtered shadows (the variance kind left a dotted halo round the cards)
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.style.display = "block";
