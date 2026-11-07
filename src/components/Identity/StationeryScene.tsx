@@ -161,8 +161,12 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
 
   /* ---------- materials ---------- */
   const foilMat = (mask: THREE.Texture) =>
-    // a bright silver: it has to read on graphite card as well as on white paper
-    new THREE.MeshStandardMaterial({ color: "#eef1f3", emissive: "#7c858a", metalness: 0.9, roughness: 0.28, alphaMap: mask, transparent: true, alphaTest: 0.4 });
+    // a bright silver: it has to read on graphite card as well as on white paper (on phones a pale matte
+    // silver instead: as a mirror metal it took its reflection from an environment their GPUs drew black,
+    // and the round sign showed as a black spot)
+    phoneGpu
+      ? new THREE.MeshStandardMaterial({ color: "#e6e9eb", emissive: "#9aa2a6", metalness: 0, roughness: 0.6, alphaMap: mask, transparent: true, alphaTest: 0.4 })
+      : new THREE.MeshStandardMaterial({ color: "#eef1f3", emissive: "#7c858a", metalness: 0.9, roughness: 0.28, alphaMap: mask, transparent: true, alphaTest: 0.4 });
   const add = <T extends THREE.Object3D>(o: T) => {
     o.traverse((c) => {
       if ((c as THREE.Mesh).isMesh && !c.userData.flat) {
@@ -714,7 +718,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const strap = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: strapTex, roughness: 0.8, side: THREE.DoubleSide }));
     strap.receiveShadow = true;
     // the clip: a steel crimp where the ends meet, and the swivel hook beyond it
-    const steelM = new THREE.MeshStandardMaterial({ color: "#c9ced1", metalness: 1, roughness: 0.3 });
+    const steelM = new THREE.MeshStandardMaterial({ color: "#c9ced1", metalness: phoneGpu ? 0 : 1, roughness: phoneGpu ? 0.5 : 0.3 });
     const crimp = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.03, 0.1), steelM);
     crimp.position.set(L + 0.08, 0.015, 0);
     const hook = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.012, 10, 30), steelM);
@@ -765,7 +769,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       fan.add(pivot);
       fanStrips.push(pivot);
     });
-    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.06, 20), new THREE.MeshStandardMaterial({ color: "#c9ced1", metalness: 1, roughness: 0.3 }));
+    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.06, 20), new THREE.MeshStandardMaterial({ color: "#c9ced1", metalness: phoneGpu ? 0 : 1, roughness: phoneGpu ? 0.5 : 0.3 }));
     pin.position.y = 0.03;
     fan.add(pin);
     const fs = contact(1.7, 0.42);
@@ -1050,7 +1054,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     screenMap.offset.y = 1 - 993 / H;
 
     const phone = new THREE.Group();
-    const body = new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.08, 1.56, 4, 0.11), new THREE.MeshStandardMaterial({ color: "#3a3e43", metalness: 0.85, roughness: 0.32 }));
+    const body = new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.08, 1.56, 4, 0.11), new THREE.MeshStandardMaterial({ color: "#3a3e43", metalness: phoneGpu ? 0.2 : 0.85, roughness: 0.32 }));
     body.position.y = 0.04;
     const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 1.52), new THREE.MeshPhysicalMaterial({ color: "#0b0c0d", roughness: 0.08, clearcoat: 1 }));
     glass.rotation.x = -Math.PI / 2;
