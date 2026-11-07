@@ -169,23 +169,24 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
 
   /* ---------- the table: a slab of smooth cast concrete, from a photograph, laid once across the whole frame ---------- */
   {
-    // the photograph itself, unrepeated, so no seam or pattern ever shows; its pores and clouding as a faint
-    // relief too, so they catch the window's light like the real stone
-    const t = new THREE.Texture(stoneImg);
+    // the photograph's clean lower part (cropped clear of its formwork joint), repeated mirrored so its
+    // tiles meet without a seam, each about 3.5 dm wide: the pores at a table's true scale, and sharp; its
+    // pores and clouding as a faint relief too, so they catch the window's light like the real thing
+    const TILE = 3.5, SIZE = 30;
+    const ratio = (stoneImg.naturalWidth || 2) / (stoneImg.naturalHeight || 1);
+    const wrap = (t: THREE.Texture) => {
+      t.wrapS = t.wrapT = THREE.MirroredRepeatWrapping;
+      t.repeat.set(SIZE / TILE, SIZE / (TILE / ratio));
+      t.anisotropy = aniso;
+      t.needsUpdate = true;
+      return t;
+    };
+    const t = wrap(new THREE.Texture(stoneImg));
     t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = aniso;
-    t.needsUpdate = true;
-    const relief = new THREE.Texture(stoneImg);
-    relief.anisotropy = aniso;
-    relief.needsUpdate = true;
-    const mat = new THREE.MeshStandardMaterial({ map: t, bumpMap: relief, bumpScale: 1.2, roughness: 0.8 });
-    // as wide as the photograph is, in its own proportion, and far larger than the frame
-    const ratio = (stoneImg.naturalWidth || 3) / (stoneImg.naturalHeight || 2);
-    const table = new THREE.Mesh(new THREE.PlaneGeometry(14 * ratio, 14), mat);
+    const relief = wrap(new THREE.Texture(stoneImg));
+    const mat = new THREE.MeshStandardMaterial({ map: t, bumpMap: relief, bumpScale: 0.9, roughness: 0.8 });
+    const table = new THREE.Mesh(new THREE.PlaneGeometry(SIZE, SIZE), mat);
     table.rotation.x = -Math.PI / 2;
-    // drawn back, so the photograph's formwork joint (a line across it, a little above its middle) lies
-    // beyond the top of the frame, behind the pieces
-    table.position.z = -2.8;
     table.receiveShadow = true;
     scene.add(table);
   }
