@@ -668,7 +668,8 @@ export const AboutPage: React.FC = () => {
                 another, so it reads top to bottom before the form */}
             <motion.span
               aria-hidden
-              className="block h-px w-full origin-left bg-platinum/15"
+              // (wide screens only: on a phone it was one line too many over the form's own)
+              className="hidden h-px w-full origin-left bg-platinum/15 sm:block"
               initial={stillPage ? false : { scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true, margin: "-10% 0px" }}
@@ -781,7 +782,7 @@ export const AboutPage: React.FC = () => {
             {/* its hairline drawn in as a thread just after the one beside it */}
             <motion.span
               aria-hidden
-              className="absolute inset-x-0 top-0 h-px origin-left bg-platinum/15"
+              className="absolute inset-x-0 top-0 hidden h-px origin-left bg-platinum/15 sm:block"
               initial={stillPage ? false : { scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true, margin: "-10% 0px" }}
