@@ -1338,10 +1338,12 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // draws back to keep the whole spread in view instead of cutting the pieces at its sides
     const WIDE = 16 / 9, half = Math.atan(Math.tan(THREE.MathUtils.degToRad(15)) * WIDE);
     // (the pieces now sit close together, so a narrow frame need draw back far less to keep them whole)
-    camera.fov = camera.aspect >= WIDE ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.7) / camera.aspect));
-    // a narrow frame also aims a little further back on the table, so the pieces sit lower and no empty
-    // band is left beneath them
-    aimBack = camera.aspect >= WIDE ? 0 : 0.2;
+    // (never closer than the wide frame's 30°: a frame just short of 16:9, as the studio's can be by a pixel,
+    // used to jump in close)
+    camera.fov = camera.aspect >= WIDE ? 30 : Math.max(30, THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.7) / camera.aspect)));
+    // a narrow frame (a phone's) also aims a little further back on the table, so the pieces sit lower and
+    // no empty band is left beneath them
+    aimBack = camera.aspect >= 1.4 ? 0 : 0.2;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
