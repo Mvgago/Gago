@@ -1328,6 +1328,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   const draw = () => (phoneGpu ? renderer.render(scene, camera) : composer.render());
 
   /* ---------- size and loop ---------- */
+  let aimBack = 0;
   const fit = () => {
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
@@ -1336,7 +1337,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // draws back to keep the whole spread in view instead of cutting the pieces at its sides
     const WIDE = 16 / 9, half = Math.atan(Math.tan(THREE.MathUtils.degToRad(15)) * WIDE);
     // (the pieces now sit close together, so a narrow frame need draw back far less to keep them whole)
-    camera.fov = camera.aspect >= WIDE ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.8) / camera.aspect));
+    camera.fov = camera.aspect >= WIDE ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.7) / camera.aspect));
+    // a narrow frame also aims a little further back on the table, so the pieces sit lower and no empty
+    // band is left beneath them
+    aimBack = camera.aspect >= WIDE ? 0 : 0.2;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
@@ -1352,8 +1356,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // close over the four pieces, a little from the front, as a still life is shot; breathing only a little
     const a = Math.sin(t * 0.16) * 0.06, lift = Math.sin(t * 0.11) * 0.08;
     // (a step closer, so the pieces fill the frame and no empty band is left along its foot)
-    camera.position.set(look.x + Math.sin(a) * 3.0, 5.5 + lift, look.z + Math.cos(a) * 3.0);
-    camera.lookAt(look);
+    const aim = look.clone().setZ(look.z - aimBack);
+    camera.position.set(aim.x + Math.sin(a) * 3.0, 5.5 + lift, aim.z + Math.cos(a) * 3.0);
+    camera.lookAt(aim);
   };
   place(0);
   let start = 0;
