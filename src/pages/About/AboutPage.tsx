@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, useLocation } from "react-router-dom";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
@@ -159,6 +160,10 @@ export const AboutPage: React.FC = () => {
   const { t, lang } = useI18n();
   const s = STUDIO[lang];
   const stillPage = !!useReducedMotion();
+  // the availability line at the foot of the opening fades out over the first stretch of scrolling
+  const { scrollY } = useScroll();
+  const availFade = useTransform(scrollY, [0, 240], [1, 0]);
+  const availEvents = useTransform(availFade, (v) => (v < 0.05 ? "none" : "auto"));
   const lenis = useLenis();
   const { hash, key } = useLocation();
   // Arriving from a "let's talk" link on another page: the page comes in already at the contact,
@@ -284,11 +289,21 @@ export const AboutPage: React.FC = () => {
           <span className="text-ink">{t("section.studio")}</span>
           <span className="hidden sm:inline"> — {t("section.studio.caption")}</span>
         </h1>
+      </motion.header>
+
+      {/* Statement and way in */}
+      <div className="relative mb-6 mt-5 grid items-center gap-14 sm:mb-8 sm:mt-8 md:mb-10 md:mt-3 lg:mb-8 lg:mt-5 lg:grid-cols-12 lg:gap-8">
+      {/* open to new projects, held in the screen's lower right corner on arrival (wide screens), under the first
+          discipline's words: it comes in once the headline has settled, and fades away as the page is scrolled.
+          On <body>, so the page's entrance never carries it; in the dark room's tones */}
+      {createPortal(
+      <motion.div className={`fh-dark ${SMALL} pointer-events-auto fixed bottom-10 right-8 z-20 hidden lg:block`} style={{ opacity: availFade, pointerEvents: availEvents }}>
+      <motion.div initial={stillPage ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.4, ease: EASE_HAUS, delay: 1.3 }}>
         {/* the whole block is the way down to the contact form: the line, and under it (wide screens) a
             small status readout in the spirit of early-2000s interfaces, a row of fine cells a light keeps
             sweeping along after a crosshair, each growing a little as it lights, and the studio's initials.
             Pointed at, it all brightens a shade, no underline */}
-        <style>{`@keyframes fh-scan{0%,100%{opacity:.14;transform:scaleY(1)}6%{opacity:.42;transform:scaleY(1.5)}22%{opacity:.14;transform:scaleY(1)}}`}</style>
+        <style>{`@keyframes fh-scan{0%,100%{opacity:.24;transform:scaleY(1)}6%{opacity:.6;transform:scaleY(1.5)}22%{opacity:.24;transform:scaleY(1)}}@keyframes fh-fg{0%,40%,64%,100%{transform:scale(1);opacity:.8;filter:none}47%{transform:scale(1.06);opacity:1;filter:drop-shadow(0 0 3px rgba(244,241,237,0.4))}}`}</style>
         <a
           href="#contact"
           onClick={(e) => {
@@ -298,34 +313,40 @@ export const AboutPage: React.FC = () => {
           }}
           className="group hidden flex-col items-stretch sm:flex"
         >
-          <span className="inline-flex items-center gap-2 text-ink/85 transition-colors duration-500 group-hover:text-ink">
-            <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
-            {t("availability")}
-          </span>
-          <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/40 transition-colors duration-500 group-hover:text-ink/70 lg:flex">
-            <span className="text-[10px] leading-none">+</span>
+          <span className="text-ink/85 transition-colors duration-500 group-hover:text-ink">{t("availability")}</span>
+          <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/60 transition-colors duration-500 group-hover:text-ink/85 lg:flex">
+            {/* the line's dot, moved down to lead the readout */}
+            <span className="h-1 w-1 shrink-0 rounded-full bg-current" />
             {/* the cells share whatever the line leaves, so the readout runs exactly as wide as the line
                 above it, crosshair under the dot and initials ending with the last word */}
-            <span className="flex flex-1 gap-[3px] opacity-80 transition-opacity duration-500 group-hover:opacity-100">
+            <span className="flex flex-1 gap-[3px]">
               {Array.from({ length: 14 }, (_, k) => (
                 <span
                   key={k}
                   className="block h-[3px] flex-1 rounded-[1.5px] bg-ink"
-                  style={{ opacity: 0.14, animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
+                  style={{ opacity: 0.24, animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
                 />
               ))}
             </span>
-            {/* the studio's initials, F and g, drawn from the logo's own strokes, small */}
-            <svg viewBox="249 677 679 401" className="ml-1.5 h-[13px] w-auto text-ink/80 transition-colors duration-500 group-hover:text-ink" fill="none" stroke="currentColor" strokeWidth="35">
+            {/* the studio's initials, F and g, drawn from the logo's own strokes, small; as the sweep reaches them
+                they swell a little and light up, then settle */}
+            <svg
+              viewBox="249 677 679 401"
+              className="ml-1.5 h-[13px] w-auto origin-center text-ink transition-colors duration-500"
+              style={{ opacity: 0.8, animation: stillPage ? undefined : "fh-fg 3.2s linear infinite" }}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="35"
+            >
               <path d="M570 695L300 695Q267 695 267 728L267 976M267 826L570 826" />
               <path transform="translate(-345 0)" d="M1255 960L1015 960Q980 960 980 925L980 807Q980 772 1015 772L1255 772L1255 1025Q1255 1060 1220 1060L965 1060" />
             </svg>
           </span>
         </a>
-      </motion.header>
-
-      {/* Statement and way in */}
-      <div className="mb-6 mt-5 grid items-center gap-14 sm:mb-8 sm:mt-8 md:mb-10 md:mt-3 lg:mb-8 lg:mt-5 lg:grid-cols-12 lg:gap-8">
+      </motion.div>
+      </motion.div>,
+      document.body,
+      )}
       <div className="min-w-0 lg:col-span-12">
       {/* The statement in two voices: the image of the fugue as the page's headline, large, its words rising
           into place one after another as the lema does on the landing; then what it means, smaller and set
