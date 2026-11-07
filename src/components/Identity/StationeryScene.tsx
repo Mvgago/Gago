@@ -306,23 +306,40 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       // (a warm off-white: pure white card burnt out in the window's light)
       x.fillStyle = "#ebe8e2";
       x.fillRect(0, 0, 600, 400);
+      // the cotton card's tooth, under the ink
+      {
+        const img = x.getImageData(0, 0, 600, 400), d = img.data;
+        for (let k = 0; k < d.length; k += 4) {
+          const n = (Math.random() - 0.5) * 9;
+          d[k] += n; d[k + 1] += n; d[k + 2] += n;
+        }
+        x.putImageData(img, 0, 0);
+      }
       x.strokeStyle = "#2b2e32";
       x.fillStyle = "#2b2e32";
-      sign(x, 300, 120, 48, 4);
+      sign(x, 300, 112, 48, 4);
       x.textAlign = "center";
-      x.font = "italic 40px Georgia, serif";
-      x.fillText("Bienvenida.", 300, 260);
-      x.fillStyle = "#6f767a";
-      x.font = `20px ${SANS}`;
-      x.fillText("un recuerdo de la ría para llevar", 300, 310);
+      x.font = "italic 50px Georgia, serif";
+      x.fillText("Bienvenida.", 300, 258);
+      x.fillStyle = "#4f565a";
+      x.font = `22px ${SANS}`;
+      x.fillText("un recuerdo de la ría para llevar", 300, 312);
+      const face = tex(c);
+      const tooth = tex(c, false);
+      const edge = new THREE.MeshStandardMaterial({ color: "#e4e1da", roughness: 0.9 });
       const card = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.008, 0.4), [
-        new THREE.MeshStandardMaterial({ color: PAPER }), new THREE.MeshStandardMaterial({ color: PAPER }),
-        new THREE.MeshStandardMaterial({ map: tex(c), roughness: 0.8 }), new THREE.MeshStandardMaterial({ color: PAPER }),
-        new THREE.MeshStandardMaterial({ color: PAPER }), new THREE.MeshStandardMaterial({ color: PAPER }),
+        edge, edge, new THREE.MeshStandardMaterial({ map: face, bumpMap: tooth, bumpScale: 0.35, roughness: 0.9 }), edge, edge, edge,
       ]);
-      card.position.set(0.12, BH - 0.035, 0.08);
-      card.rotation.set(0.06, -0.18, 0.04);
+      // lying in the tissue, one corner just lifted on a fold
+      card.position.set(0.12, BH - 0.05, 0.08);
+      card.rotation.set(0.05, -0.18, 0.03);
       g.add(card);
+      // its shadow on the tissue, soft and close
+      const cs = contact(0.6, 0.4);
+      (cs.material as THREE.MeshBasicMaterial).opacity = 0.55;
+      cs.position.set(0.14, BH - 0.074, 0.1);
+      cs.rotation.z = 0.18;
+      g.add(cs);
       // three beach pebbles from the ría, worn smooth, resting on the tissue beside the card
       // a beach stone's skin: mottled in soft patches, grained, flecked at two sizes (a quartz vein read as a
       // painted ring once wrapped round the stone), and the same drawing as a faint relief, so it reads as worn stone and not a smooth bead
@@ -345,19 +362,24 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
           d[k] += n; d[k + 1] += n; d[k + 2] += n;
         }
         sx.putImageData(img, 0, 0);
+        // flecks fine and uneven, gathered here and thinner there, as grains in a stone are; no large dots
         sx.fillStyle = speck;
-        for (let k = 0; k < 900; k++) sx.fillRect(Math.random() * S, Math.random() * S, 1 + Math.random() * 2, 1 + Math.random() * 2);
-        for (let k = 0; k < 70; k++) {
-          sx.beginPath();
-          sx.arc(Math.random() * S, Math.random() * S, 1.5 + Math.random() * 3.5, 0, Math.PI * 2);
-          sx.fill();
+        for (let k = 0; k < 1400; k++) {
+          const cx = Math.random() * S, cy = Math.random() * S;
+          sx.globalAlpha = 0.25 + Math.random() * 0.6;
+          sx.fillRect(cx, cy, 0.7 + Math.random() * 1.3, 0.7 + Math.random() * 1.3);
         }
+        sx.globalAlpha = 1;
         const map = tex(sc);
         const bump = tex(sc, false);
-        return new THREE.MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 2.4, roughness: 0.72 });
+        // matte, the way a dry beach stone is, its relief faint (stronger, it pinched at the poles)
+        return new THREE.MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 0.9, roughness: 0.86 });
       };
       const pebble = (r: number, sx: number, sz: number, mat: THREE.Material, x: number, z: number, rot: number, seed: number) => {
-        const geo = new THREE.SphereGeometry(r, 40, 24);
+        const geo = new THREE.SphereGeometry(r, 48, 32);
+        // the sphere turned on its side first, so the points where its skin gathers lie at the stone's
+        // ends, out of sight, instead of on top as a little whorl
+        geo.rotateX(Math.PI / 2);
         const p = geo.attributes.position;
         for (let k = 0; k < p.count; k++) {
           const vx = p.getX(k), vy = p.getY(k), vz = p.getZ(k);
@@ -368,7 +390,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
         geo.computeVertexNormals();
         const m = new THREE.Mesh(geo, mat);
         // pressed a little into the tissue, so it rests rather than hovers
-        m.position.set(x, BH - 0.08 + r * 0.32 * 0.7, z);
+        // pressed into the tissue, sunk a little deeper than before
+        m.position.set(x, BH - 0.08 + r * 0.32 * 0.45, z);
         m.rotation.y = rot;
         g.add(m);
         // its shadow: dark and tight right under it, the way a stone sits on paper
