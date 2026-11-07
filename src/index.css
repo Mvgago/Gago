@@ -80,19 +80,20 @@
     }
   }
 
-  /* Fields the browser fills in itself keep the page's look: no pale blue box, the text in the field's
-     own colour (the browser's fill is held back by a transition it never finishes) */
+  /* Fields the browser fills in itself keep the page's look: no pale blue box, the text in the form's own
+     colour. The browser forces its fill and text colour, so its fill is clipped to the letters (where the
+     text covers it) and the text takes its colour from the field's parent, not the forced one */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
   textarea:-webkit-autofill,
   select:-webkit-autofill {
-    -webkit-text-fill-color: currentColor;
-    caret-color: currentColor;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: inherit;
+    caret-color: inherit;
     transition: background-color 600000s 0s, color 600000s 0s;
-  }
-  input:autofill {
-    background: transparent;
   }
 
   ::selection {
