@@ -53,7 +53,7 @@ export type Studio = {
 export const STUDIO: Record<Lang, Studio> = {
   en: {
     statement:
-      "Different voices, a single piece. As in a musical fugue, we bring identity, web, film and space under one direction, so that each project is told as a single story.",
+      "Different voices, a single piece. As in a musical fugue, we bring identity, web, film and space under one creative direction, so that each project is told as a single story.",
     disciplinesLabel: "disciplines",
     discover: "discover our disciplines",
     disciplines: [
@@ -133,7 +133,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   es: {
     statement:
-      "Distintas voces, una sola pieza. Como en una fuga musical, unimos identidad, web, vídeo y espacio bajo una misma dirección, para que cada proyecto se cuente como una sola historia.",
+      "Distintas voces, una sola pieza. Como en una fuga musical, unimos identidad, web, vídeo y espacio bajo una misma dirección creativa, para que cada proyecto se cuente como una sola historia.",
     disciplinesLabel: "disciplinas",
     discover: "descubre nuestras disciplinas",
     disciplines: [
@@ -213,7 +213,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   fr: {
     statement:
-      "Des voix différentes, une seule pièce. Comme dans une fugue musicale, nous réunissons identité, web, vidéo et espace sous une même direction, pour que chaque projet se raconte comme une seule histoire.",
+      "Des voix différentes, une seule pièce. Comme dans une fugue musicale, nous réunissons identité, web, vidéo et espace sous une même direction créative, pour que chaque projet se raconte comme une seule histoire.",
     disciplinesLabel: "disciplines",
     discover: "découvrez nos disciplines",
     disciplines: [
@@ -293,7 +293,7 @@ export const STUDIO: Record<Lang, Studio> = {
 
   de: {
     statement:
-      "Verschiedene Stimmen, ein einziges Stück. Wie in einer musikalischen Fuge vereinen wir Identität, Web, Film und Raum unter einer Leitung, damit jedes Projekt als eine Geschichte erzählt wird.",
+      "Verschiedene Stimmen, ein einziges Stück. Wie in einer musikalischen Fuge vereinen wir Identität, Web, Film und Raum unter einer kreativen Leitung, damit jedes Projekt als eine Geschichte erzählt wird.",
     disciplinesLabel: "disziplinen",
     discover: "unsere Disziplinen entdecken",
     disciplines: [
