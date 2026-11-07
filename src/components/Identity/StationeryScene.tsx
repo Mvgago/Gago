@@ -1057,11 +1057,29 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const phone = new THREE.Group();
     const body = new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.08, 1.56, 4, 0.11), new THREE.MeshStandardMaterial({ color: "#3a3e43", metalness: phoneGpu ? 0.2 : 0.85, roughness: 0.32 }));
     body.position.y = 0.04;
-    const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 1.52), new THREE.MeshPhysicalMaterial({ color: "#0b0c0d", roughness: 0.08, clearcoat: 1 }));
+    // the glass, the screen and its sheen cut with rounded corners like the body's, so no square corner
+    // pokes out past its round edge (its picture mapped edge to edge, as on a plane)
+    const rounded = (w: number, h: number, r: number) => {
+      const s = new THREE.Shape();
+      s.moveTo(-w / 2 + r, -h / 2);
+      s.lineTo(w / 2 - r, -h / 2);
+      s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+      s.lineTo(w / 2, h / 2 - r);
+      s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
+      s.lineTo(-w / 2 + r, h / 2);
+      s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
+      s.lineTo(-w / 2, -h / 2 + r);
+      s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
+      const geo = new THREE.ShapeGeometry(s, 12);
+      const p = geo.attributes.position, uv = geo.attributes.uv;
+      for (let k = 0; k < p.count; k++) uv.setXY(k, p.getX(k) / w + 0.5, p.getY(k) / h + 0.5);
+      return geo;
+    };
+    const glass = new THREE.Mesh(rounded(0.72, 1.52, 0.09), new THREE.MeshPhysicalMaterial({ color: "#0b0c0d", roughness: 0.08, clearcoat: 1 }));
     glass.rotation.x = -Math.PI / 2;
     glass.position.y = 0.0805;
     const screen = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.69, 1.49),
+      rounded(0.69, 1.49, 0.075),
       new THREE.MeshStandardMaterial({ color: "#000", emissive: "#ffffff", emissiveMap: screenMap, emissiveIntensity: 0.95, roughness: 0.12, metalness: 0 }),
     );
     screen.rotation.x = -Math.PI / 2;
@@ -1078,7 +1096,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       sx.fillRect(0, 0, 256, 512);
       return tex(sc);
     })();
-    const gloss = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 1.52), new THREE.MeshBasicMaterial({ map: sheen, transparent: true, depthWrite: false }));
+    const gloss = new THREE.Mesh(rounded(0.72, 1.52, 0.09), new THREE.MeshBasicMaterial({ map: sheen, transparent: true, depthWrite: false }));
     gloss.rotation.x = -Math.PI / 2;
     gloss.position.y = 0.0825;
     gloss.userData.flat = true;
