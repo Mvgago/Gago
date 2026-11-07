@@ -908,8 +908,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // the first view: the beach, full bleed, the header and the line over it
     cover(photos.beach, 0, 0, W, 900);
     const shade = x.createLinearGradient(0, 380, 0, 900);
+    // (deeper under the words, so they read clearly over the sand and the sea)
     shade.addColorStop(0, "rgba(20,30,34,0)");
-    shade.addColorStop(1, "rgba(20,30,34,0.62)");
+    shade.addColorStop(0.45, "rgba(20,30,34,0.45)");
+    shade.addColorStop(1, "rgba(20,30,34,0.82)");
     x.fillStyle = shade;
     x.fillRect(0, 0, W, 900);
     const top = x.createLinearGradient(0, 0, 0, 160);
@@ -931,12 +933,16 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     x.fillRect(398, 104, 28, 2);
     // the line and the button
     x.fillStyle = "#ffffff";
-    x.font = "44px Georgia, serif";
-    x.fillText("Volver", 34, 710);
-    x.fillText("á ourela.", 34, 762);
-    x.font = `16px ${SANS2}`;
-    x.fillStyle = "rgba(255,255,255,0.85)";
-    x.fillText("Seis habitacións fronte á ría de Cedeira", 36, 800);
+    x.shadowColor = "rgba(0,0,0,0.35)";
+    x.shadowBlur = 8;
+    x.font = "52px Georgia, serif";
+    x.fillText("Volver", 34, 700);
+    x.fillText("á ourela.", 34, 758);
+    x.font = `500 21px ${SANS2}`;
+    x.fillStyle = "#ffffff";
+    x.fillText("Seis habitacións fronte á ría", 36, 800);
+    x.shadowColor = "transparent";
+    x.shadowBlur = 0;
     x.beginPath();
     x.roundRect(34, 830, 180, 48, 24);
     x.fillStyle = "#f6f5f2";

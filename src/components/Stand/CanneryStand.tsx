@@ -293,7 +293,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     tile: new THREE.MeshPhysicalMaterial({ map: tiles, roughness: 0.15, clearcoat: 0.8, clearcoatRoughness: 0.08 }),
     tin: new THREE.MeshStandardMaterial({ color: "#d4d8da", roughness: 0.28, metalness: 0.9 }),
     ledWarm: new THREE.MeshStandardMaterial({ color: "#000", emissive: "#ffe2bd", emissiveIntensity: 1.1 }),
-    opal: new THREE.MeshStandardMaterial({ color: "#fff6ea", emissive: "#ffdcae", emissiveIntensity: 1.6, roughness: 0.4 }),
+    // the opal globes lit softly, a warm glass rather than a glare
+    opal: new THREE.MeshStandardMaterial({ color: "#fff6ea", emissive: "#ffdcae", emissiveIntensity: 0.75, roughness: 0.4 }),
     chrome: new THREE.MeshStandardMaterial({ color: "#c9ced1", roughness: 0.18, metalness: 0.95 }),
     glass: new THREE.MeshPhysicalMaterial({ color: "#eef3f1", roughness: 0.05, transmission: 0.9, thickness: 0.02, ior: 1.5, transparent: true }),
     bottle: new THREE.MeshPhysicalMaterial({ color: "#3d5b3a", roughness: 0.08, transmission: 0.55, thickness: 0.05, transparent: true }),
