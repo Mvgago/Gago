@@ -221,10 +221,12 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
         [h.position.x, h.position.y, h.position.z, h.rotation.y, h.rotation.x] = cur;
       });
 
-      // The sculpture turns with the cursor, and sways slowly at rest.
-      const sway = reduced || isDiving ? 0 : Math.sin(t * 0.35) * (touch ? 0.12 : 0.07);
+      // The sculpture turns with the cursor, and at rest keeps a slow, visible life of its own: a sway from
+      // side to side and, out of step with it, a slight nod, so it never looks set down and still.
+      const sway = reduced || isDiving ? 0 : Math.sin(t * 0.42) * (touch ? 0.14 : 0.13);
+      const nod = reduced || isDiving ? 0 : Math.sin(t * 0.31 + 1.2) * 0.035;
       const turnY = isDiving ? 0 : nx.get() * 0.32 + sway;
-      const turnX = isDiving ? 0 : ny.get() * 0.16;
+      const turnX = isDiving ? 0 : ny.get() * 0.16 + nod;
       group.rotation.y = ease(group.rotation.y, turnY, 3);
       group.rotation.x = ease(group.rotation.x, turnX, 3);
 
