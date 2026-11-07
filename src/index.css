@@ -80,6 +80,21 @@
     }
   }
 
+  /* Fields the browser fills in itself keep the page's look: no pale blue box, the text in the field's
+     own colour (the browser's fill is held back by a transition it never finishes) */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: currentColor;
+    caret-color: currentColor;
+    transition: background-color 600000s 0s, color 600000s 0s;
+  }
+  input:autofill {
+    background: transparent;
+  }
+
   ::selection {
     background: var(--color-ink);
     color: var(--color-platinum);
