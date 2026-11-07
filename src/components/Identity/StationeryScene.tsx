@@ -222,23 +222,24 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   {
     const linen = (() => {
       const S = 512, [c, x] = canvas(S, S);
-      x.fillStyle = "#3f6466";
+      // a deep, fresh sea green (paler, under the light threads, it read as faded, old cloth)
+      x.fillStyle = "#2c6264";
       x.fillRect(0, 0, S, S);
       // the weave, plain and visible: warp and weft threads of uneven weight crossing every 4 px, each a
-      // shade off, so it reads as cloth over board at a glance
+      // shade off, the light ones kept faint so the colour holds
       for (let k = 0; k < S; k += 4) {
-        x.fillStyle = `rgba(255,255,255,${0.07 + Math.random() * 0.09})`;
+        x.fillStyle = `rgba(255,255,255,${0.03 + Math.random() * 0.04})`;
         x.fillRect(0, k, S, 2);
         x.fillStyle = `rgba(0,0,0,${0.08 + Math.random() * 0.1})`;
         x.fillRect(0, k + 2, S, 1);
         x.fillStyle = `rgba(0,0,0,${0.06 + Math.random() * 0.08})`;
         x.fillRect(k, 0, 2, S);
-        x.fillStyle = `rgba(255,255,255,${0.04 + Math.random() * 0.06})`;
+        x.fillStyle = `rgba(255,255,255,${0.02 + Math.random() * 0.03})`;
         x.fillRect(k + 2, 0, 1, S);
       }
-      // slubs: the thicker runs in a linen thread
-      for (let k = 0; k < 320; k++) {
-        x.fillStyle = `rgba(255,255,255,${0.06 + Math.random() * 0.1})`;
+      // slubs: the thicker runs in a linen thread, a few and faint
+      for (let k = 0; k < 160; k++) {
+        x.fillStyle = `rgba(255,255,255,${0.03 + Math.random() * 0.05})`;
         x.fillRect(Math.random() * S, Math.floor(Math.random() * (S / 4)) * 4, 6 + Math.random() * 26, 2);
       }
       const t = tex(c);
