@@ -103,10 +103,10 @@ const COPIED: Record<string, string> = { es: "copiado", en: "copied", fr: "copi�
 
 // the contact's answer, turning: talking first, then the ways of making something together
 const TOGETHER: Record<string, string[]> = {
-  es: ["Hablemos.", "Creemos.", "Imaginemos.", "Diseñemos.", "Contémoslo.", "Construyámoslo.", "Hagámoslo."],
-  en: ["Let's talk.", "Let's create.", "Let's imagine.", "Let's design.", "Let's tell it.", "Let's build it.", "Let's make it."],
-  fr: ["Parlons-en.", "Créons.", "Imaginons.", "Dessinons.", "Racontons-le.", "Construisons-le.", "Faisons-le."],
-  de: ["Sprechen wir darüber.", "Gestalten wir.", "Stellen wir es uns vor.", "Entwerfen wir.", "Erzählen wir es.", "Bauen wir es.", "Machen wir es."],
+  es: ["Hablemos.", "Creemos.", "Imaginemos.", "Diseñemos.", "Contémoslo.", "Hagámoslo."],
+  en: ["Let's talk.", "Let's create.", "Let's imagine.", "Let's design.", "Let's tell it.", "Let's make it."],
+  fr: ["Parlons-en.", "Créons.", "Imaginons.", "Dessinons.", "Racontons-le.", "Faisons-le."],
+  de: ["Sprechen wir darüber.", "Gestalten wir.", "Stellen wir es uns vor.", "Entwerfen wir.", "Erzählen wir es.", "Machen wir es."],
 };
 
 /**
@@ -126,7 +126,7 @@ const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, sti
   }, []);
   useEffect(() => {
     if (still || !shown) return;
-    const id = window.setInterval(() => setI((n) => (n + 1) % words.length), 2600);
+    const id = window.setInterval(() => setI((n) => (n + 1) % words.length), 3800);
     return () => window.clearInterval(id);
   }, [still, shown, words.length]);
   return (
@@ -135,10 +135,9 @@ const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, sti
         <motion.span
           key={words[i]}
           className="col-start-1 row-start-1 whitespace-nowrap"
-          initial={{ opacity: 0, y: "0.35em", filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: "-0.35em", filter: "blur(6px)" }}
-          transition={{ duration: 0.7, ease: EASE_HAUS }}
+          initial={{ opacity: 0, y: "0.15em", filter: "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 1.4, ease: EASE_HAUS, delay: 0.25 } }}
+          exit={{ opacity: 0, y: "-0.12em", filter: "blur(8px)", transition: { duration: 0.9, ease: [0.4, 0, 0.6, 1] } }}
         >
           {words[i]}
         </motion.span>
