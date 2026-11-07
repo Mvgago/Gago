@@ -460,21 +460,8 @@ export const AboutPage: React.FC = () => {
         </div>
         <div className="col-span-12 mt-16 flex flex-col justify-end lg:col-span-5 lg:mt-0 xl:col-span-4">
           <RevealWords as="p" text={s.closing} className={`${TITLE} text-ink`} />
-          {/* the site's thread of light, drawn under the line as its words settle and fading out to the right */}
-          <motion.span
-            aria-hidden
-            className="mt-6 block h-px w-full max-w-[22rem] origin-left"
-            style={{
-              background: "linear-gradient(90deg, rgba(244, 241, 237, 0.85) 0%, rgba(244, 241, 237, 0.4) 55%, rgba(244, 241, 237, 0) 100%)",
-              boxShadow: "0 0 10px rgba(244, 241, 237, 0.25)",
-            }}
-            initial={stillPage ? false : { scaleX: 0, opacity: 0 }}
-            whileInView={{ scaleX: 1, opacity: 1 }}
-            viewport={{ once: true, margin: "-15% 0px" }}
-            transition={{ duration: 1.8, ease: EASE_HAUS, delay: 0.5 }}
-          />
           {/* who you would be talking to: no face, just how it works */}
-          <RevealFlow text={s.closingNote} className={`${BODY} mt-6 max-w-[36ch] text-graphite`} delay={0.6} />
+          <RevealFlow text={s.closingNote} className={`${BODY} mt-5 max-w-[36ch] text-graphite`} delay={0.35} />
           <a
             href="#contact"
             onClick={(e) => {
