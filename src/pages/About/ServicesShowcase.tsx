@@ -420,7 +420,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               <div>
               {/* (as tall as the screen allows beside the text, and never much taller than its own landscape
                   shape, so a film is not cut away at the sides; the text and services follow straight on) */}
-              <div className="relative -mx-4 mb-4 h-[min(330px,85vw)] bg-[var(--fh-sheet,#efeef0)] sm:-mx-6 md:-mx-8 lg:hidden">
+              {/* (a touch wider than tall, rather than near square) */}
+              <div className="relative -mx-4 mb-4 h-[min(300px,76vw)] bg-[var(--fh-sheet,#efeef0)] sm:-mx-6 md:-mx-8 lg:hidden">
                 {/* (no note over the film on phones: the picture alone) */}
                 {/* (set over the whole box: a height in % inside a flexible box resolves to nothing) */}
                 {EX[i] && (
