@@ -1089,11 +1089,11 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       (body as THREE.Mesh).geometry = bodyGeo;
       body.position.y = 0;
     }
-    const glass = new THREE.Mesh(rounded(0.72, 1.52, 0.09), new THREE.MeshPhysicalMaterial({ color: "#0b0c0d", roughness: 0.08, clearcoat: 1 }));
+    const glass = new THREE.Mesh(rounded(0.755, 1.555, 0.108), new THREE.MeshPhysicalMaterial({ color: "#0b0c0d", roughness: 0.08, clearcoat: 1 }));
     glass.rotation.x = -Math.PI / 2;
     glass.position.y = 0.0805;
     const screen = new THREE.Mesh(
-      rounded(0.69, 1.49, 0.075),
+      rounded(0.738, 1.538, 0.1),
       new THREE.MeshStandardMaterial({ color: "#000", emissive: "#ffffff", emissiveMap: screenMap, emissiveIntensity: 0.95, roughness: 0.12, metalness: 0 }),
     );
     screen.rotation.x = -Math.PI / 2;
@@ -1110,7 +1110,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       sx.fillRect(0, 0, 256, 512);
       return tex(sc);
     })();
-    const gloss = new THREE.Mesh(rounded(0.72, 1.52, 0.09), new THREE.MeshBasicMaterial({ map: sheen, transparent: true, depthWrite: false }));
+    const gloss = new THREE.Mesh(rounded(0.755, 1.555, 0.108), new THREE.MeshBasicMaterial({ map: sheen, transparent: true, depthWrite: false }));
     gloss.rotation.x = -Math.PI / 2;
     gloss.position.y = 0.0825;
     gloss.userData.flat = true;
