@@ -328,18 +328,22 @@ function headphones() {
     const MARK = new THREE.MeshStandardMaterial({ map: bandMark(), transparent: true, metalness: 0.5, roughness: 0.45, polygonOffset: true, polygonOffsetFactor: -2 });
     const W = 0.58, Hm = W * (210 / 620);
     const py = NECK + 0.4, t = Math.asin((py - BASE) / H);
-    const px = SPAN * Math.cos(t);
-    const nor = new THREE.Vector3(H * Math.cos(t), SPAN * Math.sin(t), 0).normalize();
+    const speed = Math.hypot(SPAN * Math.sin(t), H * Math.cos(t)); // the arc's length per unit of its angle
     for (const side of [-1, 1]) {
-      const m = new THREE.Mesh(new THREE.PlaneGeometry(W, Hm), MARK);
-      // laid along the band, centred between its edges: the letters run with the band's curve, reading
+      // laid along the band, centred between its edges, and bent with it: every point of the strip sits on
+      // the band's own arc, so the letters follow its curve instead of touching it at one point; they read
       // from the top down, their tops towards the back on both sides
-      const za = new THREE.Vector3(side * nor.x, nor.y, 0);
-      const ya = new THREE.Vector3(0, 0, -1);
-      const xa = new THREE.Vector3().crossVectors(ya, za).normalize();
-      m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(xa, ya, za));
-      m.position.set(side * px, py, 0).addScaledVector(za, BAND + 0.004);
-      g.add(m);
+      const geo = new THREE.PlaneGeometry(W, Hm, 40, 1);
+      const p = geo.attributes.position as THREE.BufferAttribute;
+      for (let k = 0; k < p.count; k++) {
+        const u = p.getX(k), v = p.getY(k);
+        const tu = t - (side * u) / speed;
+        const n = new THREE.Vector3(side * H * Math.cos(tu), SPAN * Math.sin(tu), 0).normalize();
+        const at = new THREE.Vector3(side * SPAN * Math.cos(tu), BASE + H * Math.sin(tu), -v).addScaledVector(n, BAND + 0.004);
+        p.setXYZ(k, at.x, at.y, at.z);
+      }
+      geo.computeVertexNormals();
+      g.add(new THREE.Mesh(geo, MARK));
     }
   }
 
