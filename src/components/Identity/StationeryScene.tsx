@@ -34,7 +34,7 @@ const LETTERS: Record<string, string> = {
 const ADV = [0, 150, 300, 450, 592, 704];
 const WORD_W = 804;
 // where the room key comes to rest, in front of the box and the phone
-const KEY_AT = [0.5, 0.92] as const;
+const KEY_AT = [0.72, 1.0] as const;
 
 async function build(host: HTMLDivElement, onReady: () => void, paused: { current: boolean } = { current: false }): Promise<() => void> {
   // stills from the studio's own film, printed in the brochure and shown on the phone's site
@@ -270,10 +270,32 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       const p = tg.attributes.position;
       for (let k = 0; k < p.count; k++) {
         const px = p.getX(k), py = p.getY(k);
-        p.setZ(k, 0.025 * Math.sin(px * 9 + Math.sin(py * 5) * 1.5) + 0.012 * Math.sin(py * 17 + px * 3));
+        p.setZ(k, 0.032 * Math.sin(px * 9 + Math.sin(py * 5) * 1.5) + 0.014 * Math.sin(py * 17 + px * 3));
       }
       tg.computeVertexNormals();
-      const tissue = new THREE.Mesh(tg, new THREE.MeshStandardMaterial({ color: "#f4f3ef", roughness: 0.9, side: THREE.DoubleSide }));
+      // the tissue's own fibre: fine, pale, crossing every way, and the same as a faint relief so its
+      // folds catch the light as real paper does
+      const fibre = (() => {
+        const S = 512, [c, x] = canvas(S, S);
+        x.fillStyle = "#f4f3ef";
+        x.fillRect(0, 0, S, S);
+        for (let k = 0; k < 2600; k++) {
+          const a = Math.random() * Math.PI, l = 4 + Math.random() * 18, cx = Math.random() * S, cy = Math.random() * S;
+          x.strokeStyle = Math.random() < 0.5 ? `rgba(255,255,255,${0.3 + Math.random() * 0.4})` : `rgba(150,146,138,${0.08 + Math.random() * 0.12})`;
+          x.lineWidth = 0.6 + Math.random() * 0.8;
+          x.beginPath();
+          x.moveTo(cx, cy);
+          x.lineTo(cx + Math.cos(a) * l, cy + Math.sin(a) * l);
+          x.stroke();
+        }
+        const t = tex(c);
+        t.wrapS = t.wrapT = THREE.RepeatWrapping;
+        t.repeat.set(2, 2);
+        return t;
+      })();
+      const fibreBump = fibre.clone();
+      fibreBump.colorSpace = THREE.NoColorSpace;
+      const tissue = new THREE.Mesh(tg, new THREE.MeshStandardMaterial({ map: fibre, bumpMap: fibreBump, bumpScale: 0.8, roughness: 0.9, side: THREE.DoubleSide }));
       tissue.rotation.x = -Math.PI / 2;
       tissue.position.y = BH - 0.08;
       g.add(tissue);
@@ -364,7 +386,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       pebble(0.1, 1.3, 1.0, stone([86, 92, 94], "rgba(230,230,225,0.3)"), -0.47, 0.22, 1.1, 4.1);
     }
     g.add(contact(BW, BD));
-    // brought forward, the nearest piece: the most beautiful of them, it leads
+    // brought forward, the nearest piece and a little larger: the most beautiful of them, it leads
+    g.scale.setScalar(1.18);
     g.position.set(-0.72, 0, 0.42);
     g.rotation.y = -0.08;
     add(g);
@@ -392,7 +415,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     f.position.y = LH + 0.002;
     lid.add(lidTop, f, contact(LW, LD));
     // set down just behind the box, turned a little, its sign in silver showing
-    lid.position.set(-1.42, 0, -0.72);
+    lid.scale.setScalar(1.18);
+    lid.position.set(-1.46, 0, -0.8);
     lid.rotation.y = 0.2;
     add(lid);
   }
@@ -1190,7 +1214,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   scene.add(new THREE.HemisphereLight("#f1f0ee", "#7f7c78", 0.42));
   // late, warm light through a window, low from the left
   // (only just warm: the grey concrete should stay grey, not turn sandy)
-  const sun = new THREE.SpotLight("#fff7ef", 470, 60, Math.PI / 8, 0.45, 1.2);
+  // (held below burning: the near corner of the pool used to wash out to white)
+  const sun = new THREE.SpotLight("#fff7ef", 370, 60, Math.PI / 8, 0.65, 1.2);
   sun.position.set(-13, 15, -5);
   sun.target.position.set(0.3, 0, 0.2);
   sun.castShadow = true;
