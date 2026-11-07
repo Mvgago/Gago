@@ -126,7 +126,7 @@ const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, sti
   }, []);
   useEffect(() => {
     if (still || !shown) return;
-    const id = window.setInterval(() => setI((n) => (n + 1) % words.length), 3800);
+    const id = window.setInterval(() => setI((n) => (n + 1) % words.length), 5200);
     return () => window.clearInterval(id);
   }, [still, shown, words.length]);
   return (
@@ -135,9 +135,9 @@ const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, sti
         <motion.span
           key={words[i]}
           className="col-start-1 row-start-1 whitespace-nowrap"
-          initial={{ opacity: 0, y: "0.15em", filter: "blur(8px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 1.4, ease: EASE_HAUS, delay: 0.25 } }}
-          exit={{ opacity: 0, y: "-0.12em", filter: "blur(8px)", transition: { duration: 0.9, ease: [0.4, 0, 0.6, 1] } }}
+          initial={{ opacity: 0, y: "0.08em", filter: "blur(10px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 2, ease: [0.25, 0.1, 0.25, 1], delay: 0.4 } }}
+          exit={{ opacity: 0, y: "-0.06em", filter: "blur(10px)", transition: { duration: 1.3, ease: [0.4, 0, 0.6, 1] } }}
         >
           {words[i]}
         </motion.span>
