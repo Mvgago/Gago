@@ -739,7 +739,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     fs.position.set(0.8, 0.0015, -0.08);
     fan.add(fs);
     // up top, to the right of the vase, above the brochure; it fans open away from it
-    fan.position.set(-0.2, 0.008, -0.98);
+    // (a little nearer the middle, so its fanned tips stay inside the frame)
+    fan.position.set(-0.1, 0.008, -0.78);
     fan.rotation.y = 0.05;
     add(fan);
   }
@@ -1267,10 +1268,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     x.fillRect(0, 0, 512, 512);
     // a tall window of two panes, its frame a soft, pale shade far from the glass, as in a product
     // photograph (fine dark mullions all over read as grey bars laid across the table)
-    x.fillStyle = "#b4b4b4";
-    x.filter = "blur(14px)";
-    x.fillRect(250, -20, 18, 552);
-    x.fillRect(-20, 300, 552, 14);
+    // (no window frame across it any more: its bars read as stripes laid over the table)
     // and the leaves of a plant by the window, soft and out of focus, crossing one corner
     x.filter = "blur(9px)";
     x.fillStyle = "#5e5e5e";
@@ -1319,7 +1317,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // the same width of table in every frame: framed for a wide one (30° at 16:9), a narrower frame (a phone)
     // draws back to keep the whole spread in view instead of cutting the pieces at its sides
     const WIDE = 16 / 9, half = Math.atan(Math.tan(THREE.MathUtils.degToRad(15)) * WIDE);
-    camera.fov = camera.aspect >= WIDE ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.93) / camera.aspect));
+    // (the pieces now sit close together, so a narrow frame need draw back far less to keep them whole)
+    camera.fov = camera.aspect >= WIDE ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.8) / camera.aspect));
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
