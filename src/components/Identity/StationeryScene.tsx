@@ -58,7 +58,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.matchMedia("(max-width: 767px)").matches ? 1.75 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.52;
+  // (a touch under: the white tissue and card in the window's light used to burn out)
+  renderer.toneMappingExposure = 0.46;
   renderer.shadowMap.enabled = true;
   // soft filtered shadows (the variance kind left a dotted halo round the cards)
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -277,7 +278,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       // folds catch the light as real paper does
       const fibre = (() => {
         const S = 512, [c, x] = canvas(S, S);
-        x.fillStyle = "#f4f3ef";
+        // an off-white, so it keeps its folds in full light instead of burning out
+        x.fillStyle = "#e6e3dc";
         x.fillRect(0, 0, S, S);
         for (let k = 0; k < 2600; k++) {
           const a = Math.random() * Math.PI, l = 4 + Math.random() * 18, cx = Math.random() * S, cy = Math.random() * S;
@@ -295,12 +297,13 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       })();
       const fibreBump = fibre.clone();
       fibreBump.colorSpace = THREE.NoColorSpace;
-      const tissue = new THREE.Mesh(tg, new THREE.MeshStandardMaterial({ map: fibre, bumpMap: fibreBump, bumpScale: 0.8, roughness: 0.9, side: THREE.DoubleSide }));
+      const tissue = new THREE.Mesh(tg, new THREE.MeshStandardMaterial({ map: fibre, bumpMap: fibreBump, bumpScale: 0.8, roughness: 1, side: THREE.DoubleSide }));
       tissue.rotation.x = -Math.PI / 2;
       tissue.position.y = BH - 0.08;
       g.add(tissue);
       const [c, x] = canvas(600, 400);
-      x.fillStyle = PAPER;
+      // (a warm off-white: pure white card burnt out in the window's light)
+      x.fillStyle = "#ebe8e2";
       x.fillRect(0, 0, 600, 400);
       x.strokeStyle = "#2b2e32";
       x.fillStyle = "#2b2e32";
