@@ -164,9 +164,11 @@ export const Monolith: React.FC<Props> = ({ tone = "warm", tilt = true, reveal =
           </defs>
 
           <g fill="none" strokeLinecap="butt" strokeLinejoin="miter" shapeRendering="geometricPrecision">
-            {glyphs(`url(#${id("rim")})`, FACE + RIM * 2)}
-            {glyphs(`url(#${id("matte")})`, FACE)}
-            <motion.g {...fadeIn(1.6)}>{glyphs(`url(#${id("sheen")})`, FACE + RIM * 2, false)}</motion.g>
+            {/* the edge held inside the bar's weight, so the whole stroke is the 3D logo's own 35 and the
+                hand-over from this mark to the 3D one never shows a change of weight */}
+            {glyphs(`url(#${id("rim")})`, FACE)}
+            {glyphs(`url(#${id("matte")})`, FACE - RIM * 2)}
+            <motion.g {...fadeIn(1.6)}>{glyphs(`url(#${id("sheen")})`, FACE, false)}</motion.g>
           </g>
 
           {/* "haus" beneath the u, with a finer edge in proportion to its size */}
