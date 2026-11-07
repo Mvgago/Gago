@@ -1341,7 +1341,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // (never closer than the wide frame's 30°: a frame just short of 16:9, as the studio's can be by a pixel,
     // used to jump in close)
     // (wide and nearly wide frames all at 30°; only a phone's narrow one gets its own, closer view)
-    camera.fov = camera.aspect >= 1.4 ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.6) / camera.aspect));
+    camera.fov = camera.aspect >= 1.4 ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.7) / camera.aspect));
     // a narrow frame (a phone's) also aims a little further back on the table, so the pieces sit lower and
     // no empty band is left beneath them
     aimBack = camera.aspect >= 1.4 ? 0.1 : 0.2;
