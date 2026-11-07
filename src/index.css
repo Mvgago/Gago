@@ -82,7 +82,8 @@
 
   /* Fields the browser fills in itself keep the page's look: no pale blue box, the text in the form's own
      colour. The browser forces its fill and text colour, so its fill is clipped to the letters (where the
-     text covers it) and the text takes its colour from the field's parent, not the forced one */
+     text covers it) and the text is given the room's ink outright (pale in the dark rooms, where the
+     ink tokens turn light), since anything inherited still resolves to the browser's forced dark */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
@@ -91,8 +92,8 @@
   select:-webkit-autofill {
     -webkit-background-clip: text;
     background-clip: text;
-    -webkit-text-fill-color: inherit;
-    caret-color: inherit;
+    -webkit-text-fill-color: var(--color-ink);
+    caret-color: var(--color-ink);
     transition: background-color 600000s 0s, color 600000s 0s;
   }
 
