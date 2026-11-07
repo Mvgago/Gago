@@ -103,10 +103,10 @@ const COPIED: Record<string, string> = { es: "copiado", en: "copied", fr: "copi�
 
 // the contact's answer, turning: talking first, then the ways of making something together
 const TOGETHER: Record<string, string[]> = {
-  es: ["Hablemos.", "Creemos.", "Diseñemos.", "Hagámoslo."],
-  en: ["Let's talk.", "Let's create.", "Let's design.", "Let's make it."],
-  fr: ["Parlons-en.", "Créons.", "Imaginons.", "Faisons-le."],
-  de: ["Sprechen wir darüber.", "Gestalten wir.", "Entwerfen wir.", "Machen wir es."],
+  es: ["Hablemos.", "Creemos.", "Imaginemos.", "Diseñemos.", "Contémoslo.", "Construyámoslo.", "Hagámoslo."],
+  en: ["Let's talk.", "Let's create.", "Let's imagine.", "Let's design.", "Let's tell it.", "Let's build it.", "Let's make it."],
+  fr: ["Parlons-en.", "Créons.", "Imaginons.", "Dessinons.", "Racontons-le.", "Construisons-le.", "Faisons-le."],
+  de: ["Sprechen wir darüber.", "Gestalten wir.", "Stellen wir es uns vor.", "Entwerfen wir.", "Erzählen wir es.", "Bauen wir es.", "Machen wir es."],
 };
 
 /**
