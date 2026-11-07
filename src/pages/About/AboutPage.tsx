@@ -460,8 +460,21 @@ export const AboutPage: React.FC = () => {
         </div>
         <div className="col-span-12 mt-16 flex flex-col justify-end lg:col-span-5 lg:mt-0 xl:col-span-4">
           <RevealWords as="p" text={s.closing} className={`${TITLE} text-ink`} />
+          {/* the site's thread of light, drawn under the line as its words settle and fading out to the right */}
+          <motion.span
+            aria-hidden
+            className="mt-6 block h-px w-full max-w-[22rem] origin-left"
+            style={{
+              background: "linear-gradient(90deg, rgba(244, 241, 237, 0.85) 0%, rgba(244, 241, 237, 0.4) 55%, rgba(244, 241, 237, 0) 100%)",
+              boxShadow: "0 0 10px rgba(244, 241, 237, 0.25)",
+            }}
+            initial={stillPage ? false : { scaleX: 0, opacity: 0 }}
+            whileInView={{ scaleX: 1, opacity: 1 }}
+            viewport={{ once: true, margin: "-15% 0px" }}
+            transition={{ duration: 1.8, ease: EASE_HAUS, delay: 0.5 }}
+          />
           {/* who you would be talking to: no face, just how it works */}
-          <RevealFlow text={s.closingNote} className={`${BODY} mt-5 max-w-[36ch] text-graphite`} delay={0.35} />
+          <RevealFlow text={s.closingNote} className={`${BODY} mt-6 max-w-[36ch] text-graphite`} delay={0.6} />
           <a
             href="#contact"
             onClick={(e) => {
@@ -472,7 +485,28 @@ export const AboutPage: React.FC = () => {
             className={`${ACTION} group relative mt-8 self-start text-ink`}
           >
             {s.cta}
-            <span className="absolute -bottom-1.5 left-0 h-px w-full bg-ink/30" />
+            {/* its line drawn in last, once the words above have come; then now and again a light runs along
+                it, a quiet invitation; pointed at, the line fills */}
+            <style>{`@keyframes fh-run{0%,62%{transform:translateX(-120%)}100%{transform:translateX(320%)}}`}</style>
+            <motion.span
+              aria-hidden
+              className="absolute -bottom-1.5 left-0 h-px w-full origin-left overflow-hidden bg-ink/30"
+              initial={stillPage ? false : { scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true, margin: "-10% 0px" }}
+              transition={{ duration: 1.2, ease: EASE_HAUS, delay: 1.3 }}
+            >
+              {!stillPage && (
+                <span
+                  className="absolute inset-y-0 left-0 w-1/3"
+                  style={{
+                    background: "linear-gradient(90deg, rgba(244,241,237,0), rgba(255,255,255,0.95), rgba(244,241,237,0))",
+                    boxShadow: "0 0 8px rgba(244,241,237,0.6)",
+                    animation: "fh-run 5s cubic-bezier(.65,0,.35,1) 3s infinite",
+                  }}
+                />
+              )}
+            </motion.span>
             <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
           </a>
         </div>
