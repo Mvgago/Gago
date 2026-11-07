@@ -415,7 +415,7 @@ export const AboutPage: React.FC = () => {
       {/* The work, quietly: three small cases on the left; on the right, the invitation to talk */}
       <Section>
         <div className="col-span-12 lg:col-span-7 xl:col-span-8">
-          <div className="mb-6 flex justify-end">
+          <div className="mb-3 flex justify-end">
             <Link to="/projects" className={`${SMALL} text-graphite transition-colors duration-500 hover:text-ink`}>
               {s.workAll}
             </Link>
