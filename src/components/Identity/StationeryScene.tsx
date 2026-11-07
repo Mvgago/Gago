@@ -272,7 +272,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       const p = tg.attributes.position;
       for (let k = 0; k < p.count; k++) {
         const px = p.getX(k), py = p.getY(k);
-        p.setZ(k, 0.032 * Math.sin(px * 9 + Math.sin(py * 5) * 1.5) + 0.014 * Math.sin(py * 17 + px * 3));
+        // soft, low folds, so what lies on the tissue rests on it instead of being cut by a ridge
+        p.setZ(k, 0.014 * Math.sin(px * 9 + Math.sin(py * 5) * 1.5) + 0.006 * Math.sin(py * 17 + px * 3));
       }
       tg.computeVertexNormals();
       // the tissue's own fibre: fine, pale, crossing every way, and the same as a faint relief so its
@@ -332,15 +333,11 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       ]);
       // resting on the tissue, clear of its highest folds (sunk in, they cut through its corner), tipped a
       // little as it lies across one
-      card.position.set(0.12, BH - 0.08 + 0.05, 0.08);
-      card.rotation.set(0.04, -0.18, 0.025);
+      // (its shade on the tissue left to the window's shadow and the occlusion, which follow the folds; a
+      // flat shadow laid in among them showed in patches)
+      card.position.set(0.12, BH - 0.08 + 0.026, 0.08);
+      card.rotation.set(0.02, -0.18, 0.012);
       g.add(card);
-      // its shadow on the tissue, soft and close
-      const cs = contact(0.6, 0.4);
-      (cs.material as THREE.MeshBasicMaterial).opacity = 0.55;
-      cs.position.set(0.14, BH - 0.08 + 0.034, 0.1);
-      cs.rotation.z = 0.18;
-      g.add(cs);
       // three beach pebbles from the ría, worn smooth, resting on the tissue beside the card
       // a beach stone's skin: mottled in soft patches, grained, flecked at two sizes (a quartz vein read as a
       // painted ring once wrapped round the stone), and the same drawing as a faint relief, so it reads as worn stone and not a smooth bead
@@ -391,16 +388,11 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
         geo.computeVertexNormals();
         const m = new THREE.Mesh(geo, mat);
         // pressed a little into the tissue, so it rests rather than hovers
-        // pressed into the tissue, sunk a little deeper than before
-        m.position.set(x, BH - 0.08 + r * 0.32 * 0.45, z);
+        // resting on the tissue, pressed just into it (its shade left to the window's shadow and the
+        // occlusion, which follow the folds)
+        m.position.set(x, BH - 0.08 + r * 0.32 * 0.8, z);
         m.rotation.y = rot;
         g.add(m);
-        // its shadow: dark and tight right under it, the way a stone sits on paper
-        const sh = contact(r * 2 * sx * 0.8, r * 2 * sz * 0.8);
-        (sh.material as THREE.MeshBasicMaterial).opacity = 0.9;
-        sh.position.set(x + 0.01, BH - 0.08 + 0.004, z + 0.01);
-        sh.rotation.z = rot;
-        g.add(sh);
       };
       pebble(0.15, 1.25, 0.95, stone([150, 150, 146], "rgba(255,255,255,0.35)"), -0.38, -0.12, 0.4, 1);
       pebble(0.12, 1.1, 0.9, stone([205, 199, 186], "rgba(90,85,78,0.4)"), -0.22, 0.2, -0.6, 2.3);
