@@ -46,8 +46,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     });
   const [beach, facade, stoneImg] = await Promise.all([
     ...["beach", "facade"].map((n) => loadImg(`/concepts/stationery/${n}.jpg`)),
-    // the table's face: a photograph of honed limestone (Freepik, credited)
-    loadImg("/concepts/stationery/stone.webp"),
+    // the table's face: a photograph of smooth cast concrete (Freepik, credited)
+    loadImg("/concepts/stationery/concrete.webp"),
   ]);
   const photos = { beach, facade };
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -167,7 +167,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     return o;
   };
 
-  /* ---------- the table: a slab of honed limestone, from a photograph, laid once across the whole frame ---------- */
+  /* ---------- the table: a slab of smooth cast concrete, from a photograph, laid once across the whole frame ---------- */
   {
     // the photograph itself, unrepeated, so no seam or pattern ever shows; its pores and clouding as a faint
     // relief too, so they catch the window's light like the real stone
@@ -183,6 +183,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const ratio = (stoneImg.naturalWidth || 3) / (stoneImg.naturalHeight || 2);
     const table = new THREE.Mesh(new THREE.PlaneGeometry(14 * ratio, 14), mat);
     table.rotation.x = -Math.PI / 2;
+    // drawn back, so the photograph's formwork joint (a line across it, a little above its middle) lies
+    // beyond the top of the frame, behind the pieces
+    table.position.z = -2.8;
     table.receiveShadow = true;
     scene.add(table);
   }
@@ -1182,9 +1185,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
 
   /* ---------- light: a window to the left, its frame falling across the table ---------- */
   // little light in the room itself, so the window's falls as a pool, with real shade around it
-  scene.add(new THREE.HemisphereLight("#f3efea", "#837b72", 0.42));
+  scene.add(new THREE.HemisphereLight("#f1f0ee", "#7f7c78", 0.42));
   // late, warm light through a window, low from the left
-  const sun = new THREE.SpotLight("#fff1e2", 470, 60, Math.PI / 8, 0.45, 1.2);
+  // (only just warm: the grey concrete should stay grey, not turn sandy)
+  const sun = new THREE.SpotLight("#fff7ef", 470, 60, Math.PI / 8, 0.45, 1.2);
   sun.position.set(-13, 15, -5);
   sun.target.position.set(0.3, 0, 0.2);
   sun.castShadow = true;
