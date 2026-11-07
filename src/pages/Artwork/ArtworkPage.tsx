@@ -256,6 +256,9 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
   const light = useSpring(useMotionValue(20), { stiffness: 60, damping: 20 });
   const rainbow = useMotionTemplate`conic-gradient(from ${light}deg, rgba(255,140,200,0) 0%, rgba(255,140,200,0.55) 6%, rgba(255,226,140,0.5) 13%, rgba(150,240,190,0.5) 20%, rgba(130,190,255,0.55) 28%, rgba(200,150,255,0.5) 35%, rgba(200,150,255,0) 43%, rgba(255,140,200,0) 50%, rgba(255,140,200,0.55) 56%, rgba(255,226,140,0.5) 63%, rgba(150,240,190,0.5) 70%, rgba(130,190,255,0.55) 78%, rgba(200,150,255,0.5) 85%, rgba(200,150,255,0) 93%, rgba(255,140,200,0) 100%)`;
   const glint = useMotionTemplate`conic-gradient(from ${light}deg, transparent 0 40%, rgba(255,255,255,0.3) 44%, transparent 47% 90%, rgba(255,255,255,0.24) 94%, transparent 97%)`;
+  // the CD's own flash: where a lamp catches the tracks, two narrow wedges of pure spectrum leave the hub
+  // on opposite sides, red through violet, each with a white streak at its heart
+  const flash = useMotionTemplate`conic-gradient(from ${light}deg, transparent 0 8%, rgba(255,60,60,0.55) 10%, rgba(255,200,60,0.65) 11.5%, rgba(255,255,255,0.85) 12.5%, rgba(80,230,120,0.65) 13.5%, rgba(60,170,255,0.6) 15%, rgba(150,80,255,0.5) 16.5%, transparent 19% 58%, rgba(255,60,60,0.5) 60%, rgba(255,200,60,0.6) 61.5%, rgba(255,255,255,0.8) 62.5%, rgba(80,230,120,0.6) 63.5%, rgba(60,170,255,0.55) 65%, rgba(150,80,255,0.45) 66.5%, transparent 69% 100%)`;
   const move = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || still) return;
     const r = e.currentTarget.getBoundingClientRect();
@@ -303,6 +306,15 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
           <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.42 }} />
           {/* a hard white catch of the light across the mirror, two opposite blades */}
           <motion.div className="absolute inset-0 rounded-full mix-blend-screen" style={{ background: glint, WebkitMaskImage: MIRROR, maskImage: MIRROR }} />
+          {/* the typical CD flash, its wedges fading towards the hub as the real one does */}
+          <motion.div
+            className="absolute inset-0 rounded-full mix-blend-screen"
+            style={{
+              background: flash,
+              WebkitMaskImage: "radial-gradient(circle, transparent 0 30%, rgba(0,0,0,0.35) 40%, #000 70% 98%, transparent 99%)",
+              maskImage: "radial-gradient(circle, transparent 0 30%, rgba(0,0,0,0.35) 40%, #000 70% 98%, transparent 99%)",
+            }}
+          />
           {/* light across the disc from the upper left and falling off below, so it reads as a round,
               lit object and not a flat grey circle */}
           <div
