@@ -301,7 +301,7 @@ export const AboutPage: React.FC = () => {
           <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
         </a>
         {/* wide screens: a small status readout under it, in the spirit of early-2000s interfaces: a row of
-            fine cells a light keeps sweeping along, between two crosshairs, and the studio's code */}
+            fine cells a light keeps sweeping along, between two crosshairs, and the studio's name */}
         <style>{`@keyframes fh-scan{0%,100%{opacity:.14}6%{opacity:.85}26%{opacity:.14}}`}</style>
         <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/40 lg:flex">
           <span className="text-[10px] leading-none">+</span>
@@ -315,7 +315,7 @@ export const AboutPage: React.FC = () => {
             ))}
           </span>
           <span className="text-[10px] leading-none">+</span>
-          <span className="tabular-nums">fh·26</span>
+          <span>fuga</span>
         </span>
         </div>
       </motion.header>
