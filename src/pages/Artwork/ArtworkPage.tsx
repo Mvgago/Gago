@@ -254,7 +254,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
   // the disc's colours: a pale spectrum twice round, as a CD splits the light, its bearing following
   // the pointer a little, as when a disc is tilted in the hand
   const light = useSpring(useMotionValue(20), { stiffness: 60, damping: 20 });
-  const rainbow = useMotionTemplate`conic-gradient(from ${light}deg, rgba(255,140,200,0.55), rgba(255,226,140,0.5) 8%, rgba(150,240,190,0.5) 16%, rgba(130,190,255,0.55) 25%, rgba(200,150,255,0.5) 33%, rgba(200,205,215,0) 42%, rgba(200,205,215,0) 50%, rgba(255,140,200,0.55) 50%, rgba(255,226,140,0.5) 58%, rgba(150,240,190,0.5) 66%, rgba(130,190,255,0.55) 75%, rgba(200,150,255,0.5) 83%, rgba(200,205,215,0) 92%)`;
+  const rainbow = useMotionTemplate`conic-gradient(from ${light}deg, rgba(255,140,200,0) 0%, rgba(255,140,200,0.55) 6%, rgba(255,226,140,0.5) 13%, rgba(150,240,190,0.5) 20%, rgba(130,190,255,0.55) 28%, rgba(200,150,255,0.5) 35%, rgba(200,150,255,0) 43%, rgba(255,140,200,0) 50%, rgba(255,140,200,0.55) 56%, rgba(255,226,140,0.5) 63%, rgba(150,240,190,0.5) 70%, rgba(130,190,255,0.55) 78%, rgba(200,150,255,0.5) 85%, rgba(200,150,255,0) 93%, rgba(255,140,200,0) 100%)`;
   const glint = useMotionTemplate`conic-gradient(from ${light}deg, transparent 0 40%, rgba(255,255,255,0.16) 44%, transparent 47% 90%, rgba(255,255,255,0.12) 94%, transparent 97%)`;
   const move = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || still) return;
