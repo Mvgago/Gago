@@ -286,6 +286,7 @@ export const AboutPage: React.FC = () => {
         </h1>
         {/* On the right, one line: open to new projects, and it is the way down to the contact form
             (wide screens only: on a phone it only crowded the page's top) */}
+        <div className="hidden flex-col items-end sm:flex">
         <a
           href="#contact"
           onClick={(e) => {
@@ -293,12 +294,30 @@ export const AboutPage: React.FC = () => {
             const target = document.getElementById("contact");
             if (target) scrollToTarget(lenis, target, { offset: -96 });
           }}
-          className="group relative hidden items-center gap-2 self-auto text-ink sm:inline-flex"
+          className="group relative inline-flex items-center gap-2 self-auto text-ink"
         >
           <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
           {t("availability")}
           <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
         </a>
+        {/* wide screens: a small status readout under it, in the spirit of early-2000s interfaces: a row of
+            fine cells a light keeps sweeping along, between two crosshairs, and the studio's code */}
+        <style>{`@keyframes fh-scan{0%,100%{opacity:.14}6%{opacity:.85}26%{opacity:.14}}`}</style>
+        <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/40 lg:flex">
+          <span className="text-[10px] leading-none">+</span>
+          <span className="flex gap-[3px]">
+            {Array.from({ length: 14 }, (_, k) => (
+              <span
+                key={k}
+                className="block h-[3px] w-[9px] bg-ink"
+                style={{ opacity: 0.14, animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
+              />
+            ))}
+          </span>
+          <span className="text-[10px] leading-none">+</span>
+          <span className="tabular-nums">fh·26</span>
+        </span>
+        </div>
       </motion.header>
 
       {/* Statement and way in */}
@@ -324,7 +343,8 @@ export const AboutPage: React.FC = () => {
                 fading out to the right */}
             <motion.span
               aria-hidden
-              className="mt-5 block h-px w-full max-w-[26rem] origin-left sm:mt-6 lg:mt-5 lg:max-w-[34rem]"
+              // (phones and tablets only: on wide screens the headline stands without it)
+              className="mt-5 block h-px w-full max-w-[26rem] origin-left sm:mt-6 lg:hidden"
               style={{
                 background: "linear-gradient(90deg, rgba(244, 241, 237, 0.85) 0%, rgba(244, 241, 237, 0.4) 55%, rgba(244, 241, 237, 0) 100%)",
                 boxShadow: "0 0 10px rgba(244, 241, 237, 0.25)",
