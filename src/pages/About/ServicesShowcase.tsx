@@ -86,10 +86,9 @@ const SceneInView: React.FC<{ name: keyof typeof SCENES; paused?: boolean; allow
 const EXAMPLES: Example[] = [
   { video: "/video/audiovisual.mp4?v=2", seen: ["sapphire", "buendia"] },
   // the flat of The Sapphire to walk round: a space in 3D, the discipline's first promise
-  { frame: "/concepts/sapphire-home/index.html?bare", poster: "sapphire-home", seen: ["sapphire", "smarthc", "buendia"], link: "/projects/sapphire#vivienda-3d" },
+  { frame: "/concepts/sapphire-home/index.html?bare&v=2", poster: "sapphire-home", seen: ["sapphire", "smarthc", "buendia"], link: "/projects/sapphire#vivienda-3d" },
   { scene: "stand", seen: ["smarthc"] },
-  // (no still while it loads for now: the old one showed the full table, before it was pared back)
-  { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
+  { scene: "stationery", poster: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
 const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: boolean; linkLabel?: string }> = ({ ex, note, paused, allowed = true, linkLabel }) => (
@@ -239,7 +238,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
       void import("../../components/Identity/StationeryScene");
       const net = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
       const roomy = !net?.saveData && (window.matchMedia("(min-width: 1024px)").matches || net?.effectiveType === "4g");
-      const files = ["/concepts/sapphire-home/index.html?bare", "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js"];
+      const files = ["/concepts/sapphire-home/index.html?bare&v=2", "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js"];
       if (roomy) files.push(...["bed30.glb", "sofa.glb", "carpet.glb", "dining.glb", "petate.glb", "bed3.glb", "lounger.glb", "fig.glb", "palm.glb", "towel.glb", "sink.glb", "carpet3.glb"].map((f) => `/models/sapphire/${f}`));
       files.forEach((href) => {
         const l = document.createElement("link");
