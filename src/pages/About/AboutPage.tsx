@@ -110,8 +110,8 @@ const TOGETHER: Record<string, string[]> = {
 };
 
 /**
- * A word that turns through a few others once it is in view, each held a good while: the letters roll
- * through a clipped line, the old word's rising away as the new one's come up beneath, crisp, no fade.
+ * A word that turns through a few others once it is in view, each held a good while: within a clipped
+ * line the old word rises away whole as the new one comes up beneath, crisp, no fade.
  * It comes back round to the first. Still, it stays on the first.
  */
 const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, still }) => {
@@ -131,35 +131,18 @@ const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, sti
     return () => window.clearInterval(id);
   }, [still, shown, words.length]);
   return (
-    // a clipped line (with room for accents and descenders) the letters roll through: the word's letters
-    // rise out of the top one after another as the next word's rise in from below
-    <span ref={ref} className="-my-[0.18em] inline-grid overflow-hidden py-[0.18em] align-bottom">
-      <AnimatePresence initial={false} mode="popLayout">
+    // a clipped line (with room for accents and descenders): the word rises out of the top whole, as the
+    // next rises in from below; both share the one cell, so nothing ever leaves the clip
+    <span ref={ref} className="relative -my-[0.18em] inline-grid overflow-hidden py-[0.18em] align-bottom">
+      <AnimatePresence initial={false}>
         <motion.span
           key={words[i]}
           className="col-start-1 row-start-1 whitespace-nowrap"
-          initial="below"
-          animate="here"
-          exit="above"
-          variants={{
-            below: {},
-            here: { transition: { staggerChildren: 0.035, delayChildren: 0.18 } },
-            above: { transition: { staggerChildren: 0.025 } },
-          }}
+          initial={{ y: "120%" }}
+          animate={{ y: "0%", transition: { duration: 1, ease: EASE_HAUS, delay: 0.12 } }}
+          exit={{ y: "-120%", transition: { duration: 0.8, ease: [0.6, 0, 0.4, 1] } }}
         >
-          {Array.from(words[i]).map((ch, k) => (
-            <motion.span
-              key={k}
-              className="inline-block"
-              variants={{
-                below: { y: "115%" },
-                here: { y: "0%", transition: { duration: 0.9, ease: EASE_HAUS } },
-                above: { y: "-115%", transition: { duration: 0.6, ease: [0.6, 0, 0.8, 0.4] } },
-              }}
-            >
-              {ch === " " ? " " : ch}
-            </motion.span>
-          ))}
+          {words[i]}
         </motion.span>
       </AnimatePresence>
     </span>
