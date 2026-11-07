@@ -11,7 +11,7 @@ import { FUGA, FUGA_WEIGHT, HAUS, HAUS_WEIGHT, type Pt } from "../Monolith/wordm
  * domed, a disc of spun metal. It turns slowly and leans a little towards the pointer.
  */
 
-const SILVER = new THREE.MeshPhysicalMaterial({ color: "#cdced2", metalness: 0.85, roughness: 0.36 });
+const SILVER = new THREE.MeshPhysicalMaterial({ color: "#bfc0c5", metalness: 0.85, roughness: 0.38 });
 const PAD = new THREE.MeshStandardMaterial({ color: "#4a4b50", metalness: 0, roughness: 1 });
 const HOLLOW = new THREE.MeshStandardMaterial({ color: "#3a3b3f", roughness: 0.95, side: THREE.DoubleSide });
 
@@ -411,7 +411,7 @@ export const Headphones: React.FC<{ className?: string; active?: boolean }> = ({
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     // a little under, so the silver sits in the dim room and never glares
-    renderer.toneMappingExposure = 0.66;
+    renderer.toneMappingExposure = 0.56;
     renderer.setClearColor(0x000000, 0);
     renderer.domElement.style.display = "block";
     el.appendChild(renderer.domElement);
