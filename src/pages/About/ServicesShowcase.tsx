@@ -88,7 +88,8 @@ const EXAMPLES: Example[] = [
   // the flat of The Sapphire to walk round: a space in 3D, the discipline's first promise
   { frame: "/concepts/sapphire-home/index.html?bare", poster: "sapphire-home", seen: ["sapphire", "smarthc", "buendia"], link: "/projects/sapphire#vivienda-3d" },
   { scene: "stand", seen: ["smarthc"] },
-  { scene: "stationery", poster: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
+  // (no still while it loads for now: the old one showed the full table, before it was pared back)
+  { scene: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
 const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: boolean; linkLabel?: string }> = ({ ex, note, paused, allowed = true, linkLabel }) => (

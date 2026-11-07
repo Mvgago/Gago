@@ -32,6 +32,8 @@ const LETTERS: Record<string, string> = {
 };
 const ADV = [0, 150, 300, 450, 592, 704];
 const WORD_W = 804;
+// where the room key comes to rest, in front of the box and the phone
+const KEY_AT = [0.5, 0.92] as const;
 
 async function build(host: HTMLDivElement, onReady: () => void, paused: { current: boolean } = { current: false }): Promise<() => void> {
   // stills from the studio's own film, printed in the brochure and shown on the phone's site
@@ -42,7 +44,11 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       i.onerror = () => ok(i);
       i.src = src;
     });
-  const [beach, facade] = await Promise.all(["beach", "facade"].map((n) => loadImg(`/concepts/stationery/${n}.jpg`)));
+  const [beach, facade, stoneImg] = await Promise.all([
+    ...["beach", "facade"].map((n) => loadImg(`/concepts/stationery/${n}.jpg`)),
+    // the table's face: a photograph of honed limestone (Freepik, credited)
+    loadImg("/concepts/stationery/stone.webp"),
+  ]);
   const photos = { beach, facade };
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   // drawn at least at 1.5× even on ordinary screens: the small print and the foil stay crisp
@@ -161,22 +167,21 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     return o;
   };
 
-  /* ---------- the table: a smooth matte surface in a cool light grey, its grain barely there ---------- */
+  /* ---------- the table: a slab of honed limestone, from a photograph, laid once across the whole frame ---------- */
   {
-    const S = 1024, [c, x] = canvas(S, S);
-    x.fillStyle = "#aeb5b8";
-    x.fillRect(0, 0, S, S);
-    const img = x.getImageData(0, 0, S, S), d = img.data;
-    for (let k = 0; k < d.length; k += 4) {
-      const n = (Math.random() - 0.5) * 4;
-      d[k] += n; d[k + 1] += n; d[k + 2] += n;
-    }
-    x.putImageData(img, 0, 0);
-    const t = tex(c);
-    t.wrapS = t.wrapT = THREE.RepeatWrapping;
-    t.repeat.set(6, 6);
-    const mat = new THREE.MeshStandardMaterial({ map: t, roughness: 0.78 });
-    const table = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), mat);
+    // the photograph itself, unrepeated, so no seam or pattern ever shows; its pores and clouding as a faint
+    // relief too, so they catch the window's light like the real stone
+    const t = new THREE.Texture(stoneImg);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = aniso;
+    t.needsUpdate = true;
+    const relief = new THREE.Texture(stoneImg);
+    relief.anisotropy = aniso;
+    relief.needsUpdate = true;
+    const mat = new THREE.MeshStandardMaterial({ map: t, bumpMap: relief, bumpScale: 1.2, roughness: 0.8 });
+    // as wide as the photograph is, in its own proportion, and far larger than the frame
+    const ratio = (stoneImg.naturalWidth || 3) / (stoneImg.naturalHeight || 2);
+    const table = new THREE.Mesh(new THREE.PlaneGeometry(14 * ratio, 14), mat);
     table.rotation.x = -Math.PI / 2;
     table.receiveShadow = true;
     scene.add(table);
@@ -192,8 +197,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     x.fillRect(52, 52, 152, 152);
     return tex(c);
   })();
+  // (dark and close: where a thing meets the table the light can't reach, and without it they seem to float)
   const contact = (w: number, d: number) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.45, d * 1.45), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.55 }));
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.22, d * 1.22), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.85 }));
     m.rotation.x = -Math.PI / 2;
     m.position.set(0.035, 0.0015, 0.03);
     m.renderOrder = 1;
@@ -211,28 +217,38 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       const S = 512, [c, x] = canvas(S, S);
       x.fillStyle = "#3f6466";
       x.fillRect(0, 0, S, S);
-      // the weave: fine threads both ways, each a shade off
-      for (let k = 0; k < S; k += 2) {
-        x.fillStyle = `rgba(255,255,255,${0.03 + Math.random() * 0.05})`;
-        x.fillRect(0, k, S, 1);
-        x.fillStyle = `rgba(0,0,0,${0.03 + Math.random() * 0.05})`;
-        x.fillRect(k, 0, 1, S);
+      // the weave, plain and visible: warp and weft threads of uneven weight crossing every 4 px, each a
+      // shade off, so it reads as cloth over board at a glance
+      for (let k = 0; k < S; k += 4) {
+        x.fillStyle = `rgba(255,255,255,${0.07 + Math.random() * 0.09})`;
+        x.fillRect(0, k, S, 2);
+        x.fillStyle = `rgba(0,0,0,${0.08 + Math.random() * 0.1})`;
+        x.fillRect(0, k + 2, S, 1);
+        x.fillStyle = `rgba(0,0,0,${0.06 + Math.random() * 0.08})`;
+        x.fillRect(k, 0, 2, S);
+        x.fillStyle = `rgba(255,255,255,${0.04 + Math.random() * 0.06})`;
+        x.fillRect(k + 2, 0, 1, S);
       }
-      for (let k = 0; k < 220; k++) {
-        x.fillStyle = `rgba(255,255,255,${Math.random() * 0.08})`;
-        x.fillRect(Math.random() * S, Math.random() * S, 1 + Math.random() * 14, 1);
+      // slubs: the thicker runs in a linen thread
+      for (let k = 0; k < 320; k++) {
+        x.fillStyle = `rgba(255,255,255,${0.06 + Math.random() * 0.1})`;
+        x.fillRect(Math.random() * S, Math.floor(Math.random() * (S / 4)) * 4, 6 + Math.random() * 26, 2);
       }
       const t = tex(c);
       t.wrapS = t.wrapT = THREE.RepeatWrapping;
-      t.repeat.set(2, 2);
+      t.repeat.set(3, 3);
       return t;
     })();
-    const cloth = new THREE.MeshStandardMaterial({ map: linen, roughness: 0.95 });
+    // the same weave as relief, so the light catches its threads
+    const weave = linen.clone();
+    weave.colorSpace = THREE.NoColorSpace;
+    const cloth = new THREE.MeshStandardMaterial({ map: linen, bumpMap: weave, bumpScale: 1.6, roughness: 0.92 });
     const BW = 1.3, BD = 0.95, BH = 0.34, WALL = 0.035;
     const g = new THREE.Group();
     // the base: four walls and a floor, open at the top
+    // (the walls' edges softly rounded, as cloth wrapped over board never makes a knife edge)
     const wall = (w: number, d: number, x: number, z: number) => {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, BH, d), cloth);
+      const m = new THREE.Mesh(new RoundedBoxGeometry(w, BH, d, 3, 0.012), cloth);
       m.position.set(x, BH / 2, z);
       g.add(m);
     };
@@ -277,17 +293,44 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       card.rotation.set(0.06, -0.18, 0.04);
       g.add(card);
       // three beach pebbles from the ría, worn smooth, resting on the tissue beside the card
+      // a beach stone's skin: mottled in soft patches, grained, flecked at two sizes, a pale vein of quartz
+      // round it, and the same drawing as a faint relief, so it reads as worn stone and not a smooth bead
       const stone = (base: [number, number, number], speck: string) => {
-        const [sc, sx] = canvas(256, 256);
-        const img = sx.createImageData(256, 256), d = img.data;
+        const S = 512, [sc, sx] = canvas(S, S);
+        sx.fillStyle = `rgb(${base.join(",")})`;
+        sx.fillRect(0, 0, S, S);
+        sx.filter = "blur(18px)";
+        for (let k = 0; k < 40; k++) {
+          const light = Math.random() < 0.5;
+          sx.fillStyle = light ? `rgba(255,255,255,${0.04 + Math.random() * 0.08})` : `rgba(0,0,0,${0.04 + Math.random() * 0.09})`;
+          sx.beginPath();
+          sx.arc(Math.random() * S, Math.random() * S, 20 + Math.random() * 70, 0, Math.PI * 2);
+          sx.fill();
+        }
+        sx.filter = "none";
+        const img = sx.getImageData(0, 0, S, S), d = img.data;
         for (let k = 0; k < d.length; k += 4) {
-          const n = (Math.random() - 0.5) * 16;
-          d[k] = base[0] + n; d[k + 1] = base[1] + n; d[k + 2] = base[2] + n; d[k + 3] = 255;
+          const n = (Math.random() - 0.5) * 22;
+          d[k] += n; d[k + 1] += n; d[k + 2] += n;
         }
         sx.putImageData(img, 0, 0);
         sx.fillStyle = speck;
-        for (let k = 0; k < 260; k++) sx.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 2, 1 + Math.random() * 2);
-        return new THREE.MeshStandardMaterial({ map: tex(sc), roughness: 0.62 });
+        for (let k = 0; k < 900; k++) sx.fillRect(Math.random() * S, Math.random() * S, 1 + Math.random() * 2, 1 + Math.random() * 2);
+        for (let k = 0; k < 70; k++) {
+          sx.beginPath();
+          sx.arc(Math.random() * S, Math.random() * S, 1.5 + Math.random() * 3.5, 0, Math.PI * 2);
+          sx.fill();
+        }
+        // the vein, wandering round
+        sx.strokeStyle = "rgba(245,242,235,0.55)";
+        sx.lineWidth = 3 + Math.random() * 3;
+        sx.beginPath();
+        sx.moveTo(0, S * (0.3 + Math.random() * 0.4));
+        sx.bezierCurveTo(S * 0.3, S * Math.random(), S * 0.7, S * Math.random(), S, S * (0.3 + Math.random() * 0.4));
+        sx.stroke();
+        const map = tex(sc);
+        const bump = tex(sc, false);
+        return new THREE.MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 2.4, roughness: 0.72 });
       };
       const pebble = (r: number, sx: number, sz: number, mat: THREE.Material, x: number, z: number, rot: number, seed: number) => {
         const geo = new THREE.SphereGeometry(r, 40, 24);
@@ -316,7 +359,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       pebble(0.1, 1.3, 1.0, stone([86, 92, 94], "rgba(230,230,225,0.3)"), -0.47, 0.22, 1.1, 4.1);
     }
     g.add(contact(BW, BD));
-    g.position.set(-2.55, 0, -0.55);
+    // brought forward, the nearest piece: the most beautiful of them, it leads
+    g.position.set(-0.72, 0, 0.42);
+    g.rotation.y = -0.08;
     add(g);
     // the lid, set down beside it: a shallow cover in the same linen, the sign in silver on top
     const LW = BW + 0.04, LD = BD + 0.04, LH = 0.1;
@@ -326,7 +371,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       x.drawImage((linen.image as HTMLCanvasElement), 0, 0, 1024, 750);
       return tex(c);
     })();
-    const lidTop = new THREE.Mesh(new THREE.BoxGeometry(LW, LH, LD), [cloth, cloth, new THREE.MeshStandardMaterial({ map: top, roughness: 0.95 }), cloth, cloth, cloth]);
+    const lidTop = new THREE.Mesh(new THREE.BoxGeometry(LW, LH, LD), [cloth, cloth, new THREE.MeshStandardMaterial({ map: top, bumpMap: weave, bumpScale: 1.6, roughness: 0.92 }), cloth, cloth, cloth]);
     lidTop.position.y = LH / 2;
     const [mc, mx] = canvas(1024, 750);
     mx.fillStyle = "#000";
@@ -341,8 +386,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     f.rotation.x = -Math.PI / 2;
     f.position.y = LH + 0.002;
     lid.add(lidTop, f, contact(LW, LD));
-    lid.position.set(-2.55, 0, 0.74);
-    lid.rotation.y = 0.04;
+    // set down just behind the box, turned a little, its sign in silver showing
+    lid.position.set(-1.42, 0, -0.72);
+    lid.rotation.y = 0.2;
     add(lid);
   }
   // A notebook in Swiss binding: the sewn spine left bare, its signatures and coral thread on
@@ -414,7 +460,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     g.add(block, backB, frontB, foil, contact(NW, ND));
     // up level with the palette, clear above the cards
     g.position.set(2.72, 0, -1.42);
-    add(g);
+    // (left out of the pared-back table)
+    void g;
   }
   // A card as it is cut: a thin slab with rounded corners, its faces printed edge to edge
   const roundedSlab = (w: number, d: number, t: number, r: number, cap: THREE.Material, edge: THREE.Material) => {
@@ -466,7 +513,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     if (k === 0) g.add(contact(0.85, 0.55));
     g.position.set(2.025 + (k % 2) * 0.004, k * 0.009, 0.025 - k * 0.0015);
     g.rotation.y = (k % 3) * 0.006 - 0.006;
-    add(g);
+    // (the business cards are left out of the pared-back table)
+    void g;
   }
   const flip = new THREE.Group();
   {
@@ -486,7 +534,6 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     f2.position.y = -t - 0.002;
     flip.add(f2);
     flip.position.set(2.025, 0.068, 0.025);
-    add(flip);
   }
   // the room key: a glossy card in the sea blue, the house's own colour for its rooms. The room's
   // number large in silver, the sign, the contactless mark, and a fine white rule
@@ -522,7 +569,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     foil.rotation.x = -Math.PI / 2;
     foil.position.y = 0.0135;
     key.add(slab, foil, contact(KW, KD));
-    key.position.set(2.025, 0, 0.72);
+    key.position.set(KEY_AT[0], 0, KEY_AT[1]);
+    key.rotation.y = 0.16;
     add(key);
   }
 
@@ -588,7 +636,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const g = new THREE.Group();
     g.add(strap, crimp, hook);
     g.position.set(0.0, 0, 1.62);
-    add(g);
+    // (the lanyard is left out of the pared-back table)
+    void g;
   }
   // a fan of colour chips: the palette, as a printer's swatch book pinned at one end; it fans open
   const fanStrips: THREE.Group[] = [];
@@ -636,7 +685,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     fs.position.set(0.8, 0.0015, -0.08);
     fan.add(fs);
     // up top, to the right of the vase, above the brochure; it fans open away from it
-    fan.position.set(-0.85, 0.008, -1.4);
+    fan.position.set(-0.2, 0.008, -0.98);
+    fan.rotation.y = 0.05;
     add(fan);
   }
   // A narrow, straight-sided bud vase in clear glass, and in it a single lilac flower: the one living thing on the table
@@ -805,7 +855,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     vase.scale.setScalar(1.25);
     // off centre, towards the left column, so the brochure keeps the middle to itself
     vase.position.set(-1.4, 0, -1.55);
-    add(vase);
+    // (the vase is left out of the pared-back table)
+    void vase;
   }
   // The phone, lying beside the cards, with the house's site on its screen: the brand's digital side
   let screenMap: THREE.Texture;
@@ -933,7 +984,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     gloss.position.y = 0.0825;
     gloss.userData.flat = true;
     phone.add(body, glass, screen, gloss, contact(0.76, 1.56));
-    phone.position.set(2.98, 0, 0.53);
+    phone.position.set(1.45, 0, 0.18);
+    phone.rotation.y = -0.1;
     add(phone);
   }
 
@@ -1092,7 +1144,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   const bShadow = contact(PW, PD);
   brochure.add(bShadow);
   brochure.position.set(0, 0, 0.1);
-  add(brochure);
+  // (the brochure is left out of the pared-back table; it still opens and closes unseen)
 
   // The loop's script, in seconds: the brochure opens, the card turns, the key slides in; all of
   // it held a while, then folded back
@@ -1116,25 +1168,31 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     flip.position.y = 0.068 + Math.sin(Math.PI * turn) * 0.28;
     const slide = span(t, 5.2, 6.6) - span(t, 11.4, 12.6);
     // (from well outside the frame, so it is never seen waiting at the edge, even on a phone)
-    key.position.z = 0.72 + (1 - slide) * 4.6;
+    key.position.z = KEY_AT[1] + (1 - slide) * 4.6;
     // the swatch book fans open, chip by chip, and closes again before the loop ends
     fanStrips.forEach((p, i) => {
       const open = span(t, 0.6 + i * 0.12, 2.2 + i * 0.12) - span(t, 11.2 - i * 0.08, 12.4 - i * 0.08);
       p.rotation.y = open * i * 0.09;
     });
   };
-  animate(0);
+  // one still: the moment in the script when everything is in place (the swatch book fanned, the key set
+  // down), held; only the camera breathes
+  const HELD = 7;
+  animate(HELD);
 
   /* ---------- light: a window to the left, its frame falling across the table ---------- */
-  scene.add(new THREE.HemisphereLight("#eef2f4", "#8a9296", 0.7));
-  const sun = new THREE.SpotLight("#fff8f0", 340, 60, Math.PI / 8, 0.3, 1.2);
+  // little light in the room itself, so the window's falls as a pool, with real shade around it
+  scene.add(new THREE.HemisphereLight("#f3efea", "#837b72", 0.42));
+  // late, warm light through a window, low from the left
+  const sun = new THREE.SpotLight("#fff1e2", 470, 60, Math.PI / 8, 0.45, 1.2);
   sun.position.set(-13, 15, -5);
   sun.target.position.set(0.3, 0, 0.2);
   sun.castShadow = true;
   sun.shadow.mapSize.set(1536, 1536);
   sun.shadow.radius = 9;
-  sun.shadow.bias = -0.0002;
-  sun.shadow.normalBias = 0.01;
+  sun.shadow.bias = -0.0001;
+  // (small, so each shadow starts right at the foot of its object instead of a gap away)
+  sun.shadow.normalBias = 0.003;
   // the light's cone held close round the table, so its shadow map is fine where it falls
   sun.shadow.camera.near = 8;
   sun.shadow.camera.far = 32;
@@ -1149,10 +1207,30 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     x.filter = "blur(14px)";
     x.fillRect(250, -20, 18, 552);
     x.fillRect(-20, 300, 552, 14);
+    // and the leaves of a plant by the window, soft and out of focus, crossing one corner
+    x.filter = "blur(9px)";
+    x.fillStyle = "#5e5e5e";
+    const leaf = (cx: number, cy: number, l: number, w: number, a: number) => {
+      x.save();
+      x.translate(cx, cy);
+      x.rotate(a);
+      x.beginPath();
+      x.ellipse(0, 0, l, w, 0, 0, Math.PI * 2);
+      x.fill();
+      x.restore();
+    };
+    // (set across the upper part of the light, which falls on the far side of the table, behind the pieces)
+    [[150, 150, 80, 22, 0.6], [230, 110, 70, 19, 1.1], [120, 230, 74, 20, 0.2], [260, 190, 60, 16, 0.9], [190, 270, 56, 15, -0.3], [320, 140, 52, 14, 1.4], [340, 230, 48, 13, 0.5]].forEach(([cx, cy, l, w, a]) => leaf(cx, cy, l, w, a));
+    x.lineWidth = 7;
+    x.strokeStyle = "#5e5e5e";
+    x.beginPath();
+    x.moveTo(60, 330);
+    x.quadraticCurveTo(190, 220, 360, 90);
+    x.stroke();
     sun.map = tex(c);
   }
   scene.add(sun, sun.target);
-  const fill = new THREE.DirectionalLight("#dfe8ee", 0.45);
+  const fill = new THREE.DirectionalLight("#e6e2dc", 0.22);
   fill.position.set(8, 6, 8);
   scene.add(fill);
 
@@ -1180,12 +1258,12 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   fit();
 
   // The camera drifts slowly over the table, so the foil catches and loses the light
-  const look = new THREE.Vector3(0.4, 0, 0.15);
+  const look = new THREE.Vector3(-0.05, 0, 0.0);
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const place = (t: number) => {
-    // over the table, as a flat lay is shot, breathing only a little
-    const a = Math.sin(t * 0.16) * 0.07, lift = Math.sin(t * 0.11) * 0.12;
-    camera.position.set(look.x + Math.sin(a) * 4.4, 7.4 + lift, look.z + Math.cos(a) * 4.4);
+    // close over the four pieces, a little from the front, as a still life is shot; breathing only a little
+    const a = Math.sin(t * 0.16) * 0.06, lift = Math.sin(t * 0.11) * 0.08;
+    camera.position.set(look.x + Math.sin(a) * 3.3, 6.1 + lift, look.z + Math.cos(a) * 3.3);
     camera.lookAt(look);
   };
   place(0);
@@ -1197,7 +1275,6 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     if (!start) start = now;
     const s = (now - start) / 1000;
     place(s);
-    animate(s);
     composer.render();
   };
   const io = new IntersectionObserver(([entry]) => renderer.setAnimationLoop(entry.isIntersecting && !reduced ? loop : null), { rootMargin: "-15% 0px" });
