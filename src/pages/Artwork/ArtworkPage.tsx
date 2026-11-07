@@ -211,7 +211,7 @@ export const ArtworkPage: React.FC = () => {
 // The CD, drawn as its playing side: the hole, the clear hub with its stacking ring, then the mirror
 // out to a thin rim, with the faintest trace of the data rings over it
 const CD_BODY = [
-  "repeating-radial-gradient(circle, rgba(255,255,255,0.05) 0 1px, rgba(0,0,0,0.03) 1px 2.5px)",
+  "repeating-radial-gradient(circle, rgba(255,255,255,0.018) 0 1px, rgba(0,0,0,0.01) 1px 2.5px)",
   "radial-gradient(circle, transparent 0 12%, rgba(200,206,216,0.2) 12% 21%, rgba(230,232,238,0.4) 21% 21.8%, rgba(180,186,196,0.22) 21.8% 27%, rgba(110,114,124,0.9) 27% 28%, #6c6f77 28% 70%, #62656c 70% 98.6%, #8a8d94 98.6% 99.4%, rgba(70,72,80,0.9) 99.4% 100%)",
 ].join(", ");
 // the mirror only, where the colours play: from the stacking ring out to the rim
