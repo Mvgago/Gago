@@ -294,7 +294,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     tin: new THREE.MeshStandardMaterial({ color: "#d4d8da", roughness: 0.28, metalness: 0.9 }),
     ledWarm: new THREE.MeshStandardMaterial({ color: "#000", emissive: "#ffe2bd", emissiveIntensity: 1.1 }),
     // the opal globes lit softly, a warm glass rather than a glare
-    opal: new THREE.MeshStandardMaterial({ color: "#fff6ea", emissive: "#ffdcae", emissiveIntensity: 0.75, roughness: 0.4 }),
+    opal: new THREE.MeshStandardMaterial({ color: "#d9d3ca", emissive: "#ffdcae", emissiveIntensity: 0.3, roughness: 0.6 }),
     chrome: new THREE.MeshStandardMaterial({ color: "#c9ced1", roughness: 0.18, metalness: 0.95 }),
     glass: new THREE.MeshPhysicalMaterial({ color: "#eef3f1", roughness: 0.05, transmission: 0.9, thickness: 0.02, ior: 1.5, transparent: true }),
     bottle: new THREE.MeshPhysicalMaterial({ color: "#3d5b3a", roughness: 0.08, transmission: 0.55, thickness: 0.05, transparent: true }),
@@ -635,7 +635,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       const cable = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, P + H + 0.12 - y, 6), new THREE.MeshStandardMaterial({ color: "#1d1f21" }));
       cable.position.set(cx + dx, (y + P + H + 0.12) / 2, cz);
       scene.add(cable);
-      const glow = new THREE.PointLight("#ffd6a3", 1.6, 2.6, 2);
+      const glow = new THREE.PointLight("#ffd6a3", 1, 2.6, 2);
       glow.position.set(cx + dx, y - 0.15, cz);
       scene.add(glow);
     });
