@@ -600,9 +600,20 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   {
     const KW = 0.856, KD = 0.54;
     const art = face(856, 540, "#2f5f62", (x) => {
+      // HABITACIÓN spread across exactly the width of the number's ink below it, its letters evenly spaced
+      x.font = "200px Georgia, serif";
+      const n = x.measureText("04");
+      const span = n.actualBoundingBoxLeft + n.actualBoundingBoxRight;
       x.fillStyle = "rgba(255,255,255,0.9)";
       x.font = `500 30px ${SANS}`;
-      x.fillText("H A B I T A C I Ó N", 60, 100);
+      const letters = Array.from("HABITACIÓN");
+      const widths = letters.map((ch) => x.measureText(ch).width);
+      const gap = (span - widths.reduce((a, b) => a + b, 0)) / (letters.length - 1);
+      let lx = 60;
+      letters.forEach((ch, i) => {
+        x.fillText(ch, lx, 100);
+        lx += widths[i] + gap;
+      });
       x.fillStyle = "rgba(255,255,255,0.35)";
       x.fillRect(60, 420, 736, 1.5);
       x.fillStyle = "rgba(255,255,255,0.7)";
