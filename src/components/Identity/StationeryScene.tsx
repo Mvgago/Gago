@@ -600,9 +600,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   {
     const KW = 0.856, KD = 0.54;
     const art = face(856, 540, "#2f5f62", (x) => {
-      x.fillStyle = "rgba(255,255,255,0.85)";
-      x.font = `500 18px ${SANS}`;
-      x.fillText("H A B I T A C I Ó N", 60, 92);
+      x.fillStyle = "rgba(255,255,255,0.9)";
+      x.font = `500 30px ${SANS}`;
+      x.fillText("H A B I T A C I Ó N", 60, 100);
       x.fillStyle = "rgba(255,255,255,0.35)";
       x.fillRect(60, 420, 736, 1.5);
       x.fillStyle = "rgba(255,255,255,0.7)";
