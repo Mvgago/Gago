@@ -315,8 +315,8 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
               little light along its length */}
           <div
             aria-hidden
-            className="absolute inset-0 translate-x-[1.1%] translate-y-[1.3%] rounded-[4px]"
-            style={{ background: "linear-gradient(135deg, #2e3037 0%, #4a4d56 45%, #1c1d22 100%)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" }}
+            className="absolute inset-0 translate-x-[0.5%] translate-y-[0.6%] rounded-[4px]"
+            style={{ background: "linear-gradient(135deg, rgba(70,73,82,0.55) 0%, rgba(120,124,134,0.45) 50%, rgba(40,42,48,0.6) 100%)", boxShadow: "inset -1px -1px 0 rgba(255,255,255,0.22)" }}
           />
           {/* the case's shadow; the booklet fills the clear case edge to edge */}
           <div className="absolute inset-0 rounded-[3px] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.55)]" />
@@ -333,13 +333,6 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
             aria-hidden
             className="absolute inset-y-0 left-0 w-[2.8%] rounded-l-[3px]"
             style={{ background: "linear-gradient(90deg, rgba(30,31,36,0.95) 0%, rgba(74,76,86,0.7) 60%, rgba(255,255,255,0.18) 62%, rgba(36,37,42,0.9) 66%)" }}
-          />
-          {/* the lid's raised frame: a narrow step inside its edge, lit on its upper and left faces and
-              shadowed on the others, so the plastic stands proud of the booklet */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute bottom-[2%] left-[4.4%] right-[2%] top-[2%] rounded-[2px]"
-            style={{ boxShadow: "inset 1px 1px 0 rgba(0,0,0,0.35), inset -1px -1px 0 rgba(255,255,255,0.1), 1px 1px 0 rgba(255,255,255,0.14), -1px -1px 0 rgba(0,0,0,0.25)" }}
           />
           {/* the clear lid over all: a bevelled edge, light on top and left and dark below and right, a long
               soft reflection across it, and a gloss that follows the pointer */}
