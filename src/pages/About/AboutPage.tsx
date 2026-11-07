@@ -468,20 +468,7 @@ export const AboutPage: React.FC = () => {
               delay={0.3}
               stagger={0.035}
             />
-            {/* a single thread of light drawn under the headline as it settles, the site's motif ("hilando fino"),
-                fading out to the right */}
-            <motion.span
-              aria-hidden
-              // (phones and tablets only: on wide screens the headline stands without it)
-              className="mt-5 block h-px w-full max-w-[26rem] origin-left sm:mt-6 lg:hidden"
-              style={{
-                background: "linear-gradient(90deg, rgba(244, 241, 237, 0.85) 0%, rgba(244, 241, 237, 0.4) 55%, rgba(244, 241, 237, 0) 100%)",
-                boxShadow: "0 0 10px rgba(244, 241, 237, 0.25)",
-              }}
-              initial={stillPage ? false : { scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ duration: 1.8, ease: EASE_HAUS, delay: 0.4 + head.split(" ").length * 0.035 }}
-            />
+            {/* (no thread of light under the headline, on any screen: the headline stands alone) */}
             {sub && (
               <RevealFlow text={sub} className={`${BODY} mt-4 max-w-[46ch] text-graphite sm:mt-6 lg:mt-6 lg:max-w-[76ch] lg:text-[1.15rem]`} delay={0.65 + head.split(" ").length * 0.035} />
             )}
