@@ -296,7 +296,7 @@ export const AboutPage: React.FC = () => {
           }}
           className="group relative inline-flex items-center gap-2 self-auto text-ink"
         >
-          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
+          <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
           {t("availability")}
           <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
         </a>
