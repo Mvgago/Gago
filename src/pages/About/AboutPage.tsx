@@ -458,7 +458,8 @@ export const AboutPage: React.FC = () => {
               ))}
           </ul>
         </div>
-        <div className="col-span-12 mt-16 flex flex-col justify-end lg:col-span-5 lg:mt-0 xl:col-span-4">
+        {/* (lifted by the call's underline offset, so that line runs level with the pictures' lower edge) */}
+        <div className="col-span-12 mt-16 flex flex-col justify-end lg:col-span-5 lg:mt-0 lg:pb-1.5 xl:col-span-4">
           <RevealWords as="p" text={s.closing} className={`${TITLE} text-ink`} />
           {/* who you would be talking to: no face, just how it works */}
           <RevealFlow text={s.closingNote} className={`${BODY} mt-5 max-w-[36ch] text-graphite`} delay={0.35} />

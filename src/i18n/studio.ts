@@ -94,7 +94,7 @@ export const STUDIO: Record<Lang, Studio> = {
     labArtCta: "Write to us.",
     workLabel: "projects",
     workTitle: "Recent work",
-    workAll: "see all projects",
+    workAll: "see all",
     closing: "It all starts with a conversation.", closingNote: "One creative direction for your brand, in every dimension. The one who listens to you is the one who carries it out, from start to finish, so everything answers to one idea.",
     process: [
       { title: "Listen", text: "Understand the project, its context and what it needs to convey, with no intermediaries." },
@@ -174,7 +174,7 @@ export const STUDIO: Record<Lang, Studio> = {
     labArtCta: "Escríbenos.",
     workLabel: "proyectos",
     workTitle: "Trabajo reciente",
-    workAll: "ver todos los proyectos",
+    workAll: "ver todos",
     closing: "Todo empieza con una conversación.", closingNote: "Una sola dirección creativa para tu marca, en todas sus dimensiones. Quien te escucha es quien lo lleva a cabo, de principio a fin, para que todo responda a una misma idea.",
     process: [
       { title: "Escuchar", text: "Entender el proyecto, su contexto y lo que tiene que transmitir, sin intermediarios." },
@@ -254,7 +254,7 @@ export const STUDIO: Record<Lang, Studio> = {
     labArtCta: "Écrivez-nous.",
     workLabel: "projets",
     workTitle: "Travaux récents",
-    workAll: "voir tous les projets",
+    workAll: "voir tout",
     closing: "Tout commence par une conversation.", closingNote: "Une seule direction créative pour votre marque, dans toutes ses dimensions. Celui qui vous écoute est celui qui le réalise, du début à la fin, pour que tout réponde à une même idée.",
     process: [
       { title: "Écouter", text: "Comprendre le projet, son contexte et ce qu'il doit transmettre, sans intermédiaires." },
@@ -334,7 +334,7 @@ export const STUDIO: Record<Lang, Studio> = {
     labArtCta: "Schreiben Sie uns.",
     workLabel: "projekte",
     workTitle: "Aktuelle Arbeiten",
-    workAll: "alle projekte ansehen",
+    workAll: "alle ansehen",
     closing: "Alles beginnt mit einem Gespräch.", closingNote: "Eine kreative Leitung für Ihre Marke, in all ihren Dimensionen. Wer Ihnen zuhört, setzt es auch um, von Anfang bis Ende, damit alles einer Idee folgt.",
     process: [
       { title: "Zuhören", text: "Das Projekt verstehen, seinen Kontext und was es vermitteln soll, ohne Zwischenstellen." },
