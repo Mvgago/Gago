@@ -303,10 +303,13 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
           <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.28 }} />
           {/* a hard white catch of the light across the mirror, two opposite blades */}
           <motion.div className="absolute inset-0 rounded-full mix-blend-screen" style={{ background: glint, WebkitMaskImage: MIRROR, maskImage: MIRROR }} />
-          {/* the title as the booklet sets it, small and light, printed on the part of the disc that shows
-              beyond the case, and held there so it can always be read */}
+          {/* light across the disc from the upper left and falling off below, so it reads as a round,
+              lit object and not a flat grey circle */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{ background: "linear-gradient(128deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 30%, transparent 50%, rgba(0,0,0,0.08) 70%, rgba(0,0,0,0.22) 100%)" }}
+          />
           <div ref={label} className="absolute inset-0 rounded-full" />
-          <span className="absolute left-[79%] top-1/2 -translate-y-1/2 whitespace-nowrap font-geo text-[8px] lowercase tracking-[0.04em] text-[#eef0f3]/40 sm:text-[10px]">grimaldi lines</span>
         </motion.div>
         {/* the jewel case, nudged back a little as the disc is drawn out */}
         <motion.div className="absolute inset-0" animate={{ x: playing ? "-2%" : "0%" }} transition={{ type: "spring", stiffness: 70, damping: 16 }}>
