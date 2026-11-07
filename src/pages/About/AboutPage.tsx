@@ -101,6 +101,52 @@ const PlainLink: React.FC<{ href: string; external?: boolean; dark?: boolean; ch
 
 const COPIED: Record<string, string> = { es: "copiado", en: "copied", fr: "copié", de: "kopiert" };
 
+// the contact's answer, turning: talking first, then the ways of making something together
+const TOGETHER: Record<string, string[]> = {
+  es: ["Hablemos.", "Creemos.", "Diseñemos.", "Hagámoslo."],
+  en: ["Let's talk.", "Let's create.", "Let's design.", "Let's make it."],
+  fr: ["Parlons-en.", "Créons.", "Imaginons.", "Faisons-le."],
+  de: ["Sprechen wir darüber.", "Gestalten wir.", "Entwerfen wir.", "Machen wir es."],
+};
+
+/**
+ * A word that turns through a few others once it is in view: each rises out of a soft blur as the last
+ * one lifts away, and it comes back to the first. Still, it stays on the first.
+ */
+const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, still }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [i, setI] = useState(0);
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setShown(e.isIntersecting), { threshold: 0.6 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    if (still || !shown) return;
+    const id = window.setInterval(() => setI((n) => (n + 1) % words.length), 2600);
+    return () => window.clearInterval(id);
+  }, [still, shown, words.length]);
+  return (
+    <span ref={ref} className="inline-grid align-baseline">
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.span
+          key={words[i]}
+          className="col-start-1 row-start-1 whitespace-nowrap"
+          initial={{ opacity: 0, y: "0.35em", filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: "-0.35em", filter: "blur(6px)" }}
+          transition={{ duration: 0.7, ease: EASE_HAUS }}
+        >
+          {words[i]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+};
+
 /**
  * The address, which copies itself when pressed: many would rather write from their own mail, so a
  * press puts it in their hands, the word turning to "copied" for a moment and back. Where the clipboard
@@ -594,7 +640,17 @@ export const AboutPage: React.FC = () => {
             <h2 className={`${SMALL} text-platinum/55`}>
               {s.contactLabel}
             </h2>
-            <RevealWords as="p" text={s.contactLead} className="mt-4 block max-w-[24ch] font-geo text-[2.1rem] font-medium leading-[1.06] tracking-[0.005em] text-platinum sm:mt-6 md:text-[3.2rem]" delay={0.2} />
+            {(() => {
+              // the question, then its answer turning through ways of making something together
+              const cut = s.contactLead.lastIndexOf("?") + 1;
+              const head = cut > 0 ? s.contactLead.slice(0, cut) : s.contactLead;
+              return (
+                <p className="mt-4 block max-w-[24ch] font-geo text-[2.1rem] font-medium leading-[1.06] tracking-[0.005em] text-platinum sm:mt-6 md:text-[3.2rem]">
+                  <RevealWords as="span" text={head} delay={0.2} />{" "}
+                  {cut > 0 && <TurningWord words={TOGETHER[lang] ?? TOGETHER.es} still={stillPage} />}
+                </p>
+              );
+            })()}
           </div>
           {/* how it works, in three plain lines, and the ways in (on phones these come after the form) */}
           <div className="col-span-12 lg:col-span-4">
