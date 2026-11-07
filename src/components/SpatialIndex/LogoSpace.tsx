@@ -103,7 +103,8 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
     key.shadow.radius = 15;
-    key.shadow.blurSamples = 24;
+    // (fewer samples on touch screens: the soft shadow costs every frame and phones dropped frames)
+    key.shadow.blurSamples = touch ? 12 : 24;
     key.shadow.bias = -0.0008;
     // Tight frustum around the piece (more shadow detail), still wider than the floor
     Object.assign(key.shadow.camera, { left: -4.5, right: 4.5, top: 4.5, bottom: -4.5, near: 1, far: 14 });
@@ -171,6 +172,8 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
     const start = last;
     let raf = 0;
 
+    // the letters' spring: how briskly they travel (higher, quicker), always settling without overshoot
+    const SPRING = 3.6;
     const tick = () => {
       const now = performance.now();
       const dt = Math.min((now - last) / 1000, 0.05);
@@ -190,16 +193,32 @@ const LogoSpace: React.FC<Props> = ({ active, diving }) => {
       // Letters recompose for the hovered (or chosen) section and hold it.
       // Touch screens have no hover, so there the piece runs through the
       // compositions by itself, returning to the logo between each.
-      const idle = touch && !reduced ? IDLE_CYCLE[Math.floor(t / 3.2) % IDLE_CYCLE.length] : 0;
+      // (the first change comes within a second of opening, then one every 3.2 s)
+      const idle = touch && !reduced ? IDLE_CYCLE[Math.floor((t + 2.5) / 3.2) % IDLE_CYCLE.length] : 0;
       const L = LAYOUTS[a === null ? (isDiving ? 0 : idle) : a + 1];
+      // Each letter moves on a critically damped spring: it gathers speed, then settles without a jolt
+      // at either end (an exponential ease set off at full speed and then crawled)
       glyphs.forEach((h, i) => {
         const [dx, dy, dz, ry, rx] = L[i];
         const home = h.userData.home as THREE.Vector3;
-        h.position.x = ease(h.position.x, home.x + dx, 2.4);
-        h.position.y = ease(h.position.y, home.y + dy, 2.4);
-        h.position.z = ease(h.position.z, home.z + dz, 2.4);
-        h.rotation.y = ease(h.rotation.y, ry, 2.4);
-        h.rotation.x = ease(h.rotation.x, rx, 2.4);
+        const v = (h.userData.vel ??= [0, 0, 0, 0, 0]) as number[];
+        const cur = [h.position.x, h.position.y, h.position.z, h.rotation.y, h.rotation.x];
+        const to = [home.x + dx, home.y + dy, home.z + dz, ry, rx];
+        for (let j = 0; j < 5; j++) {
+          if (reduced) {
+            cur[j] = to[j];
+            continue;
+          }
+          // a few small steps per frame, so a slow frame never throws the spring off
+          const n = Math.ceil(dt / 0.008);
+          const h_ = dt / n;
+          for (let q = 0; q < n; q++) {
+            v[j] += (SPRING * SPRING * (to[j] - cur[j]) - 2 * SPRING * v[j]) * h_;
+            cur[j] += v[j] * h_;
+          }
+          motion += Math.abs(v[j]) * dt + Math.abs(to[j] - cur[j]) * 1e-3;
+        }
+        [h.position.x, h.position.y, h.position.z, h.rotation.y, h.rotation.x] = cur;
       });
 
       // The sculpture turns with the cursor, and sways slowly at rest.
