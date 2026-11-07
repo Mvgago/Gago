@@ -1696,8 +1696,7 @@ function applyHour() {
   hemi.color.copy(cur.hemiS); hemi.groundColor.copy(cur.hemiG); hemi.intensity = cur.hemiI;
   backMat.uniforms.top.value.copy(cur.top); backMat.uniforms.bot.value.copy(cur.bot); ground.material.opacity = cur.shadow;
   document.body.style.background = '#' + cur.bot.getHexString();
-  // (on the studio page a tone under: in the dark room the white floor glared)
-  renderer.toneMappingExposure = cur.exp * (BARE ? 0.82 : 1); scene.environmentIntensity = cur.env * (BARE ? 0.85 : 1);
+  renderer.toneMappingExposure = cur.exp; scene.environmentIntensity = cur.env;
   lamps.forEach((l) => (l.intensity = 2.4 * cur.lamps)); M.lamp.emissiveIntensity = 1.6 * cur.lamps;
 }
 function setHour(k) { from = snap(); to = HOURS[k]; mixT = 0; mixFrom = -1; redrawShadows(); document.body.classList.toggle('night', k === 'night'); }
