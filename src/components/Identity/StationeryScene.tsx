@@ -323,8 +323,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       card.rotation.set(0.06, -0.18, 0.04);
       g.add(card);
       // three beach pebbles from the ría, worn smooth, resting on the tissue beside the card
-      // a beach stone's skin: mottled in soft patches, grained, flecked at two sizes, a pale vein of quartz
-      // round it, and the same drawing as a faint relief, so it reads as worn stone and not a smooth bead
+      // a beach stone's skin: mottled in soft patches, grained, flecked at two sizes (a quartz vein read as a
+      // painted ring once wrapped round the stone), and the same drawing as a faint relief, so it reads as worn stone and not a smooth bead
       const stone = (base: [number, number, number], speck: string) => {
         const S = 512, [sc, sx] = canvas(S, S);
         sx.fillStyle = `rgb(${base.join(",")})`;
@@ -351,13 +351,6 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
           sx.arc(Math.random() * S, Math.random() * S, 1.5 + Math.random() * 3.5, 0, Math.PI * 2);
           sx.fill();
         }
-        // the vein, wandering round
-        sx.strokeStyle = "rgba(245,242,235,0.55)";
-        sx.lineWidth = 3 + Math.random() * 3;
-        sx.beginPath();
-        sx.moveTo(0, S * (0.3 + Math.random() * 0.4));
-        sx.bezierCurveTo(S * 0.3, S * Math.random(), S * 0.7, S * Math.random(), S, S * (0.3 + Math.random() * 0.4));
-        sx.stroke();
         const map = tex(sc);
         const bump = tex(sc, false);
         return new THREE.MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 2.4, roughness: 0.72 });
