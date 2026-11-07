@@ -303,11 +303,10 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
           <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.28 }} />
           {/* a hard white catch of the light across the mirror, two opposite blades */}
           <motion.div className="absolute inset-0 rounded-full mix-blend-screen" style={{ background: glint, WebkitMaskImage: MIRROR, maskImage: MIRROR }} />
-          {/* what turns: only the title, set straight and small in a plain part of the mirror, as a disc's
-              discreet print, so the slow turn can just be followed */}
-          <div ref={label} className="absolute inset-0 rounded-full">
-            <span className="absolute left-1/2 top-[64%] -translate-x-1/2 whitespace-nowrap font-mono text-[6px] uppercase tracking-[0.3em] text-[#2c2f36]/40">grimaldi lines</span>
-          </div>
+          {/* the title as the booklet sets it, small and light, printed on the part of the disc that shows
+              beyond the case, and held there so it can always be read */}
+          <div ref={label} className="absolute inset-0 rounded-full" />
+          <span className="absolute left-[79%] top-1/2 -translate-y-1/2 whitespace-nowrap font-geo text-[8px] lowercase tracking-[0.04em] text-[#eef0f3]/75 sm:text-[10px]">grimaldi lines</span>
         </motion.div>
         {/* the jewel case, nudged back a little as the disc is drawn out */}
         <motion.div className="absolute inset-0" animate={{ x: playing ? "-2%" : "0%" }} transition={{ type: "spring", stiffness: 70, damping: 16 }}>
