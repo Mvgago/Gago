@@ -113,7 +113,8 @@ export const ArtworkPage: React.FC = () => {
         {/* the pieces on a drum that turns as the page is scrolled, repeated round it until there are more */}
         <IllustrationDrum
           plates={sample}
-          faces={12}
+          faces={10}
+          caption={(plate) => `${plate.title ?? s.labArtLabel} – 2026`}
           onOpen={setOpen}
           register={(i, n) => {
             plates.current[i] = n;
