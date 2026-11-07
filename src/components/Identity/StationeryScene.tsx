@@ -1307,26 +1307,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // a tall window of two panes, its frame a soft, pale shade far from the glass, as in a product
     // photograph (fine dark mullions all over read as grey bars laid across the table)
     // (no window frame across it any more: its bars read as stripes laid over the table)
-    // and the leaves of a plant by the window, soft and out of focus, crossing one corner
-    x.filter = "blur(9px)";
-    x.fillStyle = "#5e5e5e";
-    const leaf = (cx: number, cy: number, l: number, w: number, a: number) => {
-      x.save();
-      x.translate(cx, cy);
-      x.rotate(a);
-      x.beginPath();
-      x.ellipse(0, 0, l, w, 0, 0, Math.PI * 2);
-      x.fill();
-      x.restore();
-    };
-    // (set across the upper part of the light, which falls on the far side of the table, behind the pieces)
-    [[150, 150, 80, 22, 0.6], [230, 110, 70, 19, 1.1], [120, 230, 74, 20, 0.2], [260, 190, 60, 16, 0.9], [190, 270, 56, 15, -0.3], [320, 140, 52, 14, 1.4], [340, 230, 48, 13, 0.5]].forEach(([cx, cy, l, w, a]) => leaf(cx, cy, l, w, a));
-    x.lineWidth = 7;
-    x.strokeStyle = "#5e5e5e";
-    x.beginPath();
-    x.moveTo(60, 330);
-    x.quadraticCurveTo(190, 220, 360, 90);
-    x.stroke();
+    // (no leaves either: their soft shapes fell as round dark spots over the swatch book and the corners)
     sun.map = tex(c);
   }
   scene.add(sun, sun.target);
