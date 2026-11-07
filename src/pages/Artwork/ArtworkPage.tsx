@@ -212,7 +212,7 @@ export const ArtworkPage: React.FC = () => {
 // out to a thin rim, with the faintest trace of the data rings over it
 const CD_BODY = [
   "repeating-radial-gradient(circle, rgba(255,255,255,0.05) 0 1px, rgba(0,0,0,0.03) 1px 2.5px)",
-  "radial-gradient(circle, transparent 0 12%, rgba(200,206,216,0.2) 12% 21%, rgba(230,232,238,0.4) 21% 21.8%, rgba(180,186,196,0.22) 21.8% 27%, rgba(110,114,124,0.9) 27% 28%, #7a7d85 28% 70%, #6e7179 70% 98.6%, #989ba2 98.6% 99.4%, rgba(70,72,80,0.9) 99.4% 100%)",
+  "radial-gradient(circle, transparent 0 12%, rgba(200,206,216,0.2) 12% 21%, rgba(230,232,238,0.4) 21% 21.8%, rgba(180,186,196,0.22) 21.8% 27%, rgba(110,114,124,0.9) 27% 28%, #5f626a 28% 70%, #55585f 70% 98.6%, #7c7f86 98.6% 99.4%, rgba(70,72,80,0.9) 99.4% 100%)",
 ].join(", ");
 // the mirror only, where the colours play: from the stacking ring out to the rim
 const MIRROR = "radial-gradient(circle, transparent 0 28%, #000 28.5% 98.5%, transparent 99%)";
@@ -274,7 +274,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
   };
 
   // where the disc stands: inside the case, out at rest, drawn out while playing
-  const out = !seen ? "0%" : playing ? "50%" : "30%";
+  const out = !seen ? "0%" : playing ? "34%" : "22%";
 
   return (
     <a
@@ -300,7 +300,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
           animate={{ x: out, rotate: seen ? 0 : -40 }}
           transition={seen && !playing && !hover ? { type: "spring", stiffness: 60, damping: 11, mass: 1, delay: 0.25 } : { type: "spring", stiffness: 70, damping: 16 }}
         >
-          <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.38 }} />
+          <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.28 }} />
           {/* a hard white catch of the light across the mirror, two opposite blades */}
           <motion.div className="absolute inset-0 rounded-full mix-blend-screen" style={{ background: glint, WebkitMaskImage: MIRROR, maskImage: MIRROR }} />
           {/* what turns: only the title, set straight and small in a plain part of the mirror, as a disc's
