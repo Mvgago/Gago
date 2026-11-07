@@ -376,9 +376,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
         sx.globalAlpha = 1;
         const map = tex(sc);
         const bump = tex(sc, false);
-        // matte, the way a dry beach stone is, but not evenly: smoother where it was worn most, so its sheen
-        // breaks up over it (the drawing doubles as that roughness); its relief faint
-        return new THREE.MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 0.9, roughness: 0.92, roughnessMap: bump });
+        // fully matte and porous, as a dry beach stone is: no sheen at all, the room hardly reflected in it,
+        // its grain as a fine relief
+        return new THREE.MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 1.3, roughness: 1, envMapIntensity: 0.35 });
       };
       const pebble = (r: number, sx: number, sz: number, mat: THREE.Material, x: number, z: number, rot: number, seed: number) => {
         const geo = new THREE.SphereGeometry(r, 48, 32);
@@ -391,9 +391,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
           // a beach stone, not an egg: lopsided (fuller at one end), its outline gently lumpy, its top
           // swelling unevenly, and its underside nearly flat where it lies
           const ux = vx / r, uz = vz / r;
-          const lump = 1 + Math.sin(ux * 2.3 + seed) * 0.07 + Math.sin(uz * 2.9 + seed * 1.7) * 0.06 + Math.sin((ux + uz) * 4.1 + seed * 2.3) * 0.03;
-          const taper = 1 + ux * 0.12 * Math.sin(seed);
-          const top = vy < 0 ? 0.2 : 0.4 * (1 + Math.sin(ux * 3.1 + uz * 1.7 + seed) * 0.12);
+          // (rounder than it was: the lumps only a breath, the ends barely uneven)
+          const lump = 1 + Math.sin(ux * 2.3 + seed) * 0.035 + Math.sin(uz * 2.9 + seed * 1.7) * 0.03;
+          const taper = 1 + ux * 0.06 * Math.sin(seed);
+          const top = vy < 0 ? 0.24 : 0.46 * (1 + Math.sin(ux * 3.1 + uz * 1.7 + seed) * 0.05);
           p.setXYZ(k, vx * sx * lump, vy * top, vz * sz * lump * taper);
         }
         geo.computeVertexNormals();
