@@ -195,17 +195,19 @@ export const SiteHeader: React.FC = () => {
       >
         <div
           aria-hidden
-          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 transition-opacity duration-500 ${pathname === "/about" ? "bottom-0 border-b" : "bottom-0 border-b border-ink/[0.06] backdrop-blur-md"} ${
+          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 transition-opacity duration-500 ${pathname === "/about" ? "bottom-0 border-b backdrop-blur-xl" : "bottom-0 border-b border-ink/[0.06] backdrop-blur-md"} ${
             (onLight || pathname === "/artwork") && scrolled && !open ? "opacity-100" : "opacity-0"
           }`}
           // Translucent, so light falling on the page behind (as on "info") carries on under it
-                    // (the studio: solid, so nothing shows through behind the logo, closed by a single faint line of light)
+                    // (the studio: nearly solid and heavily blurred, so nothing reads through behind the logo, yet it
+                    // takes the tone of the lit wall under it instead of standing a shade darker; closed by a
+                    // single faint line of light)
           style={{
             background:
               pathname === "/artwork"
-                ? "#0f0e10cc"
+                ? "#232227cc"
                 : pathname === "/about"
-                  ? "#2c2827"
+                  ? "rgba(56,52,50,0.82)"
                   : `${WALL}cc`,
             borderColor: pathname === "/artwork" ? "rgba(255,255,255,0.06)" : pathname === "/about" ? "rgba(244,241,237,0.09)" : undefined,
           }}
