@@ -394,7 +394,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
 
       {/* The disciplines, a screen each on large screens, a hairline between one and the next */}
       {/* on a clean ground of its own, out to the screen's right edge: the room's light stays behind the frame */}
-      <div className="relative z-10 col-span-12 lg:col-span-5 lg:-ml-8 lg:-mr-8 lg:bg-[var(--fh-panel,#efeef0)] lg:pl-16 lg:pr-8 xl:col-span-4">
+      <div className="relative z-10 col-span-12 lg:col-span-5 lg:-ml-8 lg:-mr-8 lg:bg-[var(--fh-panel,#efeef0)] lg:pl-10 lg:pr-8 xl:col-span-4">
         {s.disciplines.map((d, i) => {
           return (
             <div
