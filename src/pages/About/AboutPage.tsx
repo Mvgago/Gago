@@ -135,6 +135,11 @@ const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, sti
     // into the line before) and a little room below for descenders: the word rises out of the top whole,
     // as the next rises in from below; both share the one cell, so nothing ever leaves the clip
     <span ref={ref} className="relative -mb-[0.2em] inline-grid overflow-hidden pb-[0.2em] align-top">
+      {/* the longest word, unseen, holds the cell at its width, so the line never breaks differently as the
+          words change (on a phone a longer one used to drop to the next line and back) */}
+      <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-nowrap">
+        {words.reduce((a, b) => (b.length > a.length ? b : a), "")}
+      </span>
       <AnimatePresence initial={false}>
         <motion.span
           key={words[i]}
