@@ -247,7 +247,7 @@ export const SiteHeader: React.FC = () => {
             </motion.div>
           </div>
 
-          <style>{`@keyframes fh-bloom{0%,100%{opacity:0;transform:scale(.9)}35%{opacity:.85;transform:scale(1.15)}70%{opacity:0;transform:scale(1.3)}}@keyframes fh-halo{0%{transform:scale(1);opacity:0}12%{opacity:.75}80%,100%{transform:scale(1.35,1.6);opacity:0}}@keyframes fh-open{0%,100%{letter-spacing:.08em}14%,30%{letter-spacing:.2em}44%{letter-spacing:.08em}}@keyframes fh-sheen{0%,8%{transform:translateX(-110%)}52%,100%{transform:translateX(70%)}}@keyframes fh-nudge{0%,100%{transform:scale(1)}18%{transform:scale(1.025)}40%{transform:scale(1)}}@keyframes fh-draw{0%,55%,100%{width:.625rem}20%,35%{width:1rem}}@keyframes fh-thread{0%,6%{transform:scaleX(0);opacity:1}30%{transform:scaleX(1);opacity:1}48%,100%{transform:scaleX(1);opacity:0}}@media (prefers-reduced-motion:reduce){.fh-invite *{animation:none!important}}`}</style>
+          <style>{`@keyframes fh-bloom{0%,100%{opacity:0;transform:scale(.9)}35%{opacity:.85;transform:scale(1.15)}70%{opacity:0;transform:scale(1.3)}}@keyframes fh-halo{0%{transform:scale(1);opacity:0}12%{opacity:.75}80%,100%{transform:scale(1.35,1.6);opacity:0}}@keyframes fh-open{0%,100%{letter-spacing:.08em}14%,30%{letter-spacing:.2em}44%{letter-spacing:.08em}}@keyframes fh-sheen{0%,8%{transform:translateX(-110%)}52%,100%{transform:translateX(70%)}}@keyframes fh-nudge{0%,100%{transform:scale(1)}18%{transform:scale(1.025)}40%{transform:scale(1)}}@keyframes fh-draw{0%,55%,100%{width:.625rem}20%,35%{width:1rem}}@keyframes fh-thread{0%,6%{transform:scaleX(0);opacity:1}30%,42%{transform:scaleX(1);opacity:1}62%,100%{transform:scaleX(1);opacity:0}}@media (prefers-reduced-motion:reduce){.fh-invite *{animation:none!important}}`}</style>
           <div style={masked ? { clipPath: MASK } : undefined}>
           <motion.div variants={UNFOLD} custom={{ delay: 0.12 } satisfies Unfold} animate={unfold}>
           <button
@@ -275,12 +275,12 @@ export const SiteHeader: React.FC = () => {
             {glow && (
               // the site's own motif ("hilando fino"): a single thread of light drawn along the pill's lower
               // edge, left to right, fading out as it reaches the end, while the sign's short line draws out
-              <span aria-hidden className="pointer-events-none absolute inset-x-3 -bottom-px h-px overflow-hidden">
+              <span aria-hidden className="pointer-events-none absolute inset-x-2 -bottom-[3px] h-[1.5px]">
                 <span
-                  className="absolute inset-0 origin-left"
+                  className="absolute inset-0 origin-left rounded-full"
                   style={{
-                    background: "linear-gradient(90deg, rgba(244,241,237,0) 0%, rgba(244,241,237,0.9) 45%, rgba(244,241,237,0.35) 85%, rgba(244,241,237,0) 100%)",
-                    boxShadow: "0 0 8px rgba(244,241,237,0.45)",
+                    background: "linear-gradient(90deg, rgba(244,241,237,0.15) 0%, rgba(255,255,255,1) 45%, rgba(244,241,237,0.6) 85%, rgba(244,241,237,0) 100%)",
+                    boxShadow: "0 0 10px 1px rgba(244,241,237,0.6)",
                     animation: "fh-thread 7s cubic-bezier(.65,0,.35,1) 2",
                   }}
                 />
