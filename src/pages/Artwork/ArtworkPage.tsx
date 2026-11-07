@@ -212,7 +212,7 @@ export const ArtworkPage: React.FC = () => {
 // out to a thin rim, with the faintest trace of the data rings over it
 const CD_BODY = [
   "repeating-radial-gradient(circle, rgba(255,255,255,0.018) 0 1px, rgba(0,0,0,0.01) 1px 2.5px)",
-  "radial-gradient(circle, transparent 0 12%, rgba(200,206,216,0.2) 12% 21%, rgba(230,232,238,0.4) 21% 21.8%, rgba(180,186,196,0.22) 21.8% 27%, rgba(110,114,124,0.9) 27% 28%, #8a8d95 28% 70%, #7f828a 70% 98.6%, #a6a9b0 98.6% 99.4%, rgba(70,72,80,0.9) 99.4% 100%)",
+  "radial-gradient(circle, transparent 0 12%, rgba(200,206,216,0.2) 12% 21%, rgba(230,232,238,0.4) 21% 21.8%, rgba(180,186,196,0.22) 21.8% 27%, rgba(110,114,124,0.9) 27% 28%, #a7aab1 28% 70%, #9a9da5 70% 98.6%, #c3c6cc 98.6% 99.4%, rgba(70,72,80,0.9) 99.4% 100%)",
 ].join(", ");
 // the mirror only, where the colours play: from the stacking ring out to the rim
 const MIRROR = "radial-gradient(circle, transparent 0 28%, #000 28.5% 98.5%, transparent 99%)";
@@ -255,7 +255,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
   // the pointer a little, as when a disc is tilted in the hand
   const light = useSpring(useMotionValue(20), { stiffness: 60, damping: 20 });
   const rainbow = useMotionTemplate`conic-gradient(from ${light}deg, rgba(255,140,200,0) 0%, rgba(255,140,200,0.55) 6%, rgba(255,226,140,0.5) 13%, rgba(150,240,190,0.5) 20%, rgba(130,190,255,0.55) 28%, rgba(200,150,255,0.5) 35%, rgba(200,150,255,0) 43%, rgba(255,140,200,0) 50%, rgba(255,140,200,0.55) 56%, rgba(255,226,140,0.5) 63%, rgba(150,240,190,0.5) 70%, rgba(130,190,255,0.55) 78%, rgba(200,150,255,0.5) 85%, rgba(200,150,255,0) 93%, rgba(255,140,200,0) 100%)`;
-  const glint = useMotionTemplate`conic-gradient(from ${light}deg, transparent 0 40%, rgba(255,255,255,0.16) 44%, transparent 47% 90%, rgba(255,255,255,0.12) 94%, transparent 97%)`;
+  const glint = useMotionTemplate`conic-gradient(from ${light}deg, transparent 0 40%, rgba(255,255,255,0.3) 44%, transparent 47% 90%, rgba(255,255,255,0.24) 94%, transparent 97%)`;
   const move = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || still) return;
     const r = e.currentTarget.getBoundingClientRect();
@@ -289,7 +289,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
       onPointerMove={move}
       onPointerLeave={leave}
     >
-      <motion.div className="relative aspect-square w-[78%] md:w-[80%]" style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}>
+      <motion.div className="relative aspect-square w-[62%] sm:w-[70%] md:w-[80%]" style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}>
         {/* the disc, behind the case, its own size as the booklet's; the colours stay with the light
             (and drift with the pointer) while its small print turns */}
         <motion.div
@@ -300,7 +300,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
           animate={{ x: out, rotate: seen ? 0 : -40 }}
           transition={seen && !playing && !hover ? { type: "spring", stiffness: 60, damping: 11, mass: 1, delay: 0.25 } : { type: "spring", stiffness: 70, damping: 16 }}
         >
-          <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.28 }} />
+          <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.42 }} />
           {/* a hard white catch of the light across the mirror, two opposite blades */}
           <motion.div className="absolute inset-0 rounded-full mix-blend-screen" style={{ background: glint, WebkitMaskImage: MIRROR, maskImage: MIRROR }} />
           {/* light across the disc from the upper left and falling off below, so it reads as a round,
