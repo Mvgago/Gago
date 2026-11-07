@@ -4,7 +4,6 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
-import { GTAOPass } from "three/examples/jsm/postprocessing/GTAOPass.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 
 /**
@@ -206,7 +205,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   })();
   // (dark and close: where a thing meets the table the light can't reach, and without it they seem to float)
   const contact = (w: number, d: number) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.12, d * 1.12), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.7 }));
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.12, d * 1.12), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.85 }));
     m.rotation.x = -Math.PI / 2;
     m.position.set(0.035, 0.0015, 0.03);
     m.renderOrder = 1;
@@ -1299,13 +1298,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   /* ---------- post ---------- */
   const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
   composer.addPass(new RenderPass(scene, camera));
-  // ambient occlusion: the dense dark right where each piece meets the table and in its corners, which
-  // is what sets a thing down on a surface instead of leaving it hovering over it
-  const ao = new GTAOPass(scene, camera, 1, 1);
-  ao.output = GTAOPass.OUTPUT.Default;
-  ao.blendIntensity = 0.7;
-  ao.updateGtaoMaterial({ radius: 0.18, distanceExponent: 1.6, thickness: 0.6, scale: 1.2, samples: 16 });
-  composer.addPass(ao);
+  // (no ambient occlusion pass: its first frames laid dark blotches over the pieces before it settled,
+  // and it weighed on phones; the contact shadows set things down instead)
 
   composer.addPass(new OutputPass());
 

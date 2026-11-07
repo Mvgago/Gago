@@ -873,14 +873,15 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   composer.addPass(new OutputPass());
 
   /* ---------- size and loop ---------- */
+  let reach = 1;
   const fit = () => {
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
     camera.aspect = w / h;
-    // a narrow frame (a phone) widens its view to keep most of the stand's width in, instead of
-    // cutting into it as close as a wide one does
-    const WIDE = 1.4;
-    camera.fov = camera.aspect >= WIDE ? 36 : Math.min(70, THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(THREE.MathUtils.degToRad(18)) * WIDE * 0.82) / camera.aspect)));
+    // a narrow frame (a phone) draws the camera back, so the stand's width stays in instead of being cut
+    // as close as a wide frame cuts it
+    const WIDE = 1.6;
+    reach = camera.aspect >= WIDE ? 1 : Math.min(2.4, (WIDE / camera.aspect) * 0.9);
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
@@ -911,14 +912,14 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const u = Math.min(1, t / 4);
     const e = 0.5 - 0.5 * Math.cos(Math.PI * u);
     const sway = Math.sin(t * 0.14) * 0.07 * e;
-    sph.set(home.radius * (1.05 - 0.05 * e), home.phi - 0.02 * (1 - e), home.theta + 0.16 * (1 - e) + sway);
+    sph.set(home.radius * reach * (1.05 - 0.05 * e), home.phi - 0.02 * (1 - e), home.theta + 0.16 * (1 - e) + sway);
     place(sph);
     facePeople();
     // kept on the stand as the camera breathes in and out
     (bokeh.uniforms as unknown as Record<string, { value: number }>).focus.value = camera.position.distanceTo(look);
     composer.render();
   };
-  place(reduced ? home : new THREE.Spherical(home.radius * 1.05, home.phi - 0.02, home.theta + 0.16));
+  place(reduced ? new THREE.Spherical(home.radius * reach, home.phi, home.theta) : new THREE.Spherical(home.radius * reach * 1.05, home.phi - 0.02, home.theta + 0.16));
   const io = new IntersectionObserver(([entry]) => renderer.setAnimationLoop(entry.isIntersecting && !reduced ? loop : null), { rootMargin: "-15% 0px" });
   try {
     await renderer.compileAsync(scene, camera);
