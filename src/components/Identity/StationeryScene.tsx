@@ -1348,6 +1348,19 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     composer.render();
   };
   const io = new IntersectionObserver(([entry]) => renderer.setAnimationLoop(entry.isIntersecting && !reduced ? loop : null), { rootMargin: "-15% 0px" });
+  // on phones no relief maps at all: their GPUs broke them into round black spots once the scene was live;
+  // the colour textures carry the linen, stone and concrete at that size
+  if (phoneGpu)
+    scene.traverse((o) => {
+      const mats = (o as THREE.Mesh).material;
+      (Array.isArray(mats) ? mats : mats ? [mats] : []).forEach((m) => {
+        const sm = m as THREE.MeshStandardMaterial;
+        if (sm.bumpMap) {
+          sm.bumpMap = null;
+          sm.needsUpdate = true;
+        }
+      });
+    });
   try {
     await renderer.compileAsync(scene, camera);
   } catch {
