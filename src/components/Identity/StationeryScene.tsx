@@ -310,10 +310,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       sign(x, 300, 120, 48, 4);
       x.textAlign = "center";
       x.font = "italic 40px Georgia, serif";
-      x.fillText("Benvida.", 300, 260);
+      x.fillText("Bienvenida.", 300, 260);
       x.fillStyle = "#6f767a";
       x.font = `20px ${SANS}`;
-      x.fillText("unha lembranza da ría para levar", 300, 310);
+      x.fillText("un recuerdo de la ría para llevar", 300, 310);
       const card = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.008, 0.4), [
         new THREE.MeshStandardMaterial({ color: PAPER }), new THREE.MeshStandardMaterial({ color: PAPER }),
         new THREE.MeshStandardMaterial({ map: tex(c), roughness: 0.8 }), new THREE.MeshStandardMaterial({ color: PAPER }),
@@ -524,7 +524,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     x.fillStyle = "#7d8488";
     x.font = `20px ${SANS}`;
     x.fillText("directora", 70, 414);
-    x.fillText("ola@ourela.gal · +34 981 000 404", 70, 480);
+    x.fillText("hola@ourela.es · +34 981 000 404", 70, 480);
     x.fillStyle = "#d0664a";
     x.fillRect(70, 440, 34, 2);
     // the sign and the name of the house, printed in graphite: silver vanishes on white card
@@ -676,12 +676,12 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   const fan = new THREE.Group();
   {
     const chips: [string, string, string][] = [
-      ["#e6dccb", "area", "#2b2e32"],
+      ["#e6dccb", "arena", "#2b2e32"],
       ["#a9c4c3", "salitre", "#2b2e32"],
       ["#6f8f5e", "algas", "#f7f4ee"],
-      ["#d0664a", "tella", "#f7f4ee"],
+      ["#d0664a", "teja", "#f7f4ee"],
       ["#2f6f73", "mar", "#f7f4ee"],
-      ["#1f2a30", "noite", "#f7f4ee"],
+      ["#1f2a30", "noche", "#f7f4ee"],
     ];
     const SL = 1.7, SW = 0.42;
     chips.forEach(([col, name, ink], i) => {
@@ -939,11 +939,11 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     x.shadowColor = "rgba(0,0,0,0.35)";
     x.shadowBlur = 8;
     x.font = "52px Georgia, serif";
-    x.fillText("Volver", 34, 700);
-    x.fillText("á ourela.", 34, 758);
+    x.fillText("Vuelve", 34, 700);
+    x.fillText("a Ourela.", 34, 758);
     x.font = `500 21px ${SANS2}`;
     x.fillStyle = "#ffffff";
-    x.fillText("Seis habitacións fronte á ría", 36, 800);
+    x.fillText("Seis habitaciones frente a la ría", 36, 800);
     x.shadowColor = "transparent";
     x.shadowBlur = 0;
     x.beginPath();
@@ -958,14 +958,14 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // the rooms, as a quiet list: name, a line about it, the price, a hairline between
     x.fillStyle = "#1f2a30";
     x.font = "italic 30px Georgia, serif";
-    x.fillText("Habitacións", 34, 980);
+    x.fillText("Habitaciones", 34, 980);
     const rooms: [string, string, string][] = [
-      ["Salitre", "vista á ría · 24 m²", "140 €"],
-      ["Area", "terraza ao sur · 20 m²", "120 €"],
-      ["Cons", "xanela ao xardín · 18 m²", "110 €"],
-      ["Ourizo", "baixo cuberta · 22 m²", "125 €"],
-      ["Faro", "a máis alta · 26 m²", "150 €"],
-      ["Ribeira", "porta á rúa · 19 m²", "115 €"],
+      ["Salitre", "vista a la ría · 24 m²", "140 €"],
+      ["Arena", "terraza al sur · 20 m²", "120 €"],
+      ["Cons", "ventana al jardín · 18 m²", "110 €"],
+      ["Erizo", "bajo cubierta · 22 m²", "125 €"],
+      ["Faro", "la más alta · 26 m²", "150 €"],
+      ["Ribeira", "puerta a la calle · 19 m²", "115 €"],
     ];
     rooms.forEach(([name, line, price], i) => {
       const y = 1060 + i * 120;
@@ -986,10 +986,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // the address and the booking line at the foot
     x.fillStyle = "#1f2a30";
     x.font = "italic 26px Georgia, serif";
-    x.fillText("Como chegar", 34, 1860);
+    x.fillText("Cómo llegar", 34, 1860);
     x.fillStyle = "#7d8488";
     x.font = `15px ${SANS2}`;
-    ["Rúa da Ribeira 4, 15350 Cedeira", "A 45 minutos de Ferrol", "ola@ourela.gal · +34 981 000 404"].forEach((l, i) => x.fillText(l, 34, 1900 + i * 28));    screenMap = tex(c);
+    ["Calle Ribeira 4, 15350 Cedeira", "A 45 minutos de Ferrol", "hola@ourela.es · +34 981 000 404"].forEach((l, i) => x.fillText(l, 34, 1900 + i * 28));    screenMap = tex(c);
     screenMap.repeat.set(1, 993 / H);
     screenMap.offset.y = 1 - 993 / H;
 
@@ -1035,16 +1035,16 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     panelFace((x) => {
       x.fillStyle = "#4f6b70";
       x.font = "italic 46px Georgia, serif";
-      x.fillText("A casa", 60, 150);
+      x.fillText("La casa", 60, 150);
       x.fillStyle = MIST;
       x.fillRect(60, 178, 70, 3);
       x.fillStyle = "#2b2e32";
       x.font = "26px Georgia, serif";
-      ["Seis habitacións", "fronte ao mar,", "nunha casa de", "pedra de 1908."].forEach((l, i) => x.fillText(l, 60, 270 + i * 40));
+      ["Seis habitaciones", "frente al mar,", "en una casa de", "piedra de 1908."].forEach((l, i) => x.fillText(l, 60, 270 + i * 40));
       // the text, set as print is: a serif at reading size, ragged right
       x.fillStyle = "#5a6064";
       x.font = "19px Georgia, serif";
-      ["Unha casa de indianos na ribeira,", "restaurada pedra a pedra. Seis", "habitacións, todas co mar diante;", "almorzo na mesa grande, con pan", "do forno da vila e marmelada de", "figo feita na casa."].forEach((l, i) => x.fillText(l, 60, 470 + i * 30));
+      ["Una casa de indianos en la ribera,", "restaurada piedra a piedra. Seis", "habitaciones, todas frente al mar;", "desayuno en la mesa grande, con pan", "del horno del pueblo y mermelada", "de higo hecha en casa."].forEach((l, i) => x.fillText(l, 60, 470 + i * 30));
       // the house, photographed
       const img = photos.facade, bw = 380, bh = 300, bx = 60, by = 690;
       const sc = Math.max(bw / img.width, bh / img.height);
@@ -1056,7 +1056,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       x.restore();
       x.fillStyle = "#8d9397";
       x.font = `16px ${SANS}`;
-      x.fillText("A fachada, desde a rúa da Ribeira", 60, 1020);
+      x.fillText("La fachada, desde la calle Ribeira", 60, 1020);
     }),
     // the map: the land in a pale grey with its contour lines, the ría cutting in, the house marked
     panelFace((x) => {
@@ -1116,7 +1116,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       x.fillText("R Í A   D E   C E D E I R A", 140, 380);
       x.fillStyle = "#6f767a";
       x.fillText("Cedeira", 120, 720);
-      x.fillText("Serra da Capelada", 200, 960);
+      x.fillText("Sierra de la Capelada", 200, 960);
       x.fillStyle = "#2b2e32";
       x.font = `16px ${SANS}`;
       x.fillText("N", 440, 990);
@@ -1125,10 +1125,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     panelFace((x) => {
       x.fillStyle = "#4f6b70";
       x.font = "italic 46px Georgia, serif";
-      x.fillText("Habitacións", 60, 150);
+      x.fillText("Habitaciones", 60, 150);
       x.fillStyle = MIST;
       x.fillRect(60, 178, 70, 3);
-      ["Area", "Cons", "Salitre", "Ourizo", "Faro", "Ribeira"].forEach((r, i) => {
+      ["Arena", "Cons", "Salitre", "Erizo", "Faro", "Ribeira"].forEach((r, i) => {
         x.fillStyle = "#8d9397";
         x.font = `20px ${SANS}`;
         x.fillText(`0${i + 1}`, 60, 300 + i * 110);
