@@ -1251,12 +1251,13 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   sun.position.set(-13, 15, -5);
   sun.target.position.set(0.3, 0, 0.2);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(1536, 1536);
+  sun.shadow.mapSize.set(2048, 2048);
   // (soft, but not so soft that the shadow parts from the foot of what casts it)
-  sun.shadow.radius = 6;
-  sun.shadow.bias = -0.0001;
-  // (small, so each shadow starts right at the foot of its object instead of a gap away)
-  sun.shadow.normalBias = 0.003;
+  sun.shadow.radius = 8;
+  sun.shadow.blurSamples = 16;
+  // (enough offset that no surface shades itself in blotches; the contact shadows keep each foot set down)
+  sun.shadow.bias = -0.0004;
+  sun.shadow.normalBias = 0.02;
   // the light's cone held close round the table, so its shadow map is fine where it falls
   sun.shadow.camera.near = 8;
   sun.shadow.camera.far = 32;
