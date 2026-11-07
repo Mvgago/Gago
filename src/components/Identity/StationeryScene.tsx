@@ -345,14 +345,19 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
         const S = 512, [sc, sx] = canvas(S, S);
         sx.fillStyle = `rgb(${base.join(",")})`;
         sx.fillRect(0, 0, S, S);
-        sx.filter = "blur(18px)";
-        for (let k = 0; k < 40; k++) {
-          const light = Math.random() < 0.5;
-          sx.fillStyle = light ? `rgba(255,255,255,${0.04 + Math.random() * 0.08})` : `rgba(0,0,0,${0.04 + Math.random() * 0.09})`;
-          sx.beginPath();
-          sx.arc(Math.random() * S, Math.random() * S, 20 + Math.random() * 70, 0, Math.PI * 2);
-          sx.fill();
-        }
+        // tone that shows at the stone's size: broad clouds of lighter and darker, then smaller ones
+        const blot = (n: number, rMin: number, rMax: number, blur: number, a: number) => {
+          sx.filter = `blur(${blur}px)`;
+          for (let k = 0; k < n; k++) {
+            const light = Math.random() < 0.5;
+            sx.fillStyle = light ? `rgba(255,255,255,${a * (0.5 + Math.random())})` : `rgba(0,0,0,${a * (0.6 + Math.random())})`;
+            sx.beginPath();
+            sx.ellipse(Math.random() * S, Math.random() * S, rMin + Math.random() * (rMax - rMin), (rMin + Math.random() * (rMax - rMin)) * 0.6, Math.random() * Math.PI, 0, Math.PI * 2);
+            sx.fill();
+          }
+        };
+        blot(10, 90, 180, 50, 0.1);
+        blot(40, 20, 60, 14, 0.08);
         sx.filter = "none";
         const img = sx.getImageData(0, 0, S, S), d = img.data;
         for (let k = 0; k < d.length; k += 4) {
@@ -370,8 +375,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
         sx.globalAlpha = 1;
         const map = tex(sc);
         const bump = tex(sc, false);
-        // matte, the way a dry beach stone is, its relief faint (stronger, it pinched at the poles)
-        return new THREE.MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 0.9, roughness: 0.86 });
+        // matte, the way a dry beach stone is, but not evenly: smoother where it was worn most, so its sheen
+        // breaks up over it (the drawing doubles as that roughness); its relief faint
+        return new THREE.MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 0.9, roughness: 0.92, roughnessMap: bump });
       };
       const pebble = (r: number, sx: number, sz: number, mat: THREE.Material, x: number, z: number, rot: number, seed: number) => {
         const geo = new THREE.SphereGeometry(r, 48, 32);
@@ -381,16 +387,20 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
         const p = geo.attributes.position;
         for (let k = 0; k < p.count; k++) {
           const vx = p.getX(k), vy = p.getY(k), vz = p.getZ(k);
-          // flattened like a beach stone, its outline a little uneven
-          const wob = 1 + Math.sin(vx * 18 + seed) * 0.03 + Math.sin(vz * 15 + seed * 2) * 0.03;
-          p.setXYZ(k, vx * sx * wob, vy * (vy < 0 ? 0.32 : 0.42), vz * sz * wob);
+          // a beach stone, not an egg: lopsided (fuller at one end), its outline gently lumpy, its top
+          // swelling unevenly, and its underside nearly flat where it lies
+          const ux = vx / r, uz = vz / r;
+          const lump = 1 + Math.sin(ux * 2.3 + seed) * 0.07 + Math.sin(uz * 2.9 + seed * 1.7) * 0.06 + Math.sin((ux + uz) * 4.1 + seed * 2.3) * 0.03;
+          const taper = 1 + ux * 0.12 * Math.sin(seed);
+          const top = vy < 0 ? 0.2 : 0.4 * (1 + Math.sin(ux * 3.1 + uz * 1.7 + seed) * 0.12);
+          p.setXYZ(k, vx * sx * lump, vy * top, vz * sz * lump * taper);
         }
         geo.computeVertexNormals();
         const m = new THREE.Mesh(geo, mat);
         // pressed a little into the tissue, so it rests rather than hovers
         // resting on the tissue, pressed just into it (its shade left to the window's shadow and the
         // occlusion, which follow the folds)
-        m.position.set(x, BH - 0.08 + r * 0.32 * 0.8, z);
+        m.position.set(x, BH - 0.08 + r * 0.2 * 0.75, z);
         m.rotation.y = rot;
         g.add(m);
       };
@@ -1241,7 +1251,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   sun.castShadow = true;
   sun.shadow.mapSize.set(1536, 1536);
   // (soft, but not so soft that the shadow parts from the foot of what casts it)
-  sun.shadow.radius = 4;
+  sun.shadow.radius = 6;
   sun.shadow.bias = -0.0001;
   // (small, so each shadow starts right at the foot of its object instead of a gap away)
   sun.shadow.normalBias = 0.003;
