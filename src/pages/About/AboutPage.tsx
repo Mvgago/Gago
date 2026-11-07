@@ -284,9 +284,11 @@ export const AboutPage: React.FC = () => {
           <span className="text-ink">{t("section.studio")}</span>
           <span className="hidden sm:inline"> — {t("section.studio.caption")}</span>
         </h1>
-        {/* On the right, one line: open to new projects, and it is the way down to the contact form
-            (wide screens only: on a phone it only crowded the page's top) */}
-        <div className="hidden flex-col items-end sm:flex">
+        {/* the whole block is the way down to the contact form: the line, and under it (wide screens) a
+            small status readout in the spirit of early-2000s interfaces, a row of fine cells a light keeps
+            sweeping along after a crosshair, each growing a little as it lights, and the studio's initials.
+            Pointed at, it all brightens a shade, no underline */}
+        <style>{`@keyframes fh-scan{0%,100%{opacity:.14;transform:scaleY(1)}6%{opacity:.42;transform:scaleY(1.5)}22%{opacity:.14;transform:scaleY(1)}}`}</style>
         <a
           href="#contact"
           onClick={(e) => {
@@ -294,34 +296,30 @@ export const AboutPage: React.FC = () => {
             const target = document.getElementById("contact");
             if (target) scrollToTarget(lenis, target, { offset: -96 });
           }}
-          className="group relative inline-flex items-center gap-2 self-auto text-ink/85 transition-colors duration-500 hover:text-ink"
+          className="group hidden flex-col items-end sm:flex"
         >
-          <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
-          {t("availability")}
-          <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-ink transition-transform duration-700 ease-haus group-hover:scale-x-100" />
-        </a>
-        {/* wide screens: a small status readout under it, in the spirit of early-2000s interfaces: a row of
-            fine cells a light keeps sweeping along after a crosshair (each growing a little as it lights), and
-            the studio's name */}
-        <style>{`@keyframes fh-scan{0%,100%{opacity:.14;transform:scaleY(1)}6%{opacity:.42;transform:scaleY(1.5)}22%{opacity:.14;transform:scaleY(1)}}`}</style>
-        <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/40 lg:flex">
-          <span className="text-[10px] leading-none">+</span>
-          <span className="flex gap-[3px]">
-            {Array.from({ length: 14 }, (_, k) => (
-              <span
-                key={k}
-                className="block h-[3px] w-[9px] rounded-[1.5px] bg-ink"
-                style={{ opacity: 0.14, animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
-              />
-            ))}
+          <span className="inline-flex items-center gap-2 text-ink/85 transition-colors duration-500 group-hover:text-ink">
+            <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
+            {t("availability")}
           </span>
-          {/* the studio's initials, F and g, drawn from the logo's own strokes, small */}
-          <svg viewBox="249 677 679 401" className="ml-1.5 h-[13px] w-auto text-ink/80" fill="none" stroke="currentColor" strokeWidth="35">
-            <path d="M570 695L300 695Q267 695 267 728L267 976M267 826L570 826" />
-            <path transform="translate(-345 0)" d="M1255 960L1015 960Q980 960 980 925L980 807Q980 772 1015 772L1255 772L1255 1025Q1255 1060 1220 1060L965 1060" />
-          </svg>
-        </span>
-        </div>
+          <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/40 transition-colors duration-500 group-hover:text-ink/70 lg:flex">
+            <span className="text-[10px] leading-none">+</span>
+            <span className="flex gap-[3px] opacity-80 transition-opacity duration-500 group-hover:opacity-100">
+              {Array.from({ length: 14 }, (_, k) => (
+                <span
+                  key={k}
+                  className="block h-[3px] w-[9px] rounded-[1.5px] bg-ink"
+                  style={{ opacity: 0.14, animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
+                />
+              ))}
+            </span>
+            {/* the studio's initials, F and g, drawn from the logo's own strokes, small */}
+            <svg viewBox="249 677 679 401" className="ml-1.5 h-[13px] w-auto text-ink/80 transition-colors duration-500 group-hover:text-ink" fill="none" stroke="currentColor" strokeWidth="35">
+              <path d="M570 695L300 695Q267 695 267 728L267 976M267 826L570 826" />
+              <path transform="translate(-345 0)" d="M1255 960L1015 960Q980 960 980 925L980 807Q980 772 1015 772L1255 772L1255 1025Q1255 1060 1220 1060L965 1060" />
+            </svg>
+          </span>
+        </a>
       </motion.header>
 
       {/* Statement and way in */}
