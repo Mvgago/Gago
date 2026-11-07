@@ -1,5 +1,6 @@
-import React, { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { scrollToTarget, useLenis } from "../SmoothScroll/SmoothScroll";
 
 export type DrumPlate = { id: string; url: string; title?: string; grade?: string; crop?: number; cropAt?: string };
 
@@ -7,8 +8,8 @@ export type DrumPlate = { id: string; url: string; title?: string; grade?: strin
  * The illustrations on a see-through drum turning about a horizontal axis, as a watch's crown turns its
  * list: flat cards round a cylinder, the one in front facing the viewer, those above and below folding
  * away, and through the gaps between them the cards on the far side of the drum, smaller and in shade.
- * Scrolling turns it a card at a time, resting a moment on each. Plain CSS 3D (transforms only), so it
- * turns smoothly on any phone.
+ * It turns with the scroll as the finger moves it, freely, and once let go it settles on the nearest card,
+ * as a clock's hour wheel does. Plain CSS 3D (transforms only), so it turns smoothly on any phone.
  */
 export const IllustrationDrum: React.FC<{
   plates: DrumPlate[];
@@ -25,22 +26,61 @@ export const IllustrationDrum: React.FC<{
   const still = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: box, offset: ["start start", "end end"] });
   const STEP = 360 / faces;
-  // a card at a time: through most of each stretch of scroll the drum rests with a card in front, and it
-  // turns to the next in between
-  const stepped = useTransform(scrollYProgress, (p) => {
-    const x = p * faces;
-    const i = Math.floor(x), f = x - i;
-    const u = Math.min(1, Math.max(0, (f - 0.3) / 0.4));
-    return i + u * u * (3 - 2 * u);
-  });
-  // and a soft spring over it, so each turn starts and lands gently
-  const turnTo = useSpring(stepped, { stiffness: 110, damping: 24, mass: 0.6 });
+  // the drum follows the scroll directly: no easing of its own, so it never lags the finger
+  const turnTo = useTransform(scrollYProgress, (p) => p * faces);
   const ring = useTransform(turnTo, (n) => `translateZ(calc(var(--r) * -1)) rotateX(${still ? 0 : -n * STEP}deg)`);
+
+  // Once let go, it settles on the nearest card. On touch screens the browser's own scroll snapping does
+  // it (the snap points below), with the phone's own feel; with the site's smooth wheel scrolling, the
+  // wheel is eased onto the card a moment after it stops.
+  const lenis = useLenis();
+  useEffect(() => {
+    if (still) return;
+    const touch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    const html = document.documentElement;
+    if (touch) {
+      const prev = html.style.scrollSnapType;
+      html.style.scrollSnapType = "y proximity";
+      return () => {
+        html.style.scrollSnapType = prev;
+      };
+    }
+    let idle = 0;
+    const settle = () => {
+      const el = box.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      const span = el.offsetHeight - window.innerHeight;
+      const y = window.scrollY - top;
+      if (y < -4 || y > span + 4) return;
+      const step = span / faces;
+      const to = top + Math.round(y / step) * step;
+      if (Math.abs(to - window.scrollY) > 1) scrollToTarget(lenis, to);
+    };
+    const onScroll = () => {
+      window.clearTimeout(idle);
+      idle = window.setTimeout(settle, 140);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(idle);
+    };
+  }, [faces, lenis, still]);
 
   return (
     <div ref={box} className="relative h-[340svh]">
+      {/* where the wheel rests: a card in front at each */}
+      {Array.from({ length: faces + 1 }, (_, k) => (
+        <span
+          key={k}
+          aria-hidden
+          className="pointer-events-none absolute left-0 h-px w-px [scroll-snap-align:start]"
+          style={{ top: `calc((340svh - 100svh) * ${k / faces})` }}
+        />
+      ))}
       <div
-        className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden [perspective:calc(var(--h)*5.2)] [--h:min(52vw,300px)] lg:[--h:min(30vw,360px)]"
+        className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden [perspective:calc(var(--h)*5.2)] [--h:min(70vw,58svh,340px)] lg:[--h:min(38vw,62svh,440px)]"
         style={{
           maskImage: "linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%)",
           WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%)",
@@ -48,7 +88,8 @@ export const IllustrationDrum: React.FC<{
       >
         <motion.div
           className="relative [--r:calc(var(--h)*2.12)] [transform-style:preserve-3d]"
-          style={{ width: "var(--h)", height: "var(--h)", transform: ring, willChange: "transform" }}
+          // the cards upright, 4 by 5
+          style={{ width: "calc(var(--h) * 0.8)", height: "var(--h)", transform: ring, willChange: "transform" }}
         >
           {Array.from({ length: faces }, (_, f) => {
             const k = f % plates.length;
