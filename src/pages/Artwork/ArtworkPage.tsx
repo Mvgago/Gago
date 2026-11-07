@@ -306,7 +306,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
           {/* the title as the booklet sets it, small and light, printed on the part of the disc that shows
               beyond the case, and held there so it can always be read */}
           <div ref={label} className="absolute inset-0 rounded-full" />
-          <span className="absolute left-[79%] top-1/2 -translate-y-1/2 whitespace-nowrap font-geo text-[8px] lowercase tracking-[0.04em] text-[#eef0f3]/75 sm:text-[10px]">grimaldi lines</span>
+          <span className="absolute left-[79%] top-1/2 -translate-y-1/2 whitespace-nowrap font-geo text-[8px] lowercase tracking-[0.04em] text-[#eef0f3]/40 sm:text-[10px]">grimaldi lines</span>
         </motion.div>
         {/* the jewel case, nudged back a little as the disc is drawn out */}
         <motion.div className="absolute inset-0" animate={{ x: playing ? "-2%" : "0%" }} transition={{ type: "spring", stiffness: 70, damping: 16 }}>
