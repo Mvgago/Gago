@@ -1344,7 +1344,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     camera.fov = camera.aspect >= 1.4 ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.6) / camera.aspect));
     // a narrow frame (a phone's) also aims a little further back on the table, so the pieces sit lower and
     // no empty band is left beneath them
-    aimBack = camera.aspect >= 1.4 ? 0 : 0.2;
+    aimBack = camera.aspect >= 1.4 ? 0.1 : 0.2;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
     composer.setSize(w, h);
@@ -1361,7 +1361,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const a = Math.sin(t * 0.16) * 0.06, lift = Math.sin(t * 0.11) * 0.08;
     // (a step closer, so the pieces fill the frame and no empty band is left along its foot)
     const aim = look.clone().setZ(look.z - aimBack);
-    camera.position.set(aim.x + Math.sin(a) * 3.0, 5.5 + lift, aim.z + Math.cos(a) * 3.0);
+    camera.position.set(aim.x + Math.sin(a) * 2.7, 4.95 + lift, aim.z + Math.cos(a) * 2.7);
     camera.lookAt(aim);
   };
   place(0);
