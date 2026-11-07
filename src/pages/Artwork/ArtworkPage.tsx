@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useAnimationFrame, useInView, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { artwork, FUGA_SEI_EP, TECH } from "../../outils/artwork";
 import { EASE_HAUS, EASE_VEIL, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
@@ -151,68 +151,7 @@ export const ArtworkPage: React.FC = () => {
         </div>
         {/* the record, and beside it, leaning in over its edge, a pair of silver headphones in 3D */}
         <div className="relative md:flex md:items-center">
-          <a
-            href={FUGA_SEI_EP}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Fuga Sei — Grimaldi Lines"
-            // the record as an object: its sleeve, and the disc slipping out of it to the right
-            className="group block shrink-0 md:w-1/2"
-          >
-            <style>{`@keyframes fh-spin{to{transform:rotate(360deg)}}`}</style>
-            <div className="relative w-[78%] md:w-[80%]">
-              {/* the disc, drawn as pressed vinyl: hair-fine grooves, the darker gaps between the tracks,
-                  the smooth run-out by the label and a raised lip at the rim; the light lies on it in two
-                  opposite wedges and stays still while the label, in the sleeve's grey green, turns */}
-              <div
-                aria-hidden
-                className="absolute left-[3%] top-[3%] aspect-square w-[94%] translate-x-[30%] rounded-full shadow-[0_30px_60px_-30px_rgba(0,0,0,0.85)] transition-transform duration-[1400ms] ease-haus group-hover:translate-x-[42%]"
-                style={{
-                  background: [
-                    // the gaps between tracks
-                    "radial-gradient(circle, transparent 0 55.5%, rgba(0,0,0,0.7) 56% 56.6%, transparent 57.2% 69.5%, rgba(0,0,0,0.7) 70% 70.6%, transparent 71.2% 83.5%, rgba(0,0,0,0.7) 84% 84.6%, transparent 85.2%)",
-                    // the run-out, smooth, and the lip at the edge
-                    "radial-gradient(circle, transparent 0 36%, #131315 36% 42%, transparent 42% 97.5%, #222226 98% 99.2%, #0c0c0d 99.4%)",
-                    // the grooves
-                    "repeating-radial-gradient(circle, rgba(255,255,255,0.045) 0 0.5px, rgba(0,0,0,0.25) 0.6px 1.3px, rgba(255,255,255,0.02) 1.4px 1.8px)",
-                    "#101012",
-                  ].join(", "),
-                }}
-              >
-                <div
-                  className="absolute inset-[34%] animate-[fh-spin_6s_linear_infinite] rounded-full [animation-play-state:paused] group-hover:[animation-play-state:running]"
-                  style={{ background: "radial-gradient(circle, #050505 0 4.5%, #6f817a 5% 7%, #8fa39b 7.5% 80%, #7d9189 80.5% 100%)" }}
-                >
-                  <span className="absolute left-1/2 top-[16%] -translate-x-1/2 font-mono text-[8px] lowercase tracking-[0.2em] text-[#1d2523]/70">fuga sei</span>
-                  <span className="absolute bottom-[16%] left-1/2 -translate-x-1/2 font-mono text-[7px] lowercase tracking-[0.2em] text-[#1d2523]/55">grimaldi lines</span>
-                </div>
-                <div
-                  className="absolute inset-0 rounded-full mix-blend-screen"
-                  style={{ background: "conic-gradient(from 25deg, transparent 0 4%, rgba(255,255,255,0.16) 10%, rgba(255,255,255,0.04) 15%, transparent 20% 54%, rgba(255,255,255,0.12) 60%, rgba(255,255,255,0.03) 65%, transparent 70%)", WebkitMaskImage: "radial-gradient(circle, transparent 0 35%, #000 36%)", maskImage: "radial-gradient(circle, transparent 0 35%, #000 36%)" }}
-                />
-              </div>
-              <img
-                src={record.url}
-                alt="Fuga Sei — Grimaldi Lines (EP)"
-                {...protect}
-                // a touch dimmer, so the pale sleeve doesn't glare in the dark room
-                style={{ filter: "brightness(0.82)" }}
-                className="relative block aspect-square w-full rounded-[3px] object-cover shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.7)]"
-              />
-              {/* the sleeve as printed card, not a picture: light falling across it from the upper left,
-                  the card's tooth, edges with a little body */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-[3px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_22px_rgba(0,0,0,0.4),inset_-2px_0_0_rgba(0,0,0,0.5)]"
-                style={{
-                  background:
-                    "linear-gradient(118deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.03) 30%, transparent 55%, rgba(0,0,0,0.22) 100%)",
-                }}
-              />
-              {/* the card's tooth, faint, so the print stays sharp under it */}
-              <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[3px] opacity-[0.1] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
-            </div>
-          </a>
+          <RecordSleeve src={record.url} listening={listening} />
           {/* pointed at, the headphones lift and turn to the visitor, and beside them comes in what
               is playing in them, with a way to listen */}
           <div
@@ -269,6 +208,132 @@ export const ArtworkPage: React.FC = () => {
 };
 
 /* ────────────────────────────────────────────────────────────────── */
+// the disc's vinyl, drawn: the darker gaps between the tracks, the smooth run-out by the label and a
+// raised lip at the rim, over hair-fine grooves
+const VINYL = [
+  "radial-gradient(circle, transparent 0 55.5%, rgba(0,0,0,0.7) 56% 56.6%, transparent 57.2% 69.5%, rgba(0,0,0,0.7) 70% 70.6%, transparent 71.2% 83.5%, rgba(0,0,0,0.7) 84% 84.6%, transparent 85.2%)",
+  "radial-gradient(circle, transparent 0 36%, #131315 36% 42%, transparent 42% 97.5%, #222226 98% 99.2%, #0c0c0d 99.4%)",
+  "repeating-radial-gradient(circle, rgba(255,255,255,0.045) 0 0.5px, rgba(0,0,0,0.25) 0.6px 1.3px, rgba(255,255,255,0.02) 1.4px 1.8px)",
+  "#101012",
+].join(", ");
+const SHEEN_MASK = "radial-gradient(circle, transparent 0 35%, #000 36%)";
+
+/**
+ * Fuga Sei as a record in the hand. On arrival the disc rolls out of its sleeve and settles with a
+ * small give. Pointed at (or while the headphones are), it draws out further and starts to turn,
+ * gathering speed and running down again as a turntable does, while the sleeve leans towards the
+ * pointer under a gloss that follows it. On a touch screen it turns slowly while in view.
+ */
+const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, listening }) => {
+  const box = useRef<HTMLAnchorElement>(null);
+  const label = useRef<HTMLDivElement>(null);
+  const seen = useInView(box, { once: true, margin: "-15% 0px" });
+  const inView = useInView(box, { margin: "-10% 0px" });
+  const still = useReducedMotion();
+  const [hover, setHover] = useState(false);
+  const [touch] = useState(() => typeof window !== "undefined" && window.matchMedia("(hover: none)").matches);
+  const playing = hover || listening || (touch && inView);
+
+  // the label's turn, eased up to speed and down to rest
+  const turn = useRef({ angle: 0, speed: 0 });
+  useAnimationFrame((_, dt) => {
+    if (still || !label.current) return;
+    const s = turn.current;
+    const goal = playing ? (touch && !hover ? 0.12 : 0.55) : 0; // turns a second
+    s.speed += (goal - s.speed) * Math.min(1, dt / 600);
+    if (s.speed < 0.0005 && !playing) return;
+    s.angle = (s.angle + s.speed * 360 * (dt / 1000)) % 360;
+    label.current.style.transform = `rotate(${s.angle}deg)`;
+  });
+
+  // the sleeve's lean and its gloss, after the pointer
+  const rx = useSpring(useMotionValue(0), { stiffness: 120, damping: 18 });
+  const ry = useSpring(useMotionValue(0), { stiffness: 120, damping: 18 });
+  const gx = useMotionValue(30), gy = useMotionValue(20);
+  const gloss = useMotionTemplate`radial-gradient(60% 60% at ${gx}% ${gy}%, rgba(255,255,255,0.16), transparent 70%)`;
+  const move = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse" || still) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const u = (e.clientX - r.left) / r.width, v = (e.clientY - r.top) / r.height;
+    ry.set((u - 0.5) * 10);
+    rx.set(-(v - 0.5) * 8);
+    gx.set(u * 100);
+    gy.set(v * 100);
+  };
+  const leave = () => {
+    setHover(false);
+    rx.set(0);
+    ry.set(0);
+  };
+
+  // where the disc stands: inside, out at rest, drawn out while playing
+  const out = !seen ? "0%" : playing ? "46%" : "30%";
+
+  return (
+    <a
+      ref={box}
+      href={FUGA_SEI_EP}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Fuga Sei — Grimaldi Lines"
+      className="block shrink-0 md:w-1/2"
+      style={{ perspective: 1200 }}
+      onPointerEnter={(e) => e.pointerType === "mouse" && setHover(true)}
+      onPointerMove={move}
+      onPointerLeave={leave}
+    >
+      <motion.div className="relative w-[78%] md:w-[80%]" style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}>
+        {/* the disc; its sheen stays still while the label turns */}
+        <motion.div
+          aria-hidden
+          className="absolute left-[3%] top-[3%] aspect-square w-[94%] rounded-full shadow-[0_30px_60px_-30px_rgba(0,0,0,0.85)]"
+          style={{ background: VINYL }}
+          initial={{ x: "0%", rotate: -40 }}
+          animate={{ x: out, rotate: seen ? 0 : -40 }}
+          transition={seen && !playing && !hover ? { type: "spring", stiffness: 60, damping: 11, mass: 1, delay: 0.25 } : { type: "spring", stiffness: 70, damping: 16 }}
+        >
+          <div
+            ref={label}
+            className="absolute inset-[34%] rounded-full"
+            style={{ background: "radial-gradient(circle, #050505 0 4.5%, #6f817a 5% 7%, #8fa39b 7.5% 80%, #7d9189 80.5% 100%)" }}
+          >
+            <span className="absolute left-1/2 top-[16%] -translate-x-1/2 font-mono text-[8px] lowercase tracking-[0.2em] text-[#1d2523]/70">fuga sei</span>
+            <span className="absolute bottom-[16%] left-1/2 -translate-x-1/2 font-mono text-[7px] lowercase tracking-[0.2em] text-[#1d2523]/55">grimaldi lines</span>
+          </div>
+          <div
+            className="absolute inset-0 rounded-full mix-blend-screen"
+            style={{ background: "conic-gradient(from 25deg, transparent 0 4%, rgba(255,255,255,0.16) 10%, rgba(255,255,255,0.04) 15%, transparent 20% 54%, rgba(255,255,255,0.12) 60%, rgba(255,255,255,0.03) 65%, transparent 70%)", WebkitMaskImage: SHEEN_MASK, maskImage: SHEEN_MASK }}
+          />
+        </motion.div>
+        {/* the sleeve, nudged back a little as the disc is drawn out */}
+        <motion.div className="relative" animate={{ x: playing ? "-2%" : "0%" }} transition={{ type: "spring", stiffness: 70, damping: 16 }}>
+          <img
+            src={src}
+            alt="Fuga Sei — Grimaldi Lines (EP)"
+            {...protect}
+            // a touch dimmer, so the pale sleeve doesn't glare in the dark room
+            style={{ filter: "brightness(0.82)" }}
+            className="relative block aspect-square w-full rounded-[3px] object-cover shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.7)]"
+          />
+          {/* printed card, not a picture: light falling across it from the upper left, edges with a
+              little body, the card's faint tooth, and a gloss that follows the pointer */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-[3px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_22px_rgba(0,0,0,0.4),inset_-2px_0_0_rgba(0,0,0,0.5)]"
+            style={{ background: "linear-gradient(118deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.03) 30%, transparent 55%, rgba(0,0,0,0.22) 100%)" }}
+          />
+          <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[3px] opacity-[0.1] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-[3px] mix-blend-soft-light transition-opacity duration-700"
+            style={{ background: gloss, opacity: hover ? 1 : 0 }}
+          />
+        </motion.div>
+      </motion.div>
+    </a>
+  );
+};
+
 /**
  * A gallery label: the number, and for titled works the title in the site's
  * typeface (the one thing to read), then a mono line of detail and a way to listen.
