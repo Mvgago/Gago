@@ -1059,7 +1059,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     body.position.y = 0.04;
     // the glass, the screen and its sheen cut with rounded corners like the body's, so no square corner
     // pokes out past its round edge (its picture mapped edge to edge, as on a plane)
-    const rounded = (w: number, h: number, r: number) => {
+    const roundedShape = (w: number, h: number, r: number) => {
       const s = new THREE.Shape();
       s.moveTo(-w / 2 + r, -h / 2);
       s.lineTo(w / 2 - r, -h / 2);
@@ -1070,11 +1070,25 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
       s.lineTo(-w / 2, -h / 2 + r);
       s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
-      const geo = new THREE.ShapeGeometry(s, 12);
+      return s;
+    };
+    const rounded = (w: number, h: number, r: number) => {
+      const geo = new THREE.ShapeGeometry(roundedShape(w, h, r), 12);
       const p = geo.attributes.position, uv = geo.attributes.uv;
       for (let k = 0; k < p.count; k++) uv.setXY(k, p.getX(k) / w + 0.5, p.getY(k) / h + 0.5);
       return geo;
     };
+    // the body itself: the same rounded outline in plan (a rounded box could round its corners only as far
+    // as its thinness allowed, nearly square), its edges eased with a small bevel, so glass and screen sit
+    // in it with even, concentric corners as on a real phone
+    {
+      const bodyGeo = new THREE.ExtrudeGeometry(roundedShape(0.76, 1.56, 0.11), { depth: 0.064, bevelEnabled: true, bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 4, curveSegments: 16 });
+      bodyGeo.rotateX(-Math.PI / 2);
+      bodyGeo.translate(0, 0.008, 0);
+      body.geometry.dispose();
+      (body as THREE.Mesh).geometry = bodyGeo;
+      body.position.y = 0;
+    }
     const glass = new THREE.Mesh(rounded(0.72, 1.52, 0.09), new THREE.MeshPhysicalMaterial({ color: "#0b0c0d", roughness: 0.08, clearcoat: 1 }));
     glass.rotation.x = -Math.PI / 2;
     glass.position.y = 0.0805;
