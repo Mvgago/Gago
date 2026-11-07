@@ -742,13 +742,13 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // [image, x, z, height, floor]: one person to a picture, so each stands on its own floor. A lady
     // at the counter, one at the tins, one by the high table, the one serving, and a few in the aisle
     const cast: [string, number, number, number, number][] = [
-      // a step back from the counter, walking up to it, so oak shows between her feet and its plinth
-      ["p03b", 0.5, 1.85, 1.6, P],
+      // the lady with her shopping bags, a step back from the counter, walking up to it, so oak shows
+      // between her feet and its plinth
+      ["p13", 0.5, 1.85, 1.66, P],
       ["p09", 1.05, 0.05, 1.8, P],
       ["p07", -2.15, -1.05, 1.66, P],
       ["p14", -0.55, 2.05, 1.68, P],
       ["p03a", 3.7, 3.3, 1.78, 0],
-      ["p13", -3.4, 3.6, 1.66, 0],
     ];
     cast.forEach(([name, x, z, h, floor]) => {
       const mat = new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.35, side: THREE.DoubleSide, color: new THREE.Color(1, 1, 1) });
