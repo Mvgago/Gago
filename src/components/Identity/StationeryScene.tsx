@@ -287,7 +287,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       const fibre = (() => {
         const S = 512, [c, x] = canvas(S, S);
         // an off-white, so it keeps its folds in full light instead of burning out
-        x.fillStyle = "#e6e3dc";
+        x.fillStyle = "#d6d2ca";
         x.fillRect(0, 0, S, S);
         for (let k = 0; k < 2600; k++) {
           const a = Math.random() * Math.PI, l = 4 + Math.random() * 18, cx = Math.random() * S, cy = Math.random() * S;
@@ -311,7 +311,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       g.add(tissue);
       const [c, x] = canvas(600, 400);
       // (a warm off-white: pure white card burnt out in the window's light)
-      x.fillStyle = "#ebe8e2";
+      x.fillStyle = "#e0ddd6";
       x.fillRect(0, 0, 600, 400);
       // the cotton card's tooth, under the ink
       {
@@ -333,7 +333,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
       x.fillText("un recuerdo de la ría para llevar", 300, 312);
       const face = tex(c);
       const tooth = tex(c, false);
-      const edge = new THREE.MeshStandardMaterial({ color: "#e4e1da", roughness: 0.9 });
+      const edge = new THREE.MeshStandardMaterial({ color: "#d8d5ce", roughness: 0.9 });
       const card = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.008, 0.4), [
         edge, edge, new THREE.MeshStandardMaterial({ map: face, bumpMap: tooth, bumpScale: 0.35, roughness: 0.9 }), edge, edge, edge,
       ]);
@@ -411,8 +411,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
         m.rotation.y = rot;
         g.add(m);
       };
-      pebble(0.15, 1.25, 0.95, stone([150, 150, 146], "rgba(255,255,255,0.35)"), -0.38, -0.12, 0.4, 1);
-      pebble(0.12, 1.1, 0.9, stone([205, 199, 186], "rgba(90,85,78,0.4)"), -0.22, 0.2, -0.6, 2.3);
+      pebble(0.15, 1.25, 0.95, stone([138, 138, 134], "rgba(255,255,255,0.35)"), -0.38, -0.12, 0.4, 1);
+      pebble(0.12, 1.1, 0.9, stone([184, 179, 168], "rgba(90,85,78,0.4)"), -0.22, 0.2, -0.6, 2.3);
       pebble(0.1, 1.3, 1.0, stone([86, 92, 94], "rgba(230,230,225,0.3)"), -0.47, 0.22, 1.1, 4.1);
     }
     g.add(contact(BW, BD));
