@@ -11,7 +11,8 @@ import { FUGA, FUGA_WEIGHT, HAUS, HAUS_WEIGHT, type Pt } from "../Monolith/wordm
  * domed, a disc of spun metal. It turns slowly and leans a little towards the pointer.
  */
 
-const SILVER = new THREE.MeshPhysicalMaterial({ color: "#bfc0c5", metalness: 0.85, roughness: 0.38 });
+// satin rather than polished: the light spreads over it softly instead of gathering in bright streaks
+const SILVER = new THREE.MeshPhysicalMaterial({ color: "#c4c5ca", metalness: 0.8, roughness: 0.52 });
 const PAD = new THREE.MeshStandardMaterial({ color: "#4a4b50", metalness: 0, roughness: 1 });
 const HOLLOW = new THREE.MeshStandardMaterial({ color: "#3a3b3f", roughness: 0.95, side: THREE.DoubleSide });
 
@@ -79,8 +80,8 @@ function engrave(x: CanvasRenderingContext2D, relief = false, strong = false) {
     all(0, 0, "#fff", 0);
     x.filter = "none";
   } else {
-    all(0, 5, strong ? "rgba(250,250,252,0.55)" : "rgba(250,250,252,0.4)", 6);
-    all(0, 0, strong ? "rgba(58,59,64,0.9)" : "rgba(90,91,97,0.45)", 0);
+    all(0, 5, strong ? "rgba(250,250,252,0.35)" : "rgba(250,250,252,0.4)", 6);
+    all(0, 0, strong ? "rgba(70,71,77,0.42)" : "rgba(90,91,97,0.45)", 0);
   }
   x.restore();
 }
@@ -110,8 +111,8 @@ function spun() {
   return t;
 }
 
-// The wordmark engraved in the band, just above where it meets each housing: dark and crisp, read on
-// the flat of the silver (on the spun disc it was lost in the rings)
+// The wordmark engraved in the band, just above where it meets each housing: a quiet cut, read on the
+// flat of the silver without standing out from it (on the spun disc it was lost in the rings)
 function bandMark() {
   const c = document.createElement("canvas");
   c.width = c.height = 1024;
@@ -411,7 +412,7 @@ export const Headphones: React.FC<{ className?: string; active?: boolean }> = ({
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     // a little under, so the silver sits in the dim room and never glares
-    renderer.toneMappingExposure = 0.56;
+    renderer.toneMappingExposure = 0.62;
     renderer.setClearColor(0x000000, 0);
     renderer.domElement.style.display = "block";
     el.appendChild(renderer.domElement);
@@ -419,13 +420,13 @@ export const Headphones: React.FC<{ className?: string; active?: boolean }> = ({
     const scene = new THREE.Scene();
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-    scene.environmentIntensity = 0.8;
+    scene.environmentIntensity = 0.55;
     // the lab's lights: a low lavender from the left, a violet from below right, a white key above
     const red = new THREE.PointLight("#9a8fc4", 2, 12);
     red.position.set(-3.2, 1.4, 2.2);
     const violet = new THREE.PointLight("#7a5aa8", 0.5, 12);
     violet.position.set(3, -1.6, 2);
-    const key = new THREE.DirectionalLight("#ffffff", 1.1);
+    const key = new THREE.DirectionalLight("#ffffff", 0.6);
     key.position.set(1, 4, 3);
     scene.add(red, violet, key);
 
