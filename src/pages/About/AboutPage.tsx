@@ -296,7 +296,7 @@ export const AboutPage: React.FC = () => {
             const target = document.getElementById("contact");
             if (target) scrollToTarget(lenis, target, { offset: -96 });
           }}
-          className="group hidden flex-col items-end sm:flex"
+          className="group hidden flex-col items-stretch sm:flex"
         >
           <span className="inline-flex items-center gap-2 text-ink/85 transition-colors duration-500 group-hover:text-ink">
             <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
@@ -304,11 +304,13 @@ export const AboutPage: React.FC = () => {
           </span>
           <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/40 transition-colors duration-500 group-hover:text-ink/70 lg:flex">
             <span className="text-[10px] leading-none">+</span>
-            <span className="flex gap-[3px] opacity-80 transition-opacity duration-500 group-hover:opacity-100">
+            {/* the cells share whatever the line leaves, so the readout runs exactly as wide as the line
+                above it, crosshair under the dot and initials ending with the last word */}
+            <span className="flex flex-1 gap-[3px] opacity-80 transition-opacity duration-500 group-hover:opacity-100">
               {Array.from({ length: 14 }, (_, k) => (
                 <span
                   key={k}
-                  className="block h-[3px] w-[9px] rounded-[1.5px] bg-ink"
+                  className="block h-[3px] flex-1 rounded-[1.5px] bg-ink"
                   style={{ opacity: 0.14, animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
                 />
               ))}
