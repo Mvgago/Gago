@@ -8,6 +8,7 @@ import { useI18n } from "../../i18n/I18n";
 import Footer from "../../components/Footer/Footer";
 import { ACTION, BODY, HEADING, SMALL } from "../../lib/type";
 import { STUDIO } from "../../i18n/studio";
+import { IllustrationDrum } from "../../components/Lab/IllustrationDrum";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -109,31 +110,18 @@ export const ArtworkPage: React.FC = () => {
             </p>
           </div>
         </div>
-        {/* edge to edge, the pieces touching, as one strip */}
-        <ul className="-mx-4 grid grid-cols-2 sm:-mx-6 md:-mx-8 md:grid-cols-4">
-          {sample.map((plate, i) => (
-            <motion.li
-              key={plate.id}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10% 0px" }}
-              transition={{ duration: 1.1, ease: EASE_HAUS, delay: i * 0.08 }}
-            >
-              <button
-                ref={(n) => {
-                  plates.current[i] = n;
-                }}
-                type="button"
-                onClick={() => setOpen(i)}
-                aria-label={`${plate.title ?? t("section.artwork")} — ${pad(i + 1)}`}
-                className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden"
-                style={{ background: "#33303c" }}
-              >
-                <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade, transform: plate.crop ? `scale(${plate.crop})` : undefined, transformOrigin: plate.cropAt }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
-              </button>
-            </motion.li>
-          ))}
-        </ul>
+        {/* the pieces on a drum that turns as the page is scrolled, repeated round it until there are more */}
+        <IllustrationDrum
+          plates={sample}
+          faces={12}
+          onOpen={setOpen}
+          register={(i, n) => {
+            plates.current[i] = n;
+          }}
+          label={(plate, i) => `${plate.title ?? t("section.artwork")} — ${pad(i + 1)}`}
+          alt={(plate) => `${plate.title ?? s.labArtLabel} — Fuga Haus`}
+          protect={protect}
+        />
       </section>
 
       {/* Sound: set the same way as the illustration above it, a line on what it is, then the record */}
