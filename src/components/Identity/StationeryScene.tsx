@@ -209,13 +209,29 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     x.fillRect(52, 52, 152, 152);
     return tex(c);
   })();
-  // (dark and close: where a thing meets the table the light can't reach, and without it they seem to float)
+  // the occlusion line: a dense dark held tight to a thing's outline, only a breath beyond it, as at the
+  // very foot of anything set down, where no light gets in
+  const tightTex = (() => {
+    const [c, x] = canvas(256, 256);
+    x.filter = "blur(3px)";
+    x.fillStyle = "rgba(0,0,0,0.9)";
+    x.fillRect(14, 14, 228, 228);
+    return tex(c);
+  })();
+  // (dark and close: where a thing meets the table the light can't reach, and without it they seem to float;
+  // a soft spread, and under it the tight line)
   const contact = (w: number, d: number) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.12, d * 1.12), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.85 }));
     m.rotation.x = -Math.PI / 2;
     m.position.set(0.035, 0.0015, 0.03);
     m.renderOrder = 1;
     m.userData.flat = true; // it lies on the table: it casts nothing itself
+    const t = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.04, d * 1.04), new THREE.MeshBasicMaterial({ map: tightTex, transparent: true, depthWrite: false, opacity: 0.75 }));
+    // (in the spread's own plane, so it turns and scales with it; set back to the piece's centre)
+    t.position.set(-0.035 / 1.12, 0.03 / 1.12, 0.0004);
+    t.renderOrder = 2;
+    t.userData.flat = true;
+    m.add(t);
     return m;
   };
 
