@@ -1114,7 +1114,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     gloss.rotation.x = -Math.PI / 2;
     gloss.position.y = 0.0825;
     gloss.userData.flat = true;
-    phone.add(body, glass, screen, gloss, contact(0.76, 1.56));
+    // (the thickest piece, so the darkest foot: a second, firmer contact under it, or it seemed to hover)
+    const foot = contact(0.74, 1.54);
+    (foot.material as THREE.MeshBasicMaterial).opacity = 1;
+    phone.add(body, glass, screen, gloss, contact(0.8, 1.6), foot);
     phone.position.set(1.45, 0, 0.18);
     phone.rotation.y = -0.1;
     add(phone);
@@ -1373,7 +1376,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // (never closer than the wide frame's 30°: a frame just short of 16:9, as the studio's can be by a pixel,
     // used to jump in close)
     // (wide and nearly wide frames all at 30°; only a phone's narrow one gets its own, closer view)
-    camera.fov = camera.aspect >= 1.4 ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.7) / camera.aspect));
+    camera.fov = camera.aspect >= 1.4 ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.76) / camera.aspect));
     // a narrow frame (a phone's) also aims a little further back on the table, so the pieces sit lower and
     // no empty band is left beneath them
     aimBack = camera.aspect >= 1.4 ? 0.1 : 0.2;
