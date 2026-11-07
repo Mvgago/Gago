@@ -20,12 +20,11 @@ import { RevealFlow } from "../../components/Reveal/Reveal";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
-// Other brands than the cases: an invented Galician cannery's stand, and the identity of an invented
-// guesthouse on the coast, told in motion (its stationery scene is kept, unused)
+// Other brands than the cases: an invented Galician cannery's stand, and the stationery of an
+// invented guesthouse on the coast
 const SCENES = {
   stand: lazy(() => import("../../components/Stand/CanneryStand")),
   stationery: lazy(() => import("../../components/Identity/StationeryScene")),
-  identity: lazy(() => import("../../components/Identity/OurelaMotion")),
 };
 
 // The scenes' code is fetched as soon as the page is idle, so by the time a discipline is reached
@@ -34,7 +33,7 @@ if (typeof window !== "undefined") {
   const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
   window.setTimeout(() => idle(() => {
     void import("../../components/Stand/CanneryStand");
-    void import("../../components/Identity/OurelaMotion");
+    void import("../../components/Identity/StationeryScene");
   }), 1500);
 }
 
@@ -89,8 +88,7 @@ const EXAMPLES: Example[] = [
   // the flat of The Sapphire to walk round: a space in 3D, the discipline's first promise
   { frame: "/concepts/sapphire-home/index.html?bare", poster: "sapphire-home", seen: ["sapphire", "smarthc", "buendia"], link: "/projects/sapphire#vivienda-3d" },
   { scene: "stand", seen: ["smarthc"] },
-  // the identity built in motion: sign, name, palette, voice, and the brand at work
-  { scene: "identity", seen: ["smarthc", "sapphire", "buendia"] },
+  { scene: "stationery", poster: "stationery", seen: ["smarthc", "sapphire", "buendia"] },
 ];
 
 const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: boolean; linkLabel?: string }> = ({ ex, note, paused, allowed = true, linkLabel }) => (
@@ -237,7 +235,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
     let timer = 0;
     const fetchAhead = () => {
       void import("../../components/Stand/CanneryStand");
-      void import("../../components/Identity/OurelaMotion");
+      void import("../../components/Identity/StationeryScene");
       const net = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
       const roomy = !net?.saveData && (window.matchMedia("(min-width: 1024px)").matches || net?.effectiveType === "4g");
       const files = ["/concepts/sapphire-home/index.html?bare", "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js"];
