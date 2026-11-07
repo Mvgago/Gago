@@ -247,7 +247,7 @@ export const SiteHeader: React.FC = () => {
             </motion.div>
           </div>
 
-          <style>{`@keyframes fh-bloom{0%,100%{opacity:0;transform:scale(.9)}35%{opacity:.85;transform:scale(1.15)}70%{opacity:0;transform:scale(1.3)}}@keyframes fh-halo{0%{transform:scale(1);opacity:0}12%{opacity:.75}80%,100%{transform:scale(1.35,1.6);opacity:0}}@keyframes fh-open{0%,100%{letter-spacing:.08em}14%,30%{letter-spacing:.2em}44%{letter-spacing:.08em}}@keyframes fh-sheen{0%,8%{transform:translateX(-110%)}52%,100%{transform:translateX(70%)}}@keyframes fh-nudge{0%,100%{transform:scale(1)}18%{transform:scale(1.025)}40%{transform:scale(1)}}@keyframes fh-draw{0%,55%,100%{width:.625rem}20%,35%{width:1rem}}@media (prefers-reduced-motion:reduce){.fh-invite *{animation:none!important}}`}</style>
+          <style>{`@keyframes fh-bloom{0%,100%{opacity:0;transform:scale(.9)}35%{opacity:.85;transform:scale(1.15)}70%{opacity:0;transform:scale(1.3)}}@keyframes fh-halo{0%{transform:scale(1);opacity:0}12%{opacity:.75}80%,100%{transform:scale(1.35,1.6);opacity:0}}@keyframes fh-open{0%,100%{letter-spacing:.08em}14%,30%{letter-spacing:.2em}44%{letter-spacing:.08em}}@keyframes fh-sheen{0%,8%{transform:translateX(-110%)}52%,100%{transform:translateX(70%)}}@keyframes fh-nudge{0%,100%{transform:scale(1)}18%{transform:scale(1.025)}40%{transform:scale(1)}}@keyframes fh-draw{0%,55%,100%{width:.625rem}20%,35%{width:1rem}}@keyframes fh-thread{0%,6%{transform:scaleX(0);opacity:1}30%{transform:scaleX(1);opacity:1}48%,100%{transform:scaleX(1);opacity:0}}@media (prefers-reduced-motion:reduce){.fh-invite *{animation:none!important}}`}</style>
           <div style={masked ? { clipPath: MASK } : undefined}>
           <motion.div variants={UNFOLD} custom={{ delay: 0.12 } satisfies Unfold} animate={unfold}>
           <button
@@ -273,15 +273,18 @@ export const SiteHeader: React.FC = () => {
             className={`group relative flex items-center rounded-[0.6rem] border ${surface} py-1.5 backdrop-blur-md backdrop-saturate-150 [&_.meta]:text-[10px] ${shortPill ? "px-2" : "px-2.5"} sm:py-2 sm:[&_.meta]:text-[12px] ${shortPill ? "sm:px-2.5" : "sm:px-4"} transition-[background-color,border-color,box-shadow,padding] duration-700 ease-haus focus-visible:outline-offset-2 ${glow ? "fh-invite will-change-transform" : ""}`}
           >
             {glow && (
-              <>
-                {/* two hairline waves leaving the pill's edge */}
-                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit] border border-white/80 shadow-[0_0_14px_rgba(255,255,255,0.35)]" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) 2" }} />
-                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit] border border-white/40" style={{ animation: "fh-halo 4.8s cubic-bezier(.22,1,.36,1) .7s 2" }} />
-                {/* a band of light passing over the pill */}
-                <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
-                  <span className="absolute -inset-y-2 left-0 w-[170%] bg-[linear-gradient(100deg,transparent_0%,rgba(255,255,255,0.06)_30%,rgba(255,255,255,0.32)_50%,rgba(255,255,255,0.06)_70%,transparent_100%)] blur-[2px]" style={{ animation: "fh-sheen 7s cubic-bezier(.45,0,.25,1) 2" }} />
-                </span>
-              </>
+              // the site's own motif ("hilando fino"): a single thread of light drawn along the pill's lower
+              // edge, left to right, fading out as it reaches the end, while the sign's short line draws out
+              <span aria-hidden className="pointer-events-none absolute inset-x-3 -bottom-px h-px overflow-hidden">
+                <span
+                  className="absolute inset-0 origin-left"
+                  style={{
+                    background: "linear-gradient(90deg, rgba(244,241,237,0) 0%, rgba(244,241,237,0.9) 45%, rgba(244,241,237,0.35) 85%, rgba(244,241,237,0) 100%)",
+                    boxShadow: "0 0 8px rgba(244,241,237,0.45)",
+                    animation: "fh-thread 7s cubic-bezier(.65,0,.35,1) 2",
+                  }}
+                />
+              </span>
             )}
             {/* (the word folds to nothing and the gap with it, so the pill closes round the sign) */}
             <motion.span
