@@ -208,21 +208,21 @@ export const ArtworkPage: React.FC = () => {
 };
 
 /* ────────────────────────────────────────────────────────────────── */
-// the disc's vinyl, drawn: the darker gaps between the tracks, the smooth run-out by the label and a
-// raised lip at the rim, over hair-fine grooves
-const VINYL = [
-  "radial-gradient(circle, transparent 0 55.5%, rgba(0,0,0,0.7) 56% 56.6%, transparent 57.2% 69.5%, rgba(0,0,0,0.7) 70% 70.6%, transparent 71.2% 83.5%, rgba(0,0,0,0.7) 84% 84.6%, transparent 85.2%)",
-  "radial-gradient(circle, transparent 0 36%, #131315 36% 42%, transparent 42% 97.5%, #222226 98% 99.2%, #0c0c0d 99.4%)",
-  "repeating-radial-gradient(circle, rgba(255,255,255,0.045) 0 0.5px, rgba(0,0,0,0.25) 0.6px 1.3px, rgba(255,255,255,0.02) 1.4px 1.8px)",
-  "#101012",
+// The CD, drawn as its playing side: the hole, the clear hub with its stacking ring, then the mirror
+// out to a thin rim, with the faintest trace of the data rings over it
+const CD_BODY = [
+  "repeating-radial-gradient(circle, rgba(255,255,255,0.05) 0 1px, rgba(0,0,0,0.03) 1px 2.5px)",
+  "radial-gradient(circle, transparent 0 12%, rgba(200,206,216,0.2) 12% 21%, rgba(230,232,238,0.4) 21% 21.8%, rgba(180,186,196,0.22) 21.8% 27%, rgba(110,114,124,0.9) 27% 28%, #8f929b 28% 70%, #82858e 70% 98.6%, #aeb1b8 98.6% 99.4%, rgba(70,72,80,0.9) 99.4% 100%)",
 ].join(", ");
-const SHEEN_MASK = "radial-gradient(circle, transparent 0 35%, #000 36%)";
+// the mirror only, where the colours play: from the stacking ring out to the rim
+const MIRROR = "radial-gradient(circle, transparent 0 28%, #000 28.5% 98.5%, transparent 99%)";
 
 /**
- * Fuga Sei as a record in the hand. On arrival the disc rolls out of its sleeve and settles with a
- * small give. Pointed at (or while the headphones are), it draws out further and starts to turn,
- * gathering speed and running down again as a turntable does, while the sleeve leans towards the
- * pointer under a gloss that follows it. On a touch screen it turns slowly while in view.
+ * Fuga Sei as a CD of its time, in a clear jewel case. On arrival the disc rolls out from behind the
+ * case and settles with a small give. Pointed at (or while the headphones are), it draws out further
+ * and starts to turn, gathering speed and running down again as a player does, while the case leans
+ * towards the pointer under a gloss that follows it and the disc's colours shift with the angle. On a
+ * touch screen it turns slowly while in view.
  */
 const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, listening }) => {
   const box = useRef<HTMLAnchorElement>(null);
@@ -239,8 +239,8 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
   useAnimationFrame((_, dt) => {
     if (still || !label.current) return;
     const s = turn.current;
-    const goal = playing ? (touch && !hover ? 0.12 : 0.55) : 0; // turns a second
-    s.speed += (goal - s.speed) * Math.min(1, dt / 600);
+    const goal = playing ? (touch && !hover ? 0.06 : 0.18) : 0; // turns a second: slow, unhurried
+    s.speed += (goal - s.speed) * Math.min(1, dt / 1100);
     if (s.speed < 0.0005 && !playing) return;
     s.angle = (s.angle + s.speed * 360 * (dt / 1000)) % 360;
     label.current.style.transform = `rotate(${s.angle}deg)`;
@@ -251,6 +251,11 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
   const ry = useSpring(useMotionValue(0), { stiffness: 120, damping: 18 });
   const gx = useMotionValue(30), gy = useMotionValue(20);
   const gloss = useMotionTemplate`radial-gradient(60% 60% at ${gx}% ${gy}%, rgba(255,255,255,0.16), transparent 70%)`;
+  // the disc's colours: a pale spectrum twice round, as a CD splits the light, its bearing following
+  // the pointer a little, as when a disc is tilted in the hand
+  const light = useSpring(useMotionValue(20), { stiffness: 60, damping: 20 });
+  const rainbow = useMotionTemplate`conic-gradient(from ${light}deg, rgba(255,140,200,0.55), rgba(255,226,140,0.5) 8%, rgba(150,240,190,0.5) 16%, rgba(130,190,255,0.55) 25%, rgba(200,150,255,0.5) 33%, rgba(200,205,215,0) 42%, rgba(200,205,215,0) 50%, rgba(255,140,200,0.55) 50%, rgba(255,226,140,0.5) 58%, rgba(150,240,190,0.5) 66%, rgba(130,190,255,0.55) 75%, rgba(200,150,255,0.5) 83%, rgba(200,205,215,0) 92%)`;
+  const glint = useMotionTemplate`conic-gradient(from ${light}deg, transparent 0 40%, rgba(255,255,255,0.28) 44%, transparent 47% 90%, rgba(255,255,255,0.22) 94%, transparent 97%)`;
   const move = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || still) return;
     const r = e.currentTarget.getBoundingClientRect();
@@ -259,15 +264,17 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
     rx.set(-(v - 0.5) * 8);
     gx.set(u * 100);
     gy.set(v * 100);
+    light.set(20 + (u - 0.5) * 90 + (v - 0.5) * 30);
   };
   const leave = () => {
     setHover(false);
     rx.set(0);
     ry.set(0);
+    light.set(20);
   };
 
-  // where the disc stands: inside, out at rest, drawn out while playing
-  const out = !seen ? "0%" : playing ? "46%" : "30%";
+  // where the disc stands: inside the case, out at rest, drawn out while playing
+  const out = !seen ? "0%" : playing ? "50%" : "30%";
 
   return (
     <a
@@ -282,47 +289,56 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
       onPointerMove={move}
       onPointerLeave={leave}
     >
-      <motion.div className="relative w-[78%] md:w-[80%]" style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}>
-        {/* the disc; its sheen stays still while the label turns */}
+      <motion.div className="relative aspect-[134/125] w-[78%] md:w-[80%]" style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}>
+        {/* the disc, behind the case, its own size as the booklet's; the colours stay with the light
+            (and drift with the pointer) while the print on the hub and the data's traces turn */}
         <motion.div
           aria-hidden
-          className="absolute left-[3%] top-[3%] aspect-square w-[94%] rounded-full shadow-[0_30px_60px_-30px_rgba(0,0,0,0.85)]"
-          style={{ background: VINYL }}
+          className="absolute left-[4%] top-[2.4%] aspect-square w-[88.8%] rounded-full shadow-[0_24px_50px_-24px_rgba(0,0,0,0.8)]"
+          style={{ background: CD_BODY }}
           initial={{ x: "0%", rotate: -40 }}
           animate={{ x: out, rotate: seen ? 0 : -40 }}
           transition={seen && !playing && !hover ? { type: "spring", stiffness: 60, damping: 11, mass: 1, delay: 0.25 } : { type: "spring", stiffness: 70, damping: 16 }}
         >
-          <div
-            ref={label}
-            className="absolute inset-[34%] rounded-full"
-            style={{ background: "radial-gradient(circle, #050505 0 4.5%, #6f817a 5% 7%, #8fa39b 7.5% 80%, #7d9189 80.5% 100%)" }}
-          >
-            <span className="absolute left-1/2 top-[16%] -translate-x-1/2 font-mono text-[8px] lowercase tracking-[0.2em] text-[#1d2523]/70">fuga sei</span>
-            <span className="absolute bottom-[16%] left-1/2 -translate-x-1/2 font-mono text-[7px] lowercase tracking-[0.2em] text-[#1d2523]/55">grimaldi lines</span>
+          <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.6 }} />
+          {/* a hard white catch of the light across the mirror, two opposite blades */}
+          <motion.div className="absolute inset-0 rounded-full mix-blend-screen" style={{ background: glint, WebkitMaskImage: MIRROR, maskImage: MIRROR }} />
+          <div ref={label} className="absolute inset-0 rounded-full">
+            {/* the data's faint uneven traces, so the turn can be seen */}
+            <div
+              className="absolute inset-0 rounded-full opacity-60"
+              style={{ background: "conic-gradient(from 0deg, transparent 0 8%, rgba(60,64,74,0.18) 9% 14%, transparent 15% 46%, rgba(60,64,74,0.12) 47% 50%, transparent 51% 78%, rgba(60,64,74,0.15) 79% 83%, transparent 84%)", WebkitMaskImage: "radial-gradient(circle, transparent 0 34%, #000 35% 80%, transparent 81%)", maskImage: "radial-gradient(circle, transparent 0 34%, #000 35% 80%, transparent 81%)" }}
+            />
+            {/* the hub's moulded print */}
+            <span className="absolute left-1/2 top-[23.5%] -translate-x-1/2 font-mono text-[6px] uppercase tracking-[0.3em] text-[#3a3d45]/70">fuga sei</span>
+            <span className="absolute bottom-[23.5%] left-1/2 -translate-x-1/2 font-mono text-[6px] uppercase tracking-[0.3em] text-[#3a3d45]/55">grimaldi lines</span>
           </div>
-          <div
-            className="absolute inset-0 rounded-full mix-blend-screen"
-            style={{ background: "conic-gradient(from 25deg, transparent 0 4%, rgba(255,255,255,0.16) 10%, rgba(255,255,255,0.04) 15%, transparent 20% 54%, rgba(255,255,255,0.12) 60%, rgba(255,255,255,0.03) 65%, transparent 70%)", WebkitMaskImage: SHEEN_MASK, maskImage: SHEEN_MASK }}
-          />
         </motion.div>
-        {/* the sleeve, nudged back a little as the disc is drawn out */}
-        <motion.div className="relative" animate={{ x: playing ? "-2%" : "0%" }} transition={{ type: "spring", stiffness: 70, damping: 16 }}>
+        {/* the jewel case, nudged back a little as the disc is drawn out */}
+        <motion.div className="absolute inset-0" animate={{ x: playing ? "-2%" : "0%" }} transition={{ type: "spring", stiffness: 70, damping: 16 }}>
+          {/* the black tray, seen through the clear lid beside the booklet */}
+          <div className="absolute inset-0 rounded-[3px] bg-[#121216] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.55)]" />
           <img
             src={src}
             alt="Fuga Sei — Grimaldi Lines (EP)"
             {...protect}
-            // a touch dimmer, so the pale sleeve doesn't glare in the dark room
+            // a touch dimmer, so the pale booklet doesn't glare in the dark room
             style={{ filter: "brightness(0.82)" }}
-            className="relative block aspect-square w-full rounded-[3px] object-cover shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.7)]"
+            className="absolute left-[4%] top-[2.4%] block aspect-square h-[95.2%] object-cover"
           />
-          {/* printed card, not a picture: light falling across it from the upper left, edges with a
-              little body, the card's faint tooth, and a gloss that follows the pointer */}
+          {/* the hinge down the left: a narrow band of smoked plastic with one fine edge of light */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[3px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_22px_rgba(0,0,0,0.4),inset_-2px_0_0_rgba(0,0,0,0.5)]"
-            style={{ background: "linear-gradient(118deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.03) 30%, transparent 55%, rgba(0,0,0,0.22) 100%)" }}
+            className="absolute inset-y-0 left-0 w-[2.8%] rounded-l-[3px]"
+            style={{ background: "linear-gradient(90deg, rgba(30,31,36,0.95) 0%, rgba(74,76,86,0.7) 60%, rgba(255,255,255,0.18) 62%, rgba(36,37,42,0.9) 66%)" }}
           />
-          <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[3px] opacity-[0.1] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
+          {/* the clear lid over all: a hairline edge, a long soft reflection across it, and a gloss that
+              follows the pointer */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-[3px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12),inset_0_1px_0_rgba(255,255,255,0.22)]"
+            style={{ background: "linear-gradient(118deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 22%, transparent 40%, transparent 72%, rgba(255,255,255,0.04) 84%, transparent 94%)" }}
+          />
           <motion.div
             aria-hidden
             className="pointer-events-none absolute inset-0 rounded-[3px] mix-blend-soft-light transition-opacity duration-700"
