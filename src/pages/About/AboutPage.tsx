@@ -294,7 +294,7 @@ export const AboutPage: React.FC = () => {
             const target = document.getElementById("contact");
             if (target) scrollToTarget(lenis, target, { offset: -96 });
           }}
-          className="group relative inline-flex items-center gap-2 self-auto text-ink/65 transition-colors duration-500 hover:text-ink"
+          className="group relative inline-flex items-center gap-2 self-auto text-ink/85 transition-colors duration-500 hover:text-ink"
         >
           <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
           {t("availability")}
@@ -315,9 +315,10 @@ export const AboutPage: React.FC = () => {
               />
             ))}
           </span>
-          {/* the wordmark itself, drawn from the logo's own strokes, small */}
-          <svg viewBox="249 677 1389 401" className="ml-1.5 h-[13px] w-auto text-ink/60" fill="none" stroke="currentColor" strokeWidth="35">
-            <path d="M570 695L300 695Q267 695 267 728L267 976M267 826L570 826M612 755L612 925Q612 960 647 960L860 960Q895 960 895 925L895 755M1255 960L1015 960Q980 960 980 925L980 807Q980 772 1015 772L1255 772L1255 1025Q1255 1060 1220 1060L965 1060M1320 772L1585 772Q1620 772 1620 807L1620 965L1365 965Q1330 965 1330 930L1330 885Q1330 850 1365 850L1620 850" />
+          {/* the studio's initials, F and g, drawn from the logo's own strokes, small */}
+          <svg viewBox="249 677 679 401" className="ml-1.5 h-[13px] w-auto text-ink/80" fill="none" stroke="currentColor" strokeWidth="35">
+            <path d="M570 695L300 695Q267 695 267 728L267 976M267 826L570 826" />
+            <path transform="translate(-345 0)" d="M1255 960L1015 960Q980 960 980 925L980 807Q980 772 1015 772L1255 772L1255 1025Q1255 1060 1220 1060L965 1060" />
           </svg>
         </span>
         </div>
