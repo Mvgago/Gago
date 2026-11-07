@@ -289,12 +289,12 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
       onPointerMove={move}
       onPointerLeave={leave}
     >
-      <motion.div className="relative aspect-[134/125] w-[78%] md:w-[80%]" style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}>
+      <motion.div className="relative aspect-square w-[78%] md:w-[80%]" style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}>
         {/* the disc, behind the case, its own size as the booklet's; the colours stay with the light
             (and drift with the pointer) while the print on the hub and the data's traces turn */}
         <motion.div
           aria-hidden
-          className="absolute left-[4%] top-[2.4%] aspect-square w-[88.8%] rounded-full shadow-[0_24px_50px_-24px_rgba(0,0,0,0.8)]"
+          className="absolute left-[1.5%] top-[1.5%] aspect-square w-[97%] rounded-full shadow-[0_24px_50px_-24px_rgba(0,0,0,0.8)]"
           style={{ background: CD_BODY }}
           initial={{ x: "0%", rotate: -40 }}
           animate={{ x: out, rotate: seen ? 0 : -40 }}
@@ -309,6 +309,19 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
               className="absolute inset-0 rounded-full opacity-60"
               style={{ background: "conic-gradient(from 0deg, transparent 0 8%, rgba(60,64,74,0.18) 9% 14%, transparent 15% 46%, rgba(60,64,74,0.12) 47% 50%, transparent 51% 78%, rgba(60,64,74,0.15) 79% 83%, transparent 84%)", WebkitMaskImage: "radial-gradient(circle, transparent 0 34%, #000 35% 80%, transparent 81%)", maskImage: "radial-gradient(circle, transparent 0 34%, #000 35% 80%, transparent 81%)" }}
             />
+            {/* a nod to the record's name, etched into the mirror as a disc's codes are: a crossing's dashed
+                line between two ports, and the title running round the outer edge */}
+            <svg viewBox="0 0 200 200" className="absolute inset-0 h-full w-full">
+              <defs>
+                <path id="fh-cd-ring" d="M100,12 a88,88 0 1,1 -0.01,0" />
+              </defs>
+              <path d="M41.7 78.8 A62 62 0 0 1 147.5 60.1" fill="none" stroke="rgba(34,38,46,0.42)" strokeWidth="0.7" strokeDasharray="2.2 2" />
+              <circle cx="41.7" cy="78.8" r="1.7" fill="none" stroke="rgba(34,38,46,0.5)" strokeWidth="0.6" />
+              <circle cx="147.5" cy="60.1" r="1.7" fill="rgba(34,38,46,0.5)" />
+              <text fill="rgba(34,38,46,0.42)" fontFamily="JetBrains Mono, monospace" fontSize="4.6" letterSpacing="1.5">
+                <textPath href="#fh-cd-ring">GRIMALDI LINES · CROSSING 01 · FUGA SEI · MMXXVI · GRIMALDI LINES · CROSSING 01 · FUGA SEI · MMXXVI ·</textPath>
+              </text>
+            </svg>
             {/* the hub's moulded print */}
             <span className="absolute left-1/2 top-[23.5%] -translate-x-1/2 font-mono text-[6px] uppercase tracking-[0.3em] text-[#3a3d45]/70">fuga sei</span>
             <span className="absolute bottom-[23.5%] left-1/2 -translate-x-1/2 font-mono text-[6px] uppercase tracking-[0.3em] text-[#3a3d45]/55">grimaldi lines</span>
@@ -316,15 +329,15 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
         </motion.div>
         {/* the jewel case, nudged back a little as the disc is drawn out */}
         <motion.div className="absolute inset-0" animate={{ x: playing ? "-2%" : "0%" }} transition={{ type: "spring", stiffness: 70, damping: 16 }}>
-          {/* the black tray, seen through the clear lid beside the booklet */}
-          <div className="absolute inset-0 rounded-[3px] bg-[#121216] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.55)]" />
+          {/* the case's shadow; the booklet fills the clear case edge to edge */}
+          <div className="absolute inset-0 rounded-[3px] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.55)]" />
           <img
             src={src}
             alt="Fuga Sei — Grimaldi Lines (EP)"
             {...protect}
             // a touch dimmer, so the pale booklet doesn't glare in the dark room
             style={{ filter: "brightness(0.82)" }}
-            className="absolute left-[4%] top-[2.4%] block aspect-square h-[95.2%] object-cover"
+            className="absolute inset-0 block h-full w-full rounded-[3px] object-cover"
           />
           {/* the hinge down the left: a narrow band of smoked plastic with one fine edge of light */}
           <div

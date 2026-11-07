@@ -263,7 +263,7 @@ export const AboutPage: React.FC = () => {
 
   return (
     // No bottom padding: the dark contact block closes the page, the footer follows it
-    <main className="fh-dark relative overflow-x-clip px-4 pt-[5.25rem] sm:px-6 sm:pt-28 md:px-8 md:pt-32 lg:pt-24">
+    <main className="fh-dark relative overflow-x-clip px-4 pt-[5.25rem] sm:px-6 sm:pt-28 md:px-8 md:pt-32 lg:pt-[5.25rem]">
       {/* (the ground only: a solid layer here covered the studio's light, which lies behind the pages) */}
       <LightWall color={DARK_WALL} layer={false} />
       {/* (the room's light lives behind every page, in App, so it never moves with the page's entrance) */}
@@ -321,7 +321,7 @@ export const AboutPage: React.FC = () => {
       </motion.header>
 
       {/* Statement and way in */}
-      <div className="mb-6 mt-5 grid items-center gap-14 sm:mb-8 sm:mt-8 md:mb-10 md:mt-3 lg:mb-4 lg:mt-1 lg:grid-cols-12 lg:gap-8">
+      <div className="mb-6 mt-5 grid items-center gap-14 sm:mb-8 sm:mt-8 md:mb-10 md:mt-3 lg:mb-8 lg:mt-5 lg:grid-cols-12 lg:gap-8">
       <div className="min-w-0 lg:col-span-12">
       {/* The statement in two voices: the image of the fugue as the page's headline, large, its words rising
           into place one after another as the lema does on the landing; then what it means, smaller and set
@@ -354,7 +354,7 @@ export const AboutPage: React.FC = () => {
               transition={{ duration: 1.8, ease: EASE_HAUS, delay: 0.4 + head.split(" ").length * 0.035 }}
             />
             {sub && (
-              <RevealFlow text={sub} className={`${BODY} mt-4 max-w-[46ch] text-graphite sm:mt-6 lg:mt-5 lg:max-w-[66ch] lg:text-[1.15rem]`} delay={0.65 + head.split(" ").length * 0.035} />
+              <RevealFlow text={sub} className={`${BODY} mt-4 max-w-[46ch] text-graphite sm:mt-6 lg:mt-6 lg:max-w-[66ch] lg:text-[1.15rem]`} delay={0.65 + head.split(" ").length * 0.035} />
             )}
           </>
         );
