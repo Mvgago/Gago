@@ -371,7 +371,7 @@ export const AboutPage: React.FC = () => {
               {Array.from({ length: 14 }, (_, k) => (
                 <span
                   key={k}
-                  className="block h-[3px] flex-1 rounded-[1.5px] bg-current"
+                  className="block h-[2px] flex-1 rounded-[1px] bg-current"
                   style={{ animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
                 />
               ))}
