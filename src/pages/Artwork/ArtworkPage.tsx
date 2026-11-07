@@ -212,7 +212,7 @@ export const ArtworkPage: React.FC = () => {
 // out to a thin rim, with the faintest trace of the data rings over it
 const CD_BODY = [
   "repeating-radial-gradient(circle, rgba(255,255,255,0.05) 0 1px, rgba(0,0,0,0.03) 1px 2.5px)",
-  "radial-gradient(circle, transparent 0 12%, rgba(200,206,216,0.2) 12% 21%, rgba(230,232,238,0.4) 21% 21.8%, rgba(180,186,196,0.22) 21.8% 27%, rgba(110,114,124,0.9) 27% 28%, #8f929b 28% 70%, #82858e 70% 98.6%, #aeb1b8 98.6% 99.4%, rgba(70,72,80,0.9) 99.4% 100%)",
+  "radial-gradient(circle, transparent 0 12%, rgba(200,206,216,0.2) 12% 21%, rgba(230,232,238,0.4) 21% 21.8%, rgba(180,186,196,0.22) 21.8% 27%, rgba(110,114,124,0.9) 27% 28%, #7a7d85 28% 70%, #6e7179 70% 98.6%, #989ba2 98.6% 99.4%, rgba(70,72,80,0.9) 99.4% 100%)",
 ].join(", ");
 // the mirror only, where the colours play: from the stacking ring out to the rim
 const MIRROR = "radial-gradient(circle, transparent 0 28%, #000 28.5% 98.5%, transparent 99%)";
@@ -239,7 +239,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
   useAnimationFrame((_, dt) => {
     if (still || !label.current) return;
     const s = turn.current;
-    const goal = playing ? (touch && !hover ? 0.06 : 0.18) : 0; // turns a second: slow, unhurried
+    const goal = playing ? (touch && !hover ? 0.035 : 0.07) : 0; // turns a second: slow, unhurried
     s.speed += (goal - s.speed) * Math.min(1, dt / 1100);
     if (s.speed < 0.0005 && !playing) return;
     s.angle = (s.angle + s.speed * 360 * (dt / 1000)) % 360;
@@ -255,7 +255,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
   // the pointer a little, as when a disc is tilted in the hand
   const light = useSpring(useMotionValue(20), { stiffness: 60, damping: 20 });
   const rainbow = useMotionTemplate`conic-gradient(from ${light}deg, rgba(255,140,200,0.55), rgba(255,226,140,0.5) 8%, rgba(150,240,190,0.5) 16%, rgba(130,190,255,0.55) 25%, rgba(200,150,255,0.5) 33%, rgba(200,205,215,0) 42%, rgba(200,205,215,0) 50%, rgba(255,140,200,0.55) 50%, rgba(255,226,140,0.5) 58%, rgba(150,240,190,0.5) 66%, rgba(130,190,255,0.55) 75%, rgba(200,150,255,0.5) 83%, rgba(200,205,215,0) 92%)`;
-  const glint = useMotionTemplate`conic-gradient(from ${light}deg, transparent 0 40%, rgba(255,255,255,0.28) 44%, transparent 47% 90%, rgba(255,255,255,0.22) 94%, transparent 97%)`;
+  const glint = useMotionTemplate`conic-gradient(from ${light}deg, transparent 0 40%, rgba(255,255,255,0.16) 44%, transparent 47% 90%, rgba(255,255,255,0.12) 94%, transparent 97%)`;
   const move = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || still) return;
     const r = e.currentTarget.getBoundingClientRect();
@@ -291,7 +291,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
     >
       <motion.div className="relative aspect-square w-[78%] md:w-[80%]" style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}>
         {/* the disc, behind the case, its own size as the booklet's; the colours stay with the light
-            (and drift with the pointer) while the print on the hub and the data's traces turn */}
+            (and drift with the pointer) while its small print turns */}
         <motion.div
           aria-hidden
           className="absolute left-[1.5%] top-[1.5%] aspect-square w-[97%] rounded-full shadow-[0_24px_50px_-24px_rgba(0,0,0,0.8)]"
@@ -300,35 +300,24 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
           animate={{ x: out, rotate: seen ? 0 : -40 }}
           transition={seen && !playing && !hover ? { type: "spring", stiffness: 60, damping: 11, mass: 1, delay: 0.25 } : { type: "spring", stiffness: 70, damping: 16 }}
         >
-          <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.6 }} />
+          <motion.div className="absolute inset-0 rounded-full mix-blend-hard-light" style={{ background: rainbow, WebkitMaskImage: MIRROR, maskImage: MIRROR, opacity: 0.38 }} />
           {/* a hard white catch of the light across the mirror, two opposite blades */}
           <motion.div className="absolute inset-0 rounded-full mix-blend-screen" style={{ background: glint, WebkitMaskImage: MIRROR, maskImage: MIRROR }} />
+          {/* what turns: only the title, set straight and small in a plain part of the mirror, as a disc's
+              discreet print, so the slow turn can just be followed */}
           <div ref={label} className="absolute inset-0 rounded-full">
-            {/* the data's faint uneven traces, so the turn can be seen */}
-            <div
-              className="absolute inset-0 rounded-full opacity-60"
-              style={{ background: "conic-gradient(from 0deg, transparent 0 8%, rgba(60,64,74,0.18) 9% 14%, transparent 15% 46%, rgba(60,64,74,0.12) 47% 50%, transparent 51% 78%, rgba(60,64,74,0.15) 79% 83%, transparent 84%)", WebkitMaskImage: "radial-gradient(circle, transparent 0 34%, #000 35% 80%, transparent 81%)", maskImage: "radial-gradient(circle, transparent 0 34%, #000 35% 80%, transparent 81%)" }}
-            />
-            {/* a nod to the record's name, etched into the mirror as a disc's codes are: a crossing's dashed
-                line between two ports, and the title running round the outer edge */}
-            <svg viewBox="0 0 200 200" className="absolute inset-0 h-full w-full">
-              <defs>
-                <path id="fh-cd-ring" d="M100,12 a88,88 0 1,1 -0.01,0" />
-              </defs>
-              <path d="M41.7 78.8 A62 62 0 0 1 147.5 60.1" fill="none" stroke="rgba(34,38,46,0.42)" strokeWidth="0.7" strokeDasharray="2.2 2" />
-              <circle cx="41.7" cy="78.8" r="1.7" fill="none" stroke="rgba(34,38,46,0.5)" strokeWidth="0.6" />
-              <circle cx="147.5" cy="60.1" r="1.7" fill="rgba(34,38,46,0.5)" />
-              <text fill="rgba(34,38,46,0.42)" fontFamily="JetBrains Mono, monospace" fontSize="4.6" letterSpacing="1.5">
-                <textPath href="#fh-cd-ring">GRIMALDI LINES · CROSSING 01 · FUGA SEI · MMXXVI · GRIMALDI LINES · CROSSING 01 · FUGA SEI · MMXXVI ·</textPath>
-              </text>
-            </svg>
-            {/* the hub's moulded print */}
-            <span className="absolute left-1/2 top-[23.5%] -translate-x-1/2 font-mono text-[6px] uppercase tracking-[0.3em] text-[#3a3d45]/70">fuga sei</span>
-            <span className="absolute bottom-[23.5%] left-1/2 -translate-x-1/2 font-mono text-[6px] uppercase tracking-[0.3em] text-[#3a3d45]/55">grimaldi lines</span>
+            <span className="absolute left-1/2 top-[64%] -translate-x-1/2 whitespace-nowrap font-mono text-[6px] uppercase tracking-[0.3em] text-[#2c2f36]/40">grimaldi lines</span>
           </div>
         </motion.div>
         {/* the jewel case, nudged back a little as the disc is drawn out */}
         <motion.div className="absolute inset-0" animate={{ x: playing ? "-2%" : "0%" }} transition={{ type: "spring", stiffness: 70, damping: 16 }}>
+          {/* the case's own depth: its edge showing below and to the right, smoked plastic catching a
+              little light along its length */}
+          <div
+            aria-hidden
+            className="absolute inset-0 translate-x-[1.1%] translate-y-[1.3%] rounded-[4px]"
+            style={{ background: "linear-gradient(135deg, #2e3037 0%, #4a4d56 45%, #1c1d22 100%)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" }}
+          />
           {/* the case's shadow; the booklet fills the clear case edge to edge */}
           <div className="absolute inset-0 rounded-[3px] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75),14px_0_28px_-10px_rgba(0,0,0,0.55)]" />
           <img
@@ -345,11 +334,18 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
             className="absolute inset-y-0 left-0 w-[2.8%] rounded-l-[3px]"
             style={{ background: "linear-gradient(90deg, rgba(30,31,36,0.95) 0%, rgba(74,76,86,0.7) 60%, rgba(255,255,255,0.18) 62%, rgba(36,37,42,0.9) 66%)" }}
           />
-          {/* the clear lid over all: a hairline edge, a long soft reflection across it, and a gloss that
-              follows the pointer */}
+          {/* the lid's raised frame: a narrow step inside its edge, lit on its upper and left faces and
+              shadowed on the others, so the plastic stands proud of the booklet */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[3px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12),inset_0_1px_0_rgba(255,255,255,0.22)]"
+            className="pointer-events-none absolute bottom-[2%] left-[4.4%] right-[2%] top-[2%] rounded-[2px]"
+            style={{ boxShadow: "inset 1px 1px 0 rgba(0,0,0,0.35), inset -1px -1px 0 rgba(255,255,255,0.1), 1px 1px 0 rgba(255,255,255,0.14), -1px -1px 0 rgba(0,0,0,0.25)" }}
+          />
+          {/* the clear lid over all: a bevelled edge, light on top and left and dark below and right, a long
+              soft reflection across it, and a gloss that follows the pointer */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-[3px] shadow-[inset_2px_2px_0_rgba(255,255,255,0.26),inset_-2px_-2px_0_rgba(0,0,0,0.45),inset_0_0_0_1px_rgba(255,255,255,0.08),inset_4px_4px_10px_rgba(255,255,255,0.05),inset_-4px_-4px_10px_rgba(0,0,0,0.2)]"
             style={{ background: "linear-gradient(118deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 22%, transparent 40%, transparent 72%, rgba(255,255,255,0.04) 84%, transparent 94%)" }}
           />
           <motion.div

@@ -225,7 +225,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
     };
   }, []);
 
-  const noteFor = (i: number) => (EX[i].video ? s.videoNote : undefined);
+  // (no note over the film: the studio's own work needs no caption saying so)
+  const noteFor = (_i: number): string | undefined => undefined;
   // The scenes' files fetched ahead, quietly, once the page has loaded and settled (nothing extra on
   // arrival): their code, the home viewer's page and three.js; the home's models (some 12 MB) only on a
   // wide screen or a fast connection, never when the phone asks to save data. Each scene is still built
@@ -510,7 +511,7 @@ export const ServicesEditorial: React.FC<{ s: Studio }> = ({ s }) => {
           >
             {EXAMPLES[i] && (
               <div className="relative -mx-4 aspect-[16/10] sm:-mx-6 md:mx-0">
-                <Frame ex={EXAMPLES[i]} note={EXAMPLES[i].video ? s.videoNote : undefined} linkLabel={linkLabel} />
+                <Frame ex={EXAMPLES[i]} linkLabel={linkLabel} />
               </div>
             )}
             <div className="pt-6 text-ink">
