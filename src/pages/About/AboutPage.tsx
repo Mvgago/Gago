@@ -131,16 +131,17 @@ const TurningWord: React.FC<{ words: string[]; still: boolean }> = ({ words, sti
     return () => window.clearInterval(id);
   }, [still, shown, words.length]);
   return (
-    // a clipped line (with room for accents and descenders): the word rises out of the top whole, as the
-    // next rises in from below; both share the one cell, so nothing ever leaves the clip
-    <span ref={ref} className="relative -my-[0.18em] inline-grid overflow-hidden py-[0.18em] align-bottom">
+    // a clipped line, its top at the line's own (the headline is set tight, so any room above would reach
+    // into the line before) and a little room below for descenders: the word rises out of the top whole,
+    // as the next rises in from below; both share the one cell, so nothing ever leaves the clip
+    <span ref={ref} className="relative -mb-[0.2em] inline-grid overflow-hidden pb-[0.2em] align-top">
       <AnimatePresence initial={false}>
         <motion.span
           key={words[i]}
           className="col-start-1 row-start-1 whitespace-nowrap"
-          initial={{ y: "120%" }}
+          initial={{ y: "130%" }}
           animate={{ y: "0%", transition: { duration: 1, ease: EASE_HAUS, delay: 0.12 } }}
-          exit={{ y: "-120%", transition: { duration: 0.8, ease: [0.6, 0, 0.4, 1] } }}
+          exit={{ y: "-140%", transition: { duration: 0.8, ease: [0.6, 0, 0.4, 1] } }}
         >
           {words[i]}
         </motion.span>
