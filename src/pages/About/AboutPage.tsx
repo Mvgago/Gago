@@ -302,8 +302,8 @@ export const AboutPage: React.FC = () => {
         {/* the whole block is the way down to the contact form: the line, and under it (wide screens) a
             small status readout in the spirit of early-2000s interfaces, a row of fine cells a light keeps
             sweeping along after a crosshair, each growing a little as it lights, and the studio's initials.
-            Pointed at, it all brightens a shade, no underline */}
-        <style>{`@keyframes fh-scan{0%,100%{opacity:.24;transform:scaleY(1)}6%{opacity:.6;transform:scaleY(1.5)}22%{opacity:.24;transform:scaleY(1)}}@keyframes fh-fg{0%,40%,64%,100%{transform:scale(1);opacity:.8;filter:none}47%{transform:scale(1.06);opacity:1;filter:drop-shadow(0 0 3px rgba(244,241,237,0.4))}}`}</style>
+            All of it in one tone; pointed at, it brightens together, no underline */}
+        <style>{`@keyframes fh-scan{0%,22%,100%{transform:scaleY(1)}6%{transform:scaleY(1.7)}}@keyframes fh-fg{0%,40%,64%,100%{transform:scale(1)}47%{transform:scale(1.06)}}`}</style>
         <a
           href="#contact"
           onClick={(e) => {
@@ -311,10 +311,12 @@ export const AboutPage: React.FC = () => {
             const target = document.getElementById("contact");
             if (target) scrollToTarget(lenis, target, { offset: -96 });
           }}
-          className="group hidden flex-col items-stretch sm:flex"
+          // one tone for every part (line, dot, cells and initials), brightening together when pointed at;
+          // the sweep shows only as the cells growing, the initials as a slight swell
+          className="group hidden flex-col items-stretch text-ink/70 transition-colors duration-500 hover:text-ink sm:flex"
         >
-          <span className="text-ink/85 transition-colors duration-500 group-hover:text-ink">{t("availability")}</span>
-          <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-ink/60 transition-colors duration-500 group-hover:text-ink/85 lg:flex">
+          <span>{t("availability")}</span>
+          <span aria-hidden className="mt-3 hidden items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] lg:flex">
             {/* the line's dot, moved down to lead the readout */}
             <span className="h-1 w-1 shrink-0 rounded-full bg-current" />
             {/* the cells share whatever the line leaves, so the readout runs exactly as wide as the line
@@ -323,17 +325,17 @@ export const AboutPage: React.FC = () => {
               {Array.from({ length: 14 }, (_, k) => (
                 <span
                   key={k}
-                  className="block h-[3px] flex-1 rounded-[1.5px] bg-ink"
-                  style={{ opacity: 0.24, animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
+                  className="block h-[3px] flex-1 rounded-[1.5px] bg-current"
+                  style={{ animation: stillPage ? undefined : `fh-scan 3.2s linear ${k * 0.09}s infinite` }}
                 />
               ))}
             </span>
             {/* the studio's initials, F and g, drawn from the logo's own strokes, small; as the sweep reaches them
-                they swell a little and light up, then settle */}
+                they swell a little, then settle */}
             <svg
               viewBox="249 677 679 401"
-              className="ml-1.5 h-[13px] w-auto origin-center text-ink transition-colors duration-500"
-              style={{ opacity: 0.8, animation: stillPage ? undefined : "fh-fg 3.2s linear infinite" }}
+              className="ml-1.5 h-[13px] w-auto origin-center"
+              style={{ animation: stillPage ? undefined : "fh-fg 3.2s linear infinite" }}
               fill="none"
               stroke="currentColor"
               strokeWidth="35"
