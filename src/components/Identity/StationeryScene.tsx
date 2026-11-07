@@ -1324,12 +1324,13 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   fit();
 
   // The camera drifts slowly over the table, so the foil catches and loses the light
-  const look = new THREE.Vector3(-0.05, 0, 0.0);
+  const look = new THREE.Vector3(-0.05, 0, 0.12);
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const place = (t: number) => {
     // close over the four pieces, a little from the front, as a still life is shot; breathing only a little
     const a = Math.sin(t * 0.16) * 0.06, lift = Math.sin(t * 0.11) * 0.08;
-    camera.position.set(look.x + Math.sin(a) * 3.3, 6.1 + lift, look.z + Math.cos(a) * 3.3);
+    // (a step closer, so the pieces fill the frame and no empty band is left along its foot)
+    camera.position.set(look.x + Math.sin(a) * 3.0, 5.5 + lift, look.z + Math.cos(a) * 3.0);
     camera.lookAt(look);
   };
   place(0);
