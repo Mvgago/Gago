@@ -151,6 +151,18 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
     return () => io.disconnect();
   }, []);
 
+  // The held frame's height, so the last discipline can be just as tall: the frame and the last text
+  // then let go together, the text level with the picture, instead of the frame leaving as it begins
+  const frame = useRef<HTMLDivElement>(null);
+  const [frameH, setFrameH] = useState(0);
+  useEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setFrameH(el.offsetHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   // The tabs' hint plays once, the first time they come into view
   const tabs = useRef<HTMLDivElement>(null);
   const [hint, setHint] = useState(false);
@@ -317,7 +329,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
       {/* The frame, held while the disciplines pass (large screens) */}
       {/* a little wider for the text on small laptops, where four columns left the titles cramped */}
       <div className="col-span-7 hidden lg:block xl:col-span-8">
-        <div className="sticky top-28">
+        <div ref={frame} className="sticky top-28">
           {/* the film's own shape, so no shot loses its top or bottom */}
           {/* out to the screen's left edge, as the work bleeds on the case pages */}
           <div className="relative -ml-8 aspect-video w-[calc(100%+2rem)]">
@@ -396,8 +408,8 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               // slides up over it, so two disciplines never run together; each is a third of a screen taller
               // than the screen (all but the last), so it stays while its text comes in and is read, and the
               // next only rises after that much more scrolling
-              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-0"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 ${i === s.disciplines.length - 1 ? "lg:min-h-0 lg:pb-16" : "lg:min-h-[calc(100svh-112px)]"} lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
-              style={{ zIndex: i + 1 }}
+              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-0"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 ${i === s.disciplines.length - 1 ? "lg:min-h-[var(--fh-frame,0px)] lg:pb-16" : "lg:min-h-[calc(100svh-112px)]"} lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              style={{ zIndex: i + 1, ...(frameH ? ({ "--fh-frame": `${frameH}px` } as React.CSSProperties) : {}) }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
               {/* held under the header while its text is read, the text passing beneath it, as the
