@@ -73,9 +73,11 @@ const Reel: React.FC<{
   const band = (step * FILL) / BANDS;
   const bandH = 2 * R * Math.tan(band / 2) + 1; // (+1: no hairline between bands)
 
-  // the plate's width: about two thirds of a phone, held to 300 px on wider screens
+  // the plate's width, set so the whole drum (with the near perspective below, it stands some 2.7 plates
+  // tall) fits the screen with air above and below: from the screen's height, held to most of a phone's
+  // width and to 300 px
   useEffect(() => {
-    const fit = () => setW(Math.round(Math.min(300, window.innerWidth * 0.66)));
+    const fit = () => setW(Math.round(Math.min(300, window.innerWidth * 0.64, (window.innerHeight - 72) * 0.27)));
     fit();
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
@@ -138,7 +140,9 @@ const Reel: React.FC<{
   return (
     // a screen and a half of scrolling for each plate, the drum held on screen throughout
     <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100svh)` }}>
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden" style={{ perspective: 900 }}>
+      {/* (centred in the screen below the header; the perspective held close, in proportion to the drum, so
+          it reads as a cylinder and stays compact) */}
+      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[72px]" style={{ perspective: Math.round(R * 0.6), perspectiveOrigin: "50% calc(50% + 36px)" }}>
         <div ref={ring} className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
           {plates.map((pl, i) => (
             <button
