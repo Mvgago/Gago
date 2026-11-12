@@ -66,9 +66,9 @@ const FILM: Record<string, { src: string; small: string; poster: string; posterS
     src: "/video/the-sapphire.mp4",
     // phones: a vertical cut taken from the full film at its own resolution (the 720p film, cropped to a tall
     // screen and blown up, went soft)
-    small: "/video/the-sapphire-vertical.mp4",
+    small: "/video/the-sapphire-vertical.mp4?v=2",
     poster: "/video/the-sapphire-poster.webp",
-    posterSmall: "/video/the-sapphire-poster-vertical.webp",
+    posterSmall: "/video/the-sapphire-poster-vertical.webp?v=2",
   },
 };
 
