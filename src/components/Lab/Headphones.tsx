@@ -308,14 +308,14 @@ function grain() {
       x.translate(cx, cy);
       x.rotate(rot);
       x.scale(sx, 1);
-      x.strokeStyle = "rgba(220,220,220,0.35)";
+      x.strokeStyle = "rgba(220,220,220,0.18)";
       x.lineWidth = 1.2;
       x.beginPath();
       x.arc(0.6, 0.6, r, 0, Math.PI * 2);
       x.stroke();
       const g = x.createRadialGradient(0, 0, 0, 0, 0, r);
-      g.addColorStop(0, "rgba(6,6,6,0.9)");
-      g.addColorStop(0.65, "rgba(20,20,20,0.6)");
+      g.addColorStop(0, "rgba(6,6,6,0.55)");
+      g.addColorStop(0.65, "rgba(20,20,20,0.35)");
       g.addColorStop(1, "rgba(60,60,60,0)");
       x.fillStyle = g;
       x.beginPath();
@@ -386,7 +386,7 @@ function headphones() {
     color: "#4a4b50",
     roughness: 1,
     bumpMap: pores,
-    bumpScale: 3.2,
+    bumpScale: 1.3,
     // the pits a touch darker in the colour too, so they show in soft light as well as in relief
     map: pores,
     sheen: 0.25,
