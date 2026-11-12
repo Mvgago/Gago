@@ -95,14 +95,25 @@ const Reel: React.FC<{
   useEffect(() => {
     let raf = 0;
     let shown = -1;
-    const tick = () => {
-      raf = 0;
-      const el = section.current, r = ring.current;
-      if (!el || !r) return;
+    // the drum follows the scroll with a soft lag (each frame a part of the way), so it turns smoothly
+    // however the scroll arrives: in steps from a wheel, in bursts from a finger
+    let turn = -1;
+    const target = () => {
+      const el = section.current;
+      if (!el) return 0;
       const rect = el.getBoundingClientRect();
       const span = el.offsetHeight - window.innerHeight;
       const p = span > 0 ? Math.max(0, Math.min(1, -rect.top / span)) : 0;
-      const turn = p * (N - 1) * step; // from the first plate in front to the last
+      return p * (N - 1) * step; // from the first plate in front to the last
+    };
+    const tick = () => {
+      raf = 0;
+      const r = ring.current;
+      if (!r) return;
+      const goal = target();
+      turn = turn < 0 ? goal : turn + (goal - turn) * 0.16;
+      if (Math.abs(goal - turn) < 0.0004) turn = goal;
+      else raf = requestAnimationFrame(tick);
       r.style.transform = `translateZ(${-R}px) rotateX(${turn}rad)`;
       // each plate dimmed by how far it has turned from the visitor
       cards.current.forEach((c, i) => {
@@ -110,7 +121,7 @@ const Reel: React.FC<{
         const a = i * step - turn;
         const facing = Math.max(0, Math.cos(a));
         const lit = 0.35 + 0.65 * facing;
-        c.style.setProperty("--lit", lit.toFixed(3));
+        c.style.setProperty("--shade", (1 - lit).toFixed(3));
         // and faded as they go over the top and under: only the one in front at full strength
         // (as a veil of the wall's own silver over each band, the bands kept opaque: made see-through, the bands' overlaps showed as stripes)
         c.style.setProperty("--veil", (0.82 * (1 - facing ** 3)).toFixed(3));
@@ -200,16 +211,16 @@ const Reel: React.FC<{
               onClick={() => onOpen(i)}
               aria-label={`${pl.title ?? label} — ${pad(i + 1)}`}
               className="absolute inset-0 cursor-zoom-in"
-              style={{ transformStyle: "preserve-3d", "--lit": 1, "--veil": 0 } as React.CSSProperties}
+              style={{ transformStyle: "preserve-3d", "--shade": 0, "--veil": 0 } as React.CSSProperties}
             >
               {pl.video ? (
                 // a moving piece: one flat face, its film
                 <span
                   className="absolute inset-0 overflow-hidden rounded-[12px]"
-                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, filter: "brightness(var(--lit))", borderRadius: 8 }}
+                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, borderRadius: 8 }}
                 >
                   <video src={pl.video} poster={pl.url} muted loop playsInline preload="none" className="h-full w-full object-cover" />
-                  <span aria-hidden className="absolute inset-0" style={{ background: "rgba(195,197,201,var(--veil))" }} />
+                  <span aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), rgba(20,22,26,var(--shade))" }} />
                 </span>
               ) : (
                 Array.from({ length: BANDS }, (_, k) => {
@@ -223,10 +234,11 @@ const Reel: React.FC<{
                         top: (H - bandH) / 2,
                         height: bandH,
                         transform: `rotateX(${-a}rad) translateZ(${R}px)`,
-                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), url(${pl.url})`,
-                        backgroundSize: `100% 100%, ${W}px ${H}px`,
-                        backgroundPosition: `0 0, 0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
-                        filter: `brightness(var(--lit))${pl.grade ? " " + pl.grade : ""}`,
+                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,var(--shade)), rgba(20,22,26,var(--shade))), url(${pl.url})`,
+                        backgroundSize: `100% 100%, 100% 100%, ${W}px ${H}px`,
+                        backgroundPosition: `0 0, 0 0, 0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
+                        // (no filter per band: on a phone, two hundred filtered bands made the turn stutter)
+                        filter: pl.grade,
                         // the plate's corners rounded on its first and last bands
                         borderRadius: k === 0 ? "8px 8px 0 0" : k === BANDS - 1 ? "0 0 8px 8px" : 0,
                       }}
@@ -238,7 +250,7 @@ const Reel: React.FC<{
           ))}
         </div>
         </div>
-        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[calc(100lvh-100svh+4svh)] z-10 flex justify-center md:hidden`}>
+        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[calc(100lvh-100svh+14px)] z-10 flex justify-center md:hidden`}>
           {/* (on a pill of the wall's own silver, so it reads clear of the plates turning behind it) */}
           <span className="flex gap-4 rounded-full bg-[#c3c5c9]/85 px-4 py-1.5 text-platinum/80 backdrop-blur-sm">
           <span>{p?.title}</span>
