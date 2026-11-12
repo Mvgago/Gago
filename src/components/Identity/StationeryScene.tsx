@@ -1060,7 +1060,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     screenMap.offset.y = 1 - 993 / H;
 
     const phone = new THREE.Group();
-    const body = new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.08, 1.56, 4, 0.11), new THREE.MeshStandardMaterial({ color: "#3a3e43", metalness: phoneGpu ? 0.2 : 0.85, roughness: 0.32 }));
+    const body = new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.08, 1.56, 4, 0.11), // (a dark satin frame, not a mirror: its bright mirrored edges read as a gap of light under it, as if it hovered)
+      new THREE.MeshStandardMaterial({ color: "#26292d", metalness: phoneGpu ? 0.15 : 0.45, roughness: 0.42 }));
     body.position.y = 0.04;
     // the glass, the screen and its sheen cut with rounded corners like the body's, so no square corner
     // pokes out past its round edge (its picture mapped edge to edge, as on a plane)
@@ -1087,22 +1088,22 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // as its thinness allowed, nearly square), its edges eased with a small bevel, so glass and screen sit
     // in it with even, concentric corners as on a real phone
     {
-      const bodyGeo = new THREE.ExtrudeGeometry(roundedShape(0.76, 1.56, 0.11), { depth: 0.064, bevelEnabled: true, bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 4, curveSegments: 16 });
+      const bodyGeo = new THREE.ExtrudeGeometry(roundedShape(0.76, 1.56, 0.11), { depth: 0.036, bevelEnabled: true, bevelThickness: 0.007, bevelSize: 0.008, bevelSegments: 4, curveSegments: 16 }); // (a slim phone: thick, its shadow fell far from it and it seemed to float)
       bodyGeo.rotateX(-Math.PI / 2);
-      bodyGeo.translate(0, 0.008, 0);
+      bodyGeo.translate(0, 0.007, 0);
       body.geometry.dispose();
       (body as THREE.Mesh).geometry = bodyGeo;
       body.position.y = 0;
     }
     const glass = new THREE.Mesh(rounded(0.755, 1.555, 0.108), new THREE.MeshPhysicalMaterial({ color: "#0b0c0d", roughness: 0.08, clearcoat: 1 }));
     glass.rotation.x = -Math.PI / 2;
-    glass.position.y = 0.0805;
+    glass.position.y = 0.0505;
     const screen = new THREE.Mesh(
       rounded(0.738, 1.538, 0.1),
       new THREE.MeshStandardMaterial({ color: "#000", emissive: "#ffffff", emissiveMap: screenMap, emissiveIntensity: 0.95, roughness: 0.12, metalness: 0 }),
     );
     screen.rotation.x = -Math.PI / 2;
-    screen.position.y = 0.081;
+    screen.position.y = 0.051;
     // the glass over the screen takes the window's light as a soft sheen across it
     const sheen = (() => {
       const [sc, sx] = canvas(256, 512);
@@ -1117,15 +1118,15 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     })();
     const gloss = new THREE.Mesh(rounded(0.755, 1.555, 0.108), new THREE.MeshBasicMaterial({ map: sheen, transparent: true, depthWrite: false }));
     gloss.rotation.x = -Math.PI / 2;
-    gloss.position.y = 0.0825;
+    gloss.position.y = 0.0525;
     gloss.userData.flat = true;
     // (the thickest piece, so the darkest foot: a second, firmer contact under it, or it seemed to hover)
     const foot = contact(0.74, 1.54);
     (foot.material as THREE.MeshBasicMaterial).opacity = 1;
     // and a wider, softer shadow cast away from the window (down and to the right), as a thick object throws
-    const cast = contact(1.0, 1.75);
-    (cast.material as THREE.MeshBasicMaterial).opacity = 0.7;
-    cast.position.set(0.09, 0.0012, 0.1);
+    const cast = contact(0.92, 1.68);
+    (cast.material as THREE.MeshBasicMaterial).opacity = 0.85;
+    cast.position.set(0.025, 0.0012, 0.03);
     phone.add(body, glass, screen, gloss, cast, contact(0.8, 1.6), foot);
     // (laid nearly square to the table's edge, a little in from the frame's side, where the lens skews least)
     phone.position.set(1.32, 0, 0.12);
