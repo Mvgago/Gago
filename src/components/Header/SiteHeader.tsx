@@ -205,7 +205,7 @@ export const SiteHeader: React.FC = () => {
           style={{
             background:
               pathname === "/artwork"
-                ? "#232227cc"
+                ? "#272126cc"
                 : pathname === "/about"
                   ? "rgba(56,52,50,0.82)"
                   : `${WALL}cc`,

@@ -15,10 +15,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const Headphones = lazy(() => import("../../components/Lab/Headphones"));
 
 /**
- * The lab is a room apart from the rest of the site: its walls a dark cool grey under a pool of lavender, cool
- * where the studio is warm graphite, with a grain over it and the corners falling away.
+ * The lab is a room apart from the rest of the site: its walls a smoked plum, a dark greyed mauve that
+ * echoes the landing's, lit only by a soft fall of light, with a grain over it and the corners falling away.
  */
-const NIGHT = "#232227";
+const NIGHT = "#272126";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
@@ -27,14 +27,12 @@ const NightRoom: React.FC = () => (
     <div
       className="absolute inset-0"
       style={{
-        // a grey wall, and lavender light gathered in the upper left: its source off the page, so it
-        // comes in as a long soft wash with no edge, never a shape, and fades well before the rest
-        background:
-          "radial-gradient(75% 50% at -5% -10%, rgba(150,134,196,0.3) 0%, rgba(150,134,196,0.12) 45%, transparent 100%), radial-gradient(45% 70% at -10% 20%, rgba(150,134,196,0.12) 0%, transparent 100%)",
+        // no coloured wash: only a faint fall of light from above, so the plum of the wall speaks alone
+        background: "radial-gradient(90% 60% at 40% -10%, rgba(196,170,186,0.1) 0%, transparent 100%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
-    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(10,9,14,0.5) 100%)" }} />
+    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(14,9,13,0.45) 100%)" }} />
     <div className="absolute inset-0 opacity-[0.07] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
   </div>
 );
@@ -127,7 +125,7 @@ export const ArtworkPage: React.FC = () => {
                 onClick={() => setOpen(i)}
                 aria-label={`${plate.title ?? t("section.artwork")} — ${pad(i + 1)}`}
                 className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden"
-                style={{ background: "#33303c" }}
+                style={{ background: "#302830" }}
               >
                 <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade, transform: plate.crop ? `scale(${plate.crop})` : undefined, transformOrigin: plate.cropAt }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
               </button>
