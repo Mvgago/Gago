@@ -105,7 +105,8 @@ const Reel: React.FC<{
         const lit = 0.35 + 0.65 * facing;
         c.style.setProperty("--lit", lit.toFixed(3));
         // and faded as they go over the top and under: only the one in front at full strength
-        c.style.setProperty("--fade", (0.18 + 0.82 * facing ** 3).toFixed(3));
+        // (as a veil of the wall's own silver over each band, the bands kept opaque: made see-through, the bands' overlaps showed as stripes)
+        c.style.setProperty("--veil", (0.82 * (1 - facing ** 3)).toFixed(3));
         const v = c.querySelector("video");
         if (v) {
           if (Math.cos(a) > 0.8) void v.play().catch(() => {});
@@ -131,13 +132,6 @@ const Reel: React.FC<{
     };
   }, [N, R, step]);
 
-  const thread = (toward: "left" | "right") => (
-    <span
-      aria-hidden
-      className="block h-px w-10 md:w-16"
-      style={{ background: `linear-gradient(${toward === "right" ? "90deg" : "270deg"}, rgba(42,43,47,0.5), rgba(42,43,47,0))` }}
-    />
-  );
   const p = plates[front];
   const making = p?.tech ? TECH[p.tech][lang] ?? TECH[p.tech].es : undefined;
   const number = `${pad(front + 1)} / ${pad(N)}`;
@@ -164,15 +158,16 @@ const Reel: React.FC<{
               onClick={() => onOpen(i)}
               aria-label={`${pl.title ?? label} — ${pad(i + 1)}`}
               className="absolute inset-0 cursor-zoom-in"
-              style={{ transformStyle: "preserve-3d", "--lit": 1, "--fade": 1 } as React.CSSProperties}
+              style={{ transformStyle: "preserve-3d", "--lit": 1, "--veil": 0 } as React.CSSProperties}
             >
               {pl.video ? (
                 // a moving piece: one flat face, its film
                 <span
                   className="absolute inset-0 overflow-hidden rounded-[12px]"
-                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, filter: "brightness(var(--lit))", opacity: "var(--fade)", borderRadius: 18 }}
+                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, filter: "brightness(var(--lit))", borderRadius: 18 }}
                 >
                   <video src={pl.video} poster={pl.url} muted loop playsInline preload="none" className="h-full w-full object-cover" />
+                  <span aria-hidden className="absolute inset-0" style={{ background: "rgba(195,197,201,var(--veil))" }} />
                 </span>
               ) : (
                 Array.from({ length: BANDS }, (_, k) => {
@@ -186,13 +181,12 @@ const Reel: React.FC<{
                         top: (H - bandH) / 2,
                         height: bandH,
                         transform: `rotateX(${-a}rad) translateZ(${R}px)`,
-                        backgroundImage: `url(${pl.url})`,
-                        backgroundSize: `${W}px ${H}px`,
-                        backgroundPosition: `0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
+                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), url(${pl.url})`,
+                        backgroundSize: `100% 100%, ${W}px ${H}px`,
+                        backgroundPosition: `0 0, 0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
                         filter: `brightness(var(--lit))${pl.grade ? " " + pl.grade : ""}`,
                         // the plate's corners rounded on its first and last bands
                         borderRadius: k === 0 ? "18px 18px 0 0" : k === BANDS - 1 ? "0 0 18px 18px" : 0,
-                        opacity: "var(--fade)",
                       }}
                     />
                   );
@@ -201,11 +195,11 @@ const Reel: React.FC<{
             </button>
           ))}
         </div>
-        {/* the plate in front, named at its left, halfway down, on a thread of light (under it on a phone) */}
-        <span className={`${SMALL} pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 items-center gap-3 whitespace-nowrap md:flex`}>
+        {/* the plate in front, named at its left, halfway down: its type on the words' left edge above, its thread running on to the plate (under it on a phone) */}
+        <span className={`${SMALL} pointer-events-none absolute right-full top-1/2 mr-3 hidden w-[calc(14vw+min(30ch,24vw)-0.75rem)] -translate-y-1/2 items-center gap-3 whitespace-nowrap md:flex`}>
           <span className="text-platinum/85">{p?.title}</span>
           <span className="text-platinum/45">{making ? `${number} · ${making}` : number}</span>
-          {thread("left")}
+          <span aria-hidden className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(42,43,47,0), rgba(42,43,47,0.5))" }} />
         </span>
         </div>
         <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[6svh] flex justify-center gap-4 text-platinum/70 md:hidden`}>
