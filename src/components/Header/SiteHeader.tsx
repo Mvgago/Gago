@@ -195,7 +195,7 @@ export const SiteHeader: React.FC = () => {
       >
         <div
           aria-hidden
-          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 transition-opacity duration-500 ${pathname === "/about" ? "bottom-0 border-b backdrop-blur-xl" : "bottom-0 border-b border-ink/[0.06] backdrop-blur-md"} ${
+          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 transition-opacity duration-500 ${pathname === "/about" ? "bottom-0 border-b backdrop-blur-xl" : pathname === "/artwork" ? "-bottom-10" : "bottom-0 border-b border-ink/[0.06] backdrop-blur-md"} ${
             (onLight || pathname === "/artwork") && scrolled && !open ? "opacity-100" : "opacity-0"
           }`}
           // Translucent, so light falling on the page behind (as on "info") carries on under it
@@ -205,7 +205,9 @@ export const SiteHeader: React.FC = () => {
           style={{
             background:
               pathname === "/artwork"
-                ? "#c3c5c9cc"
+                ? // (the lab: no band with an edge across the drum, only the wall's own silver thickening towards the top,
+                  // so what turns beneath fades out under the logo instead of being cut on a line)
+                  "linear-gradient(to bottom, rgba(195,197,201,0.97) 0%, rgba(195,197,201,0.9) 45%, rgba(195,197,201,0) 100%)"
                 : pathname === "/about"
                   ? "rgba(56,52,50,0.82)"
                   : `${WALL}cc`,
