@@ -155,7 +155,7 @@ const Reel: React.FC<{
                 type="button"
                 onClick={() => onOpen(front)}
                 aria-label={`${p.title ?? label} — ${pad(front + 1)}`}
-                className="absolute inset-x-0 top-1/2 block aspect-[4/5] w-full -translate-y-1/2 cursor-zoom-in overflow-hidden rounded-[14px] shadow-[0_40px_80px_-40px_rgba(30,32,36,0.45)]"
+                className="absolute inset-x-0 top-1/2 block aspect-[4/5] w-full -translate-y-1/2 cursor-zoom-in overflow-hidden rounded-[6px] shadow-[0_40px_80px_-40px_rgba(30,32,36,0.45)]"
                 initial={{ opacity: 0, scale: 0.985 }}
                 animate={{ opacity: 1, scale: 1, transition: { duration: 0.7, ease: EASE_HAUS } }}
                 exit={{ opacity: 0, transition: { duration: 0.5, ease: EASE_VEIL } }}
@@ -199,7 +199,7 @@ const Reel: React.FC<{
                 // a moving piece: one flat face, its film
                 <span
                   className="absolute inset-0 overflow-hidden rounded-[12px]"
-                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, filter: "brightness(var(--lit))", borderRadius: 18 }}
+                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, filter: "brightness(var(--lit))", borderRadius: 8 }}
                 >
                   <video src={pl.video} poster={pl.url} muted loop playsInline preload="none" className="h-full w-full object-cover" />
                   <span aria-hidden className="absolute inset-0" style={{ background: "rgba(195,197,201,var(--veil))" }} />
@@ -221,7 +221,7 @@ const Reel: React.FC<{
                         backgroundPosition: `0 0, 0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
                         filter: `brightness(var(--lit))${pl.grade ? " " + pl.grade : ""}`,
                         // the plate's corners rounded on its first and last bands
-                        borderRadius: k === 0 ? "18px 18px 0 0" : k === BANDS - 1 ? "0 0 18px 18px" : 0,
+                        borderRadius: k === 0 ? "8px 8px 0 0" : k === BANDS - 1 ? "0 0 8px 8px" : 0,
                       }}
                     />
                   );
@@ -696,7 +696,7 @@ const Viewer: React.FC<{
               <motion.div
                 key={plate.id}
                 // every piece the same size: the reel's upright 4:5, as large as the room allows
-                className="absolute inset-0 m-auto aspect-[4/5] h-auto w-[min(calc(100%-2rem),calc((100vh-11rem)*0.8))] overflow-hidden rounded-[14px] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]"
+                className="absolute inset-0 m-auto aspect-[4/5] h-auto w-[min(calc(100%-2rem),calc((100vh-11rem)*0.8))] overflow-hidden rounded-[6px] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]"
                 custom={direction}
                 variants={{
                   enter: (d: number) => ({ opacity: 0, x: d * 40 }),
