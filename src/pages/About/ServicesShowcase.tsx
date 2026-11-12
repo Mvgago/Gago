@@ -409,7 +409,7 @@ export const ServicesShowcase: React.FC<{ s: Studio }> = ({ s }) => {
               // slides up over it, so two disciplines never run together; each is a third of a screen taller
               // than the screen (all but the last), so it stays while its text comes in and is read, and the
               // next only rises after that much more scrolling
-              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-0"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 ${i === s.disciplines.length - 1 ? "lg:min-h-[var(--fh-frame,0px)] lg:pb-16" : "lg:min-h-[calc(100svh-112px)]"} lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
+              className={`sticky -mx-4 flex ${i < s.disciplines.length - 1 ? "min-h-[calc(135svh-64px)]" : "min-h-[calc(100svh-64px)]"} flex-col bg-[var(--fh-sheet,#efeef0)] px-4 pb-16 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:static lg:mx-0 ${i === s.disciplines.length - 1 ? "lg:min-h-[var(--fh-frame,0px)] lg:pb-16" : "lg:min-h-[calc(100svh-112px)]"} lg:justify-start lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-8 lg:shadow-none ${i > 0 ? "shadow-[0_-18px_30px_-20px_rgba(0,0,0,0.22)] lg:border-t lg:border-ink/20" : ""}`}
               style={{ zIndex: i + 1, ...(frameH ? ({ "--fh-frame": `${frameH}px` } as React.CSSProperties) : {}) }}
             >
               {/* phones and tablets: the example sits above its discipline, edge to edge */}
