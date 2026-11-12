@@ -149,8 +149,9 @@ const Reel: React.FC<{
           it reads as a cylinder and stays compact) */}
       <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[40px] md:pl-[14vw] md:pt-[72px] [--po:50%] md:[--po:calc(50%+7vw)]" style={{ perspective: Math.round(R * 0.6), perspectiveOrigin: "var(--po) calc(50% + 20px)" }}>
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
-        {aside && <div className="absolute left-8 top-1/2 hidden w-[min(30ch,26vw)] -translate-y-1/2 pt-[72px] md:block">{aside}</div>}
         <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
+        {/* wide screens: the words on the pieces just to the drum's left, level with the top of the plate in front */}
+        {aside && <div className="absolute right-full top-0 mr-[6vw] hidden w-[min(30ch,24vw)] md:block">{aside}</div>}
         <div ref={ring} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
           {plates.map((pl, i) => (
             <button
@@ -200,17 +201,12 @@ const Reel: React.FC<{
             </button>
           ))}
         </div>
-        {/* the plate in front, named either side of it on threads of light, near its top (under it on a phone) */}
-        <div className="pointer-events-none absolute inset-x-0 top-[10%] hidden md:block">
-          <span className={`${SMALL} absolute right-full top-0 mr-3 flex items-center gap-3 whitespace-nowrap text-platinum/80`}>
-            {p?.title}
-            {thread("left")}
-          </span>
-          <span className={`${SMALL} absolute left-full top-0 ml-3 flex items-center gap-3 whitespace-nowrap text-platinum/50`}>
-            {thread("right")}
-            {making ? `${number} · ${making}` : number}
-          </span>
-        </div>
+        {/* the plate in front, named at its right, halfway down, on a thread of light (under it on a phone) */}
+        <span className={`${SMALL} pointer-events-none absolute left-full top-1/2 ml-3 hidden -translate-y-1/2 items-center gap-3 whitespace-nowrap md:flex`}>
+          {thread("right")}
+          <span className="text-platinum/85">{p?.title}</span>
+          <span className="text-platinum/45">{making ? `${number} · ${making}` : number}</span>
+        </span>
         </div>
         <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[6svh] flex justify-center gap-4 text-platinum/70 md:hidden`}>
           <span>{p?.title}</span>
