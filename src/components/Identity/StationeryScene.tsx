@@ -33,7 +33,8 @@ const LETTERS: Record<string, string> = {
 const ADV = [0, 150, 300, 450, 592, 704];
 const WORD_W = 804;
 // where the room key comes to rest, in front of the box and the phone
-const KEY_AT = [0.72, 1.0] as const;
+// (clear of the phone: laid partly under it, the phone seemed to sink into the card)
+const KEY_AT = [0.5, 1.15] as const;
 
 async function build(host: HTMLDivElement, onReady: () => void, paused: { current: boolean } = { current: false }): Promise<() => void> {
   // stills from the studio's own film, printed in the brochure and shown on the phone's site
@@ -667,7 +668,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     foil.position.y = 0.0135;
     key.add(slab, foil, contact(KW, KD));
     key.position.set(KEY_AT[0], 0, KEY_AT[1]);
-    key.rotation.y = 0.16;
+    key.rotation.y = 0.05;
     add(key);
   }
 
@@ -1408,7 +1409,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // (never closer than the wide frame's 30°: a frame just short of 16:9, as the studio's can be by a pixel,
     // used to jump in close)
     // (wide and nearly wide frames all at 30°; only a phone's narrow one gets its own, closer view)
-    camera.fov = camera.aspect >= 1.4 ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.76) / camera.aspect));
+    camera.fov = camera.aspect >= 1.4 ? 30 : THREE.MathUtils.radToDeg(2 * Math.atan((Math.tan(half) * 0.84) / camera.aspect));
     // a narrow frame (a phone's) also aims a little further back on the table, so the pieces sit lower and
     // no empty band is left beneath them
     aimBack = camera.aspect >= 1.4 ? 0.1 : 0.2;
