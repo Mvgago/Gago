@@ -52,7 +52,7 @@ const protect = {
  * they turn away. The one in front is named either side on a thread of light, and pressed, opens in the
  * viewer.
  */
-const BANDS = 10; // bands a plate is cut into, to bend it round the drum
+const BANDS = 14; // bands a plate is cut into, to bend it round the drum (enough that the curve and its rounded corners read smooth)
 const FILL = 0.9; // how much of its share of the drum a plate takes (the rest: the slit between plates)
 const Reel: React.FC<{
   plates: typeof artwork;
@@ -99,8 +99,11 @@ const Reel: React.FC<{
       cards.current.forEach((c, i) => {
         if (!c) return;
         const a = i * step - turn;
-        const lit = 0.35 + 0.65 * Math.max(0, Math.cos(a));
+        const facing = Math.max(0, Math.cos(a));
+        const lit = 0.35 + 0.65 * facing;
         c.style.setProperty("--lit", lit.toFixed(3));
+        // and faded as they go over the top and under: only the one in front at full strength
+        c.style.setProperty("--fade", (0.18 + 0.82 * facing ** 3).toFixed(3));
         const v = c.querySelector("video");
         if (v) {
           if (Math.cos(a) > 0.8) void v.play().catch(() => {});
@@ -155,13 +158,13 @@ const Reel: React.FC<{
               onClick={() => onOpen(i)}
               aria-label={`${pl.title ?? label} — ${pad(i + 1)}`}
               className="absolute inset-0 cursor-zoom-in"
-              style={{ transformStyle: "preserve-3d", "--lit": 1 } as React.CSSProperties}
+              style={{ transformStyle: "preserve-3d", "--lit": 1, "--fade": 1 } as React.CSSProperties}
             >
               {pl.video ? (
                 // a moving piece: one flat face, its film
                 <span
                   className="absolute inset-0 overflow-hidden rounded-[12px]"
-                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, filter: "brightness(var(--lit))" }}
+                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, filter: "brightness(var(--lit))", opacity: "var(--fade)", borderRadius: 18 }}
                 >
                   <video src={pl.video} poster={pl.url} muted loop playsInline preload="none" className="h-full w-full object-cover" />
                 </span>
@@ -182,7 +185,8 @@ const Reel: React.FC<{
                         backgroundPosition: `0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
                         filter: `brightness(var(--lit))${pl.grade ? " " + pl.grade : ""}`,
                         // the plate's corners rounded on its first and last bands
-                        borderRadius: k === 0 ? "12px 12px 0 0" : k === BANDS - 1 ? "0 0 12px 12px" : 0,
+                        borderRadius: k === 0 ? "18px 18px 0 0" : k === BANDS - 1 ? "0 0 18px 18px" : 0,
+                        opacity: "var(--fade)",
                       }}
                     />
                   );
