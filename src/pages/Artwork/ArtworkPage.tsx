@@ -76,6 +76,10 @@ const Reel: React.FC<{
   const [W, setW] = useState(300);
   const [front, setFront] = useState(0);
   const H = W * 1.25;
+  // the plate's width shared with the page, so what follows can line up on the words beside the drum
+  useEffect(() => {
+    document.documentElement.style.setProperty("--reel-w", `${W}px`);
+  }, [W]);
   const R = H / (step * FILL); // the drum's radius, so a plate's height is its share of the round
   const band = (step * FILL) / BANDS;
   const bandH = 2 * R * Math.tan(band / 2) + 3; // (+3: the bands overlap, so no hairline shows between them)
@@ -361,8 +365,9 @@ export const ArtworkPage: React.FC = () => {
           ran over its words) */}
       <section className="relative z-10 mt-4 md:mt-[12vh]">
         <div className="mb-10 grid grid-cols-12 gap-x-8 md:mb-12">
-          <p className={`${SMALL} col-span-12 text-platinum/50 md:col-span-3`}>{s.labSoundLabel}</p>
-          <div className="col-span-12 mt-3 md:col-span-6 md:mt-0">
+          <p className={`${SMALL} col-span-12 text-platinum/50 md:col-span-3 md:row-start-1`}>{s.labSoundLabel}</p>
+          {/* (wide screens: on the same left edge as the words on the pieces beside the drum above) */}
+          <div className="col-span-12 mt-3 md:col-span-12 md:col-start-1 md:row-start-1 md:mt-0 md:pl-[calc(50vw-var(--reel-w,300px)/2-7vw-min(30ch,22vw)-2rem)]">
             {/* what the studio does in sound; the record itself, and the way to listen, are with the headphones */}
             <p className={`${BODY} max-w-[52ch] text-platinum/75`}>
               {beforeName}
