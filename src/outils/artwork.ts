@@ -47,7 +47,7 @@ export const reel: Plate[] = [
   { id: "r11", url: L("acne"), title: "Acne" },
   { id: "r12", url: L("fasemesa"), title: "Fase" },
   { id: "r13", url: L("amorsacro"), title: "Amorsacro", tech: "digital" },
-  { id: "r14", url: L("lilo"), title: "Lilo" },
+  { id: "r14", url: `${L("lilo")}?v=2`, title: "Lilo" },
   { id: "r15", url: L("single"), title: "Single" },
   { id: "r16", url: L("lerele"), title: "Lerele" },
 ];
