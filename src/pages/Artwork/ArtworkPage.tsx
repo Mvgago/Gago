@@ -79,7 +79,7 @@ const Reel: React.FC<{
   // tall) fits the screen with air above and below: from the screen's height, held to most of a phone's
   // width and to 300 px
   useEffect(() => {
-    const fit = () => setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * 0.3)));
+    const fit = () => setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.24 : 0.3))));
     fit();
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
