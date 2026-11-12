@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { PointerLightProvider } from "./components/Light/PointerLight";
 import { I18nProvider } from "./i18n/I18n";
 import { StudioAtmosphere } from "./components/Light/StudioAtmosphere";
-import { DARK_WALL, WALL, isLightRoom } from "./components/Light/LightWall";
+import { DARK_WALL, STUDIO_WALL, WALL, isLightRoom } from "./components/Light/LightWall";
 import { StudioLight } from "./components/Light/StudioLight";
 import { EASE_HAUS } from "./lib/motion";
 import { SiteHeader } from "./components/Header/SiteHeader";
@@ -51,7 +51,7 @@ export const App: React.FC = () => {
   // The light rooms' wall changes as soon as the route does, under the page
   // transition, so the landing's colours never show through while a page fades in.
   // The projects page is the one dark room: its own graphite comes in instead of the light wall.
-  const wall = location.pathname === "/projects" || location.pathname === "/about" ? DARK_WALL : isLightRoom(location.pathname) ? WALL : null;
+  const wall = location.pathname === "/about" ? STUDIO_WALL : location.pathname === "/projects" ? DARK_WALL : isLightRoom(location.pathname) ? WALL : null;
 
   return (
     <I18nProvider>

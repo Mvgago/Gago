@@ -32,13 +32,13 @@
   --color-ink: #f4f1ed;
   --color-graphite: #c4bcb6;
   --color-umber: #d6c9c4;
-  --fh-wall: #2f2b2a;
+  --fh-wall: #282423;
   /* the disciplines' column on wide screens lets the room's light through; the phone sheets, which slide
      over one another, stay almost solid so the one below never shows through */
   --fh-panel: transparent;
-  --fh-sheet: #2f2b2a;
+  --fh-sheet: #282423;
   /* under the last phone sheet, the same colour fading into the room, so the stack never ends on an edge */
-  --fh-skirt: linear-gradient(to bottom, #2f2b2a, rgba(47, 43, 42, 0));
+  --fh-skirt: linear-gradient(to bottom, #282423, rgba(40, 36, 35, 0));
   /* the process steps light up one after another: on the dark wall, a faint pane of warm light */
   --fh-plate: radial-gradient(120% 90% at 50% 20%, rgba(244, 238, 232, 0.17) 0%, rgba(244, 238, 232, 0.08) 60%, rgba(244, 238, 232, 0.05) 100%);
   --fh-plate-shadow: 0 24px 60px -18px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.14), 0 0 70px 0 rgba(236, 226, 222, 0.12);

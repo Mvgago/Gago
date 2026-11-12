@@ -8,6 +8,8 @@ export const isLightRoom = (pathname: string) =>
 
 /** The one dark room's wall (projects, and the contact block on info): warm graphite. */
 export const DARK_WALL = "#2f2b2a";
+/** The studio's room: a shade deeper than the projects' graphite, so it reads clearly apart from the lab's pale silver */
+export const STUDIO_WALL = "#282423";
 
 /** A paler surface on the wall: mounts, bands, panels. */
 export const MOUNT = "#f8f8f9";

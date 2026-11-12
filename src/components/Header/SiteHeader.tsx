@@ -209,7 +209,7 @@ export const SiteHeader: React.FC = () => {
                   // so what turns beneath fades out under the logo instead of being cut on a line)
                   "linear-gradient(to bottom, rgba(195,197,201,0.97) 0%, rgba(195,197,201,0.9) 45%, rgba(195,197,201,0) 100%)"
                 : pathname === "/about"
-                  ? "rgba(56,52,50,0.82)"
+                  ? "rgba(49,45,43,0.82)"
                   : `${WALL}cc`,
             borderColor: pathname === "/artwork" ? "rgba(40,42,46,0.08)" : pathname === "/about" ? "rgba(244,241,237,0.09)" : undefined,
           }}

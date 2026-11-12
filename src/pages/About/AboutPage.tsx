@@ -6,7 +6,7 @@ import { EASE_HAUS, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import { STUDIO } from "../../i18n/studio";
 import { scrollToTarget, useLenis } from "../../components/SmoothScroll/SmoothScroll";
-import { DARK_WALL, LightWall } from "../../components/Light/LightWall";
+import { STUDIO_WALL, LightWall } from "../../components/Light/LightWall";
 import { Reveal, RevealFlow, RevealWords } from "../../components/Reveal/Reveal";
 import { ACTION, BODY, LEAD, SMALL, TITLE } from "../../lib/type";
 import { cases } from "../../outils/cases";
@@ -372,7 +372,7 @@ export const AboutPage: React.FC = () => {
     // No bottom padding: the dark contact block closes the page, the footer follows it
     <main className="fh-dark relative overflow-x-clip px-4 pt-[5.25rem] sm:px-6 sm:pt-28 md:px-8 md:pt-32 lg:pt-[5.25rem]">
       {/* (the ground only: a solid layer here covered the studio's light, which lies behind the pages) */}
-      <LightWall color={DARK_WALL} layer={false} />
+      <LightWall color={STUDIO_WALL} layer={false} />
       {/* (the room's light lives behind every page, in App, so it never moves with the page's entrance) */}
 
       {/* (the page sits on the plain wall: no room behind the opening) */}
