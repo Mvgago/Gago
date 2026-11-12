@@ -231,9 +231,12 @@ const Reel: React.FC<{
           ))}
         </div>
         </div>
-        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[6svh] flex justify-center gap-4 text-platinum/70 md:hidden`}>
+        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[4svh] z-10 flex justify-center md:hidden`}>
+          {/* (on a pill of the wall's own silver, so it reads clear of the plates turning behind it) */}
+          <span className="flex gap-4 rounded-full bg-[#c3c5c9]/85 px-4 py-1.5 text-platinum/80 backdrop-blur-sm">
           <span>{p?.title}</span>
           <span className="text-platinum/45">{number}</span>
+          </span>
         </div>
       </div>
     </div>
