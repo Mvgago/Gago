@@ -145,7 +145,17 @@ const Reel: React.FC<{
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
         <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
         {/* wide screens: the words on the pieces just to the drum's left, high, about the top edge of the plate in front */}
-        {aside && <div className="absolute right-full top-0 mr-[14vw] hidden w-[min(30ch,24vw)] -translate-y-[60%] md:block">{aside}</div>}
+        {/* wide screens: one column to the drum's left, as tall as the plate in front: the words on the pieces
+            high in it, about the plate's top edge, and halfway down the plate's name, on the column's same left
+            edge, its thread running on to the plate */}
+        <div className="pointer-events-none absolute inset-y-0 right-full mr-[14vw] hidden w-[min(30ch,24vw)] md:block">
+          {aside && <div className="pointer-events-auto absolute inset-x-0 top-0 -translate-y-[60%]">{aside}</div>}
+          <span className={`${SMALL} absolute left-0 top-1/2 flex w-[calc(100%+14vw-0.75rem)] -translate-y-1/2 items-center gap-3 whitespace-nowrap`}>
+            <span className="text-platinum/85">{p?.title}</span>
+            <span className="text-platinum/45">{making ? `${number} · ${making}` : number}</span>
+            <span aria-hidden className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(42,43,47,0), rgba(42,43,47,0.5))" }} />
+          </span>
+        </div>
         <div ref={ring} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
           {plates.map((pl, i) => (
             <button
@@ -195,12 +205,6 @@ const Reel: React.FC<{
             </button>
           ))}
         </div>
-        {/* the plate in front, named at its left, halfway down: its type on the words' left edge above, its thread running on to the plate (under it on a phone) */}
-        <span className={`${SMALL} pointer-events-none absolute right-full top-1/2 mr-3 hidden w-[calc(14vw+min(30ch,24vw)-0.75rem)] -translate-y-1/2 items-center gap-3 whitespace-nowrap md:flex`}>
-          <span className="text-platinum/85">{p?.title}</span>
-          <span className="text-platinum/45">{making ? `${number} · ${making}` : number}</span>
-          <span aria-hidden className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(42,43,47,0), rgba(42,43,47,0.5))" }} />
-        </span>
         </div>
         <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[6svh] flex justify-center gap-4 text-platinum/70 md:hidden`}>
           <span>{p?.title}</span>
