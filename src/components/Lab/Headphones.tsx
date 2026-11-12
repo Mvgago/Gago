@@ -296,8 +296,8 @@ function grain() {
     }
   }
   // and the pores proper: small sharp pits all over, as open-cell foam under its cover, dense enough to read
-  for (let k = 0; k < 9000; k++) {
-    const px = Math.random() * S, py = Math.random() * S, r = 0.6 + Math.random() * 1.6;
+  for (let k = 0; k < 20000; k++) {
+    const px = Math.random() * S, py = Math.random() * S, r = 0.6 + Math.random() * 1.9;
     x.fillStyle = `rgba(10,10,10,${0.45 + Math.random() * 0.4})`;
     x.beginPath();
     x.arc(px, py, r, 0, Math.PI * 2);
@@ -365,7 +365,7 @@ function headphones() {
     color: "#4a4b50",
     roughness: 1,
     bumpMap: pores,
-    bumpScale: 2.6,
+    bumpScale: 3.2,
     // the pits a touch darker in the colour too, so they show in soft light as well as in relief
     map: pores,
     sheen: 0.25,
