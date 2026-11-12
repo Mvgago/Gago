@@ -79,7 +79,7 @@ const Reel: React.FC<{
   // tall) fits the screen with air above and below: from the screen's height, held to most of a phone's
   // width and to 300 px
   useEffect(() => {
-    const fit = () => setW(Math.round(Math.min(300, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.3 : 0.27))));
+    const fit = () => setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * 0.3)));
     fit();
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
@@ -147,7 +147,7 @@ const Reel: React.FC<{
     <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100svh)` }}>
       {/* (centred in the screen below the header; the perspective held close, in proportion to the drum, so
           it reads as a cylinder and stays compact) */}
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[40px] md:pl-[14vw] md:pt-[72px]" style={{ perspective: Math.round(R * 0.6) }}>
+      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[40px] md:pl-[14vw] md:pt-[72px] [--po:50%] md:[--po:calc(50%+7vw)]" style={{ perspective: Math.round(R * 0.6), perspectiveOrigin: "var(--po) calc(50% + 20px)" }}>
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
         {aside && <div className="absolute left-8 top-1/2 hidden w-[min(30ch,26vw)] -translate-y-1/2 pt-[72px] md:block">{aside}</div>}
         <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
@@ -285,7 +285,10 @@ export const ArtworkPage: React.FC = () => {
         return (
           <section>
             <div className="mb-10 md:hidden">{words}</div>
-            <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} aside={words} />
+            {/* (wide screens: drawn up under the page's heading, so the drum is in view from the start) */}
+            <div className="md:-mt-36">
+              <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} aside={words} />
+            </div>
           </section>
         );
       })()}
