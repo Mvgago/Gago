@@ -18,7 +18,7 @@ const Headphones = lazy(() => import("../../components/Lab/Headphones"));
  * The lab is a room apart from the rest of the site: a misty metallic silver, a mid grey with a cool sheen
  * of light drifting across it like fog over brushed metal, with a grain over it and the corners falling away.
  */
-const NIGHT = "#55575c";
+const NIGHT = "#6e7076";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
