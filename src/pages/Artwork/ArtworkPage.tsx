@@ -304,9 +304,10 @@ export const ArtworkPage: React.FC = () => {
         );
         return (
           <section>
-            <div className="mb-10 md:hidden">{words}</div>
+            <div className="mb-2 md:hidden">{words}</div>
             {/* (wide screens: drawn up under the page's heading, so the drum is in view from the start) */}
-            <div className="md:-mt-36">
+            {/* (phones: drawn up under the words, so the drum comes straight after them; wide screens: under the heading) */}
+            <div className="-mt-[18svh] md:-mt-36">
               <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} aside={words} />
             </div>
           </section>
