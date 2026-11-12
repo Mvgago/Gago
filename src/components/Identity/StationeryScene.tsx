@@ -61,9 +61,8 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   // (a touch under: the white tissue and card in the window's light used to burn out)
   renderer.toneMappingExposure = 0.46;
-  // (on phones the window's cast shadows are left out: their maps speckled there; the contact shadows
-  // under each piece still set it down)
-  renderer.shadowMap.enabled = !phoneGpu;
+  // (on phones too: the round dark spots once blamed on them were the leaves in the window light)
+  renderer.shadowMap.enabled = true;
   // soft filtered shadows (the variance kind left a dotted halo round the cards)
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.style.display = "block";
@@ -1419,19 +1418,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     draw();
   };
   const io = new IntersectionObserver(([entry]) => renderer.setAnimationLoop(entry.isIntersecting && !reduced ? loop : null), { rootMargin: "-15% 0px" });
-  // on phones no relief maps at all: their GPUs broke them into round black spots once the scene was live;
-  // the colour textures carry the linen, stone and concrete at that size
-  if (phoneGpu)
-    scene.traverse((o) => {
-      const mats = (o as THREE.Mesh).material;
-      (Array.isArray(mats) ? mats : mats ? [mats] : []).forEach((m) => {
-        const sm = m as THREE.MeshStandardMaterial;
-        if (sm.bumpMap) {
-          sm.bumpMap = null;
-          sm.needsUpdate = true;
-        }
-      });
-    });
+  // (relief maps kept on phones as well, so the scene matches its loading still there)
   try {
     await renderer.compileAsync(scene, camera);
   } catch {
