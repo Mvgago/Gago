@@ -35,11 +35,11 @@ type Plate = {
 const L = (n: string) => `/lab/${n}.webp`;
 export const reel: Plate[] = [
   { id: "r01", url: L("claro"), title: "Claro" },
-  { id: "r02", url: L("rosa-negra"), title: "Rosa I" },
+  { id: "r02", url: L("rosa-negra"), title: "Comunión I" },
   { id: "r03", url: L("club-shy"), title: "Club Shy", tech: "3d" },
   { id: "r04", url: `${L("cicuta")}?v=2`, title: "Cicuta", tech: "3d" },
   { id: "r05", url: L("otono"), title: "Otoño en la Luna", tech: "vector" },
-  { id: "r06", url: `${L("rosa-blanca")}?v=2`, title: "Rosa II", tech: "3d" },
+  { id: "r06", url: `${L("rosa-blanca")}?v=2`, title: "Comunión II", tech: "3d" },
   { id: "r07", url: `${L("memoria")}?v=2`, title: "Memoria", tech: "3d" },
   { id: "r08", url: L("alfame"), title: "Alfama Lisboa" },
   { id: "r09", url: L("vacuna"), video: "/lab/vacuna.mp4", title: "Anti Dot", tech: "3d" },
