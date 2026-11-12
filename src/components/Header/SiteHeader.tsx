@@ -173,7 +173,7 @@ export const SiteHeader: React.FC = () => {
   // ink of the type, so it belongs to the airy page instead of sitting on it like a solid tile
   // (on the two dark rooms, a darker glass with pale lines). The invitation plays only while the word shows.
   const glass = shortPill;
-  const darkRoom = pathname === "/projects" || pathname === "/artwork" || pathname === "/about";
+  const darkRoom = pathname === "/projects" || pathname === "/about";
   const glow = inviting && !glass;
   const tone = "text-platinum";
   const line = glass && !darkRoom ? "bg-ink/80" : "bg-platinum";
@@ -205,11 +205,11 @@ export const SiteHeader: React.FC = () => {
           style={{
             background:
               pathname === "/artwork"
-                ? "#6e7076cc"
+                ? "#c3c5c9cc"
                 : pathname === "/about"
                   ? "rgba(56,52,50,0.82)"
                   : `${WALL}cc`,
-            borderColor: pathname === "/artwork" ? "rgba(255,255,255,0.06)" : pathname === "/about" ? "rgba(244,241,237,0.09)" : undefined,
+            borderColor: pathname === "/artwork" ? "rgba(40,42,46,0.08)" : pathname === "/about" ? "rgba(244,241,237,0.09)" : undefined,
           }}
         />
         <div className="relative" style={masked ? { clipPath: MASK } : undefined}>
@@ -243,7 +243,7 @@ export const SiteHeader: React.FC = () => {
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
           <div className={compact ? "max-sm:hidden" : ""} style={masked ? { clipPath: MASK } : undefined}>
             <motion.div variants={UNFOLD} custom={{ delay: 0.24 } satisfies Unfold} animate={unfold}>
-              <LanguageSwitch dark={(pathname === "/projects" || pathname === "/artwork" || pathname === "/about") && !open} />
+              <LanguageSwitch dark={(pathname === "/projects" || pathname === "/about") && !open} />
             </motion.div>
           </div>
 

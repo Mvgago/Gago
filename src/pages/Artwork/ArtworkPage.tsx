@@ -18,7 +18,7 @@ const Headphones = lazy(() => import("../../components/Lab/Headphones"));
  * The lab is a room apart from the rest of the site: a misty metallic silver, a mid grey with a cool sheen
  * of light drifting across it like fog over brushed metal, with a grain over it and the corners falling away.
  */
-const NIGHT = "#6e7076";
+const NIGHT = "#c3c5c9";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
@@ -28,11 +28,11 @@ const NightRoom: React.FC = () => (
       className="absolute inset-0"
       style={{
         // the sheen: a broad soft light from above, and a long diagonal band of brighter silver, as fog lit over metal
-        background: "radial-gradient(80% 55% at 50% -5%, rgba(226,230,236,0.32) 0%, transparent 100%), linear-gradient(115deg, transparent 20%, rgba(214,219,226,0.16) 42%, rgba(240,242,246,0.1) 50%, transparent 72%), radial-gradient(70% 60% at 85% 100%, rgba(150,156,166,0.25) 0%, transparent 100%)",
+        background: "radial-gradient(80% 55% at 50% -5%, rgba(244,246,249,0.55) 0%, transparent 100%), linear-gradient(115deg, transparent 20%, rgba(250,251,253,0.3) 42%, rgba(255,255,255,0.18) 50%, transparent 72%), radial-gradient(70% 60% at 85% 100%, rgba(150,156,166,0.3) 0%, transparent 100%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
-    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(30,32,36,0.35) 100%)" }} />
+    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(90,94,102,0.3) 100%)" }} />
     <div className="absolute inset-0 opacity-[0.07] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
   </div>
 );
@@ -73,7 +73,7 @@ const Reel: React.FC<{
   const H = W * 1.25;
   const R = H / (step * FILL); // the drum's radius, so a plate's height is its share of the round
   const band = (step * FILL) / BANDS;
-  const bandH = 2 * R * Math.tan(band / 2) + 1; // (+1: no hairline between bands)
+  const bandH = 2 * R * Math.tan(band / 2) + 3; // (+3: the bands overlap, so no hairline shows between them)
 
   // the plate's width, set so the whole drum (with the near perspective below, it stands some 2.7 plates
   // tall) fits the screen with air above and below: from the screen's height, held to most of a phone's
@@ -135,7 +135,7 @@ const Reel: React.FC<{
     <span
       aria-hidden
       className="block h-px w-10 md:w-16"
-      style={{ background: `linear-gradient(${toward === "right" ? "90deg" : "270deg"}, rgba(244,241,237,0.6), rgba(244,241,237,0))` }}
+      style={{ background: `linear-gradient(${toward === "right" ? "90deg" : "270deg"}, rgba(42,43,47,0.5), rgba(42,43,47,0))` }}
     />
   );
   const p = plates[front];
@@ -151,7 +151,7 @@ const Reel: React.FC<{
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
         <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
         {/* wide screens: the words on the pieces just to the drum's left, high, about the top edge of the plate in front */}
-        {aside && <div className="absolute right-full top-0 mr-[6vw] hidden w-[min(30ch,24vw)] -translate-y-[60%] md:block">{aside}</div>}
+        {aside && <div className="absolute right-full top-0 mr-[14vw] hidden w-[min(30ch,24vw)] -translate-y-[60%] md:block">{aside}</div>}
         <div ref={ring} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
           {plates.map((pl, i) => (
             <button
@@ -247,7 +247,8 @@ export const ArtworkPage: React.FC = () => {
   }, []);
 
   return (
-    <main className="px-4 pb-24 pt-28 sm:px-6 md:px-8 md:pt-32">
+    <main className="px-4 pb-24 pt-28 sm:px-6 md:px-8 md:pt-32" style={{ "--color-platinum": "#2a2b2f" } as React.CSSProperties}>
+      {/* (the lab's ink: on its pale silver every "platinum" line of type reads as a dark graphite instead) */}
       <NightRoom />
 
       <motion.header
