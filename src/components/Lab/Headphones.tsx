@@ -295,9 +295,17 @@ function grain() {
       x.fillRect(cx - r, cy - r, 2 * r, 2 * r);
     }
   }
+  // and the pores proper: small sharp pits all over, as open-cell foam under its cover, dense enough to read
+  for (let k = 0; k < 9000; k++) {
+    const px = Math.random() * S, py = Math.random() * S, r = 0.6 + Math.random() * 1.6;
+    x.fillStyle = `rgba(10,10,10,${0.45 + Math.random() * 0.4})`;
+    x.beginPath();
+    x.arc(px, py, r, 0, Math.PI * 2);
+    x.fill();
+  }
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.repeat.set(36, 7);
+  t.repeat.set(30, 6);
   t.anisotropy = 8;
   return t;
 }
@@ -357,7 +365,9 @@ function headphones() {
     color: "#4a4b50",
     roughness: 1,
     bumpMap: pores,
-    bumpScale: 1.4,
+    bumpScale: 2.6,
+    // the pits a touch darker in the colour too, so they show in soft light as well as in relief
+    map: pores,
     sheen: 0.25,
     sheenRoughness: 1,
     sheenColor: new THREE.Color("#6e6e76"),
