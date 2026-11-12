@@ -1123,8 +1123,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     const foot = contact(0.74, 1.54);
     (foot.material as THREE.MeshBasicMaterial).opacity = 1;
     phone.add(body, glass, screen, gloss, contact(0.8, 1.6), foot);
-    phone.position.set(1.45, 0, 0.18);
-    phone.rotation.y = -0.1;
+    // (laid nearly square to the table's edge, a little in from the frame's side, where the lens skews least)
+    phone.position.set(1.32, 0, 0.12);
+    phone.rotation.y = -0.03;
     add(phone);
   }
 
