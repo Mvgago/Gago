@@ -64,7 +64,18 @@ const Reel: React.FC<{
 }> = ({ plates, onOpen, buttons, label, aside }) => {
   const { lang } = useI18n();
   const N = plates.length;
-  const [BANDS] = useState(() => (typeof window !== "undefined" && window.innerWidth < 768 ? 8 : 10));
+  // (fewer on a phone: there each band is a layer the browser must hold, and too many lost their pictures)
+  const [BANDS] = useState(() => (typeof window !== "undefined" && window.innerWidth < 768 ? 5 : 10));
+  // every plate's picture fetched and decoded ahead, so none is ever drawn blank as the drum turns
+  const held = useRef<HTMLImageElement[]>([]);
+  useEffect(() => {
+    held.current = plates.map((pl) => {
+      const im = new Image();
+      im.src = pl.url.replace("/lab/", "/lab/sm/");
+      void im.decode?.().catch(() => {});
+      return im;
+    });
+  }, [plates]);
   const step = (2 * Math.PI) / N; // each plate's share of the drum, in radians
   const section = useRef<HTMLDivElement>(null);
   const probe = useRef<HTMLDivElement>(null);
@@ -134,6 +145,8 @@ const Reel: React.FC<{
         // and faded as they go over the top and under: only the one in front at full strength
         // (as a veil of the wall's own silver over each band, the bands kept opaque: made see-through, the bands' overlaps showed as stripes)
         c.style.setProperty("--veil", Math.min(1, 1.05 * (1 - facing ** 2.5)).toFixed(3));
+        // (those turned away, hidden in the silver anyway, not drawn at all: fewer layers for the browser to hold)
+        c.style.visibility = Math.cos(a) < 0.05 ? "hidden" : "visible";
         const v = c.querySelector("video");
         if (v) {
           if (Math.cos(a) > 0.8) void v.play().catch(() => {});
@@ -238,7 +251,7 @@ const Reel: React.FC<{
                 // a moving piece: one flat face, its film
                 <span
                   className="absolute inset-0 overflow-hidden rounded-[12px]"
-                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, borderRadius: 8 }}
+                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, borderRadius: 8, backfaceVisibility: "hidden" }}
                 >
                   <video src={pl.video} poster={pl.url.replace("/lab/", "/lab/sm/")} muted loop playsInline preload="none" className="h-full w-full object-cover" />
                   <span aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), rgba(20,22,26,var(--shade))" }} />
@@ -246,6 +259,7 @@ const Reel: React.FC<{
               ) : (
                 Array.from({ length: BANDS }, (_, k) => {
                   const a = i * step + (k - (BANDS - 1) / 2) * band;
+                  const edge = (Math.abs(k - (BANDS - 1) / 2) / ((BANDS - 1) / 2)) * 0.12; // the bend's own light
                   return (
                     <span
                       key={k}
@@ -255,7 +269,8 @@ const Reel: React.FC<{
                         top: (H - bandH) / 2,
                         height: bandH,
                         transform: `rotateX(${-a}rad) translateZ(${R}px)`,
-                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,var(--shade)), rgba(20,22,26,var(--shade))), url(${pl.url.replace("/lab/", "/lab/sm/")})`,
+                        backfaceVisibility: "hidden",
+                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,calc(var(--shade) + ${edge.toFixed(3)})), rgba(20,22,26,calc(var(--shade) + ${edge.toFixed(3)}))), url(${pl.url.replace("/lab/", "/lab/sm/")})`,
                         backgroundSize: `100% 100%, 100% 100%, ${W}px ${H}px`,
                         // (the picture never repeated: the bands overlap a little, and on the last one the top of the
                         // picture used to show again as a thin line along the plate's foot)
