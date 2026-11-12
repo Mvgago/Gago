@@ -172,7 +172,9 @@ const Reel: React.FC<{
           it reads as a cylinder and stays compact) */}
       {/* (the frame as tall as the screen can grow, so nothing is ever cut at its foot; inside it, the drum centred
           in the part always visible, between the header and, on a phone, a band left for its label) */}
-      <div className="sticky top-0 h-[100lvh] overflow-hidden">
+      {/* (clipped by a clip-path as well: overflow alone let the drum's 3D plates spill past the frame onto the
+          section after it) */}
+      <div className="sticky top-0 h-[100lvh] overflow-hidden" style={{ clipPath: "inset(0)" }}>
       <div className="relative flex h-[100svh] items-center justify-center pb-[64px] pt-[64px] md:pb-0 md:pt-[72px]" style={{ perspective: Math.round(R * 0.6) }}>
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
         <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
