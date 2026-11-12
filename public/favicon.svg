@@ -24,7 +24,7 @@
       <stop offset="1" stop-color="#e2dad2"/>
     </linearGradient>
     <clipPath id="round">
-      <rect width="512" height="512"/>
+      <rect width="512" height="512" rx="48"/>
     </clipPath>
   </defs>
 
