@@ -1121,13 +1121,32 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     gloss.position.y = 0.0525;
     gloss.userData.flat = true;
     // (the thickest piece, so the darkest foot: a second, firmer contact under it, or it seemed to hover)
-    const foot = contact(0.74, 1.54);
-    (foot.material as THREE.MeshBasicMaterial).opacity = 1;
-    // and a wider, softer shadow cast away from the window (down and to the right), as a thick object throws
-    const cast = contact(0.92, 1.68);
-    (cast.material as THREE.MeshBasicMaterial).opacity = 0.85;
-    cast.position.set(0.025, 0.0012, 0.03);
-    phone.add(body, glass, screen, gloss, cast, contact(0.8, 1.6), foot);
+    // its shadow: one soft dark of the phone's own rounded outline, centred under it and only a little wider,
+    // dense at its foot (square shadows stacked under it showed their corners past its rounded ones)
+    const phoneShadow = (() => {
+      // (drawn on a 1.0 × 1.8 plane: the soft halo out to about 0.9 × 1.7, and the dense core just past the
+      // phone's own 0.76 × 1.56, so a dark line shows all round its foot; the core hidden under it, before, left
+      // only a faint halo and the phone seemed to float)
+      const [sc, sx] = canvas(256, 512);
+      sx.filter = "blur(16px)";
+      sx.fillStyle = "rgba(0,0,0,0.45)";
+      sx.beginPath();
+      sx.roundRect(13, 14, 230, 484, 40);
+      sx.fill();
+      sx.filter = "blur(3px)";
+      sx.fillStyle = "rgba(0,0,0,0.8)";
+      sx.beginPath();
+      sx.roundRect(27, 30, 202, 452, 30);
+      sx.fill();
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 1.8), new THREE.MeshBasicMaterial({ map: tex(sc), transparent: true, depthWrite: false }));
+      m.rotation.x = -Math.PI / 2;
+      // a touch away from the window, down and to the right
+      m.position.set(0.018, 0.0015, 0.022);
+      m.renderOrder = 1;
+      m.userData.flat = true;
+      return m;
+    })();
+    phone.add(body, glass, screen, gloss, phoneShadow);
     // (laid nearly square to the table's edge, a little in from the frame's side, where the lens skews least)
     phone.position.set(1.32, 0, 0.12);
     phone.rotation.y = -0.03;
