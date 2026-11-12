@@ -147,7 +147,7 @@ const Reel: React.FC<{
         {/* wide screens: the words on the pieces just to the drum's left, high, about the top edge of the plate in front */}
         {/* wide screens, to the drum's right: the plate in front shown large, flat and sharp, changing with a
             soft dissolve as the drum turns; pressed, it opens in the viewer */}
-        <div className="absolute left-full top-1/2 ml-[7vw] hidden w-[min(22vw,340px)] -translate-y-1/2 md:block">
+        <div className="absolute left-full top-1/2 ml-[6vw] hidden w-[min(26vw,420px)] -translate-y-1/2 md:block">
           <AnimatePresence initial={false}>
             {p && (
               <motion.button
