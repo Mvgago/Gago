@@ -59,7 +59,9 @@ const Reel: React.FC<{
   onOpen: (i: number) => void;
   buttons: React.MutableRefObject<(HTMLButtonElement | null)[]>;
   label: string;
-}> = ({ plates, onOpen, buttons, label }) => {
+  /** Wide screens: what is said of the pieces, held at the left while the drum turns */
+  aside?: React.ReactNode;
+}> = ({ plates, onOpen, buttons, label, aside }) => {
   const { lang } = useI18n();
   const N = plates.length;
   const step = (2 * Math.PI) / N; // each plate's share of the drum, in radians
@@ -145,8 +147,11 @@ const Reel: React.FC<{
     <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100svh)` }}>
       {/* (centred in the screen below the header; the perspective held close, in proportion to the drum, so
           it reads as a cylinder and stays compact) */}
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[40px] md:pt-[72px]" style={{ perspective: Math.round(R * 0.6) }}>
-        <div ref={ring} className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
+      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[40px] md:pl-[14vw] md:pt-[72px]" style={{ perspective: Math.round(R * 0.6) }}>
+        {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
+        {aside && <div className="absolute left-8 top-1/2 hidden w-[min(30ch,26vw)] -translate-y-1/2 pt-[72px] md:block">{aside}</div>}
+        <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
+        <div ref={ring} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
           {plates.map((pl, i) => (
             <button
               key={pl.id}
@@ -195,16 +200,17 @@ const Reel: React.FC<{
             </button>
           ))}
         </div>
-        {/* the plate in front, named either side of it on threads of light (under it on a phone) */}
-        <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-y-1/2 md:block" style={{ width: W, marginLeft: -W / 2 }}>
-          <span className={`${SMALL} absolute right-full top-0 mr-3 flex items-center gap-3 whitespace-nowrap text-platinum/80`} style={{ marginTop: -H * 0.4 }}>
+        {/* the plate in front, named either side of it on threads of light, near its top (under it on a phone) */}
+        <div className="pointer-events-none absolute inset-x-0 top-[10%] hidden md:block">
+          <span className={`${SMALL} absolute right-full top-0 mr-3 flex items-center gap-3 whitespace-nowrap text-platinum/80`}>
             {p?.title}
             {thread("left")}
           </span>
-          <span className={`${SMALL} absolute left-full top-0 ml-3 flex items-center gap-3 whitespace-nowrap text-platinum/50`} style={{ marginTop: -H * 0.4 }}>
+          <span className={`${SMALL} absolute left-full top-0 ml-3 flex items-center gap-3 whitespace-nowrap text-platinum/50`}>
             {thread("right")}
             {making ? `${number} · ${making}` : number}
           </span>
+        </div>
         </div>
         <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[6svh] flex justify-center gap-4 text-platinum/70 md:hidden`}>
           <span>{p?.title}</span>
@@ -262,24 +268,27 @@ export const ArtworkPage: React.FC = () => {
         </h1>
       </motion.header>
 
-      {/* A few pieces, and a line on what they are */}
-      <section>
-        <div className="mb-10 grid grid-cols-12 gap-x-8 md:mb-12">
-          {/* no label over it: the line itself says what the pieces are; it keeps the label's
-              column empty, so it lines up with the sound below */}
-          <div className="col-span-12 md:col-span-6 md:col-start-4">
+      {/* the pieces: what they are, then the reel (wide screens: those words held at the drum's left) */}
+      {(() => {
+        const words = (
+          <>
             <p className={`${BODY} max-w-[52ch] text-platinum/75`}>{s.labArtText}</p>
             {/* that they are original and can be had, quietly, with the way to ask */}
             <p className={`${BODY} mt-3 max-w-[52ch] text-platinum/50`}>
               {s.labArtOffer}{" "}
-              <Link to="/about#contact" className="text-platinum/80 underline decoration-platinum/30 underline-offset-4 transition-colors duration-300 hover:text-platinum">
+              <Link to="/about#contact" className="pointer-events-auto text-platinum/80 underline decoration-platinum/30 underline-offset-4 transition-colors duration-300 hover:text-platinum">
                 {s.labArtCta}
               </Link>
             </p>
-          </div>
-        </div>
-        <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} />
-      </section>
+          </>
+        );
+        return (
+          <section>
+            <div className="mb-10 md:hidden">{words}</div>
+            <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} aside={words} />
+          </section>
+        );
+      })()}
 
       {/* Sound: set the same way as the illustration above it, a line on what it is, then the record */}
       <section className="mt-24 md:mt-32">
