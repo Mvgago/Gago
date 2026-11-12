@@ -141,16 +141,41 @@ const Reel: React.FC<{
     <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100svh)` }}>
       {/* (centred in the screen below the header; the perspective held close, in proportion to the drum, so
           it reads as a cylinder and stays compact) */}
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[40px] md:pl-[14vw] md:pt-[72px] [--po:50%] md:[--po:calc(50%+7vw)]" style={{ perspective: Math.round(R * 0.6), perspectiveOrigin: "var(--po) calc(50% + 20px)" }}>
+      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[40px] md:pt-[72px]" style={{ perspective: Math.round(R * 0.6), perspectiveOrigin: "50% calc(50% + 20px)" }}>
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
         <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
         {/* wide screens: the words on the pieces just to the drum's left, high, about the top edge of the plate in front */}
-        {/* wide screens: one column to the drum's left, as tall as the plate in front: the words on the pieces
+        {/* wide screens, to the drum's right: the plate in front shown large, flat and sharp, changing with a
+            soft dissolve as the drum turns; pressed, it opens in the viewer */}
+        <div className="absolute left-full top-1/2 ml-[7vw] hidden w-[min(22vw,340px)] -translate-y-1/2 md:block">
+          <AnimatePresence initial={false}>
+            {p && (
+              <motion.button
+                key={p.id}
+                type="button"
+                onClick={() => onOpen(front)}
+                aria-label={`${p.title ?? label} — ${pad(front + 1)}`}
+                className="absolute inset-x-0 top-1/2 block aspect-[4/5] w-full -translate-y-1/2 cursor-zoom-in overflow-hidden rounded-[14px] shadow-[0_40px_80px_-40px_rgba(30,32,36,0.45)]"
+                initial={{ opacity: 0, scale: 0.985 }}
+                animate={{ opacity: 1, scale: 1, transition: { duration: 0.7, ease: EASE_HAUS } }}
+                exit={{ opacity: 0, transition: { duration: 0.5, ease: EASE_VEIL } }}
+              >
+                {p.video ? (
+                  <video src={p.video} poster={p.url} muted loop playsInline autoPlay className="h-full w-full object-cover" />
+                ) : (
+                  <img src={p.url} alt={`${p.title ?? label} — Fuga Haus`} {...protect} style={{ filter: p.grade }} className="h-full w-full object-cover" />
+                )}
+              </motion.button>
+            )}
+          </AnimatePresence>
+          {/* (holds the column's height for the absolutely placed plates) */}
+          <span aria-hidden className="block aspect-[4/5] w-full" />
+        </div>        {/* wide screens: one column to the drum's left, as tall as the plate in front: the words on the pieces
             high in it, about the plate's top edge, and halfway down the plate's name, on the column's same left
             edge, its thread running on to the plate */}
-        <div className="pointer-events-none absolute inset-y-0 right-full mr-[14vw] hidden w-[min(30ch,24vw)] md:block">
+        <div className="pointer-events-none absolute inset-y-0 right-full mr-[7vw] hidden w-[min(30ch,22vw)] md:block">
           {aside && <div className="pointer-events-auto absolute inset-x-0 top-0 -translate-y-[60%]">{aside}</div>}
-          <span className={`${SMALL} absolute left-0 top-1/2 flex w-[calc(100%+14vw-0.75rem)] -translate-y-1/2 items-center gap-3 whitespace-nowrap`}>
+          <span className={`${SMALL} absolute left-0 top-1/2 flex w-[calc(100%+7vw-0.75rem)] -translate-y-1/2 items-center gap-3 whitespace-nowrap`}>
             <span className="text-platinum/85">{p?.title}</span>
             <span className="text-platinum/45">{making ? `${number} · ${making}` : number}</span>
             <span aria-hidden className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(42,43,47,0), rgba(42,43,47,0.5))" }} />
