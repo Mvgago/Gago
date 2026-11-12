@@ -34,7 +34,7 @@ type Plate = {
 // turns down the drum
 const L = (n: string) => `/lab/${n}.webp`;
 export const reel: Plate[] = [
-  { id: "r01", url: L("claro"), title: "Claro" },
+  { id: "r01", url: L("claro"), title: "Premonición" },
   { id: "r02", url: L("rosa-negra"), title: "Comunión I" },
   { id: "r03", url: L("club-shy"), title: "Club Shy", tech: "3d" },
   { id: "r04", url: `${L("cicuta")}?v=2`, title: "Cicuta", tech: "3d" },
