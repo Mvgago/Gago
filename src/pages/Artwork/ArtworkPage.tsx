@@ -78,8 +78,15 @@ const Reel: React.FC<{
   // the plate's width, set so the whole drum (with the near perspective below, it stands some 2.7 plates
   // tall) fits the screen with air above and below: from the screen's height, held to most of a phone's
   // width and to 300 px
+  // (measured once per width: on a phone the address bar coming and going changes the height on every
+  // scroll, and resizing the drum with it made it jump while turning)
   useEffect(() => {
-    const fit = () => setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.24 : 0.3))));
+    let lastW = 0;
+    const fit = () => {
+      if (window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
+      setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.24 : 0.3))));
+    };
     fit();
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
@@ -138,10 +145,10 @@ const Reel: React.FC<{
 
   return (
     // a screen and a half of scrolling for each plate, the drum held on screen throughout
-    <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100svh)` }}>
+    <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100lvh)` }}>
       {/* (centred in the screen below the header; the perspective held close, in proportion to the drum, so
           it reads as a cylinder and stays compact) */}
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden pt-[40px] md:pt-[72px]" style={{ perspective: Math.round(R * 0.6), perspectiveOrigin: "50% calc(50% + 20px)" }}>
+      <div className="sticky top-0 flex h-[100lvh] items-center justify-center overflow-hidden pt-[40px] md:pt-[72px]" style={{ perspective: Math.round(R * 0.6), perspectiveOrigin: "50% calc(50% + 20px)" }}>
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
         <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
         {/* wide screens: the words on the pieces just to the drum's left, high, about the top edge of the plate in front */}
@@ -181,7 +188,7 @@ const Reel: React.FC<{
             <span aria-hidden className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(42,43,47,0), rgba(42,43,47,0.5))" }} />
           </span>
         </div>
-        <div ref={ring} className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
+        <div ref={ring} className="absolute inset-0 will-change-transform" style={{ transformStyle: "preserve-3d" }}>
           {plates.map((pl, i) => (
             <button
               key={pl.id}
@@ -231,7 +238,7 @@ const Reel: React.FC<{
           ))}
         </div>
         </div>
-        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[4svh] z-10 flex justify-center md:hidden`}>
+        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[calc(100lvh-100svh+4svh)] z-10 flex justify-center md:hidden`}>
           {/* (on a pill of the wall's own silver, so it reads clear of the plates turning behind it) */}
           <span className="flex gap-4 rounded-full bg-[#c3c5c9]/85 px-4 py-1.5 text-platinum/80 backdrop-blur-sm">
           <span>{p?.title}</span>
