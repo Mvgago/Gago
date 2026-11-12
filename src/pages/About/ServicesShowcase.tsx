@@ -41,6 +41,8 @@ if (typeof window !== "undefined") {
 // at once while the live scene loads behind it, which then fades in over it
 type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; poster?: string; seen: string[]; link?: string };
 
+const POSTER_V = 5;
+
 // the way into the full example, where an example has one
 const OPEN: Record<string, string> = { es: "Ver el plano en 3D", en: "See the floor plan in 3D", fr: "Voir le plan en 3D", de: "Den Grundriss in 3D ansehen" };
 
@@ -105,8 +107,9 @@ const Frame: React.FC<{ ex: Example; note?: string; paused?: boolean; allowed?: 
     )}
     {ex.poster && (
       <picture>
-        <source media="(max-width: 1023px)" srcSet={`/posters/${ex.poster}-tall.webp`} />
-        <img src={`/posters/${ex.poster}-wide.webp`} alt="" draggable={false} decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+        {/* (v: bumped whenever the stills are redone, so a cached older one never shows) */}
+        <source media="(max-width: 1023px)" srcSet={`/posters/${ex.poster}-tall.webp?v=${POSTER_V}`} />
+        <img src={`/posters/${ex.poster}-wide.webp?v=${POSTER_V}`} alt="" draggable={false} decoding="async" className="absolute inset-0 h-full w-full object-cover" />
       </picture>
     )}
     {ex.scene && <SceneInView name={ex.scene} paused={paused} allowed={allowed} />}
