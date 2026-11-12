@@ -41,7 +41,7 @@ if (typeof window !== "undefined") {
 // at once while the live scene loads behind it, which then fades in over it
 type Example ={ img?: string; video?: string; frame?: string; scene?: keyof typeof SCENES; poster?: string; seen: string[]; link?: string };
 
-const POSTER_V = 7;
+const POSTER_V = 8;
 
 // the way into the full example, where an example has one
 const OPEN: Record<string, string> = { es: "Ver el plano en 3D", en: "See the floor plan in 3D", fr: "Voir le plan en 3D", de: "Den Grundriss in 3D ansehen" };

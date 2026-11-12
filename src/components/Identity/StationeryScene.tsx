@@ -1122,7 +1122,11 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     // (the thickest piece, so the darkest foot: a second, firmer contact under it, or it seemed to hover)
     const foot = contact(0.74, 1.54);
     (foot.material as THREE.MeshBasicMaterial).opacity = 1;
-    phone.add(body, glass, screen, gloss, contact(0.8, 1.6), foot);
+    // and a wider, softer shadow cast away from the window (down and to the right), as a thick object throws
+    const cast = contact(1.0, 1.75);
+    (cast.material as THREE.MeshBasicMaterial).opacity = 0.7;
+    cast.position.set(0.09, 0.0012, 0.1);
+    phone.add(body, glass, screen, gloss, cast, contact(0.8, 1.6), foot);
     // (laid nearly square to the table's edge, a little in from the frame's side, where the lens skews least)
     phone.position.set(1.32, 0, 0.12);
     phone.rotation.y = -0.03;
