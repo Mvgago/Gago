@@ -491,7 +491,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
             alt="Fuga Sei — Grimaldi Lines (EP)"
             {...protect}
             // a touch dimmer, so the pale booklet doesn't glare in the dark room
-            style={{ filter: "brightness(0.82)" }}
+            style={{ filter: "none" }}
             className="absolute inset-0 block h-full w-full rounded-[3px] object-cover"
           />
           {/* the hinge down the left: a narrow band of smoked plastic with one fine edge of light */}
@@ -505,7 +505,7 @@ const RecordSleeve: React.FC<{ src: string; listening: boolean }> = ({ src, list
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 rounded-[3px] shadow-[inset_2px_2px_0_rgba(255,255,255,0.26),inset_-2px_-2px_0_rgba(0,0,0,0.45),inset_0_0_0_1px_rgba(255,255,255,0.08),inset_4px_4px_10px_rgba(255,255,255,0.05),inset_-4px_-4px_10px_rgba(0,0,0,0.2)]"
-            style={{ background: "linear-gradient(118deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 22%, transparent 40%, transparent 72%, rgba(255,255,255,0.04) 84%, transparent 94%)" }}
+            style={{ background: "linear-gradient(118deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 22%, transparent 40%, transparent 72%, rgba(255,255,255,0.05) 84%, transparent 94%)" }}
           />
           <motion.div
             aria-hidden

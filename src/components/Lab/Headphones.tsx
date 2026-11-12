@@ -416,7 +416,8 @@ export const Headphones: React.FC<{ className?: string; active?: boolean }> = ({
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     // a little under, so the silver sits in the dim room and never glares
-    renderer.toneMappingExposure = 0.62;
+    // (brighter again in the lab's pale silver room: dimmed for the dark one, they read heavy and shadowed here)
+    renderer.toneMappingExposure = 0.9;
     renderer.setClearColor(0x000000, 0);
     renderer.domElement.style.display = "block";
     el.appendChild(renderer.domElement);
@@ -424,13 +425,13 @@ export const Headphones: React.FC<{ className?: string; active?: boolean }> = ({
     const scene = new THREE.Scene();
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-    scene.environmentIntensity = 0.55;
+    scene.environmentIntensity = 0.8;
     // the lab's lights: a low lavender from the left, a violet from below right, a white key above
     const red = new THREE.PointLight("#9a8fc4", 2, 12);
     red.position.set(-3.2, 1.4, 2.2);
     const violet = new THREE.PointLight("#7a5aa8", 0.5, 12);
     violet.position.set(3, -1.6, 2);
-    const key = new THREE.DirectionalLight("#ffffff", 0.6);
+    const key = new THREE.DirectionalLight("#ffffff", 0.9);
     key.position.set(1, 4, 3);
     scene.add(red, violet, key);
 
