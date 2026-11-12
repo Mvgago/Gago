@@ -253,6 +253,9 @@ const Reel: React.FC<{
                         transform: `rotateX(${-a}rad) translateZ(${R}px)`,
                         backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,var(--shade)), rgba(20,22,26,var(--shade))), url(${pl.url.replace("/lab/", "/lab/sm/")})`,
                         backgroundSize: `100% 100%, 100% 100%, ${W}px ${H}px`,
+                        // (the picture never repeated: the bands overlap a little, and on the last one the top of the
+                        // picture used to show again as a thin line along the plate's foot)
+                        backgroundRepeat: "repeat, repeat, no-repeat",
                         backgroundPosition: `0 0, 0 0, 0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
                         // (no filter per band: on a phone, two hundred filtered bands made the turn stutter)
                         filter: pl.grade,
