@@ -39,7 +39,7 @@ export const reel: Plate[] = [
   { id: "r03", url: L("club-shy"), title: "Club Shy", tech: "3d" },
   { id: "r04", url: `${L("cicuta")}?v=2`, title: "Cicuta", tech: "3d" },
   { id: "r05", url: L("otono"), title: "Otoño en la Luna", tech: "vector" },
-  { id: "r06", url: L("rosa-blanca"), title: "Rosa II", tech: "3d" },
+  { id: "r06", url: `${L("rosa-blanca")}?v=2`, title: "Rosa II", tech: "3d" },
   { id: "r07", url: `${L("memoria")}?v=2`, title: "Memoria", tech: "3d" },
   { id: "r08", url: L("alfame"), title: "Alfama Lisboa" },
   { id: "r09", url: L("vacuna"), video: "/lab/vacuna.mp4", title: "Vacuna", tech: "3d" },
@@ -49,7 +49,7 @@ export const reel: Plate[] = [
   { id: "r13", url: L("amorsacro"), title: "Amorsacro", tech: "digital" },
   { id: "r14", url: `${L("lilo")}?v=2`, title: "Lilo" },
   { id: "r15", url: L("single"), title: "Single" },
-  { id: "r16", url: L("lerele"), title: "Lerele" },
+  { id: "r16", url: L("lerele"), title: "Corralones" },
 ];
 
 export type Tech = "digital" | "vector" | "3d";
