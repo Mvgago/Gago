@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from 
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion, useAnimationFrame, useInView, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
-import { artwork, FUGA_SEI_EP, TECH } from "../../outils/artwork";
+import { artwork, FUGA_SEI_EP, reel, TECH } from "../../outils/artwork";
 import { EASE_HAUS, EASE_VEIL, rise } from "../../lib/motion";
 import { useI18n } from "../../i18n/I18n";
 import Footer from "../../components/Footer/Footer";
@@ -44,15 +44,131 @@ const protect = {
   onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
 };
 
+/**
+ * The reel: every piece down one column, as on a drum turning towards the visitor. Scrolled (or swiped),
+ * each plate comes up tipped back, flattens and comes forward as it crosses the middle of the screen, and
+ * tips away beyond it. The one in the middle is named either side on a thread of light, its title to the
+ * left and its number and making to the right (under it on a phone). A piece that moves plays only there.
+ * Pressed, it opens in the viewer. Still, the plates simply stand flat.
+ */
+const Reel: React.FC<{
+  plates: typeof artwork;
+  onOpen: (i: number) => void;
+  buttons: React.MutableRefObject<(HTMLButtonElement | null)[]>;
+  label: string;
+}> = ({ plates, onOpen, buttons, label }) => {
+  const { lang } = useI18n();
+  const items = useRef<(HTMLLIElement | null)[]>([]);
+  const still = useReducedMotion();
+
+  useEffect(() => {
+    let raf = 0;
+    const tick = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      items.current.forEach((li) => {
+        if (!li) return;
+        const face = li.firstElementChild as HTMLElement;
+        const r = li.getBoundingClientRect();
+        // how far from the middle of the screen, in half-screens, held a little past the edges
+        const d = Math.max(-1.4, Math.min(1.4, (r.top + r.height / 2 - vh / 2) / (vh * 0.55)));
+        const a = Math.abs(d);
+        if (!still) {
+          face.style.transform = `rotateX(${(-d * 48).toFixed(2)}deg) scale(${(1 - a * 0.1).toFixed(3)})`;
+          face.style.opacity = (1 - Math.min(1, a) * 0.4).toFixed(3);
+        }
+        li.style.setProperty("--near", Math.max(0, 1 - a * 3).toFixed(3));
+        const v = li.querySelector("video");
+        if (v) {
+          if (a < 0.7) void v.play().catch(() => {});
+          else v.pause();
+        }
+      });
+    };
+    const on = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    tick();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", on);
+      window.removeEventListener("resize", on);
+    };
+  }, [still]);
+
+  // the thread the labels hang on: the site's line of light, fading away from the plate
+  const thread = (toward: "left" | "right") => (
+    <span
+      aria-hidden
+      className="block h-px w-10 md:w-16"
+      style={{ background: `linear-gradient(${toward === "right" ? "90deg" : "270deg"}, rgba(244,241,237,0.6), rgba(244,241,237,0))` }}
+    />
+  );
+
+  return (
+    <ul className="relative mx-auto flex flex-col items-center gap-[3vh] py-[14vh]" style={{ perspective: 1100 }}>
+      {plates.map((p, i) => {
+        const making = p.tech ? TECH[p.tech][lang] ?? TECH[p.tech].es : undefined;
+        const number = `${pad(i + 1)} / ${pad(plates.length)}`;
+        return (
+          <li
+            key={p.id}
+            ref={(n) => {
+              items.current[i] = n;
+            }}
+            className="relative w-[min(400px,68vw)]"
+            style={{ "--near": 0 } as React.CSSProperties}
+          >
+            <button
+              ref={(n) => {
+                buttons.current[i] = n;
+              }}
+              type="button"
+              onClick={() => onOpen(i)}
+              aria-label={`${p.title ?? label} — ${pad(i + 1)}`}
+              className="group block w-full cursor-zoom-in will-change-transform"
+              style={{ transformOrigin: "50% 50%" }}
+            >
+              <span className="relative block aspect-[4/5] w-full overflow-hidden rounded-[14px] bg-[#302830] shadow-[0_30px_60px_-30px_rgba(0,0,0,0.7)]">
+                {p.video ? (
+                  <video src={p.video} poster={p.url} muted loop playsInline preload="none" className="h-full w-full object-cover" />
+                ) : (
+                  <img src={p.url} alt={`${p.title ?? label} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: p.grade }} className="h-full w-full object-cover" />
+                )}
+              </span>
+            </button>
+            {/* wide screens: the title to the left, the number and making to the right, on threads, near its top */}
+            <span className={`${SMALL} pointer-events-none absolute right-full top-[10%] mr-3 hidden items-center gap-3 whitespace-nowrap text-platinum/80 md:flex`} style={{ opacity: "var(--near)" }}>
+              {p.title}
+              {thread("left")}
+            </span>
+            <span className={`${SMALL} pointer-events-none absolute left-full top-[10%] ml-3 hidden items-center gap-3 whitespace-nowrap text-platinum/50 md:flex`} style={{ opacity: "var(--near)" }}>
+              {thread("right")}
+              {making ? `${number} · ${making}` : number}
+            </span>
+            {/* phones: the same, in one line under the plate */}
+            <span className={`${SMALL} pointer-events-none mt-3 flex justify-between gap-3 text-platinum/70 md:hidden`} style={{ opacity: "var(--near)" }}>
+              <span>{p.title}</span>
+              <span className="text-platinum/45">{number}</span>
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
 export const ArtworkPage: React.FC = () => {
   const { t, lang } = useI18n();
   const s = STUDIO[lang];
   const [open, setOpen] = useState<number | null>(null);
   const [listening, setListening] = useState(false);
   const plates = useRef<(HTMLButtonElement | null)[]>([]);
-  // A small sample for now: the studio's own record first, then four pieces
+  // the studio's own record first, on its own; then every piece, on the reel
   const record = artwork[0];
-  const sample = artwork.slice(1, 5);
+  const sample = reel;
   const [beforeName, afterName] = s.voice.split("{name}");
 
   // the page's own ground under everything, so a phone's overscroll never shows the light wall
@@ -107,31 +223,7 @@ export const ArtworkPage: React.FC = () => {
             </p>
           </div>
         </div>
-        {/* edge to edge, the pieces touching, as one strip */}
-        <ul className="-mx-4 grid grid-cols-2 sm:-mx-6 md:-mx-8 md:grid-cols-4">
-          {sample.map((plate, i) => (
-            <motion.li
-              key={plate.id}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10% 0px" }}
-              transition={{ duration: 1.1, ease: EASE_HAUS, delay: i * 0.08 }}
-            >
-              <button
-                ref={(n) => {
-                  plates.current[i] = n;
-                }}
-                type="button"
-                onClick={() => setOpen(i)}
-                aria-label={`${plate.title ?? t("section.artwork")} — ${pad(i + 1)}`}
-                className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden"
-                style={{ background: "#302830" }}
-              >
-                <img src={plate.url} alt={`${plate.title ?? s.labArtLabel} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: plate.grade, transform: plate.crop ? `scale(${plate.crop})` : undefined, transformOrigin: plate.cropAt }} className="h-full w-full object-cover transition-transform duration-[1400ms] ease-haus group-hover:scale-[1.03]" />
-              </button>
-            </motion.li>
-          ))}
-        </ul>
+        <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} />
       </section>
 
       {/* Sound: set the same way as the illustration above it, a line on what it is, then the record */}
@@ -514,13 +606,10 @@ const Viewer: React.FC<{
           {/* The plate; the halves either side step through the series */}
           <div className="relative min-h-0 flex-1 px-4 py-6 sm:px-16 md:px-24">
             <AnimatePresence initial={false} custom={direction} mode="popLayout">
-              <motion.img
+              <motion.div
                 key={plate.id}
-                src={plate.url}
-                alt={plate.title ?? ""}
-                {...protect}
-                // every piece the same size: one square, as large as the room allows, the picture filling it
-                className="absolute inset-0 m-auto aspect-square h-auto w-[min(calc(100%-2rem),calc(100vh-11rem))] object-cover shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]"
+                // every piece the same size: the reel's upright 4:5, as large as the room allows
+                className="absolute inset-0 m-auto aspect-[4/5] h-auto w-[min(calc(100%-2rem),calc((100vh-11rem)*0.8))] overflow-hidden rounded-[14px] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]"
                 custom={direction}
                 variants={{
                   enter: (d: number) => ({ opacity: 0, x: d * 40 }),
@@ -530,7 +619,13 @@ const Viewer: React.FC<{
                 initial="enter"
                 animate="center"
                 exit="exit"
-              />
+              >
+                {plate.video ? (
+                  <video src={plate.video} poster={plate.url} muted loop playsInline autoPlay className="h-full w-full object-cover" />
+                ) : (
+                  <img src={plate.url} alt={plate.title ?? ""} {...protect} className="h-full w-full object-cover" />
+                )}
+              </motion.div>
             </AnimatePresence>
             <button
               type="button"

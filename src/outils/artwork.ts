@@ -26,7 +26,31 @@ type Plate = {
   crop?: number;
   /** Where that closer view is anchored (a CSS transform origin) */
   cropAt?: string;
+  /** A piece that moves: its film, played in a loop (url is then its still) */
+  video?: string;
 };
+
+// The lab's reel: every piece, each cut to the same upright 4:5 (in public/lab), light and dark taking
+// turns down the drum
+const L = (n: string) => `/lab/${n}.webp`;
+export const reel: Plate[] = [
+  { id: "r01", url: L("claro"), title: "Claro" },
+  { id: "r02", url: L("rosa-negra"), title: "Rosa I" },
+  { id: "r03", url: L("club-shy"), title: "Club Shy", tech: "3d" },
+  { id: "r04", url: L("cicuta"), title: "Cicuta", tech: "3d" },
+  { id: "r05", url: L("otono"), title: "Otoño en la Luna", tech: "vector" },
+  { id: "r06", url: L("rosa-blanca"), title: "Rosa II", tech: "3d" },
+  { id: "r07", url: L("memoria"), title: "Memoria", tech: "3d" },
+  { id: "r08", url: L("alfame"), title: "Alfame" },
+  { id: "r09", url: L("vacuna"), video: "/lab/vacuna.mp4", title: "Vacuna", tech: "3d" },
+  { id: "r10", url: L("annet"), title: "Annet" },
+  { id: "r11", url: L("acne"), title: "Acne" },
+  { id: "r12", url: L("fasemesa"), title: "Fase" },
+  { id: "r13", url: L("amorsacro"), title: "Amorsacro", tech: "digital" },
+  { id: "r14", url: L("lilo"), title: "Lilo" },
+  { id: "r15", url: L("single"), title: "Single" },
+  { id: "r16", url: L("lerele"), title: "Lerele" },
+];
 
 export type Tech = "digital" | "vector" | "3d";
 export const TECH: Record<Tech, Record<string, string>> = {
