@@ -15,10 +15,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const Headphones = lazy(() => import("../../components/Lab/Headphones"));
 
 /**
- * The lab is a room apart from the rest of the site: its walls a smoked plum, a dark greyed mauve that
- * echoes the landing's, lit only by a soft fall of light, with a grain over it and the corners falling away.
+ * The lab is a room apart from the rest of the site: a misty metallic silver, a mid grey with a cool sheen
+ * of light drifting across it like fog over brushed metal, with a grain over it and the corners falling away.
  */
-const NIGHT = "#272126";
+const NIGHT = "#55575c";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 const NightRoom: React.FC = () => (
@@ -27,12 +27,12 @@ const NightRoom: React.FC = () => (
     <div
       className="absolute inset-0"
       style={{
-        // no coloured wash: only a faint fall of light from above, so the plum of the wall speaks alone
-        background: "radial-gradient(90% 60% at 40% -10%, rgba(196,170,186,0.1) 0%, transparent 100%)",
+        // the sheen: a broad soft light from above, and a long diagonal band of brighter silver, as fog lit over metal
+        background: "radial-gradient(80% 55% at 50% -5%, rgba(226,230,236,0.32) 0%, transparent 100%), linear-gradient(115deg, transparent 20%, rgba(214,219,226,0.16) 42%, rgba(240,242,246,0.1) 50%, transparent 72%), radial-gradient(70% 60% at 85% 100%, rgba(150,156,166,0.25) 0%, transparent 100%)",
         animation: "lab-breathe 9s ease-in-out infinite",
       }}
     />
-    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(14,9,13,0.45) 100%)" }} />
+    <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, transparent 45%, rgba(30,32,36,0.35) 100%)" }} />
     <div className="absolute inset-0 opacity-[0.07] mix-blend-screen" style={{ backgroundImage: GRAIN }} />
   </div>
 );
