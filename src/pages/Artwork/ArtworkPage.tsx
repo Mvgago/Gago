@@ -52,7 +52,7 @@ const protect = {
  * they turn away. The one in front is named either side on a thread of light, and pressed, opens in the
  * viewer.
  */
-const BANDS = 14; // bands a plate is cut into, to bend it round the drum (enough that the curve and its rounded corners read smooth)
+// bands a plate is cut into, to bend it round the drum: enough that the curve reads smooth, few enough to stay light
 const FILL = 0.9; // how much of its share of the drum a plate takes (the rest: the slit between plates)
 const Reel: React.FC<{
   plates: typeof artwork;
@@ -64,8 +64,13 @@ const Reel: React.FC<{
 }> = ({ plates, onOpen, buttons, label, aside }) => {
   const { lang } = useI18n();
   const N = plates.length;
+  const [BANDS] = useState(() => (typeof window !== "undefined" && window.innerWidth < 768 ? 8 : 10));
   const step = (2 * Math.PI) / N; // each plate's share of the drum, in radians
   const section = useRef<HTMLDivElement>(null);
+  const probe = useRef<HTMLDivElement>(null);
+  // the labels' words, written straight from the drum's own frame loop, so they always name the plate in front
+  const names = useRef<(HTMLSpanElement | null)[]>([]);
+  const counts = useRef<(HTMLSpanElement | null)[]>([]); // a full-screen height that holds still while a phone's address bar comes and goes
   const ring = useRef<HTMLDivElement>(null);
   const cards = useRef<(HTMLElement | null)[]>([]);
   const [W, setW] = useState(300);
@@ -102,7 +107,7 @@ const Reel: React.FC<{
       const el = section.current;
       if (!el) return 0;
       const rect = el.getBoundingClientRect();
-      const span = el.offsetHeight - window.innerHeight;
+      const span = el.offsetHeight - (probe.current?.offsetHeight || window.innerHeight);
       const p = span > 0 ? Math.max(0, Math.min(1, -rect.top / span)) : 0;
       return p * (N - 1) * step; // from the first plate in front to the last
     };
@@ -124,7 +129,7 @@ const Reel: React.FC<{
         c.style.setProperty("--shade", (1 - lit).toFixed(3));
         // and faded as they go over the top and under: only the one in front at full strength
         // (as a veil of the wall's own silver over each band, the bands kept opaque: made see-through, the bands' overlaps showed as stripes)
-        c.style.setProperty("--veil", (0.82 * (1 - facing ** 3)).toFixed(3));
+        c.style.setProperty("--veil", Math.min(1, 1.05 * (1 - facing ** 2.5)).toFixed(3));
         const v = c.querySelector("video");
         if (v) {
           if (Math.cos(a) > 0.8) void v.play().catch(() => {});
@@ -134,6 +139,11 @@ const Reel: React.FC<{
       const f = Math.max(0, Math.min(N - 1, Math.round(turn / step)));
       if (f !== shown) {
         shown = f;
+        const pf = plates[f];
+        const mk = pf?.tech ? TECH[pf.tech][lang] ?? TECH[pf.tech].es : undefined;
+        const num = `${pad(f + 1)} / ${pad(N)}`;
+        names.current.forEach((n) => n && (n.textContent = pf?.title ?? ""));
+        counts.current.forEach((n, j) => n && (n.textContent = j === 0 && mk ? `${num} · ${mk}` : num));
         setFront(f);
       }
     };
@@ -148,7 +158,7 @@ const Reel: React.FC<{
       window.removeEventListener("scroll", on);
       window.removeEventListener("resize", on);
     };
-  }, [N, R, step]);
+  }, [N, R, step, plates, lang]);
 
   const p = plates[front];
   const making = p?.tech ? TECH[p.tech][lang] ?? TECH[p.tech].es : undefined;
@@ -157,9 +167,13 @@ const Reel: React.FC<{
   return (
     // a screen and a half of scrolling for each plate, the drum held on screen throughout
     <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100lvh)` }}>
+      <div ref={probe} aria-hidden className="pointer-events-none absolute left-0 top-0 h-[100lvh] w-px opacity-0" />
       {/* (centred in the screen below the header; the perspective held close, in proportion to the drum, so
           it reads as a cylinder and stays compact) */}
-      <div className="sticky top-0 flex h-[100lvh] items-center justify-center overflow-hidden pt-[40px] md:pt-[72px]" style={{ perspective: Math.round(R * 0.6), perspectiveOrigin: "50% calc(50% + 20px)" }}>
+      {/* (the frame as tall as the screen can grow, so nothing is ever cut at its foot; inside it, the drum centred
+          in the part always visible, between the header and, on a phone, a band left for its label) */}
+      <div className="sticky top-0 h-[100lvh] overflow-hidden">
+      <div className="relative flex h-[100svh] items-center justify-center pb-[64px] pt-[64px] md:pb-0 md:pt-[72px]" style={{ perspective: Math.round(R * 0.6) }}>
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
         <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
         {/* wide screens: the words on the pieces just to the drum's left, high, about the top edge of the plate in front */}
@@ -194,8 +208,8 @@ const Reel: React.FC<{
         <div className="pointer-events-none absolute inset-y-0 right-full mr-[7vw] hidden w-[min(30ch,22vw)] md:block">
           {aside && <div className="pointer-events-auto absolute inset-x-0 top-0 -translate-y-[60%]">{aside}</div>}
           <span className={`${SMALL} absolute left-0 top-1/2 flex w-[calc(100%+7vw-0.75rem)] -translate-y-1/2 items-center gap-3 whitespace-nowrap`}>
-            <span className="text-platinum/85">{p?.title}</span>
-            <span className="text-platinum/45">{making ? `${number} · ${making}` : number}</span>
+            <span ref={(n) => { names.current[0] = n; }} className="text-platinum/85">{p?.title}</span>
+            <span ref={(n) => { counts.current[0] = n; }} className="text-platinum/45">{making ? `${number} · ${making}` : number}</span>
             <span aria-hidden className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(42,43,47,0), rgba(42,43,47,0.5))" }} />
           </span>
         </div>
@@ -219,7 +233,7 @@ const Reel: React.FC<{
                   className="absolute inset-0 overflow-hidden rounded-[12px]"
                   style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, borderRadius: 8 }}
                 >
-                  <video src={pl.video} poster={pl.url} muted loop playsInline preload="none" className="h-full w-full object-cover" />
+                  <video src={pl.video} poster={pl.url.replace("/lab/", "/lab/sm/")} muted loop playsInline preload="none" className="h-full w-full object-cover" />
                   <span aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), rgba(20,22,26,var(--shade))" }} />
                 </span>
               ) : (
@@ -234,7 +248,7 @@ const Reel: React.FC<{
                         top: (H - bandH) / 2,
                         height: bandH,
                         transform: `rotateX(${-a}rad) translateZ(${R}px)`,
-                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,var(--shade)), rgba(20,22,26,var(--shade))), url(${pl.url})`,
+                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,var(--shade)), rgba(20,22,26,var(--shade))), url(${pl.url.replace("/lab/", "/lab/sm/")})`,
                         backgroundSize: `100% 100%, 100% 100%, ${W}px ${H}px`,
                         backgroundPosition: `0 0, 0 0, 0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
                         // (no filter per band: on a phone, two hundred filtered bands made the turn stutter)
@@ -250,13 +264,14 @@ const Reel: React.FC<{
           ))}
         </div>
         </div>
-        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[calc(100lvh-100svh+14px)] z-10 flex justify-center md:hidden`}>
+        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[16px] z-10 flex justify-center md:hidden`}>
           {/* (on a pill of the wall's own silver, so it reads clear of the plates turning behind it) */}
           <span className="flex gap-4 rounded-full bg-[#c3c5c9]/85 px-4 py-1.5 text-platinum/80 backdrop-blur-sm">
-          <span>{p?.title}</span>
-          <span className="text-platinum/45">{number}</span>
+          <span ref={(n) => { names.current[1] = n; }}>{p?.title}</span>
+          <span ref={(n) => { counts.current[1] = n; }} className="text-platinum/45">{number}</span>
           </span>
         </div>
+      </div>
       </div>
     </div>
   );
