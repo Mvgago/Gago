@@ -61,8 +61,9 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   // (a touch under: the white tissue and card in the window's light used to burn out)
   renderer.toneMappingExposure = 0.46;
-  // (on phones too: the round dark spots once blamed on them were the leaves in the window light)
-  renderer.shadowMap.enabled = true;
+  // no cast shadows from the window: they drew differently from one GPU to another (and so differed from the
+  // loading still); the contact shadows under each piece set it down, the same everywhere
+  renderer.shadowMap.enabled = false;
   // soft filtered shadows (the variance kind left a dotted halo round the cards)
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.style.display = "block";
