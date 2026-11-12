@@ -45,12 +45,15 @@ const protect = {
 };
 
 /**
- * The reel: every piece down one column, as on a drum turning towards the visitor. Scrolled (or swiped),
- * each plate comes up tipped back, flattens and comes forward as it crosses the middle of the screen, and
- * tips away beyond it. The one in the middle is named either side on a thread of light, its title to the
- * left and its number and making to the right (under it on a phone). A piece that moves plays only there.
- * Pressed, it opens in the viewer. Still, the plates simply stand flat.
+ * The reel: every piece mounted round a drum, a real cylinder turning on a level axis. The section holds the
+ * screen while it is scrolled through, and the scroll turns the drum: each plate comes round from below, bent
+ * to the drum's curve (drawn as fine bands, each set on the cylinder), faces the visitor, and goes over the
+ * top; the drum shows above and below it, and through the slits between plates its far side. Plates dim as
+ * they turn away. The one in front is named either side on a thread of light, and pressed, opens in the
+ * viewer.
  */
+const BANDS = 10; // bands a plate is cut into, to bend it round the drum
+const FILL = 0.9; // how much of its share of the drum a plate takes (the rest: the slit between plates)
 const Reel: React.FC<{
   plates: typeof artwork;
   onOpen: (i: number) => void;
@@ -58,32 +61,55 @@ const Reel: React.FC<{
   label: string;
 }> = ({ plates, onOpen, buttons, label }) => {
   const { lang } = useI18n();
-  const items = useRef<(HTMLLIElement | null)[]>([]);
-  const still = useReducedMotion();
+  const N = plates.length;
+  const step = (2 * Math.PI) / N; // each plate's share of the drum, in radians
+  const section = useRef<HTMLDivElement>(null);
+  const ring = useRef<HTMLDivElement>(null);
+  const cards = useRef<(HTMLElement | null)[]>([]);
+  const [W, setW] = useState(300);
+  const [front, setFront] = useState(0);
+  const H = W * 1.25;
+  const R = H / (step * FILL); // the drum's radius, so a plate's height is its share of the round
+  const band = (step * FILL) / BANDS;
+  const bandH = 2 * R * Math.tan(band / 2) + 1; // (+1: no hairline between bands)
+
+  // the plate's width: about two thirds of a phone, held to 300 px on wider screens
+  useEffect(() => {
+    const fit = () => setW(Math.round(Math.min(300, window.innerWidth * 0.66)));
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
 
   useEffect(() => {
     let raf = 0;
+    let shown = -1;
     const tick = () => {
       raf = 0;
-      const vh = window.innerHeight;
-      items.current.forEach((li) => {
-        if (!li) return;
-        const face = li.firstElementChild as HTMLElement;
-        const r = li.getBoundingClientRect();
-        // how far from the middle of the screen, in half-screens, held a little past the edges
-        const d = Math.max(-1.4, Math.min(1.4, (r.top + r.height / 2 - vh / 2) / (vh * 0.55)));
-        const a = Math.abs(d);
-        if (!still) {
-          face.style.transform = `rotateX(${(-d * 48).toFixed(2)}deg) scale(${(1 - a * 0.1).toFixed(3)})`;
-          face.style.opacity = (1 - Math.min(1, a) * 0.4).toFixed(3);
-        }
-        li.style.setProperty("--near", Math.max(0, 1 - a * 3).toFixed(3));
-        const v = li.querySelector("video");
+      const el = section.current, r = ring.current;
+      if (!el || !r) return;
+      const rect = el.getBoundingClientRect();
+      const span = el.offsetHeight - window.innerHeight;
+      const p = span > 0 ? Math.max(0, Math.min(1, -rect.top / span)) : 0;
+      const turn = p * (N - 1) * step; // from the first plate in front to the last
+      r.style.transform = `translateZ(${-R}px) rotateX(${turn}rad)`;
+      // each plate dimmed by how far it has turned from the visitor
+      cards.current.forEach((c, i) => {
+        if (!c) return;
+        const a = i * step - turn;
+        const lit = 0.35 + 0.65 * Math.max(0, Math.cos(a));
+        c.style.setProperty("--lit", lit.toFixed(3));
+        const v = c.querySelector("video");
         if (v) {
-          if (a < 0.7) void v.play().catch(() => {});
+          if (Math.cos(a) > 0.8) void v.play().catch(() => {});
           else v.pause();
         }
       });
+      const f = Math.max(0, Math.min(N - 1, Math.round(turn / step)));
+      if (f !== shown) {
+        shown = f;
+        setFront(f);
+      }
     };
     const on = () => {
       if (!raf) raf = requestAnimationFrame(tick);
@@ -96,9 +122,8 @@ const Reel: React.FC<{
       window.removeEventListener("scroll", on);
       window.removeEventListener("resize", on);
     };
-  }, [still]);
+  }, [N, R, step]);
 
-  // the thread the labels hang on: the site's line of light, fading away from the plate
   const thread = (toward: "left" | "right") => (
     <span
       aria-hidden
@@ -106,57 +131,79 @@ const Reel: React.FC<{
       style={{ background: `linear-gradient(${toward === "right" ? "90deg" : "270deg"}, rgba(244,241,237,0.6), rgba(244,241,237,0))` }}
     />
   );
+  const p = plates[front];
+  const making = p?.tech ? TECH[p.tech][lang] ?? TECH[p.tech].es : undefined;
+  const number = `${pad(front + 1)} / ${pad(N)}`;
 
   return (
-    <ul className="relative mx-auto flex flex-col items-center gap-[3vh] py-[14vh]" style={{ perspective: 1100 }}>
-      {plates.map((p, i) => {
-        const making = p.tech ? TECH[p.tech][lang] ?? TECH[p.tech].es : undefined;
-        const number = `${pad(i + 1)} / ${pad(plates.length)}`;
-        return (
-          <li
-            key={p.id}
-            ref={(n) => {
-              items.current[i] = n;
-            }}
-            className="relative w-[min(400px,68vw)]"
-            style={{ "--near": 0 } as React.CSSProperties}
-          >
+    // a screen and a half of scrolling for each plate, the drum held on screen throughout
+    <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100svh)` }}>
+      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden" style={{ perspective: 900 }}>
+        <div ref={ring} className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
+          {plates.map((pl, i) => (
             <button
+              key={pl.id}
               ref={(n) => {
+                cards.current[i] = n;
                 buttons.current[i] = n;
               }}
               type="button"
               onClick={() => onOpen(i)}
-              aria-label={`${p.title ?? label} — ${pad(i + 1)}`}
-              className="group block w-full cursor-zoom-in will-change-transform"
-              style={{ transformOrigin: "50% 50%" }}
+              aria-label={`${pl.title ?? label} — ${pad(i + 1)}`}
+              className="absolute inset-0 cursor-zoom-in"
+              style={{ transformStyle: "preserve-3d", "--lit": 1 } as React.CSSProperties}
             >
-              <span className="relative block aspect-[4/5] w-full overflow-hidden rounded-[14px] bg-[#302830] shadow-[0_30px_60px_-30px_rgba(0,0,0,0.7)]">
-                {p.video ? (
-                  <video src={p.video} poster={p.url} muted loop playsInline preload="none" className="h-full w-full object-cover" />
-                ) : (
-                  <img src={p.url} alt={`${p.title ?? label} — Fuga Haus`} loading="lazy" decoding="async" {...protect} style={{ filter: p.grade }} className="h-full w-full object-cover" />
-                )}
-              </span>
+              {pl.video ? (
+                // a moving piece: one flat face, its film
+                <span
+                  className="absolute inset-0 overflow-hidden rounded-[12px]"
+                  style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, filter: "brightness(var(--lit))" }}
+                >
+                  <video src={pl.video} poster={pl.url} muted loop playsInline preload="none" className="h-full w-full object-cover" />
+                </span>
+              ) : (
+                Array.from({ length: BANDS }, (_, k) => {
+                  const a = i * step + (k - (BANDS - 1) / 2) * band;
+                  return (
+                    <span
+                      key={k}
+                      aria-hidden
+                      className="absolute left-0 w-full"
+                      style={{
+                        top: (H - bandH) / 2,
+                        height: bandH,
+                        transform: `rotateX(${-a}rad) translateZ(${R}px)`,
+                        backgroundImage: `url(${pl.url})`,
+                        backgroundSize: `${W}px ${H}px`,
+                        backgroundPosition: `0 ${-(k * (H / BANDS)) + (bandH - H / BANDS) / 2}px`,
+                        filter: `brightness(var(--lit))${pl.grade ? " " + pl.grade : ""}`,
+                        // the plate's corners rounded on its first and last bands
+                        borderRadius: k === 0 ? "12px 12px 0 0" : k === BANDS - 1 ? "0 0 12px 12px" : 0,
+                      }}
+                    />
+                  );
+                })
+              )}
             </button>
-            {/* wide screens: the title to the left, the number and making to the right, on threads, near its top */}
-            <span className={`${SMALL} pointer-events-none absolute right-full top-[10%] mr-3 hidden items-center gap-3 whitespace-nowrap text-platinum/80 md:flex`} style={{ opacity: "var(--near)" }}>
-              {p.title}
-              {thread("left")}
-            </span>
-            <span className={`${SMALL} pointer-events-none absolute left-full top-[10%] ml-3 hidden items-center gap-3 whitespace-nowrap text-platinum/50 md:flex`} style={{ opacity: "var(--near)" }}>
-              {thread("right")}
-              {making ? `${number} · ${making}` : number}
-            </span>
-            {/* phones: the same, in one line under the plate */}
-            <span className={`${SMALL} pointer-events-none mt-3 flex justify-between gap-3 text-platinum/70 md:hidden`} style={{ opacity: "var(--near)" }}>
-              <span>{p.title}</span>
-              <span className="text-platinum/45">{number}</span>
-            </span>
-          </li>
-        );
-      })}
-    </ul>
+          ))}
+        </div>
+        {/* the plate in front, named either side of it on threads of light (under it on a phone) */}
+        <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-y-1/2 md:block" style={{ width: W, marginLeft: -W / 2 }}>
+          <span className={`${SMALL} absolute right-full top-0 mr-3 flex items-center gap-3 whitespace-nowrap text-platinum/80`} style={{ marginTop: -H * 0.4 }}>
+            {p?.title}
+            {thread("left")}
+          </span>
+          <span className={`${SMALL} absolute left-full top-0 ml-3 flex items-center gap-3 whitespace-nowrap text-platinum/50`} style={{ marginTop: -H * 0.4 }}>
+            {thread("right")}
+            {making ? `${number} · ${making}` : number}
+          </span>
+        </div>
+        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[6svh] flex justify-center gap-4 text-platinum/70 md:hidden`}>
+          <span>{p?.title}</span>
+          <span className="text-platinum/45">{number}</span>
+        </div>
+      </div>
+    </div>
   );
 };
 
