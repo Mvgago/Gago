@@ -43,7 +43,7 @@ export const reel: Plate[] = [
   { id: "r07", url: `${L("memoria")}?v=2`, title: "Memoria", tech: "3d" },
   { id: "r08", url: L("alfame"), title: "Alfama Lisboa" },
   { id: "r09", url: L("vacuna"), video: "/lab/vacuna.mp4", title: "Vacuna", tech: "3d" },
-  { id: "r10", url: L("annet"), title: "Annet" },
+  { id: "r10", url: L("annet"), title: "Piel de serpiente" },
   { id: "r11", url: L("acne"), title: "Acne" },
   { id: "r12", url: L("fasemesa"), title: "Fase" },
   { id: "r13", url: L("amorsacro"), title: "Amorsacro", tech: "digital" },
