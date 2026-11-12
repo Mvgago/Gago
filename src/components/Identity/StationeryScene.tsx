@@ -225,7 +225,7 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   // (dark and close: where a thing meets the table the light can't reach, and without it they seem to float;
   // a soft spread, and under it the tight line)
   const contact = (w: number, d: number) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.12, d * 1.12), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 0.85 }));
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.12, d * 1.12), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false, opacity: 1 }));
     m.rotation.x = -Math.PI / 2;
     m.position.set(0.035, 0.0015, 0.03);
     m.renderOrder = 1;
@@ -442,14 +442,20 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
     g.rotation.y = -0.08;
     add(g);
     // the lid, set down beside it: a shallow cover in the same linen, the sign in silver on top
-    const LW = BW + 0.04, LD = BD + 0.04, LH = 0.1;
+    // (as tall as the box itself: a full-depth lid, the two halves a pair)
+    const LW = BW + 0.04, LD = BD + 0.04, LH = BH;
     const lid = new THREE.Group();
     const top = (() => {
       const [c, x] = canvas(1024, 750);
       x.drawImage((linen.image as HTMLCanvasElement), 0, 0, 1024, 750);
       return tex(c);
     })();
-    const lidTop = new THREE.Mesh(new THREE.BoxGeometry(LW, LH, LD), [cloth, cloth, new THREE.MeshStandardMaterial({ map: top, bumpMap: weave, bumpScale: 1.6, roughness: 0.92 }), cloth, cloth, cloth]);
+    // its sides a shade lighter than the shared cloth (in shade they read as a flat dark block) and its
+    // edges softly rounded, as cloth wrapped over board is
+    const lidSide = cloth.clone();
+    lidSide.emissive = new THREE.Color("#2c6264");
+    lidSide.emissiveIntensity = 0.18;
+    const lidTop = new THREE.Mesh(new RoundedBoxGeometry(LW, LH, LD, 3, 0.014), [lidSide, lidSide, new THREE.MeshStandardMaterial({ map: top, bumpMap: weave, bumpScale: 1.6, roughness: 0.92 }), lidSide, lidSide, lidSide]);
     lidTop.position.y = LH / 2;
     const [mc, mx] = canvas(1024, 750);
     mx.fillStyle = "#000";
@@ -1327,8 +1333,10 @@ async function build(host: HTMLDivElement, onReady: () => void, paused: { curren
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
   // (soft, but not so soft that the shadow parts from the foot of what casts it)
-  sun.shadow.radius = 8;
-  sun.shadow.blurSamples = 16;
+  // soft and only partly dark, as in the loading still (the live GPU drew them harder and blacker)
+  sun.shadow.radius = 14;
+  sun.shadow.blurSamples = 24;
+  sun.shadow.intensity = 0.8;
   // (enough offset that no surface shades itself in blotches; the contact shadows keep each foot set down)
   sun.shadow.bias = -0.0004;
   sun.shadow.normalBias = 0.02;
