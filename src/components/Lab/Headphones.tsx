@@ -296,12 +296,33 @@ function grain() {
     }
   }
   // and the pores proper: small sharp pits all over, as open-cell foam under its cover, dense enough to read
-  for (let k = 0; k < 20000; k++) {
-    const px = Math.random() * S, py = Math.random() * S, r = 0.6 + Math.random() * 1.9;
-    x.fillStyle = `rgba(10,10,10,${0.45 + Math.random() * 0.4})`;
-    x.beginPath();
-    x.arc(px, py, r, 0, Math.PI * 2);
-    x.fill();
+  // sponge: fewer, larger open cells, each a soft-edged irregular pit, a little darker at its heart, with a pale
+  // lip where the light catches the rim; wrapped at the tile's edges so it repeats unseen
+  for (let k = 0; k < 2200; k++) {
+    const px = Math.random() * S, py = Math.random() * S, r = 2.5 + Math.random() * 5.5;
+    const sx = 0.7 + Math.random() * 0.6, rot = Math.random() * Math.PI;
+    for (const ox of [-S, 0, S]) for (const oy of [-S, 0, S]) {
+      const cx = px + ox, cy = py + oy;
+      if (cx < -r * 2 || cx > S + r * 2 || cy < -r * 2 || cy > S + r * 2) continue;
+      x.save();
+      x.translate(cx, cy);
+      x.rotate(rot);
+      x.scale(sx, 1);
+      x.strokeStyle = "rgba(220,220,220,0.35)";
+      x.lineWidth = 1.2;
+      x.beginPath();
+      x.arc(0.6, 0.6, r, 0, Math.PI * 2);
+      x.stroke();
+      const g = x.createRadialGradient(0, 0, 0, 0, 0, r);
+      g.addColorStop(0, "rgba(6,6,6,0.9)");
+      g.addColorStop(0.65, "rgba(20,20,20,0.6)");
+      g.addColorStop(1, "rgba(60,60,60,0)");
+      x.fillStyle = g;
+      x.beginPath();
+      x.arc(0, 0, r, 0, Math.PI * 2);
+      x.fill();
+      x.restore();
+    }
   }
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
