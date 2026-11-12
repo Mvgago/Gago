@@ -353,7 +353,7 @@ export const ArtworkPage: React.FC = () => {
       {/* Sound: set the same way as the illustration above it, a line on what it is, then the record */}
       {/* (drawn up into the empty foot of the drum's screen, so the music follows close after it; above it, so its
           words stay clickable) */}
-      <section className="relative z-10 -mt-[14svh] md:-mt-[10svh]">
+      <section className="relative z-10 -mt-[4svh] md:-mt-[3svh]">
         <div className="mb-10 grid grid-cols-12 gap-x-8 md:mb-12">
           <p className={`${SMALL} col-span-12 text-platinum/50 md:col-span-3`}>{s.labSoundLabel}</p>
           <div className="col-span-12 mt-3 md:col-span-6 md:mt-0">
