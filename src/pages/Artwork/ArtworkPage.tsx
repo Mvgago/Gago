@@ -66,6 +66,9 @@ const Reel: React.FC<{
   const N = plates.length;
   // (fewer on a phone: there each band is a layer the browser must hold, and too many lost their pictures)
   const [BANDS] = useState(() => (typeof window !== "undefined" && window.innerWidth < 768 ? 5 : 10));
+  // phones: each plate a single real image, flat on the drum, rather than bent from painted bands (a phone's
+  // browser dropped the bands' pictures while turning, leaving grey stripes); the drum's perspective still reads
+  const [flat] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
   // every plate's picture fetched and decoded ahead, so none is ever drawn blank as the drum turns
   const held = useRef<HTMLImageElement[]>([]);
   useEffect(() => {
@@ -233,7 +236,7 @@ const Reel: React.FC<{
             <span aria-hidden className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(42,43,47,0), rgba(42,43,47,0.5))" }} />
           </span>
         </div>
-        <div ref={ring} className="absolute inset-0 will-change-transform" style={{ transformStyle: "preserve-3d" }}>
+        <div ref={ring} className="absolute inset-0 md:will-change-transform" style={{ transformStyle: "preserve-3d" }}>
           {plates.map((pl, i) => (
             <button
               key={pl.id}
@@ -247,13 +250,17 @@ const Reel: React.FC<{
               className="absolute inset-0 cursor-zoom-in"
               style={{ transformStyle: "preserve-3d", "--shade": 0, "--veil": 0 } as React.CSSProperties}
             >
-              {pl.video ? (
+              {pl.video || flat ? (
                 // a moving piece: one flat face, its film
                 <span
                   className="absolute inset-0 overflow-hidden rounded-[12px]"
                   style={{ transform: `rotateX(${-i * step}rad) translateZ(${R}px)`, borderRadius: 8, backfaceVisibility: "hidden" }}
                 >
-                  <video src={pl.video} poster={pl.url.replace("/lab/", "/lab/sm/")} muted loop playsInline preload="none" className="h-full w-full object-cover" />
+                  {pl.video ? (
+                    <video src={pl.video} poster={pl.url.replace("/lab/", "/lab/sm/")} muted loop playsInline preload="none" className="h-full w-full object-cover" />
+                  ) : (
+                    <img src={pl.url.replace("/lab/", "/lab/sm/")} alt="" decoding="sync" loading="eager" {...protect} style={{ filter: pl.grade }} className="h-full w-full object-cover" />
+                  )}
                   <span aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), rgba(20,22,26,var(--shade))" }} />
                 </span>
               ) : (
