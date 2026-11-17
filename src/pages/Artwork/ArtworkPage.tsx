@@ -121,7 +121,9 @@ const Reel: React.FC<{
     const fit = () => {
       if (window.innerWidth === lastW) return;
       lastW = window.innerWidth;
-      setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.28 : 0.34))));
+      // (phones: as wide as fits, so the drum fills the screen while it is held there rather than floating in the middle of it)
+      const phone = window.innerWidth < 768;
+      setW(Math.round(Math.min(360, window.innerWidth * (phone ? 0.84 : 0.64), (window.innerHeight - 72) * (phone ? 0.4 : 0.34))));
     };
     fit();
     window.addEventListener("resize", fit);
@@ -133,7 +135,10 @@ const Reel: React.FC<{
     let shown = -1;
     // the drum follows the scroll with a soft lag (each frame a part of the way), so it turns smoothly
     // however the scroll arrives: in steps from a wheel, in bursts from a finger
+    // (eased by time, not by frame: the same glide at any frame rate, and no lurch when a phone drops a frame)
     let turn = -1;
+    let last = 0;
+    const videos = cards.current.map((c) => c?.querySelector("video") ?? null);
     const target = () => {
       const el = section.current;
       if (!el) return 0;
@@ -147,8 +152,14 @@ const Reel: React.FC<{
       const r = ring.current;
       if (!r) return;
       const goal = target();
-      turn = turn < 0 ? goal : turn + (goal - turn) * 0.16;
-      if (Math.abs(goal - turn) < 0.0004) turn = goal;
+      const now = performance.now();
+      const dt = last ? Math.min(64, now - last) : 16;
+      last = now;
+      turn = turn < 0 ? goal : turn + (goal - turn) * (1 - Math.exp(-dt / 130));
+      if (Math.abs(goal - turn) < 0.0004) {
+        turn = goal;
+        last = 0;
+      }
       else raf = requestAnimationFrame(tick);
       r.style.transform = `translateZ(${-R}px) rotateX(${turn}rad)`;
       // each plate dimmed by how far it has turned from the visitor
@@ -171,7 +182,7 @@ const Reel: React.FC<{
         c.style.visibility = drawn ? "visible" : "hidden";
         // (only the plate in front takes a press, so pressing the drum always opens what is in front)
         c.style.pointerEvents = Math.abs(a) < step / 2 ? "auto" : "none";
-        const v = c.querySelector("video");
+        const v = videos[i];
         if (v) {
           if (facing > 0.8) void v.play().catch(() => {});
           else v.pause();
@@ -360,7 +371,8 @@ const Reel: React.FC<{
           ))}
         </div>
         </div>
-        <div className={`${SMALL} pointer-events-none absolute inset-x-0 bottom-[16px] z-10 flex justify-center md:hidden`}>
+        {/* phones: the plate's name just under the drum, not at the screen's foot far below it */}
+        <div className={`${SMALL} pointer-events-none absolute inset-x-0 z-10 flex justify-center md:hidden`} style={{ top: `calc(50% + ${Math.round(H * 0.74 + 20)}px)` }}>
           <span className="flex gap-4 text-platinum/80">
           <span ref={(n) => { names.current[1] = n; }}>{p?.title}</span>
           <span ref={(n) => { counts.current[1] = n; }} className="text-platinum/45">{number}</span>
@@ -439,7 +451,7 @@ export const ArtworkPage: React.FC = () => {
             <div className="mb-2 md:hidden">{words}</div>
             {/* (wide screens: drawn up under the page's heading, so the drum is in view from the start) */}
             {/* (phones: drawn up under the words, so the drum comes straight after them; wide screens: under the heading) */}
-            <div className="-mt-[22svh] md:-mt-36">
+            <div className="-mt-[calc(22svh-1.07*(var(--reel-w,216px)-216px))] md:-mt-36">
               <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} aside={words} />
             </div>
           </section>
