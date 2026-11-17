@@ -54,6 +54,11 @@ const protect = {
  */
 // bands a plate is cut into, to bend it round the drum: enough that the curve reads smooth, few enough to stay light
 const FILL = 0.9; // how much of its share of the drum a plate takes (the rest: the slit between plates)
+// slots round the drum, fewer than the plates: each plate takes a wider arc of a narrower drum, so its bend
+// reads clearly as a cylinder (with all sixteen round the whole drum, each took ~20° and looked flat). Only
+// the plates on the near half are ever drawn, so the drum may wind round more than once as it turns.
+const SLOTS = 9;
+const NEAR = Math.PI / 2 - 0.06; // past this, a plate has gone over the top or under, out of sight
 const Reel: React.FC<{
   plates: typeof artwork;
   onOpen: (i: number) => void;
@@ -65,9 +70,9 @@ const Reel: React.FC<{
   const { lang } = useI18n();
   const N = plates.length;
   // (fewer on a phone: there each band is a layer the browser must hold, and too many lost their pictures)
-  const [BANDS] = useState(() => (typeof window !== "undefined" && window.innerWidth < 768 ? 5 : 10));
-  // phones: each plate a single real image, flat on the drum, rather than bent from painted bands (a phone's
-  // browser dropped the bands' pictures while turning, leaving grey stripes); the drum's perspective still reads
+  const [BANDS] = useState(() => (typeof window !== "undefined" && window.innerWidth < 768 ? 6 : 18));
+  // phones: each plate bent from a few facets, each a real image, rather than from painted bands (a phone's
+  // browser dropped the bands' pictures while turning, leaving grey stripes)
   const [flat] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
   // every plate's picture fetched and decoded ahead, so none is ever drawn blank as the drum turns
   const held = useRef<HTMLImageElement[]>([]);
@@ -79,7 +84,7 @@ const Reel: React.FC<{
       return im;
     });
   }, [plates]);
-  const step = (2 * Math.PI) / N; // each plate's share of the drum, in radians
+  const step = (2 * Math.PI) / SLOTS; // each plate's share of the drum, in radians
   const section = useRef<HTMLDivElement>(null);
   const probe = useRef<HTMLDivElement>(null);
   // the labels' words, written straight from the drum's own frame loop, so they always name the plate in front
@@ -89,7 +94,9 @@ const Reel: React.FC<{
   const cards = useRef<(HTMLElement | null)[]>([]);
   const [W, setW] = useState(300);
   const [front, setFront] = useState(0);
-  const H = W * 1.25;
+  // (phones: the plate drawn taller than the picture's 4:5, since there the drum's close curve foreshortens it
+  // and it read squashed; the picture fills it, trimmed a little at its sides)
+  const H = W * (flat ? 1.45 : 1.25);
   // the plate's width shared with the page, so what follows can line up on the words beside the drum
   useEffect(() => {
     document.documentElement.style.setProperty("--reel-w", `${W}px`);
@@ -97,6 +104,9 @@ const Reel: React.FC<{
   const R = H / (step * FILL); // the drum's radius, so a plate's height is its share of the round
   const band = (step * FILL) / BANDS;
   const bandH = 2 * R * Math.tan(band / 2) + 3; // (+3: the bands overlap, so no hairline shows between them)
+  // the bend's own light at a point down the plate (0 its top, 1 its foot): darker the further it turns away,
+  // drawn as a smooth fall across each band so no step shows where one band meets the next
+  const bend = (t: number) => ((2 * t - 1) ** 2 * 0.34).toFixed(3);
 
   // the plate's width, set so the whole drum (with the near perspective below, it stands some 2.7 plates
   // tall) fits the screen with air above and below: from the screen's height, held to most of a phone's
@@ -108,7 +118,7 @@ const Reel: React.FC<{
     const fit = () => {
       if (window.innerWidth === lastW) return;
       lastW = window.innerWidth;
-      setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.24 : 0.3))));
+      setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.28 : 0.34))));
     };
     fit();
     window.addEventListener("resize", fit);
@@ -142,17 +152,18 @@ const Reel: React.FC<{
       cards.current.forEach((c, i) => {
         if (!c) return;
         const a = i * step - turn;
-        const facing = Math.max(0, Math.cos(a));
+        const near = Math.abs(a) < NEAR;
+        const facing = near ? Math.max(0, Math.cos(a)) : 0;
         const lit = 0.35 + 0.65 * facing;
         c.style.setProperty("--shade", (1 - lit).toFixed(3));
         // and faded as they go over the top and under: only the one in front at full strength
         // (as a veil of the wall's own silver over each band, the bands kept opaque: made see-through, the bands' overlaps showed as stripes)
         c.style.setProperty("--veil", Math.min(1, 1.05 * (1 - facing ** 2.5)).toFixed(3));
         // (those turned away, hidden in the silver anyway, not drawn at all: fewer layers for the browser to hold)
-        c.style.visibility = Math.cos(a) < 0.05 ? "hidden" : "visible";
+        c.style.visibility = near ? "visible" : "hidden";
         const v = c.querySelector("video");
         if (v) {
-          if (Math.cos(a) > 0.8) void v.play().catch(() => {});
+          if (facing > 0.8) void v.play().catch(() => {});
           else v.pause();
         }
       });
@@ -250,7 +261,7 @@ const Reel: React.FC<{
               className="absolute inset-0 cursor-zoom-in"
               style={{ transformStyle: "preserve-3d", "--shade": 0, "--veil": 0 } as React.CSSProperties}
             >
-              {pl.video || flat ? (
+              {pl.video ? (
                 // a moving piece: one flat face, its film
                 <span
                   className="absolute inset-0 overflow-hidden rounded-[12px]"
@@ -263,10 +274,41 @@ const Reel: React.FC<{
                   )}
                   <span aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), rgba(20,22,26,var(--shade))" }} />
                 </span>
+              ) : flat ? (
+                // phones: the plate cut into a few facets, each a real <img> (not a painted background, which a
+                // phone's browser dropped while turning), set on the drum's curve, so the plate bends like a cylinder
+                Array.from({ length: BANDS }, (_, k) => {
+                  const a = i * step + (k - (BANDS - 1) / 2) * band;
+                  const fh = 2 * R * Math.tan(band / 2) + 2; // (+2: facets overlap, so no hairline shows between them)
+                  return (
+                    <span
+                      key={k}
+                      aria-hidden
+                      className="absolute left-0 w-full overflow-hidden"
+                      style={{
+                        top: (H - fh) / 2,
+                        height: fh,
+                        transform: `rotateX(${-a}rad) translateZ(${R}px)`,
+                        backfaceVisibility: "hidden",
+                        borderRadius: k === 0 ? "8px 8px 0 0" : k === BANDS - 1 ? "0 0 8px 8px" : 0,
+                      }}
+                    >
+                      <img
+                        src={pl.url.replace("/lab/", "/lab/sm/")}
+                        alt=""
+                        decoding="sync"
+                        loading="eager"
+                        {...protect}
+                        className="absolute left-0 max-w-none"
+                        style={{ width: W, height: H, top: -(k * (H / BANDS)) + (fh - H / BANDS) / 2, objectFit: "cover", filter: pl.grade }}
+                      />
+                      <span aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,calc(var(--shade) + ${bend(k / BANDS)})), rgba(20,22,26,calc(var(--shade) + ${bend((k + 1) / BANDS)})))` }} />
+                    </span>
+                  );
+                })
               ) : (
                 Array.from({ length: BANDS }, (_, k) => {
                   const a = i * step + (k - (BANDS - 1) / 2) * band;
-                  const edge = (Math.abs(k - (BANDS - 1) / 2) / ((BANDS - 1) / 2)) * 0.12; // the bend's own light
                   return (
                     <span
                       key={k}
@@ -277,7 +319,7 @@ const Reel: React.FC<{
                         height: bandH,
                         transform: `rotateX(${-a}rad) translateZ(${R}px)`,
                         backfaceVisibility: "hidden",
-                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,calc(var(--shade) + ${edge.toFixed(3)})), rgba(20,22,26,calc(var(--shade) + ${edge.toFixed(3)}))), url(${pl.url.replace("/lab/", "/lab/sm/")})`,
+                        backgroundImage: `linear-gradient(rgba(195,197,201,var(--veil)), rgba(195,197,201,var(--veil))), linear-gradient(rgba(20,22,26,calc(var(--shade) + ${bend(k / BANDS)})), rgba(20,22,26,calc(var(--shade) + ${bend((k + 1) / BANDS)}))), url(${pl.url.replace("/lab/", "/lab/sm/")})`,
                         backgroundSize: `100% 100%, 100% 100%, ${W}px ${H}px`,
                         // (the picture never repeated: the bands overlap a little, and on the last one the top of the
                         // picture used to show again as a thin line along the plate's foot)
