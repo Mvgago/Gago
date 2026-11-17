@@ -59,6 +59,10 @@ const FILL = 0.9; // how much of its share of the drum a plate takes (the rest: 
 // reel runs as a closed loop: one full turn of plates is drawn at a time, the next ones taking their slots as
 // the earlier ones go round the back, so the drum is whole from the start, its far side seen dimly behind.
 // (the slots a number that divides the plates, so a plate handed on at the back lands on the same slot)
+// phones: the drum's size on entering, under the words; it grows to fill the screen as the page is scrolled
+const S0 = 0.7;
+// how far the drum stands above its centre, in plate widths (measured: the plate over the top, round the back)
+const REACH = 1.03;
 const slotsFor = (n: number) => [8, 9, 7, 10, 6, 11, 5, 12].find((k) => n % k === 0 && n >= k) ?? n;
 const Reel: React.FC<{
   plates: typeof artwork;
@@ -95,6 +99,8 @@ const Reel: React.FC<{
   const counts = useRef<(HTMLSpanElement | null)[]>([]); // a full-screen height that holds still while a phone's address bar comes and goes
   const ring = useRef<HTMLDivElement>(null);
   const cards = useRef<(HTMLElement | null)[]>([]);
+  const drum = useRef<HTMLDivElement>(null);
+  const tag = useRef<HTMLDivElement>(null);
   const [W, setW] = useState(300);
   const [front, setFront] = useState(0);
   // (phones: the plate drawn taller than the picture's 4:5, since there the drum's close curve foreshortens it
@@ -103,6 +109,8 @@ const Reel: React.FC<{
   // the plate's width shared with the page, so what follows can line up on the words beside the drum
   useEffect(() => {
     document.documentElement.style.setProperty("--reel-w", `${W}px`);
+    // phones: how far below its own top the drum's top lies on entering (small, under the words, with a little air)
+    document.documentElement.style.setProperty("--reel-top", `${Math.round(16 + REACH * W * S0)}px`);
   }, [W]);
   const R = H / (step * FILL); // the drum's radius, so a plate's height is its share of the round
   const band = (step * FILL) / BANDS;
@@ -162,6 +170,16 @@ const Reel: React.FC<{
       }
       else raf = requestAnimationFrame(tick);
       r.style.transform = `translateZ(${-R}px) rotateX(${turn}rad)`;
+      // phones: the drum small on entering, growing to fill the screen over the first scroll (until a little
+      // after it takes the screen), the plate's name kept just under it
+      if (flat && drum.current && section.current) {
+        const top = section.current.getBoundingClientRect().top + window.scrollY;
+        const q = Math.max(0, Math.min(1, window.scrollY / (Math.max(0, top) + window.innerHeight * 0.4)));
+        const e = q * q * (3 - 2 * q);
+        const sc = S0 + (1 - S0) * e;
+        drum.current.style.transform = `scale(${sc.toFixed(4)})`;
+        if (tag.current) tag.current.style.top = `calc(50% + ${Math.round(H * 0.74 * sc + 20)}px)`;
+      }
       // each plate dimmed by how far it has turned from the visitor
       cards.current.forEach((c, i) => {
         if (!c) return;
@@ -210,7 +228,7 @@ const Reel: React.FC<{
       window.removeEventListener("scroll", on);
       window.removeEventListener("resize", on);
     };
-  }, [N, R, step, loop, plates, lang]);
+  }, [N, R, H, step, loop, flat, plates, lang]);
 
   const p = plates[front];
   const making = p?.tech ? TECH[p.tech][lang] ?? TECH[p.tech].es : undefined;
@@ -232,7 +250,7 @@ const Reel: React.FC<{
       <div className="sticky top-0 h-[100lvh] overflow-hidden md:[mask-image:linear-gradient(to_bottom,transparent,#000_9%,#000_84%,transparent)]" style={{ clipPath: "inset(0)" }}>
       <div className="relative flex h-[100svh] items-center justify-center pb-[64px] pt-[64px] md:pb-0 md:pt-[72px]" style={{ perspective: Math.round(R * 0.6) }}>
         {/* wide screens: the words on the pieces, at the left, level with the drum (the drum set a little right of centre to leave them room) */}
-        <div className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d" }}>
+        <div ref={drum} className="relative" style={{ width: W, height: H, transformStyle: "preserve-3d", transform: flat ? `scale(${S0})` : undefined }}>
         {/* wide screens: the words on the pieces just to the drum's left, high, about the top edge of the plate in front */}
         {/* wide screens, to the drum's right: the plate in front shown large, flat and sharp, changing with a
             soft dissolve as the drum turns; pressed, it opens in the viewer */}
@@ -372,7 +390,7 @@ const Reel: React.FC<{
         </div>
         </div>
         {/* phones: the plate's name just under the drum, not at the screen's foot far below it */}
-        <div className={`${SMALL} pointer-events-none absolute inset-x-0 z-10 flex justify-center md:hidden`} style={{ top: `calc(50% + ${Math.round(H * 0.74 + 20)}px)` }}>
+        <div ref={tag} className={`${SMALL} pointer-events-none absolute inset-x-0 z-10 flex justify-center md:hidden`} style={{ top: `calc(50% + ${Math.round(H * 0.74 * S0 + 20)}px)` }}>
           <span className="flex gap-4 text-platinum/80">
           <span ref={(n) => { names.current[1] = n; }}>{p?.title}</span>
           <span ref={(n) => { counts.current[1] = n; }} className="text-platinum/45">{number}</span>
@@ -451,7 +469,7 @@ export const ArtworkPage: React.FC = () => {
             <div className="mb-2 md:hidden">{words}</div>
             {/* (wide screens: drawn up under the page's heading, so the drum is in view from the start) */}
             {/* (phones: drawn up under the words, so the drum comes straight after them; wide screens: under the heading) */}
-            <div className="-mt-[calc(22svh-1.07*(var(--reel-w,216px)-216px))] md:-mt-36">
+            <div className="mt-[calc(var(--reel-top,180px)-50svh)] md:-mt-36">
               <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} aside={words} />
             </div>
           </section>
