@@ -94,7 +94,9 @@ const Reel: React.FC<{
   const cards = useRef<(HTMLElement | null)[]>([]);
   const [W, setW] = useState(300);
   const [front, setFront] = useState(0);
-  const H = W * 1.25;
+  // (phones: the plate drawn taller than the picture's 4:5, since there the drum's close curve foreshortens it
+  // and it read squashed; the picture fills it, trimmed a little at its sides)
+  const H = W * (flat ? 1.45 : 1.25);
   // the plate's width shared with the page, so what follows can line up on the words beside the drum
   useEffect(() => {
     document.documentElement.style.setProperty("--reel-w", `${W}px`);
@@ -116,7 +118,7 @@ const Reel: React.FC<{
     const fit = () => {
       if (window.innerWidth === lastW) return;
       lastW = window.innerWidth;
-      setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.26 : 0.34))));
+      setW(Math.round(Math.min(360, window.innerWidth * 0.64, (window.innerHeight - 72) * (window.innerWidth < 768 ? 0.28 : 0.34))));
     };
     fit();
     window.addEventListener("resize", fit);
