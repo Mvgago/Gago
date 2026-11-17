@@ -55,10 +55,11 @@ const protect = {
 // bands a plate is cut into, to bend it round the drum: enough that the curve reads smooth, few enough to stay light
 const FILL = 0.9; // how much of its share of the drum a plate takes (the rest: the slit between plates)
 // slots round the drum, fewer than the plates: each plate takes a wider arc of a narrower drum, so its bend
-// reads clearly as a cylinder (with all sixteen round the whole drum, each took ~20° and looked flat). Only
-// the plates on the near half are ever drawn, so the drum may wind round more than once as it turns.
-const SLOTS = 9;
-const NEAR = Math.PI / 2 - 0.06; // past this, a plate has gone over the top or under, out of sight
+// reads clearly as a cylinder (with all sixteen round the whole drum, each took ~20° and looked flat). The
+// reel runs as a closed loop: one full turn of plates is drawn at a time, the next ones taking their slots as
+// the earlier ones go round the back, so the drum is whole from the start, its far side seen dimly behind.
+// (the slots a number that divides the plates, so a plate handed on at the back lands on the same slot)
+const slotsFor = (n: number) => [8, 9, 7, 10, 6, 11, 5, 12].find((k) => n % k === 0 && n >= k) ?? n;
 const Reel: React.FC<{
   plates: typeof artwork;
   onOpen: (i: number) => void;
@@ -84,7 +85,9 @@ const Reel: React.FC<{
       return im;
     });
   }, [plates]);
+  const SLOTS = slotsFor(N);
   const step = (2 * Math.PI) / SLOTS; // each plate's share of the drum, in radians
+  const loop = N * step; // once round the whole reel
   const section = useRef<HTMLDivElement>(null);
   const probe = useRef<HTMLDivElement>(null);
   // the labels' words, written straight from the drum's own frame loop, so they always name the plate in front
@@ -151,16 +154,23 @@ const Reel: React.FC<{
       // each plate dimmed by how far it has turned from the visitor
       cards.current.forEach((c, i) => {
         if (!c) return;
-        const a = i * step - turn;
-        const near = Math.abs(a) < NEAR;
-        const facing = near ? Math.max(0, Math.cos(a)) : 0;
+        // where it stands on the loop, from -half a reel to +half: those within half a turn of the front are drawn
+        let a = (((i * step - turn) % loop) + loop) % loop;
+        if (a > loop / 2) a -= loop;
+        const drawn = a > -Math.PI + 1e-4 && a <= Math.PI + 1e-4;
+        const facing = Math.max(0, Math.cos(a));
+        const away = Math.max(0, -Math.cos(a)); // how squarely it faces from the far side
         const lit = 0.35 + 0.65 * facing;
         c.style.setProperty("--shade", (1 - lit).toFixed(3));
         // and faded as they go over the top and under: only the one in front at full strength
         // (as a veil of the wall's own silver over each band, the bands kept opaque: made see-through, the bands' overlaps showed as stripes)
         c.style.setProperty("--veil", Math.min(1, 1.05 * (1 - facing ** 2.5)).toFixed(3));
         // (those turned away, hidden in the silver anyway, not drawn at all: fewer layers for the browser to hold)
-        c.style.visibility = near ? "visible" : "hidden";
+        // the far side: the plates' inner faces, seen dimly through the drum above and below those in front
+        c.style.setProperty("--bveil", (0.5 + 0.18 * (1 - away)).toFixed(3));
+        c.style.visibility = drawn ? "visible" : "hidden";
+        // (only the plate in front takes a press, so pressing the drum always opens what is in front)
+        c.style.pointerEvents = Math.abs(a) < step / 2 ? "auto" : "none";
         const v = c.querySelector("video");
         if (v) {
           if (facing > 0.8) void v.play().catch(() => {});
@@ -189,7 +199,7 @@ const Reel: React.FC<{
       window.removeEventListener("scroll", on);
       window.removeEventListener("resize", on);
     };
-  }, [N, R, step, plates, lang]);
+  }, [N, R, step, loop, plates, lang]);
 
   const p = plates[front];
   const making = p?.tech ? TECH[p.tech][lang] ?? TECH[p.tech].es : undefined;
@@ -261,8 +271,18 @@ const Reel: React.FC<{
               onClick={() => onOpen(i)}
               aria-label={`${pl.title ?? label} — ${pad(i + 1)}`}
               className="absolute inset-0 cursor-zoom-in"
-              style={{ transformStyle: "preserve-3d", "--shade": 0, "--veil": 0 } as React.CSSProperties}
+              style={{ transformStyle: "preserve-3d", "--shade": 0, "--veil": 0, "--bveil": 0.6 } as React.CSSProperties}
             >
+              {/* the plate's inner face, turned in towards the drum's axis: seen only when the plate is round the
+                  back, through the drum, its picture dim under the wall's silver */}
+              <span
+                aria-hidden
+                className="absolute inset-0 overflow-hidden"
+                style={{ transform: `rotateX(${-i * step}rad) translateZ(${R - 1}px) rotateX(180deg)`, borderRadius: 8, backfaceVisibility: "hidden" }}
+              >
+                <img src={pl.url.replace("/lab/", "/lab/sm/")} alt="" loading="eager" {...protect} className="h-full w-full object-cover" style={{ filter: pl.grade }} />
+                <span aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(rgba(178,181,186,var(--bveil)), rgba(178,181,186,var(--bveil))), rgba(20,22,26,0.22)" }} />
+              </span>
               {pl.video ? (
                 // a moving piece: one flat face, its film
                 <span
