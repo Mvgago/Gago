@@ -197,8 +197,10 @@ const Reel: React.FC<{
 
   return (
     // a screen and a half of scrolling for each plate, the drum held on screen throughout
-    <div ref={section} className="relative -mx-4 sm:-mx-6 md:-mx-8" style={{ height: `calc(${N} * 45svh + 100lvh)` }}>
+    <div ref={section} className="pointer-events-none relative -mx-4 sm:-mx-6 md:-mx-8 [&_a]:pointer-events-auto [&_button]:pointer-events-auto" style={{ height: `calc(${N} * 45svh + 100lvh)` }}>
       <div ref={probe} aria-hidden className="pointer-events-none absolute left-0 top-0 h-[100lvh] w-px opacity-0" />
+      {/* (the frame lets touches through to what it overlaps, the words above the drum and their link; only the
+          plates and buttons in it take them) */}
       {/* (centred in the screen below the header; the perspective held close, in proportion to the drum, so
           it reads as a cylinder and stays compact) */}
       {/* (the frame as tall as the screen can grow, so nothing is ever cut at its foot; inside it, the drum centred
@@ -417,7 +419,7 @@ export const ArtworkPage: React.FC = () => {
             <div className="mb-2 md:hidden">{words}</div>
             {/* (wide screens: drawn up under the page's heading, so the drum is in view from the start) */}
             {/* (phones: drawn up under the words, so the drum comes straight after them; wide screens: under the heading) */}
-            <div className="-mt-[10svh] md:-mt-36">
+            <div className="-mt-[22svh] md:-mt-36">
               <Reel plates={sample} onOpen={setOpen} buttons={plates} label={s.labArtLabel} aside={words} />
             </div>
           </section>
