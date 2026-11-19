@@ -7,6 +7,7 @@ import { SocialLinks } from "../../components/Contact/SocialLinks";
 import { useI18n } from "../../i18n/I18n";
 import { ACTION, DISPLAY, SMALL, SUBTITLE } from "../../lib/type";
 import { LANDING_IN } from "../../components/Header/SiteHeader";
+import { HomeRooms } from "./HomeRooms";
 
 /**
  * Hero as an empty, lit room. The brand lives in the header corner,
@@ -15,27 +16,42 @@ import { LANDING_IN } from "../../components/Header/SiteHeader";
  */
 export const Home: React.FC = () => {
   const { t } = useI18n();
-  // The landing is one screen and nothing more: the page does not scroll here, nor bounce past
-  // its edges on phones (which showed the end of the light behind it)
   // the header's corner pieces wait for this to come down
   useEffect(() => {
     window.dispatchEvent(new Event(LANDING_IN));
   }, []);
+  // The first screen is the lit room as it always was; going down, the house opens one room at a time
+  // under it (HomeRooms), with the same light fixed behind. It never bounces past its edges on phones
+  // (which showed the end of the light behind it).
   useEffect(() => {
     const html = document.documentElement;
-    const before = { overflow: html.style.overflow, overscroll: html.style.overscrollBehavior, body: document.body.style.overscrollBehavior };
-    html.style.overflow = "hidden";
+    const before = { overscroll: html.style.overscrollBehavior, body: document.body.style.overscrollBehavior };
     html.style.overscrollBehavior = "none";
     document.body.style.overscrollBehavior = "none";
-    window.scrollTo(0, 0);
     return () => {
-      html.style.overflow = before.overflow;
       html.style.overscrollBehavior = before.overscroll;
       document.body.style.overscrollBehavior = before.body;
     };
   }, []);
   return (
+  <>
   <main className="relative flex h-[100svh] w-full select-none flex-col overflow-hidden text-silver sm:min-h-[600px]">
+    {/* The way down, without a word: one thread of light hanging from the middle of the foot, a bead of
+        light running down it and out of the screen now and then ("hilando fino") */}
+    <style>{`@keyframes fh-down{0%,18%{transform:translateY(-100%);opacity:0}30%{opacity:1}72%,100%{transform:translateY(100%);opacity:0}}@media (prefers-reduced-motion:reduce){.fh-down{animation:none!important;opacity:.6!important;transform:none!important}}`}</style>
+    <motion.span
+      aria-hidden
+      className="pointer-events-none absolute bottom-0 left-1/2 block h-5 w-px -translate-x-1/2 overflow-hidden bg-white/25 sm:h-7 lg:h-12"
+      initial={{ opacity: 0, scaleY: 0 }}
+      animate={{ opacity: 1, scaleY: 1 }}
+      style={{ transformOrigin: "top" }}
+      transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 2.6 }}
+    >
+      <span
+        className="fh-down absolute inset-0 block"
+        style={{ background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.95) 60%, transparent)", animation: "fh-down 3.2s cubic-bezier(.65,0,.35,1) 3.4s infinite both" }}
+      />
+    </motion.span>
     {/* Portrait screens: the light bloom falls right behind the manifesto, so a soft
         shade gathers under the type to keep the silver legible. */}
     <div
@@ -149,5 +165,7 @@ export const Home: React.FC = () => {
       </motion.p>
     </section>
   </main>
+  <HomeRooms />
+  </>
   );
 };

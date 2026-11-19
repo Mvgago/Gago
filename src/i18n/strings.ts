@@ -15,6 +15,7 @@ const en = {
   "hero.sub2": "spaces|web|3D|film",
   "hero.and": "and",
   "hero.cta": "see projects",
+  "home.enter": "enter",
   "hero.services": "services",
   "hero.or": "or",
 
@@ -63,6 +64,7 @@ const es: Record<Key, string> = {
   "hero.sub2": "espacios|web|3D|film",
   "hero.and": "y",
   "hero.cta": "ver proyectos",
+  "home.enter": "entrar",
   "hero.services": "servicios",
   "hero.or": "o",
 
@@ -110,6 +112,7 @@ const fr: Record<Key, string> = {
 
   "hero.and": "et",
   "hero.cta": "voir les projets",
+  "home.enter": "entrer",
   "hero.services": "services",
   "hero.or": "ou",
 
@@ -157,6 +160,7 @@ const de: Record<Key, string> = {
 
   "hero.and": "und",
   "hero.cta": "projekte ansehen",
+  "home.enter": "eintreten",
   "hero.services": "Leistungen",
   "hero.or": "oder",
 

@@ -195,8 +195,8 @@ export const SiteHeader: React.FC = () => {
       >
         <div
           aria-hidden
-          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 transition-opacity duration-500 ${pathname === "/about" ? "bottom-0 border-b backdrop-blur-xl" : pathname === "/artwork" ? "-bottom-10" : "bottom-0 border-b border-ink/[0.06] backdrop-blur-md"} ${
-            (onLight || pathname === "/artwork") && scrolled && !open ? "opacity-100" : "opacity-0"
+          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 transition-opacity duration-500 ${pathname === "/about" ? "bottom-0 border-b backdrop-blur-xl" : pathname === "/artwork" ? "-bottom-10" : pathname === "/" ? "-bottom-12 backdrop-blur-[10px] [mask-image:linear-gradient(to_bottom,black_45%,transparent)]" : "bottom-0 border-b border-ink/[0.06] backdrop-blur-md"} ${
+            (onLight || pathname === "/artwork" || pathname === "/") && scrolled && !open ? "opacity-100" : "opacity-0"
           }`}
           // Translucent, so light falling on the page behind (as on "info") carries on under it
                     // (the studio: nearly solid and heavily blurred, so nothing reads through behind the logo, yet it
@@ -204,7 +204,11 @@ export const SiteHeader: React.FC = () => {
                     // single faint line of light)
           style={{
             background:
-              pathname === "/artwork"
+              pathname === "/"
+                ? // (the landing: no colour of its own, only the light behind thickening a little under the logo
+                  // and fading out downwards, so the rooms pass beneath it softly, never under a band)
+                  "linear-gradient(to bottom, rgba(120,108,118,0.18), rgba(120,108,118,0))"
+                : pathname === "/artwork"
                 ? // (the lab: no band with an edge across the drum, only the wall's own silver thickening towards the top,
                   // so what turns beneath fades out under the logo instead of being cut on a line)
                   "linear-gradient(to bottom, rgba(195,197,201,0.97) 0%, rgba(195,197,201,0.9) 45%, rgba(195,197,201,0) 100%)"
