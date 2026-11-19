@@ -7,6 +7,7 @@ import { SocialLinks } from "../../components/Contact/SocialLinks";
 import { useI18n } from "../../i18n/I18n";
 import { ACTION, DISPLAY, SMALL, SUBTITLE } from "../../lib/type";
 import { LANDING_IN } from "../../components/Header/SiteHeader";
+import { Stages, Thread } from "./HomeStages";
 
 /**
  * Hero as an empty, lit room. The brand lives in the header corner,
@@ -15,8 +16,8 @@ import { LANDING_IN } from "../../components/Header/SiteHeader";
  */
 export const Home: React.FC = () => {
   const { t } = useI18n();
-  // The landing is one screen and nothing more: the page does not scroll here, nor bounce past
-  // its edges on phones (which showed the end of the light behind it)
+  // The landing never scrolls, nor bounces past its edges on phones (which showed the end of the light
+  // behind it): going down, its three screens fall into place one per gesture instead (Stages)
   // the header's corner pieces wait for this to come down
   useEffect(() => {
     window.dispatchEvent(new Event(LANDING_IN));
@@ -35,6 +36,7 @@ export const Home: React.FC = () => {
     };
   }, []);
   return (
+  <Stages>
   <main className="relative flex h-[100svh] w-full select-none flex-col overflow-hidden text-silver sm:min-h-[600px]">
     {/* Portrait screens: the light bloom falls right behind the manifesto, so a soft
         shade gathers under the type to keep the silver legible. */}
@@ -49,6 +51,9 @@ export const Home: React.FC = () => {
 
     {/* The centre: intentionally empty. Only light. */}
     <div className="flex-1" aria-hidden />
+
+    {/* the way down: a thread hanging from the middle of the foot */}
+    <Thread />
 
     {/* (phones and tablets: the address and icons set well apart below, as the screen's foot, so the
         manifesto sits higher and "see the projects" stands alone as the one thing to do) */}
@@ -149,5 +154,6 @@ export const Home: React.FC = () => {
       </motion.p>
     </section>
   </main>
+  </Stages>
   );
 };

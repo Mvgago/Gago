@@ -228,8 +228,9 @@ export const SiteHeader: React.FC = () => {
               ? "pointer-events-none opacity-0 duration-200"
               : // Phones: the mark is small and its hairline bars fade into the mauve,
                 // so it shows at full strength and a touch brighter (no shadow: it muddied the mark).
-                "opacity-[0.82] delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-200 max-sm:opacity-100 max-sm:[filter:brightness(1.18)]"
+                "opacity-[0.82] delay-300 duration-700 hover:opacity-100 hover:delay-0 hover:duration-200 max-sm:opacity-100 max-sm:[filter:brightness(1.18)] [html[data-paper]_&]:opacity-100 [html[data-paper]_&]:[filter:brightness(0.5)_contrast(1.25)]"
           }`}
+          // (on the landing's paper room the pearl deepens to graphite, so the mark reads on the white)
         >
           {logo3d ? (
             <Suspense fallback={<Monolith tilt={false} tone="warm" reveal={false} />}>
