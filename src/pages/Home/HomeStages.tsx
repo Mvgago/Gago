@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { EASE_HAUS, EASE_VEIL } from "../../lib/motion";
@@ -7,6 +7,9 @@ import { useI18n } from "../../i18n/I18n";
 import type { Key } from "../../i18n/strings";
 import { ContactMenu, EMAIL } from "../../components/Contact/ContactMenu";
 import { SocialLinks } from "../../components/Contact/SocialLinks";
+import { STUDIO } from "../../i18n/studio";
+
+const LogoSpace = lazy(() => import("../../components/SpatialIndex/LogoSpace"));
 
 /**
  * The landing in three screens that fall into place, one per gesture: the lit room; the cut onto paper,
@@ -31,19 +34,13 @@ const inert = (off: boolean) => (off ? ({ inert: "" } as Record<string, string>)
 /** How long a change of screen holds the next gesture back */
 const HOLD = 1150;
 
-// The writing light (the claim) and the ruled sheet; and the index's names rising out of their own line.
+// The writing light: the words uncovered by a soft edge of light passing left to right, coming into focus.
 const CSS = `
-.fh-w,.fh-r{opacity:0}
+.fh-w{opacity:0}
 .fh-on .fh-w{-webkit-mask-image:linear-gradient(100deg,#000 38%,transparent 62%);mask-image:linear-gradient(100deg,#000 38%,transparent 62%);-webkit-mask-size:320% 100%;mask-size:320% 100%;animation:fh-write 2.2s cubic-bezier(.22,1,.36,1) both}
 @keyframes fh-write{0%{opacity:0;-webkit-mask-position:100% 0;mask-position:100% 0;filter:blur(10px);transform:translate3d(0,.18em,0)}18%{opacity:1}100%{opacity:1;-webkit-mask-position:0 0;mask-position:0 0;filter:blur(0);transform:none}}
-.fh-r{position:relative}
-.fh-r::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:${HAIR};transform:scaleX(0);transform-origin:left}
-.fh-on .fh-r{animation:fh-in 1s cubic-bezier(.22,1,.36,1) both}
-.fh-on .fh-r::before{animation:fh-rule 1.4s cubic-bezier(.65,0,.35,1) both;animation-delay:inherit}
-@keyframes fh-in{from{opacity:0;transform:translate3d(10px,0,0)}to{opacity:1;transform:none}}
-@keyframes fh-rule{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes fh-down{0%,18%{transform:translateY(-100%);opacity:0}30%{opacity:1}72%,100%{transform:translateY(100%);opacity:0}}
-@media (prefers-reduced-motion:reduce){.fh-w,.fh-r{opacity:1!important;animation:none!important;-webkit-mask-image:none!important;mask-image:none!important}.fh-r::before{transform:none!important}.fh-down{animation:none!important;opacity:.6!important;transform:none!important}}
+@media (prefers-reduced-motion:reduce){.fh-w{opacity:1!important;animation:none!important;-webkit-mask-image:none!important;mask-image:none!important}.fh-down{animation:none!important;opacity:.6!important;transform:none!important}}
 `;
 
 /** The way down, without a word: a thread hanging from the middle of the foot, a bead of light running down it */
@@ -92,7 +89,7 @@ const ROOMS: Room[] = [
 /* ── The screens ─────────────────────────────────────────────────────── */
 
 export const Stages: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { t } = useI18n();
+  const { lang } = useI18n();
   const still = useReducedMotion();
   const [stage, setStage] = useState(0);
   const at = useRef(0);
@@ -182,12 +179,15 @@ export const Stages: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   const T = (d: number, delay = 0) => ({ duration: still ? 0 : d, ease: EASE_VEIL, delay: still ? 0 : delay });
 
-  const rows: [Key, React.ReactNode][] = [
-    ["home.motto", t("hero.title").toLowerCase()],
-    ["home.work", t("home.workv")],
-    ["home.status", `${t("availability")} — ${new Date().getFullYear()}`],
-    ["home.contact", EMAIL],
-  ];
+  // The studio said in the studio page's own words, in its two voices: the image of the fugue large, then
+  // what it means, smaller and set back in grey
+  const statement = STUDIO[lang].statement;
+  const cut = statement.indexOf(". ");
+  const head = cut < 0 ? statement : statement.slice(0, cut + 1);
+  const sub = cut < 0 ? "" : statement.slice(cut + 2);
+
+  // (preview only, to compare: ?logo shows the index's silver sculpture above the words)
+  const [withLogo] = useState(() => new URLSearchParams(window.location.search).has("logo"));
 
   return (
     <div className="relative h-[100svh] overflow-hidden sm:min-h-[600px]">
@@ -226,33 +226,38 @@ export const Stages: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         {...inert(stage !== 1)}
       >
         <div key={written} className={written ? "fh-on h-full" : "h-full"}>
-          <div className="flex h-full flex-col justify-end gap-12 px-4 pb-16 pt-28 sm:px-6 sm:pb-20 lg:grid lg:grid-cols-12 lg:items-end lg:gap-5 lg:px-8 lg:pb-24">
-            <div className="lg:col-span-8">
-              <p className={`${SMALL} fh-w mb-6 lg:mb-8`} style={{ color: QUIET, animationDelay: "0.55s" }}>
-                fuga haus <span aria-hidden className="px-1">—</span> {t("home.kicker")}
-              </p>
-              <h2
-                className="fh-w font-geo text-[2.1rem] font-normal leading-[1.1] tracking-[0.005em] [text-wrap:balance] sm:text-[2.8rem] lg:text-[3.6rem] lg:leading-[1.06]"
-                style={{ color: INK, animationDelay: "0.72s" }}
+          <div className="flex h-full flex-col justify-end px-4 pb-20 pt-28 sm:px-6 sm:pb-24 lg:px-8 lg:pb-28">
+            <h2
+              className="fh-w max-w-[16ch] font-geo text-[2.3rem] font-normal leading-[1.08] tracking-[0.005em] [text-wrap:balance] sm:text-[3rem] lg:max-w-[20ch] lg:text-[4.2rem] lg:leading-[1.04]"
+              style={{ color: INK, animationDelay: "0.62s" }}
+            >
+              {head}
+            </h2>
+            {sub && (
+              <p
+                className="fh-w mt-5 max-w-[40ch] font-geo text-[1.02rem] font-normal leading-[1.5] tracking-[0.01em] sm:text-[1.1rem] lg:mt-7 lg:max-w-[58ch] lg:text-[1.2rem]"
+                style={{ color: "#6f6862", animationDelay: "1.15s" }}
               >
-                {t("home.statement")}
-              </h2>
-            </div>
-            <div className={`${SMALL} lg:col-span-4 lg:col-start-9`}>
-              {rows.map(([label, value], i) => (
-                <div
-                  key={label}
-                  className="fh-r grid grid-cols-[7.5rem_1fr] items-baseline gap-4 py-3 lg:grid-cols-[9rem_1fr]"
-                  style={{ animationDelay: `${1.4 + i * 0.14}s` }}
-                >
-                  <span style={{ color: QUIET }}>{t(label)}</span>
-                  <span style={{ color: INK }}>{value}</span>
-                </div>
-              ))}
-            </div>
+                {sub}
+              </p>
+            )}
           </div>
         </div>
         {stage === 1 && <Thread tone="ink" delay={2.4} />}
+        {/* the index's silver sculpture standing above the words (preview option) */}
+        {withLogo && written > 0 && (
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-full lg:-top-[15%]"
+            initial={{ opacity: 0, y: "4%" }}
+            animate={{ opacity: 1, y: "0%" }}
+            transition={{ duration: still ? 0 : 1.6, ease: EASE_HAUS, delay: still ? 0 : 0.7 }}
+          >
+            <Suspense fallback={null}>
+              <LogoSpace active={null} diving={false} />
+            </Suspense>
+          </motion.div>
+        )}
       </motion.section>
 
       {/* 3 — the house */}
