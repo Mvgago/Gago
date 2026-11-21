@@ -8,6 +8,7 @@ import type { Key } from "../../i18n/strings";
 import { ContactMenu, EMAIL } from "../../components/Contact/ContactMenu";
 import { SocialLinks } from "../../components/Contact/SocialLinks";
 
+
 /**
  * The landing in three screens that fall into place, one per gesture: the lit room; the cut onto paper,
  * with the studio in one line beside its sheet; and the house's index, four names set large, one picture
@@ -31,19 +32,13 @@ const inert = (off: boolean) => (off ? ({ inert: "" } as Record<string, string>)
 /** How long a change of screen holds the next gesture back */
 const HOLD = 1150;
 
-// The writing light (the claim) and the ruled sheet; and the index's names rising out of their own line.
+// The writing light: the words uncovered by a soft edge of light passing left to right, coming into focus.
 const CSS = `
-.fh-w,.fh-r{opacity:0}
+.fh-w{opacity:0}
 .fh-on .fh-w{-webkit-mask-image:linear-gradient(100deg,#000 38%,transparent 62%);mask-image:linear-gradient(100deg,#000 38%,transparent 62%);-webkit-mask-size:320% 100%;mask-size:320% 100%;animation:fh-write 2.2s cubic-bezier(.22,1,.36,1) both}
 @keyframes fh-write{0%{opacity:0;-webkit-mask-position:100% 0;mask-position:100% 0;filter:blur(10px);transform:translate3d(0,.18em,0)}18%{opacity:1}100%{opacity:1;-webkit-mask-position:0 0;mask-position:0 0;filter:blur(0);transform:none}}
-.fh-r{position:relative}
-.fh-r::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:${HAIR};transform:scaleX(0);transform-origin:left}
-.fh-on .fh-r{animation:fh-in 1s cubic-bezier(.22,1,.36,1) both}
-.fh-on .fh-r::before{animation:fh-rule 1.4s cubic-bezier(.65,0,.35,1) both;animation-delay:inherit}
-@keyframes fh-in{from{opacity:0;transform:translate3d(10px,0,0)}to{opacity:1;transform:none}}
-@keyframes fh-rule{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes fh-down{0%,18%{transform:translateY(-100%);opacity:0}30%{opacity:1}72%,100%{transform:translateY(100%);opacity:0}}
-@media (prefers-reduced-motion:reduce){.fh-w,.fh-r{opacity:1!important;animation:none!important;-webkit-mask-image:none!important;mask-image:none!important}.fh-r::before{transform:none!important}.fh-down{animation:none!important;opacity:.6!important;transform:none!important}}
+@media (prefers-reduced-motion:reduce){.fh-w{opacity:1!important;animation:none!important;-webkit-mask-image:none!important;mask-image:none!important}.fh-down{animation:none!important;opacity:.6!important;transform:none!important}}
 `;
 
 /** The way down, without a word: a thread hanging from the middle of the foot, a bead of light running down it */
@@ -182,12 +177,10 @@ export const Stages: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   const T = (d: number, delay = 0) => ({ duration: still ? 0 : d, ease: EASE_VEIL, delay: still ? 0 : delay });
 
-  const rows: [Key, React.ReactNode][] = [
-    ["home.motto", t("hero.title").toLowerCase()],
-    ["home.work", t("home.workv")],
-    ["home.status", `${t("availability")} — ${new Date().getFullYear()}`],
-    ["home.contact", EMAIL],
-  ];
+  // What the studio does, said plainly in two voices: the line large, then what it covers, smaller and in
+  // grey (the studio page tells the why, with the fugue; here, only the what)
+  const head = t("home.head");
+  const sub = t("home.sub");
 
   return (
     <div className="relative h-[100svh] overflow-hidden sm:min-h-[600px]">
@@ -226,30 +219,19 @@ export const Stages: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         {...inert(stage !== 1)}
       >
         <div key={written} className={written ? "fh-on h-full" : "h-full"}>
-          <div className="flex h-full flex-col justify-end gap-12 px-4 pb-16 pt-28 sm:px-6 sm:pb-20 lg:grid lg:grid-cols-12 lg:items-end lg:gap-5 lg:px-8 lg:pb-24">
-            <div className="lg:col-span-8">
-              <p className={`${SMALL} fh-w mb-6 lg:mb-8`} style={{ color: QUIET, animationDelay: "0.55s" }}>
-                fuga haus <span aria-hidden className="px-1">—</span> {t("home.kicker")}
-              </p>
-              <h2
-                className="fh-w font-geo text-[2.1rem] font-normal leading-[1.1] tracking-[0.005em] [text-wrap:balance] sm:text-[2.8rem] lg:text-[3.6rem] lg:leading-[1.06]"
-                style={{ color: INK, animationDelay: "0.72s" }}
+          <div className="flex h-full flex-col justify-end px-4 pb-20 pt-28 sm:px-6 sm:pb-24 lg:px-8 lg:pb-28">
+            <h2
+              className="fh-w max-w-[16ch] font-geo text-[2.3rem] font-normal leading-[1.08] tracking-[0.005em] [text-wrap:balance] sm:text-[3rem] lg:max-w-[20ch] lg:text-[4.2rem] lg:leading-[1.04]"
+              style={{ color: INK, animationDelay: "0.62s" }}
+            >
+              {head}
+            </h2>
+            <p
+                className="fh-w mt-5 max-w-[40ch] font-geo text-[1.02rem] font-normal leading-[1.5] tracking-[0.01em] sm:text-[1.1rem] lg:mt-7 lg:max-w-[58ch] lg:text-[1.2rem]"
+                style={{ color: "#6f6862", animationDelay: "1.15s" }}
               >
-                {t("home.statement")}
-              </h2>
-            </div>
-            <div className={`${SMALL} lg:col-span-4 lg:col-start-9`}>
-              {rows.map(([label, value], i) => (
-                <div
-                  key={label}
-                  className="fh-r grid grid-cols-[7.5rem_1fr] items-baseline gap-4 py-3 lg:grid-cols-[9rem_1fr]"
-                  style={{ animationDelay: `${1.4 + i * 0.14}s` }}
-                >
-                  <span style={{ color: QUIET }}>{t(label)}</span>
-                  <span style={{ color: INK }}>{value}</span>
-                </div>
-              ))}
-            </div>
+                {sub}
+              </p>
           </div>
         </div>
         {stage === 1 && <Thread tone="ink" delay={2.4} />}
