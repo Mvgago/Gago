@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { EASE_HAUS, EASE_VEIL } from "../../lib/motion";
@@ -7,9 +7,7 @@ import { useI18n } from "../../i18n/I18n";
 import type { Key } from "../../i18n/strings";
 import { ContactMenu, EMAIL } from "../../components/Contact/ContactMenu";
 import { SocialLinks } from "../../components/Contact/SocialLinks";
-import { STUDIO } from "../../i18n/studio";
 
-const LogoSpace = lazy(() => import("../../components/SpatialIndex/LogoSpace"));
 
 /**
  * The landing in three screens that fall into place, one per gesture: the lit room; the cut onto paper,
@@ -89,7 +87,7 @@ const ROOMS: Room[] = [
 /* ── The screens ─────────────────────────────────────────────────────── */
 
 export const Stages: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { lang } = useI18n();
+  const { t } = useI18n();
   const still = useReducedMotion();
   const [stage, setStage] = useState(0);
   const at = useRef(0);
@@ -179,15 +177,10 @@ export const Stages: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   const T = (d: number, delay = 0) => ({ duration: still ? 0 : d, ease: EASE_VEIL, delay: still ? 0 : delay });
 
-  // The studio said in the studio page's own words, in its two voices: the image of the fugue large, then
-  // what it means, smaller and set back in grey
-  const statement = STUDIO[lang].statement;
-  const cut = statement.indexOf(". ");
-  const head = cut < 0 ? statement : statement.slice(0, cut + 1);
-  const sub = cut < 0 ? "" : statement.slice(cut + 2);
-
-  // (preview only, to compare: ?logo shows the index's silver sculpture above the words)
-  const [withLogo] = useState(() => new URLSearchParams(window.location.search).has("logo"));
+  // What the studio does, said plainly in two voices: the line large, then what it covers, smaller and in
+  // grey (the studio page tells the why, with the fugue; here, only the what)
+  const head = t("home.head");
+  const sub = t("home.sub");
 
   return (
     <div className="relative h-[100svh] overflow-hidden sm:min-h-[600px]">
@@ -233,31 +226,15 @@ export const Stages: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             >
               {head}
             </h2>
-            {sub && (
-              <p
+            <p
                 className="fh-w mt-5 max-w-[40ch] font-geo text-[1.02rem] font-normal leading-[1.5] tracking-[0.01em] sm:text-[1.1rem] lg:mt-7 lg:max-w-[58ch] lg:text-[1.2rem]"
                 style={{ color: "#6f6862", animationDelay: "1.15s" }}
               >
                 {sub}
               </p>
-            )}
           </div>
         </div>
         {stage === 1 && <Thread tone="ink" delay={2.4} />}
-        {/* the index's silver sculpture standing above the words (preview option) */}
-        {withLogo && written > 0 && (
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-full lg:-top-[15%]"
-            initial={{ opacity: 0, y: "4%" }}
-            animate={{ opacity: 1, y: "0%" }}
-            transition={{ duration: still ? 0 : 1.6, ease: EASE_HAUS, delay: still ? 0 : 0.7 }}
-          >
-            <Suspense fallback={null}>
-              <LogoSpace active={null} diving={false} />
-            </Suspense>
-          </motion.div>
-        )}
       </motion.section>
 
       {/* 3 — the house */}
